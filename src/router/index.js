@@ -6,6 +6,7 @@ import work from '../pages/home/work'//我的
 import statistic from '../pages/home/statistic'//我的
 
 import cusList from "../pages/customer/cus-list/cus-list" //客资列表
+import cusDetails from "../pages/customer/cus-list/cus-details" //客资列表
 
 // import login from '../pages/login/login'//首页
 
@@ -13,6 +14,7 @@ import cusList from "../pages/customer/cus-list/cus-list" //客资列表
 Vue.use(Router)
 
 export default new Router({
+    mode: 'history',
     routes: [
         // {//登陆
         //     path: '/',
@@ -32,22 +34,27 @@ export default new Router({
                 },
                 //我的
                 {
-                    path: 'statistic',
+                    path: '/statistic',
                     name: 'statistic',
                     component: statistic
                 },
                 //我的
                 {
-                    path: 'user',
+                    path: '/user',
                     name: 'user',
                     component: user
                 },
             ]
         },
         {
-            path: 'cusList',
+            path: '/cusList',
             name: 'cusList',
             component: cusList,
+        },
+        {
+            path: '/cusDetails',
+            name: 'cusDetails',
+            component: cusDetails,
         },
     ]
 })

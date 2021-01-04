@@ -1,6 +1,6 @@
 <template>
   <div>
-    <van-grid clickable :column-num="3">
+    <van-grid :border="false" clickable :column-num="3">
       <van-grid-item  v-for="value in modules" @click="onClickItem(value.link)" :key="value.id" :icon="value.icon" :text="value.name"/>
     </van-grid>
   </div>
@@ -19,7 +19,6 @@ export default {
   },
   methods:{
     onClickItem:function (event){
-      console.log(event)
       this.$router.push({name:event})
     }
   }

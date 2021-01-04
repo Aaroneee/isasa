@@ -54,13 +54,11 @@ export default {
           this.list=response.data.data.list
           this.finished=true;
         }
-        console.log(response)
       })
     },
     //点击每个item
     clickItem:function (id){
-      this.$router.push({name:"cusDetails",params:{id:id}})
-      console.log(id)
+      this.$router.push({name:"cusDetails",params:{cusId:id}})
     },
     onLoad:function (){
 
