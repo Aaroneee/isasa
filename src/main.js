@@ -5,10 +5,12 @@ import Vant from 'vant'
 import axios from 'axios'
 import 'vant/lib/index.css'
 import router from './router'
+import dateUtils from './common/js/date-utils'
 
 Vue.use(Vant)
 
 Vue.prototype.axios = axios
+Vue.prototype.dateUtils = dateUtils
 
 Vue.config.productionTip = false
 

@@ -7,6 +7,7 @@ import statistic from '../pages/home/statistic'//我的
 
 import cusList from "../pages/customer/cus-list/cus-list" //客资列表
 import cusDetails from "../pages/customer/cus-list/cus-details" //客资列表
+import cusAdd from "../pages/customer/cus-list/cus-add" //客资列表
 
 // import login from '../pages/login/login'//首页
 
@@ -55,6 +56,11 @@ export default new Router({
             path: '/cusDetails',
             name: 'cusDetails',
             component: cusDetails,
+        },
+        {
+            path: '/cusAdd',
+            name: 'cusAdd',
+            component: cusAdd,
         },
     ]
 })

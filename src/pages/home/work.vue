@@ -13,7 +13,7 @@ export default {
     return {
       modules: [
         {id: 1, name: "客资列表", link: 'cusList',icon:"friends"},
-        {id: 2, name: "添加客资", link: 'cus-add',icon:"add"},
+        {id: 2, name: "添加客资", link: 'cusAdd',icon:"add"},
       ]
     }
   },
