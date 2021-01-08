@@ -1,3 +1,8 @@
+const path = require('path');
+function resolve(dir){
+    return path.join(__dirname,dir)//设置绝对路径
+}
+
 module.exports = {
     publicPath: './',   // 根路径  ====》   baseUrl: '/',已废弃
     outputDir: 'dist', // 构建输出目录文件名打包时生成的名字。
@@ -25,6 +30,13 @@ module.exports = {
 
 
 
+    },
+
+    resolve: {
+      extensions: ['.js', '.vue', '.json'],
+        alias: {
+          '@': resolve('src'),
+        }
     },
 
 

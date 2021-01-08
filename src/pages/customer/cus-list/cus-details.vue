@@ -8,24 +8,31 @@
         <van-cell title="微信号:" :value="customer.weChat" />
         <van-cell title="状态:" :value="customer.state"  />
         <van-cell title="来源:" :value="customer.source"  />
+        <van-cell title="客服:" :value="customer.service"  />
         <van-cell title="婚期:" :value="customer.weddingDay"/>
+        <van-cell title="婚礼地点:" :value="customer.weddingVenue"/>
         <van-cell title="备注:" :label="customer.remark" />
       </van-cell-group>
 
     </div>
-
+    <br>
+    <van-row>
+      <van-col span="8" offset="8">
+        <van-button @click="openCusEdit" style="width: 100%" type="warning">客资编辑</van-button>
+      </van-col>
+    </van-row>
 
   </div>
 </template>
 
 <script>
-import baseNavBar from '../../../components/nav-bar/base-nav-bar'
+import baseNavBar from '@/components/nav-bar/base-nav-bar'
 
 export default {
   name: "cus-details",
   data(){
     return{
-      cusId:this.$route.params.cusId,
+      cusId:this.$route.query.cusId,
       customer: {}
     }
   },
@@ -45,7 +52,12 @@ export default {
         }
       }).then(response=>{
         this.customer=response.data.data;
+        console.log(this.customer)
       })
+    },
+    //打开修改客资界面
+    openCusEdit:function (){
+      this.$router.push({name:"cusEdit",query:{cusId:this.$route.query.cusId}});
     }
   }
 }

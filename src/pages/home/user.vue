@@ -3,9 +3,9 @@
     <van-image
 
         round
-        width="10rem"
-        height="10rem"
-        :src="require('../../assets/logo_black.png')"
+        width="7rem"
+        height="7rem"
+        :src="require('../../assets/logo.png')"
     />
   </div>
 </template>

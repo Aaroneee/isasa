@@ -1,13 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import home from '../pages/home/home'//首页
-import user from '../pages/home/user'//我的
-import work from '../pages/home/work'//我的
-import statistic from '../pages/home/statistic'//我的
 
-import cusList from "../pages/customer/cus-list/cus-list" //客资列表
-import cusDetails from "../pages/customer/cus-list/cus-details" //客资列表
-import cusAdd from "../pages/customer/cus-list/cus-add" //客资列表
+import home from "./home"
+import customer from "./customer"
+
 
 // import login from '../pages/login/login'//首页
 
@@ -16,51 +12,5 @@ Vue.use(Router)
 
 export default new Router({
     mode: 'history',
-    routes: [
-        // {//登陆
-        //     path: '/',
-        //     name: '/',
-        //     component: login
-        // },
-        {//首页
-            path: '/',
-            name: 'home',
-            component: home,
-            children:[
-                //我的
-                {
-                    path: '',
-                    name: 'work',
-                    component: work
-                },
-                //我的
-                {
-                    path: '/statistic',
-                    name: 'statistic',
-                    component: statistic
-                },
-                //我的
-                {
-                    path: '/user',
-                    name: 'user',
-                    component: user
-                },
-            ]
-        },
-        {
-            path: '/cusList',
-            name: 'cusList',
-            component: cusList,
-        },
-        {
-            path: '/cusDetails',
-            name: 'cusDetails',
-            component: cusDetails,
-        },
-        {
-            path: '/cusAdd',
-            name: 'cusAdd',
-            component: cusAdd,
-        },
-    ]
+    routes: [...home,...customer]
 })

@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import baseNavBar from '../../../components/nav-bar/base-nav-bar'
+import baseNavBar from '@/components/nav-bar/base-nav-bar'
 
 export default {
   name: "cus-list",
@@ -58,7 +58,7 @@ export default {
     },
     //点击每个item
     clickItem:function (id){
-      this.$router.push({name:"cusDetails",params:{cusId:id}})
+      this.$router.push({name:"cusDetails",query:{cusId:id}})
     },
     onLoad:function (){
 

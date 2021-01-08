@@ -1,5 +1,8 @@
 <template>
   <div>
+    <van-divider
+        :style="{ color: '#000000', borderColor: '#000000'}"
+    content-position="left">客资模块</van-divider>
     <van-grid :border="false" clickable :column-num="3">
       <van-grid-item  v-for="value in modules" @click="onClickItem(value.link)" :key="value.id" :icon="value.icon" :text="value.name"/>
     </van-grid>
