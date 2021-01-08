@@ -58,7 +58,7 @@
             @click="createDateShowPicker = true"
             :rules="[{ required: true }]"
         />
-        <van-calendar v-model="createDateShowPicker" @confirm="createDateOnConfirm" />
+        <van-calendar v-model="createDateShowPicker" @confirm="createDateOnConfirm"/>
         <van-field
             v-model="weddingDay"
             type="string"
@@ -102,66 +102,99 @@
 <script>
 import baseNavBar from '../../../components/nav-bar/base-nav-bar'
 import axios from "axios";
+
 export default {
   name: "cus-add",
-  data(){
-    return{
-      name:"",
-      phone:"",
-      weChat:"",
-      city:"",
+  data() {
+    return {
+      name: "",
+      phone: "",
+      weChat: "",
+      city: "",
 
       //展示来源文本
-      sourceText:"",
+      sourceText: "",
       //保存来源Id
-      source:"",
-      sourceColumns: [
-        {id:5,text:"大众点评"},
-        {id:6,text: "小红书"},
-        {id:7,text: "婚博会"}
-      ],
-      sourceShowPicker:false,
+      source: "",
+      sourceColumns: [],
+      sourceShowPicker: false,
 
-      createDate:"",
-      createDateShowPicker:false,
+      createDate: "",
+      createDateShowPicker: false,
 
-      weddingDay:"",
-      weddingVenue:"",
+      weddingDay: "",
+      weddingVenue: "",
 
-      serviceText:"",
-      service:"",
-      serviceColumns: [
-        {id:5,text:"VIVI"},
-        {id:6,text: "乱乱"},
-      ],
-      serviceShowPicker:false,
+      serviceText: "",
+      service: "",
+      serviceColumns: [],
+      serviceShowPicker: false,
     }
   },
-  components:{
-    baseNavBar:baseNavBar
+  components: {
+    baseNavBar: baseNavBar
   },
-  methods:{
-    //渠道选择器
-    sourceOnConfirm:function (value){
+  created() {
+    this.querySourceColumns();
+    this.queryServiceColumns();
+  },
+  methods: {
+    //查询渠道
+    querySourceColumns: function () {
+      this.axios({
+        method: "GET",
+        url: "/picker/sourceIds",
+        params: {
+          tenantCrop: 1
+        }
+      }).then(response => {
+        if (response.data.code === 200) {
+          this.sourceColumns = response.data.data
+        } else {
+          this.$toast.fail(response.data.msg);
+        }
+
+      })
+    },
+    //查询客服
+    queryServiceColumns: function () {
+      this.axios({
+        method: "GET",
+        url: "/picker/serviceIds",
+        params: {
+          tenantCrop: 1
+        }
+      }).then(response => {
+        if (response.data.code === 200) {
+          this.serviceColumns = response.data.data
+        } else {
+          this.$toast.fail(response.data.msg);
+        }
+
+      })
+    },
+    //渠道选择器确认
+    sourceOnConfirm: function (value) {
       this.sourceText = value.text;
-      this.source=value.id;
+      this.source = value.id;
       this.sourceShowPicker = false;
     },
-    //对接日期选择器
-    createDateOnConfirm:function (time){
+    //对接日期选择器确认
+    createDateOnConfirm: function (time) {
       this.createDate = this.dateUtils.vantDateToYMD(time);
       this.createDateShowPicker = false;
     },
-    //客服选择器
-    serviceOnConfirm:function (value){
+    //客服选择器确认
+    serviceOnConfirm: function (value) {
       this.serviceText = value.text;
-      this.service=value.id;
+      this.service = value.id;
       this.serviceShowPicker = false;
     },
-    addCustomer:function (values){
-      values.source=this.source;
-      values.service=this.service;
-      values.tenantCrop=1;
+    //添加客资
+    addCustomer: function (values) {
+      values.source = this.source;
+      values.service = this.service;
+      values.tenantCrop = 1;
       axios({
         method:"POST",
         url:"/customer/saveCustomer",
@@ -177,8 +210,6 @@ export default {
         }else {
           this.$toast.fail('添加失败,请返回重试');
         }
-
-        console.log(response);
       })
     }
   }
