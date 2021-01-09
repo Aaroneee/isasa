@@ -181,8 +181,9 @@ export default {
     querySourceColumns: function () {
       this.axios({
         method: "GET",
-        url: "/picker/sourceIds",
+        url: "/select/sourceIds",
         params: {
+          type:1,
           tenantCrop: 1
         }
       }).then(response => {
@@ -205,8 +206,9 @@ export default {
     queryServiceColumns: function () {
       this.axios({
         method: "GET",
-        url: "/picker/serviceIds",
+        url: "/select/serviceIds",
         params: {
+          type:1,
           tenantCrop: 1
         }
       }).then(response => {

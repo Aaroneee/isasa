@@ -1,7 +1,7 @@
-const path = require('path');
-function resolve(dir){
-    return path.join(__dirname,dir)//设置绝对路径
-}
+// const path = require('path');
+// function resolve(dir){
+//     return path.join(__dirname,dir)//设置绝对路径
+// }
 
 module.exports = {
     publicPath: './',   // 根路径  ====》   baseUrl: '/',已废弃
@@ -32,12 +32,12 @@ module.exports = {
 
     },
 
-    resolve: {
-      extensions: ['.js', '.vue', '.json'],
-        alias: {
-          '@': resolve('src'),
-        }
-    },
+    // resolve: {
+    //   extensions: ['.js', '.vue', '.json'],
+    //     alias: {
+    //       '@': resolve('src'),
+    //     }
+    // },
 
 
 }
