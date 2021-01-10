@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div>
+    <van-sticky>
       <baseNavBar title="客资列表"/>
       <van-search
           @search="queryCusList"
@@ -12,7 +12,7 @@
         <van-dropdown-item :title="stateTitle" v-model="state" @change="stateChange" :options="stateArray" />
         <van-dropdown-item :title="serviceTitle" v-model="service" @change="serviceChange" :options="serviceArray" />
       </van-dropdown-menu>
-    </div>
+    </van-sticky>
     <div>
       <van-list
           v-model="loading"

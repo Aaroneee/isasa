@@ -92,9 +92,10 @@
       <br>
       <br>
       <br>
+      <br>
       <van-row>
         <van-col span="14" offset="5">
-          <van-button round block type="info" native-type="submit" style="width: 100%">提交</van-button>
+          <van-button round block type="primary" native-type="submit">提交</van-button>
         </van-col>
       </van-row>
     </van-form>
@@ -197,22 +198,28 @@ export default {
       values.source = this.source;
       values.service = this.service;
       values.tenantCrop = 1;
-      this.axios({
-        method:"POST",
-        url:"/customer/saveCustomer",
-        params:values
-      }).then(response=>{
-        if (response.data.code===200){
-          this.$dialog.confirm({
-            title: '添加成功',
-            message: '是否跳转客资列表查看',
-          }).then(() => {
-                this.$router.push({name:"cusList"})
-          })
-        }else {
-          this.$toast.fail('添加失败,请返回重试');
-        }
+      this.$dialog.confirm({
+        title: '添加客资',
+        message: '是否确认添加客资?',
+      }).then(() => {
+        this.axios({
+          method:"POST",
+          url:"/customer/saveCustomer",
+          params:values
+        }).then(response=>{
+          if (response.data.code===200){
+            this.$dialog.confirm({
+              title: '添加成功',
+              message: '是否跳转客资列表查看',
+            }).then(() => {
+              this.$router.replace({name:"cusList"})
+            })
+          }else {
+            this.$toast.fail(response.data.msg);
+          }
+        })
       })
+
     }
   }
 }

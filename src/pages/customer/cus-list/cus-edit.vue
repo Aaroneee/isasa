@@ -87,10 +87,15 @@
             @cancel="serviceShowPicker = false"
         />
       </van-popup>
-
-      <div style="margin: 16px;">
-        <van-button round block type="info" native-type="submit">提交</van-button>
-      </div>
+      <br>
+      <br>
+      <br>
+      <br>
+      <van-row>
+        <van-col span="14" offset="5">
+          <van-button round block type="primary" native-type="submit">提交</van-button>
+        </van-col>
+      </van-row>
     </van-form>
   </div>
 </template>
@@ -168,14 +173,19 @@ export default {
       values.source = this.source;
       values.service = this.service;
       values.tenantCrop = 1;
-      this.axios({
-        method:"PUT",
-        url:"/customer/updateCustomer",
-        params:values
-      }).then(response=>{
-        response.data.code===200?this.$toast.success("添加成功"):this.$toast.fail("修改失败,请返回重试");
-        console.log(response)
+      this.$dialog.confirm({
+        title: '修改客资',
+        message: '是否确认修改该条客资?',
+      }).then(() => {
+        this.axios({
+          method:"PUT",
+          url:"/customer/updateCustomer",
+          params:values
+        }).then(response=>{
+          response.data.code===200?this.$toast.success("添加成功"):this.$toast.fail(response.data.msg);
+        })
       })
+
     },
     //查询渠道
     querySourceColumns: function () {

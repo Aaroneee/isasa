@@ -17,8 +17,12 @@
     </div>
     <br>
     <van-row>
-      <van-col span="8" offset="8">
+
+      <van-col span="8" offset="3">
         <van-button @click="openCusEdit" style="width: 100%" type="warning">客资编辑</van-button>
+      </van-col>
+      <van-col span="8"  offset="1">
+        <van-button @click="openAppAdd" type="primary" style="width: 100%">添加预约</van-button>
       </van-col>
     </van-row>
 
@@ -52,12 +56,14 @@ export default {
         }
       }).then(response=>{
         this.customer=response.data.data;
-        console.log(this.customer)
       })
     },
     //打开修改客资界面
     openCusEdit:function (){
       this.$router.push({name:"cusEdit",query:{cusId:this.$route.query.cusId}});
+    },
+    openAppAdd:function (){
+      this.$router.push({name:"appAdd",query:this.customer});
     }
   }
 }
