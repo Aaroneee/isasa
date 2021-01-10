@@ -7,10 +7,10 @@
           v-model="searchValue"
           placeholder="请输入搜索关键词" />
       <van-dropdown-menu>
-        <van-dropdown-item title="客资渠道" @change="sourceChange" v-model="sourceValue" :options="sourceArray" />
-        <van-dropdown-item title="客资意愿" @change="gradeChange" v-model="gradeValue" :options="gradeArray" />
-        <van-dropdown-item title="客资状态" @change="stateChange" v-model="stateValue" :options="stateArray" />
-        <van-dropdown-item title="选择客服" @change="serviceChange" v-model="serviceValue" :options="serviceArray" />
+        <van-dropdown-item :title="sourceTitle" v-model="source" @change="sourceChange" :options="sourceArray" />
+        <van-dropdown-item :title="gradeTitle" v-model="grade" @change="gradeChange" :options="gradeArray" />
+        <van-dropdown-item :title="stateTitle" v-model="state" @change="stateChange" :options="stateArray" />
+        <van-dropdown-item :title="serviceTitle" v-model="service" @change="serviceChange" :options="serviceArray" />
       </van-dropdown-menu>
     </div>
     <div>
@@ -19,7 +19,7 @@
           :finished="finished"
           finished-text="没有更多了"
       >
-        <van-cell v-for="item in list" :key="item.id" @click="clickItem(item.id)" >
+        <van-cell v-for="item in customerList" :key="item.id" @click="clickItem(item.id)" >
           <p :style="{color:item.gradeColor}">姓名:{{item.name}}</p>
           <van-row>
             <van-col span="12">微信:{{item.weChat}}</van-col>
@@ -44,23 +44,27 @@ export default {
   data(){
     return {
       //List
-      list: [],
+      customerList: [],
       loading: false,
       finished: false,
       //顶部搜索
       searchValue:"",
       //客资来源下拉
-      sourceValue:"",
-      sourceArray:[],
+      sourceTitle:"客资渠道",
+      source:"",
+      sourceArray:[{text:"客资渠道",value: ""}],
       //意愿程度
-      gradeValue:"",
-      gradeArray:[],
+      gradeTitle:"客资意愿",
+      grade:"",
+      gradeArray:[{text:"客资意愿",value: ""}],
       //客资状态
-      stateValue:"",
-      stateArray:[],
+      stateTitle:"客资状态",
+      state:"",
+      stateArray:[{text:"客资状态",value: ""}],
       //客服
-      serviceValue:"",
-      serviceArray:[]
+      serviceTitle:"选择客服",
+      service:"",
+      serviceArray:[{text:"选择客服",value: ""}]
     }
   },
   components: {
@@ -83,11 +87,15 @@ export default {
         url:"/customer/mCustomerList",
         params:{
           value:val,
+          source:this.source,
+          grade:this.grade,
+          state:this.state,
+          service:this.service,
           tenantCrop:1
         }
       }).then(response=>{
         if (response.data.code===200){
-          this.list=response.data.data.list
+          this.customerList=response.data.data.list
           this.finished=true;
         }
       })
@@ -97,7 +105,7 @@ export default {
     querySourceIds:function (){
       this.selectUtils.querySourceIds(2,1).then(response => {
         if (response.data.code === 200) {
-          this.sourceArray=response.data.data
+          this.sourceArray.push(...response.data.data);
         } else {
           self.$toast.fail(response.data.msg);
         }
@@ -105,14 +113,19 @@ export default {
     },
     //点击渠道
     sourceChange:function (val){
-      console.log(val)
+      this.source=val;
+      this.queryCusList();
+      this.sourceTitle= this.sourceArray.find(value => {
+          return value.value===val;
+      }).text;
+
     },
 
     //查询意愿
     queryGradeIds:function (){
       this.selectUtils.queryGradeIds(2,1).then(response => {
         if (response.data.code === 200) {
-          this.gradeArray=response.data.data
+          this.gradeArray.push(...response.data.data);
         } else {
           self.$toast.fail(response.data.msg);
         }
@@ -120,15 +133,18 @@ export default {
     },
     //点击意愿
     gradeChange:function (val){
-      console.log(val)
+      this.grade=val;
+      this.queryCusList();
+      this.gradeTitle= this.gradeArray.find(value => {
+        return value.value===val;
+      }).text;
     },
 
     //查询状态
     queryStateIds:function (){
       this.selectUtils.queryStateIds(2).then(response => {
         if (response.data.code === 200) {
-          this.stateArray=response.data.data
-          console.log(this.stateArray)
+          this.stateArray.push(...response.data.data);
         } else {
           self.$toast.fail(response.data.msg);
         }
@@ -136,14 +152,18 @@ export default {
     },
     //点击状态
     stateChange:function (val){
-      console.log(val)
+      this.state=val;
+      this.queryCusList();
+      this.stateTitle= this.stateArray.find(value => {
+        return value.value===val;
+      }).text;
     },
 
     //查询客服
     queryServiceIds:function (){
       this.selectUtils.queryServiceIds(2,1).then(response => {
         if (response.data.code === 200) {
-          this.serviceArray=response.data.data
+          this.serviceArray.push(...response.data.data);
         } else {
           self.$toast.fail(response.data.msg);
         }
@@ -151,7 +171,11 @@ export default {
     },
     //点击客服
     serviceChange:function (val){
-      console.log(val)
+      this.service=val;
+      this.queryCusList();
+      this.serviceTitle= this.serviceArray.find(value => {
+        return value.value===val;
+      }).text;
     },
 
     //点击每个Listitem
