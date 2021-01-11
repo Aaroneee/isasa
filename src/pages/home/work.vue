@@ -12,8 +12,9 @@ export default {
   data() {
     return {
       modules: [
-        {id: 1, name: "客资列表", link: 'cusList',icon:"friends"},
+        {id: 1, name: "客资列表", link: 'cusList',icon:"manager"},
         {id: 2, name: "添加客资", link: 'cusAdd',icon:"add"},
+        {id: 3, name: "预约列表", link: 'appList',icon:"friends"},
       ]
     }
   },

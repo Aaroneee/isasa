@@ -127,9 +127,6 @@ export default {
     this.queryCustomerById();
 
   },
-  beforeMount(){
-
-  },
   methods:{
     //根据客资Id查询客资
     queryCustomerById:function (){
@@ -202,14 +199,9 @@ export default {
           return;
         }
         this.sourceColumns = response.data.data;
-        for (let value of this.sourceColumns){
-          if (value.id===this.customer.source){
-            this.sourceText=value.text;
-            this.source=value.id;
-            break;
-          }
-        }
-
+        let value=this.sourceColumns.find(k=>k.id===this.customer.source);
+        this.sourceText=value.text;
+        this.source=value.id;
       })
     },
     //查询客服
@@ -227,13 +219,10 @@ export default {
           return;
         }
         this.serviceColumns = response.data.data;
-        for (let value of this.serviceColumns){
-          if (value.id===this.customer.service){
-            this.serviceText=value.text;
-            this.service=value.id;
-            break;
-          }
-        }
+        let value=this.serviceColumns.find(k=>k.id===this.customer.service);
+        this.serviceText=value.text;
+        this.service=value.id;
+
       })
     },
   }
