@@ -7,10 +7,10 @@
           v-model="searchValue"
           placeholder="请输入搜索关键词" />
       <van-dropdown-menu>
-        <van-dropdown-item :title="sourceTitle" v-model="source" @change="sourceChange" :options="sourceArray" />
-        <van-dropdown-item :title="gradeTitle" v-model="grade" @change="gradeChange" :options="gradeArray" />
-        <van-dropdown-item :title="stateTitle" v-model="state" @change="stateChange" :options="stateArray" />
-        <van-dropdown-item :title="serviceTitle" v-model="service" @change="serviceChange" :options="serviceArray" />
+        <van-dropdown-item :title="sourceText" v-model="source" @change="sourceChange" :options="sourceArray" />
+        <van-dropdown-item :title="gradeText" v-model="grade" @change="gradeChange" :options="gradeArray" />
+        <van-dropdown-item :title="stateText" v-model="state" @change="stateChange" :options="stateArray" />
+<!--        <van-dropdown-item :title="serviceText" v-model="service" @change="serviceChange" :options="serviceArray" />-->
       </van-dropdown-menu>
     </van-sticky>
     <div>
@@ -50,19 +50,19 @@ export default {
       //顶部搜索
       searchValue:"",
       //客资来源下拉
-      sourceTitle:"客资渠道",
+      sourceText:"",
       source:"",
       sourceArray:[{text:"客资渠道",value: ""}],
       //意愿程度
-      gradeTitle:"客资意愿",
+      gradeText:"",
       grade:"",
       gradeArray:[{text:"客资意愿",value: ""}],
       //客资状态
-      stateTitle:"客资状态",
+      stateText:"",
       state:"",
       stateArray:[{text:"客资状态",value: ""}],
       //客服
-      serviceTitle:"选择客服",
+      serviceText:"",
       service:"",
       serviceArray:[{text:"选择客服",value: ""}]
     }
@@ -80,6 +80,33 @@ export default {
   },
 
   methods:{
+    //点击渠道
+    sourceChange:function (val){
+      this.source=val;
+      this.queryCusList();
+    },
+    //点击意愿
+    gradeChange:function (val){
+      this.grade=val;
+      this.queryCusList();
+    },
+    //点击状态
+    stateChange:function (val){
+      this.state=val;
+      this.queryCusList();
+    },
+    //点击客服
+    serviceChange:function (val){
+      this.service=val;
+      this.queryCusList();
+    },
+    //点击每个Listitem
+    clickItem:function (id){
+      this.$router.push({name:"cusDetails",query:{cusId:id}})
+    },
+
+
+
     //查询客资列表
     queryCusList:function (val){
       this.axios({
@@ -100,7 +127,6 @@ export default {
         }
       })
     },
-
     //查询渠道
     querySourceIds:function (){
       this.selectUtils.querySourceIds(2,1).then(response => {
@@ -111,16 +137,6 @@ export default {
         }
       })
     },
-    //点击渠道
-    sourceChange:function (val){
-      this.source=val;
-      this.queryCusList();
-      this.sourceTitle= this.sourceArray.find(value => {
-          return value.value===val;
-      }).text;
-
-    },
-
     //查询意愿
     queryGradeIds:function (){
       this.selectUtils.queryGradeIds(2,1).then(response => {
@@ -131,15 +147,6 @@ export default {
         }
       })
     },
-    //点击意愿
-    gradeChange:function (val){
-      this.grade=val;
-      this.queryCusList();
-      this.gradeTitle= this.gradeArray.find(value => {
-        return value.value===val;
-      }).text;
-    },
-
     //查询状态
     queryStateIds:function (){
       this.selectUtils.queryStateIds(2).then(response => {
@@ -150,15 +157,6 @@ export default {
         }
       })
     },
-    //点击状态
-    stateChange:function (val){
-      this.state=val;
-      this.queryCusList();
-      this.stateTitle= this.stateArray.find(value => {
-        return value.value===val;
-      }).text;
-    },
-
     //查询客服
     queryServiceIds:function (){
       this.selectUtils.queryServiceIds(2,1).then(response => {
@@ -168,19 +166,6 @@ export default {
           self.$toast.fail(response.data.msg);
         }
       })
-    },
-    //点击客服
-    serviceChange:function (val){
-      this.service=val;
-      this.queryCusList();
-      this.serviceTitle= this.serviceArray.find(value => {
-        return value.value===val;
-      }).text;
-    },
-
-    //点击每个Listitem
-    clickItem:function (id){
-      this.$router.push({name:"cusDetails",query:{cusId:id}})
     },
   }
 }

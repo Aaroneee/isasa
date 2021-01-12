@@ -219,7 +219,7 @@ export default {
       this.appointShop=value.id;
       this.appointShopShowPicker=false;
       //查询店铺所在的城市
-      this.queryCityByShopId(value.id);
+      this.queryCityByShopIds(value.id);
     },
 
 
@@ -278,8 +278,8 @@ export default {
       })
     },
     //根据店铺查询城市
-    queryCityByShopId:function (id){
-      this.selectUtils.queryCityByShopId(id).then(response=>{
+    queryCityByShopIds:function (id){
+      this.selectUtils.queryCityByShopIds(id).then(response=>{
         this.appointCity=response.data.msg
       })
     },

@@ -10,7 +10,9 @@ export default {
     },
 
     //Vant 跨月时间转化为 年月日 - 年月日
-    rangeVantDateToYMD(startDate,endDate){
+    rangeVantDateToYMD(date){
+        let startDate=date[0];
+        let endDate=date[1];
         let startYear=startDate.getFullYear();
         let startMonth=this.dateIsSingle(startDate.getMonth()+1);
         let startDay=this.dateIsSingle(startDate.getDate());

@@ -1,5 +1,7 @@
 import self from "@/main";
 
+//1.Vant-picker
+//2.Vant-DropdownMenu
 export default {
     //渠道
      querySourceIds(type,tenantCrop){
@@ -79,12 +81,23 @@ export default {
         })
     },
     //根据店铺查询城市
-    queryCityByShopId(shopId){
+    queryCityByShopIds(shopId){
         return self.axios({
             method: "GET",
             url: "/shop/queryCityByShopId",
             params: {
                 id:shopId,
+            }
+        })
+    },
+    //查询礼服师
+    queryDressIds(type,tenantCrop){
+        return self.axios({
+            method: "GET",
+            url: "/select/dressIds",
+            params: {
+                type:type,
+                tenantCrop:tenantCrop,
             }
         })
     }
