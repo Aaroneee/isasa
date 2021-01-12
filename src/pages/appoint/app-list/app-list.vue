@@ -114,7 +114,7 @@ export default {
       this.queryAppList();
     },
     clickItem: function (id) {
-      console.log(id)
+      this.$router.push({name:"appDetails",query:{id:id}})
     },
 
 
@@ -157,7 +157,7 @@ export default {
     //查询店铺
     queryAppointShop: function () {
       this.selectUtils.queryShopIds(2, 1).then(response => {
-        this.appointDressArray.push(...response.data.data);
+        this.appointShopArray.push(...response.data.data);
       })
     },
   }

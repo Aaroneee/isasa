@@ -1,7 +1,7 @@
 <template>
   <div>
     <baseNavBar title="客资详情"/>
-    <div id="parent" v-cloak>
+    <div v-cloak>
       <van-cell-group>
         <van-cell title="姓名:" :value="customer.name" />
         <van-cell title="手机号:" :value="customer.phone" />
@@ -62,6 +62,7 @@ export default {
     openCusEdit:function (){
       this.$router.push({name:"cusEdit",query:{cusId:this.$route.query.cusId}});
     },
+    //打开预约添加界面
     openAppAdd:function (){
       this.$router.push({name:"appAdd",query:this.customer});
     }
