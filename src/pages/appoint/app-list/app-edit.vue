@@ -1,42 +1,12 @@
 <template>
   <div>
-    <baseNavBar title="预约添加"/>
-    <van-field
-        readonly
-        v-model="customer.name"
-        label="用户名"
-        placeholder="用户名"
-    />
-    <van-field
-        readonly
-        v-model="customer.phone"
-        label="手机号"
-        placeholder="手机号"
-    />
-    <van-field
-        readonly
-        v-model="customer.weChat"
-        label="微信号"
-        placeholder="微信号"
-    />
-    <van-form @submit="addAppointSubmit">
-      <van-field
-          readonly
-          clickable
-          name="createDate"
-          :value="createDate"
-          label="预约日期"
-          placeholder="点击选择预约日期"
-          @click="createDateShowPicker = true"
-          :rules="[{ required: true }]"
-      />
-      <van-calendar v-model="createDateShowPicker" @confirm="createDateOnConfirm"/>
-
+    <baseNavBar title="预约编辑"/>
+    <van-form @submit="editAppointSubmit">
       <van-field
           readonly
           clickable
           name="appointDate"
-          :value="appointDate"
+          :value="appoint.appointDate"
           label="到店日期"
           placeholder="点击选择到店日期"
           @click="appointDateShowPicker = true"
@@ -46,7 +16,7 @@
 
       <van-field
           name="appointTime"
-          :value="appointTime"
+          :value="appoint.appointTime"
           label="到店时间"
           placeholder="点击选择到店时间"
           @click="appointTimeShowPicker = true"
@@ -119,16 +89,11 @@
       <van-field
           readonly
           name="appointCity"
-          :value="appointCity"
+          :value="appoint.appointCity"
           label="预约城市"
           placeholder="点击选择预约店铺"
           :rules="[{ required: true }]"
       />
-
-      <br>
-      <br>
-      <br>
-      <br>
       <van-row>
         <van-col span="14" offset="5">
           <van-button round block type="primary" native-type="submit">提交</van-button>
@@ -139,151 +104,141 @@
 </template>
 
 <script>
-import baseNavBar from '@/components/nav-bar/base-nav-bar'
+import baseNavBar from "@/components/nav-bar/base-nav-bar"
 
 export default {
-  name: "app_add",
+  name: "app-edit",
+  components:{
+    baseNavBar
+  },
+
   data(){
     return{
-      customer:{},
-      createDate:"",
-      appointDate:"",
-      appointTime:"",
+      appId:this.$route.query.id,
+      appoint:{},
 
-      inviter:"",
-      inviterText:"",
-      inviterArray:[],
-
-      appointName:"",
-      appointNameText:"",
-      appointNameArray:[],
-
-      appointShop:"",
-      appointShopText:"",
-      appointShopArray:[],
-
-      appointCity:"",
-
-
-      createDateShowPicker:false,
       appointDateShowPicker:false,
       appointTimeShowPicker:false,
       appointTimeColumns:appointTime,
       inviterShowPicker:false,
       appointNameShowPicker:false,
       appointShopShowPicker:false,
+
+      inviterText:"",
+      inviterArray:[],
+
+      appointNameText:"",
+      appointNameArray:[],
+
+      appointShopText:"",
+      appointShopArray:[],
+
     }
   },
-  components: {
-    baseNavBar: baseNavBar
-  },
   created() {
-    this.customer=this.$route.query;
-    this.queryInviterIds();
-    this.queryProjectsIds();
-    this.queryShopIds();
-
+    this.queryAppoint();
   },
   methods:{
-    //预约日期
-    createDateOnConfirm:function (time){
-      this.createDate = this.dateUtils.vantDateToYMD(time);
-      this.createDateShowPicker = false;
-
-    },
     //到店日期
     appointDateOnConfirm:function (time){
-      this.appointDate = this.dateUtils.vantDateToYMD(time);
-      this.appointDateShowPicker = false;
+      this.appoint.appointDate=this.dateUtils.vantDateToYMD(time);
+      this.appointDateShowPicker=false;
     },
     //到店时间
     appointTimeOnConfirm:function (value){
-      this.appointTime=value.text;
+      this.appoint.appointTime=value.text;
       this.appointTimeShowPicker=false;
     },
     //预约人
     inviterOnConfirm:function (value){
+      this.appoint.inviter=value.id;
       this.inviterText=value.text;
-      this.inviter=value.id;
       this.inviterShowPicker=false;
+
     },
     //预约项目
     appointNameOnConfirm:function (value){
+      this.appoint.appointName=value.id;
       this.appointNameText=value.text;
-      this.appointName=value.id;
       this.appointNameShowPicker=false;
     },
-    //查询店铺
+    //店铺
     appointShopOnConfirm:function (value){
       this.appointShopText=value.text;
-      this.appointShop=value.id;
+      this.appoint.appointShop=value.id;
       this.appointShopShowPicker=false;
       //查询店铺所在的城市
       this.queryCityByShopIds(value.id);
     },
-
-
-    addAppointSubmit:function (values){
-      values.cusId=this.customer.id;
-      values.inviter=this.inviter;
-      values.appointName=this.appointName;
-      values.appointShop=this.appointShop;
-      values.type="售前预约";
-      values.tenantCrop = 1;
+    editAppointSubmit:function (){
+      console.log(this.appoint);
       this.$dialog.confirm({
-        title: '添加预约',
-        message: '是否确认给该条客资添加预约?',
+        title: '修改客资',
+        message: '是否确认修改该条客资?',
       }).then(() => {
         this.axios({
           method:"POST",
-          url:"/appoint/saveAppoint",
-          params:values
+          url:"/appoint/editAppoint",
+          params:this.appoint
         }).then(response=>{
-
-          response.data.code===200?this.$toast.success("添加成功"):this.$toast.fail(response.data.msg);
-          if (response.data.code===200){
-            this.$dialog.confirm({
-              title: '添加成功',
-              message: '是否跳转预约列表查看?',
-            }).then(() => {
-              this.$router.replace({name:"appList"})
-            })
-          }else {
-            this.$toast.fail('添加失败,请返回重试');
+          if (response.data.code!==200){
+            this.$toast.fail(response.data.msg);
+            return
           }
+          this.$toast.success("修改成功")
         })
       })
     },
 
 
-
+    queryAppoint:function (){
+      this.axios({
+        method:"GET",
+        url:"/appoint/queryAppointById",
+        params:{
+          id:this.appId
+        }
+      }).then(response=>{
+        if (response.data.code!==200){
+          this.$toast.fail(response.data.msg); return;
+        }
+        this.appoint=response.data.data;
+        this.queryInviterIds();
+        this.queryProjectsIds();
+        this.queryShopIds();
+      })
+    },
     //查询预约人
     queryInviterIds:function (){
       this.selectUtils.queryEmpIds(1,1).then(response=>{
         this.inviterArray=response.data.data
+        this.inviterText=this.inviterArray.find(k=>k.id===this.appoint.inviter).text;
       })
     },
     //查询预约项目
     queryProjectsIds:function (){
       this.selectUtils.queryProjectsIds("预约项目",1,1).then(response=>{
         this.appointNameArray=response.data.data
+        this.appointNameText=this.appointNameArray.find(k=>k.id===this.appoint.appointName).text;
       })
     },
     //查询店铺
     queryShopIds:function (){
       this.selectUtils.queryShopIds(1,1).then(response=>{
-        this.appointShopArray=response.data.data
+        this.appointShopArray=response.data.data;
+        this.appointShopText=this.appointShopArray.find(k=>k.id===this.appoint.appointShop).text;
       })
     },
     //根据店铺查询城市
     queryCityByShopIds:function (id){
       this.selectUtils.queryCityByShopIds(id).then(response=>{
-        this.appointCity=response.data.msg
+        this.appoint.appointCity=response.data.msg
       })
     },
-  }
+  },
 
 }
+
 const appointTime=[
   {text:"10:00",id:"10:00"},
   {text:"10:30",id:"10:30"},

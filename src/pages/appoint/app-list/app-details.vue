@@ -12,6 +12,7 @@
         <van-cell title="预约项目:" :value="appointVo.appointName"  />
         <van-cell title="预约城市:" :value="appointVo.appointCity"/>
         <van-cell title="预约店铺:" :value="appointVo.appointShop"/>
+        <van-cell title="预约人:" :value="appointVo.inviter"/>
         <van-cell title="分配房间:" :value="appointVo.room"/>
         <van-cell title="备注:" :label="appointVo.appointRemark" />
       </van-cell-group>
@@ -66,7 +67,7 @@ export default {
       })
     },
     openAppEdit:function (){
-
+      this.$router.push({name:"appEdit",query:{id:this.$route.query.id}})
     },
     openArrival:function (){
 
