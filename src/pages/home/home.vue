@@ -13,6 +13,9 @@
 <script>
 export default {
   name: "home",
+  created() {
+    localStorage.setItem("tenantCrop","1")
+  }
 }
 </script>
 

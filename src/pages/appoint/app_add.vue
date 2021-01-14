@@ -187,13 +187,13 @@ export default {
   methods:{
     //预约日期
     createDateOnConfirm:function (time){
-      this.createDate = this.dateUtils.vantDateToYMD(time);
+      this.createDate = this.$dateUtils.vantDateToYMD(time);
       this.createDateShowPicker = false;
 
     },
     //到店日期
     appointDateOnConfirm:function (time){
-      this.appointDate = this.dateUtils.vantDateToYMD(time);
+      this.appointDate = this.$dateUtils.vantDateToYMD(time);
       this.appointDateShowPicker = false;
     },
     //到店时间
@@ -234,7 +234,7 @@ export default {
         title: '添加预约',
         message: '是否确认给该条客资添加预约?',
       }).then(() => {
-        this.axios({
+        this.$axios({
           method:"POST",
           url:"/appoint/saveAppoint",
           params:values
@@ -259,25 +259,25 @@ export default {
 
     //查询预约人
     queryInviterIds:function (){
-      this.selectUtils.queryEmpIds(1,1).then(response=>{
+      this.$selectUtils.queryEmpIds(this.$selectUtils.picker).then(response=>{
         this.inviterArray=response.data.data
       })
     },
     //查询预约项目
     queryProjectsIds:function (){
-      this.selectUtils.queryProjectsIds("预约项目",1,1).then(response=>{
+      this.$selectUtils.queryProjectsIds(this.$projectsType.appoint,this.$selectUtils.picker).then(response=>{
         this.appointNameArray=response.data.data
       })
     },
     //查询店铺
     queryShopIds:function (){
-      this.selectUtils.queryShopIds(1,1).then(response=>{
+      this.$selectUtils.queryShopIds(this.$selectUtils.picker).then(response=>{
         this.appointShopArray=response.data.data
       })
     },
     //根据店铺查询城市
     queryCityByShopIds:function (id){
-      this.selectUtils.queryCityByShopIds(id).then(response=>{
+      this.$selectUtils.queryCityByShopIds(id).then(response=>{
         this.appointCity=response.data.msg
       })
     },

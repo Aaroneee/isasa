@@ -53,7 +53,7 @@ export default {
   },
   methods:{
     queryAppointVo:function (){
-      this.axios({
+      this.$axios({
         method:"GET",
         url:"/appoint/queryAppointVoById",
         params:{

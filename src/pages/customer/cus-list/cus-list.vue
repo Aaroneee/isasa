@@ -43,6 +43,7 @@ export default {
   name: "cus-list",
   data(){
     return {
+      tenantCrop:localStorage.getItem("tenantCrop"),
       //List
       customerList: [],
       loading: false,
@@ -109,7 +110,7 @@ export default {
 
     //查询客资列表
     queryCusList:function (val){
-      this.axios({
+      this.$axios({
         method:"get",
         url:"/customer/mCustomerList",
         params:{
@@ -118,7 +119,7 @@ export default {
           grade:this.grade,
           state:this.state,
           service:this.service,
-          tenantCrop:1
+          tenantCrop:this.tenantCrop
         }
       }).then(response=>{
         if (response.data.code===200){
@@ -129,7 +130,7 @@ export default {
     },
     //查询渠道
     querySourceIds:function (){
-      this.selectUtils.querySourceIds(2,1).then(response => {
+      this.$selectUtils.querySourceIds(this.$selectUtils.DropdownMenu).then(response => {
         if (response.data.code === 200) {
           this.sourceArray.push(...response.data.data);
         } else {
@@ -139,7 +140,7 @@ export default {
     },
     //查询意愿
     queryGradeIds:function (){
-      this.selectUtils.queryGradeIds(2,1).then(response => {
+      this.$selectUtils.queryGradeIds(this.$selectUtils.DropdownMenu).then(response => {
         if (response.data.code === 200) {
           this.gradeArray.push(...response.data.data);
         } else {
@@ -149,7 +150,7 @@ export default {
     },
     //查询状态
     queryStateIds:function (){
-      this.selectUtils.queryStateIds(2).then(response => {
+      this.$selectUtils.queryStateIds(this.$selectUtils.DropdownMenu).then(response => {
         if (response.data.code === 200) {
           this.stateArray.push(...response.data.data);
         } else {
@@ -159,7 +160,7 @@ export default {
     },
     //查询客服
     queryServiceIds:function (){
-      this.selectUtils.queryServiceIds(2,1).then(response => {
+      this.$selectUtils.queryServiceIds(this.$selectUtils.DropdownMenu).then(response => {
         if (response.data.code === 200) {
           this.serviceArray.push(...response.data.data);
         } else {

@@ -108,6 +108,7 @@ export default {
   name: "cus-add",
   data() {
     return {
+      tenantCrop:localStorage.getItem("tenantCrop"),
       name: "",
       phone: "",
       weChat: "",
@@ -140,42 +141,6 @@ export default {
     this.queryServiceColumns();
   },
   methods: {
-    //查询渠道
-    querySourceColumns: function () {
-      this.axios({
-        method: "GET",
-        url: "/select/sourceIds",
-        params: {
-          type:1,
-          tenantCrop: 1
-        }
-      }).then(response => {
-        if (response.data.code === 200) {
-          this.sourceColumns = response.data.data
-        } else {
-          this.$toast.fail(response.data.msg);
-        }
-
-      })
-    },
-    //查询客服
-    queryServiceColumns: function () {
-      this.axios({
-        method: "GET",
-        url: "/select/serviceIds",
-        params: {
-          type:1,
-          tenantCrop: 1
-        }
-      }).then(response => {
-        if (response.data.code === 200) {
-          this.serviceColumns = response.data.data
-        } else {
-          this.$toast.fail(response.data.msg);
-        }
-
-      })
-    },
     //渠道选择器确认
     sourceOnConfirm: function (value) {
       this.sourceText = value.text;
@@ -184,7 +149,7 @@ export default {
     },
     //对接日期选择器确认
     createDateOnConfirm: function (time) {
-      this.createDate = this.dateUtils.vantDateToYMD(time);
+      this.createDate = this.$dateUtils.vantDateToYMD(time);
       this.createDateShowPicker = false;
     },
     //客服选择器确认
@@ -197,12 +162,12 @@ export default {
     addCustomerSubmit: function (values) {
       values.source = this.source;
       values.service = this.service;
-      values.tenantCrop = 1;
+      values.tenantCrop = this.tenantCrop;
       this.$dialog.confirm({
         title: '添加客资',
         message: '是否确认添加客资?',
       }).then(() => {
-        this.axios({
+        this.$axios({
           method:"POST",
           url:"/customer/saveCustomer",
           params:values
@@ -220,7 +185,20 @@ export default {
         })
       })
 
-    }
+    },
+
+    //查询渠道
+    querySourceColumns: function (){
+      this.$selectUtils.querySourceIds(this.$selectUtils.picker).then(response=>{
+        this.sourceColumns=response.data.data;
+      })
+    },
+    //查询客服
+    queryServiceColumns: function () {
+      this.$selectUtils.queryServiceIds(this.$selectUtils.picker).then(response=>{
+        this.serviceColumns=response.data.data;
+      })
+    },
   }
 }
 </script>

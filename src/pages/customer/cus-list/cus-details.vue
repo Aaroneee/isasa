@@ -48,7 +48,7 @@ export default {
   },
   methods:{
     queryCustomerById:function (){
-      this.axios({
+      this.$axios({
         method:"GET",
         url:"/customer/queryCustomerVoById",
         params:{

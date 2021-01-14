@@ -49,6 +49,7 @@ export default {
   },
   data() {
     return {
+      tenantCrop:localStorage.getItem("tenantCrop"),
       appointList: [],
       searchValue: "",
       loading: false,
@@ -74,7 +75,6 @@ export default {
       appointShopArray: [{text: "店铺", value: ""}],
 
       state: "",
-      tenantCrop: "",
 
     }
   },
@@ -93,7 +93,7 @@ export default {
     },
     //日历确认
     createDateOnConfirm: function (time) {
-      this.createDate = this.dateUtils.rangeVantDateToYMD(time);
+      this.createDate = this.$dateUtils.rangeVantDateToYMD(time);
       this.queryAppList();
       this.createDateShow = false;
     },
@@ -119,7 +119,7 @@ export default {
 
 
     queryAppList: function () {
-      this.axios({
+      this.$axios({
         method: "GET",
         url: "/appoint/mAppointList",
         params: {
@@ -129,7 +129,7 @@ export default {
           inviter: this.inviter,
           appointDress: this.appointDress,
           appointShop: this.appointShop,
-          tenantCrop: 1
+          tenantCrop: this.tenantCrop
         }
       }).then(response => {
         this.appointList = response.data.data.list;
@@ -138,25 +138,25 @@ export default {
     },
     //查询预约项目
     queryAppointName: function () {
-      this.selectUtils.queryProjectsIds("预约项目", 2, 1).then(response => {
+      this.$selectUtils.queryProjectsIds(this.$projectsType.appoint, this.$selectUtils.DropdownMenu).then(response => {
         this.appointNameArray.push(...response.data.data);
       })
     },
     //查询预约人
     queryInviter: function () {
-      this.selectUtils.queryEmpIds(2, 1).then(response => {
+      this.$selectUtils.queryEmpIds(this.$selectUtils.DropdownMenu).then(response => {
         this.inviterArray.push(...response.data.data);
       })
     },
     //查询礼服师
     queryAppointDress: function () {
-      this.selectUtils.queryDressIds(2, 1).then(response => {
+      this.$selectUtils.queryDressIds(this.$selectUtils.DropdownMenu).then(response => {
         this.appointDressArray.push(...response.data.data);
       })
     },
     //查询店铺
     queryAppointShop: function () {
-      this.selectUtils.queryShopIds(2, 1).then(response => {
+      this.$selectUtils.queryShopIds(this.$selectUtils.DropdownMenu).then(response => {
         this.appointShopArray.push(...response.data.data);
       })
     },

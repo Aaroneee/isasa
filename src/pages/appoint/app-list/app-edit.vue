@@ -192,7 +192,7 @@ export default {
 
 
     queryAppoint:function (){
-      this.axios({
+      this.$axios({
         method:"GET",
         url:"/appoint/queryAppointById",
         params:{
@@ -210,28 +210,28 @@ export default {
     },
     //查询预约人
     queryInviterIds:function (){
-      this.selectUtils.queryEmpIds(1,1).then(response=>{
+      this.$selectUtils.queryEmpIds(this.$selectUtils.picker).then(response=>{
         this.inviterArray=response.data.data
         this.inviterText=this.inviterArray.find(k=>k.id===this.appoint.inviter).text;
       })
     },
     //查询预约项目
     queryProjectsIds:function (){
-      this.selectUtils.queryProjectsIds("预约项目",1,1).then(response=>{
+      this.$selectUtils.queryProjectsIds(this.$projectsType.appoint,this.$selectUtils.picker).then(response=>{
         this.appointNameArray=response.data.data
         this.appointNameText=this.appointNameArray.find(k=>k.id===this.appoint.appointName).text;
       })
     },
     //查询店铺
     queryShopIds:function (){
-      this.selectUtils.queryShopIds(1,1).then(response=>{
+      this.$selectUtils.queryShopIds(this.$selectUtils.picker).then(response=>{
         this.appointShopArray=response.data.data;
         this.appointShopText=this.appointShopArray.find(k=>k.id===this.appoint.appointShop).text;
       })
     },
     //根据店铺查询城市
     queryCityByShopIds:function (id){
-      this.selectUtils.queryCityByShopIds(id).then(response=>{
+      this.$selectUtils.queryCityByShopIds(id).then(response=>{
         this.appoint.appointCity=response.data.msg
       })
     },

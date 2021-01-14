@@ -106,6 +106,7 @@ export default {
   name: "cus-edit",
   data(){
     return{
+      tenantCrop:localStorage.getItem("tenantCrop"),
       id:this.$route.query.cusId,
       customer:{},
 
@@ -169,12 +170,12 @@ export default {
       values.id=this.id;
       values.source = this.source;
       values.service = this.service;
-      values.tenantCrop = 1;
+      values.tenantCrop = this.tenantCrop;
       this.$dialog.confirm({
         title: '修改客资',
         message: '是否确认修改该条客资?',
       }).then(() => {
-        this.axios({
+        this.$axios({
           method:"PUT",
           url:"/customer/updateCustomer",
           params:values
@@ -186,14 +187,7 @@ export default {
     },
     //查询渠道
     querySourceColumns: function () {
-      this.axios({
-        method: "GET",
-        url: "/select/sourceIds",
-        params: {
-          type:1,
-          tenantCrop: 1
-        }
-      }).then(response => {
+      this.$selectUtils.querySourceIds(this.$selectUtils.picker).then(response=>{
         if (response.data.code !== 200){
           this.$toast.fail(response.data.msg);
           return;
@@ -202,18 +196,11 @@ export default {
         let value=this.sourceColumns.find(k=>k.id===this.customer.source);
         this.sourceText=value.text;
         this.source=value.id;
-      })
+      });
     },
     //查询客服
     queryServiceColumns: function () {
-      this.axios({
-        method: "GET",
-        url: "/select/serviceIds",
-        params: {
-          type:1,
-          tenantCrop: 1
-        }
-      }).then(response => {
+      this.$selectUtils.queryServiceIds(this.$selectUtils.picker).then(response=>{
         if (response.data.code !== 200) {
           this.$toast.fail(response.data.msg);
           return;
@@ -222,7 +209,6 @@ export default {
         let value=this.serviceColumns.find(k=>k.id===this.customer.service);
         this.serviceText=value.text;
         this.service=value.id;
-
       })
     },
   }
