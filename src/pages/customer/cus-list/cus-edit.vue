@@ -187,7 +187,7 @@ export default {
     },
     //查询渠道
     querySourceColumns: function () {
-      this.$selectUtils.querySourceIds(this.$selectUtils.picker).then(response=>{
+      this.$selectUtils.querySourceIds(this.$selectUtils.Picker).then(response=>{
         if (response.data.code !== 200){
           this.$toast.fail(response.data.msg);
           return;
@@ -200,7 +200,7 @@ export default {
     },
     //查询客服
     queryServiceColumns: function () {
-      this.$selectUtils.queryServiceIds(this.$selectUtils.picker).then(response=>{
+      this.$selectUtils.queryServiceIds(this.$selectUtils.Picker).then(response=>{
         if (response.data.code !== 200) {
           this.$toast.fail(response.data.msg);
           return;

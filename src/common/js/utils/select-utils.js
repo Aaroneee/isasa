@@ -1,13 +1,13 @@
 import self from "@/main";
 
-//1.Vant-picker
-//2.Vant-DropdownMenu
+//1.Vant-picker  {text,id}
+//2.Vant-DropdownMenu {text,value}
 
 export default {
     tenantCrop:localStorage.getItem("tenantCrop"),
 
-    picker: 1,
-    DropdownMenu: 2,
+    Picker: 1,
+    DropDownMenu: 2,
     //渠道
     querySourceIds: function (type) {
         return self.$axios({
@@ -95,13 +95,26 @@ export default {
             }
         })
     },
-    //查询礼服师
+    //礼服师
     queryDressIds: function (type) {
         return self.$axios({
             method: "GET",
             url: "/select/dressIds",
             params: {
                 type: type,
+                tenantCrop:  this.tenantCrop,
+            }
+        })
+    },
+    //根据店铺ID查询房间
+    queryRoomIdsByShopId:function (shopId,type){
+        return self.$axios({
+            method: "GET",
+            url: "/select/roomIdsByShopId",
+            params: {
+                type: type,
+                shopId:shopId,
+
                 tenantCrop:  this.tenantCrop,
             }
         })

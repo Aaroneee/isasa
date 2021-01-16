@@ -259,19 +259,19 @@ export default {
 
     //查询预约人
     queryInviterIds:function (){
-      this.$selectUtils.queryEmpIds(this.$selectUtils.picker).then(response=>{
+      this.$selectUtils.queryEmpIds(this.$selectUtils.Picker).then(response=>{
         this.inviterArray=response.data.data
       })
     },
     //查询预约项目
     queryProjectsIds:function (){
-      this.$selectUtils.queryProjectsIds(this.$projectsType.appoint,this.$selectUtils.picker).then(response=>{
+      this.$selectUtils.queryProjectsIds(this.$projectsType.appoint,this.$selectUtils.Picker).then(response=>{
         this.appointNameArray=response.data.data
       })
     },
     //查询店铺
     queryShopIds:function (){
-      this.$selectUtils.queryShopIds(this.$selectUtils.picker).then(response=>{
+      this.$selectUtils.queryShopIds(this.$selectUtils.Picker).then(response=>{
         this.appointShopArray=response.data.data
       })
     },

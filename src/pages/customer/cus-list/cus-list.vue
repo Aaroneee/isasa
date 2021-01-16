@@ -130,7 +130,7 @@ export default {
     },
     //查询渠道
     querySourceIds:function (){
-      this.$selectUtils.querySourceIds(this.$selectUtils.DropdownMenu).then(response => {
+      this.$selectUtils.querySourceIds(this.$selectUtils.DropDownMenu).then(response => {
         if (response.data.code === 200) {
           this.sourceArray.push(...response.data.data);
         } else {
@@ -140,7 +140,7 @@ export default {
     },
     //查询意愿
     queryGradeIds:function (){
-      this.$selectUtils.queryGradeIds(this.$selectUtils.DropdownMenu).then(response => {
+      this.$selectUtils.queryGradeIds(this.$selectUtils.DropDownMenu).then(response => {
         if (response.data.code === 200) {
           this.gradeArray.push(...response.data.data);
         } else {
@@ -150,7 +150,7 @@ export default {
     },
     //查询状态
     queryStateIds:function (){
-      this.$selectUtils.queryStateIds(this.$selectUtils.DropdownMenu).then(response => {
+      this.$selectUtils.queryStateIds(this.$selectUtils.DropDownMenu).then(response => {
         if (response.data.code === 200) {
           this.stateArray.push(...response.data.data);
         } else {
@@ -160,7 +160,7 @@ export default {
     },
     //查询客服
     queryServiceIds:function (){
-      this.$selectUtils.queryServiceIds(this.$selectUtils.DropdownMenu).then(response => {
+      this.$selectUtils.queryServiceIds(this.$selectUtils.DropDownMenu).then(response => {
         if (response.data.code === 200) {
           this.serviceArray.push(...response.data.data);
         } else {
