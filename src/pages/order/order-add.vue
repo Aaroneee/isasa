@@ -312,7 +312,7 @@ export default {
     addAppointSubmit: function (value) {
       value.cusId = this.appointVo.cusId;
       value.appId = this.appointVo.id;
-      value.orderName = this.orderPrice;
+      value.orderName = this.orderName;
       value.orderDress = this.orderDress;
       value.proceedsName = this.proceedsName;
       value.payment = this.payment;
@@ -334,7 +334,11 @@ export default {
             return
           }
           this.$toast.success("订单添加成功!")
-          //todo 转到订单列表
+          this.$dialog.confirm({
+            message: '是否确认跳转到订单列表?',
+          }).then(() => {
+            this.$router.push({name:"orderList"})
+          })
         })
       })
 
