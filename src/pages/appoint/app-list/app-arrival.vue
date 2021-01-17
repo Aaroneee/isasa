@@ -144,7 +144,7 @@ export default {
       this.$selectUtils.queryDressIds(
           this.$selectUtils.Picker
       ).then(response => {
-        this.appointDressArray=response.data.data;
+        this.appointDressArray=JSON.parse(response.data.data);
         this.appointDressText=this.appointDressArray.find(k=>k.id===this.appoint.appointDress).text;
       })
     },
@@ -162,7 +162,7 @@ export default {
           this.$toast.fail("此店铺无试纱间,请先添加试纱间");
           return;
         }
-        this.roomArray=response.data.data;
+        this.roomArray=JSON.parse(response.data.data);
         this.roomText=this.roomArray.find(k=>k.id===this.appoint.room).text;
       })
     }

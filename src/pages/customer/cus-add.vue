@@ -190,13 +190,13 @@ export default {
     //查询渠道
     querySourceColumns: function (){
       this.$selectUtils.querySourceIds(this.$selectUtils.Picker).then(response=>{
-        this.sourceColumns=response.data.data;
+        this.sourceColumns=JSON.parse(response.data.data);
       })
     },
     //查询客服
     queryServiceColumns: function () {
       this.$selectUtils.queryServiceIds(this.$selectUtils.Picker).then(response=>{
-        this.serviceColumns=response.data.data;
+        this.serviceColumns=JSON.parse(response.data.data);
       })
     },
   }

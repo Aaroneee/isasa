@@ -4,7 +4,7 @@ import self from "@/main";
 //2.Vant-DropdownMenu {text,value}
 
 export default {
-    tenantCrop:localStorage.getItem("tenantCrop"),
+    tenantCrop: localStorage.getItem("tenantCrop"),
 
     Picker: 1,
     DropDownMenu: 2,
@@ -26,7 +26,7 @@ export default {
             url: "/select/gradeIds",
             params: {
                 type: type,
-                tenantCrop:  this.tenantCrop,
+                tenantCrop: this.tenantCrop,
             }
         })
     },
@@ -46,7 +46,7 @@ export default {
             method: "GET",
             url: "/select/serviceIds",
             params: {
-                tenantCrop:  this.tenantCrop,
+                tenantCrop: this.tenantCrop,
                 type: type,
             }
         })
@@ -57,7 +57,7 @@ export default {
             method: "GET",
             url: "/select/empIds",
             params: {
-                tenantCrop:  this.tenantCrop,
+                tenantCrop: this.tenantCrop,
                 type: type,
             }
         })
@@ -68,7 +68,7 @@ export default {
             method: "GET",
             url: "/select/projectsIds",
             params: {
-                tenantCrop:  this.tenantCrop,
+                tenantCrop: this.tenantCrop,
                 type: type,
                 projectsType: projectType,
             }
@@ -80,7 +80,7 @@ export default {
             method: "GET",
             url: "/select/shopIds",
             params: {
-                tenantCrop:  this.tenantCrop,
+                tenantCrop: this.tenantCrop,
                 type: type,
             }
         })
@@ -102,20 +102,42 @@ export default {
             url: "/select/dressIds",
             params: {
                 type: type,
-                tenantCrop:  this.tenantCrop,
+                tenantCrop: this.tenantCrop,
             }
         })
     },
     //根据店铺ID查询房间
-    queryRoomIdsByShopId:function (shopId,type){
+    queryRoomIdsByShopId: function (shopId, type) {
         return self.$axios({
             method: "GET",
             url: "/select/roomIdsByShopId",
             params: {
                 type: type,
-                shopId:shopId,
+                shopId: shopId,
 
-                tenantCrop:  this.tenantCrop,
+                tenantCrop: this.tenantCrop,
+            }
+        })
+    },
+    //收款方式   //可以参考订单添加
+    queryPaymentIds: function (type) {
+        return self.$axios({
+            method: "GET",
+            url: "/select/paymentIds",
+            params: {
+                type: type,
+                tenantCrop: this.tenantCrop,
+            }
+        })
+    },
+    //收款人
+    queryPayeeIds:function (type){
+        return self.$axios({
+            method: "GET",
+            url: "/select/payeeIds",
+            params: {
+                type: type,
+                tenantCrop: this.tenantCrop,
             }
         })
     },

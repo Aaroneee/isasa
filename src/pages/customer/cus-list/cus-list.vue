@@ -132,7 +132,7 @@ export default {
     querySourceIds:function (){
       this.$selectUtils.querySourceIds(this.$selectUtils.DropDownMenu).then(response => {
         if (response.data.code === 200) {
-          this.sourceArray.push(...response.data.data);
+          this.sourceArray.push(...JSON.parse(response.data.data));
         } else {
           self.$toast.fail(response.data.msg);
         }
@@ -142,7 +142,7 @@ export default {
     queryGradeIds:function (){
       this.$selectUtils.queryGradeIds(this.$selectUtils.DropDownMenu).then(response => {
         if (response.data.code === 200) {
-          this.gradeArray.push(...response.data.data);
+          this.gradeArray.push(...JSON.parse(response.data.data));
         } else {
           self.$toast.fail(response.data.msg);
         }
@@ -152,7 +152,7 @@ export default {
     queryStateIds:function (){
       this.$selectUtils.queryStateIds(this.$selectUtils.DropDownMenu).then(response => {
         if (response.data.code === 200) {
-          this.stateArray.push(...response.data.data);
+          this.stateArray.push(...JSON.parse(response.data.data));
         } else {
           self.$toast.fail(response.data.msg);
         }
@@ -162,7 +162,7 @@ export default {
     queryServiceIds:function (){
       this.$selectUtils.queryServiceIds(this.$selectUtils.DropDownMenu).then(response => {
         if (response.data.code === 200) {
-          this.serviceArray.push(...response.data.data);
+          this.serviceArray.push(...JSON.parse(response.data.data));
         } else {
           self.$toast.fail(response.data.msg);
         }

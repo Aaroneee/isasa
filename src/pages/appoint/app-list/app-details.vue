@@ -74,7 +74,7 @@ export default {
       this.$router.push({name:"appArrival",query:{id:this.$route.query.id}})
     },
     openOrderAdd:function (){
-
+      this.$router.push({name:"orderAdd", query:{appointVo:this.appointVo}});
     },
   }
 }

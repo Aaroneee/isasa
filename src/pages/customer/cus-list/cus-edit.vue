@@ -131,7 +131,7 @@ export default {
   methods:{
     //根据客资Id查询客资
     queryCustomerById:function (){
-      this.axios({
+      this.$axios({
         method:"GET",
         url:"/customer/queryCustomerById",
         params:{
@@ -192,7 +192,7 @@ export default {
           this.$toast.fail(response.data.msg);
           return;
         }
-        this.sourceColumns = response.data.data;
+        this.sourceColumns = JSON.parse(response.data.data);
         let value=this.sourceColumns.find(k=>k.id===this.customer.source);
         this.sourceText=value.text;
         this.source=value.id;
@@ -205,7 +205,7 @@ export default {
           this.$toast.fail(response.data.msg);
           return;
         }
-        this.serviceColumns = response.data.data;
+        this.serviceColumns = JSON.parse(response.data.data);
         let value=this.serviceColumns.find(k=>k.id===this.customer.service);
         this.serviceText=value.text;
         this.service=value.id;

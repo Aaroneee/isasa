@@ -260,25 +260,25 @@ export default {
     //查询预约人
     queryInviterIds:function (){
       this.$selectUtils.queryEmpIds(this.$selectUtils.Picker).then(response=>{
-        this.inviterArray=response.data.data
+        this.inviterArray=JSON.parse(response.data.data);
       })
     },
     //查询预约项目
     queryProjectsIds:function (){
       this.$selectUtils.queryProjectsIds(this.$projectsType.appoint,this.$selectUtils.Picker).then(response=>{
-        this.appointNameArray=response.data.data
+        this.appointNameArray=JSON.parse(response.data.data);
       })
     },
     //查询店铺
     queryShopIds:function (){
       this.$selectUtils.queryShopIds(this.$selectUtils.Picker).then(response=>{
-        this.appointShopArray=response.data.data
+        this.appointShopArray=JSON.parse(response.data.data);
       })
     },
     //根据店铺查询城市
     queryCityByShopIds:function (id){
       this.$selectUtils.queryCityByShopIds(id).then(response=>{
-        this.appointCity=response.data.msg
+        this.appointCity=JSON.parse(response.data.msg);
       })
     },
   }
