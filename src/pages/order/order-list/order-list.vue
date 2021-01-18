@@ -83,7 +83,7 @@ export default {
       this.createDateShow=false;
     },
     clickItem:function (id){
-      console.log(id)
+      this.$router.push({name:"orderDetails",query:{id:id}})
     },
 
 
