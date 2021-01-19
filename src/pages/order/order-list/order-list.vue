@@ -45,7 +45,7 @@
             </div>
             <br>
             <van-row>
-              <van-col span="8" offset="3" style="text-align: center;color: darkgreen" @click="proceedsAdd(item.id)">添加收款</van-col>
+              <van-col span="8" offset="3" style="text-align: center;color: darkgreen" @click="proceedsAdd(item)">添加收款</van-col>
               <van-col span="8" offset="1" style="text-align: center">添加收款</van-col>
             </van-row>
           </van-cell>
@@ -94,8 +94,16 @@ export default {
       this.$router.push({name:"orderDetails",query:{id:id}})
     },
     //点击增加收款
-    proceedsAdd:function (id){
-      this.$router.push({name:"proceedsAdd",query:{id:id}})
+    proceedsAdd:function (item){
+      this.$router.push({
+        name:"proceedsAdd",
+        query:{
+          id:item.id,
+          cusId:item.cusId,
+          orderPrice:item.orderPrice,
+          spareMoney:item.spareMoney
+        }
+      })
     },
 
 
@@ -112,6 +120,7 @@ export default {
         }
       }).then(response=>{
         this.orderList=response.data.data.list;
+        console.log(this.orderList)
         this.finished=true;
       })
     },
