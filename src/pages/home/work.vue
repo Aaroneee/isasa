@@ -16,6 +16,7 @@ export default {
         {id: 2, name: "添加客资", link: 'cusAdd',icon:"add"},
         {id: 3, name: "预约列表", link: 'appList',icon:"friends"},
         {id: 4, name: "订单列表", link: 'orderList',icon:"orders-o"},
+        {id: 5, name: "收款列表", link: 'proceedsList',icon:"balance-list"},
       ]
     }
   },

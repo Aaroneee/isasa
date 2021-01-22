@@ -3,8 +3,8 @@
     <!--    顶部 以及收款记录-->
     <div>
       <switchNavBar title="添加收款" switchText="历史收款" @flag="proceedsHistoryShow=true"/>
-      <van-popup v-model="proceedsHistoryShow" round position="bottom" :style="{ height: '30%' }">
-        <van-collapse v-model="activeNames">
+      <van-popup v-model="proceedsHistoryShow" round position="bottom" :style="{ height: '60%' }">
+        <van-collapse v-model="activeNames" style="padding:4% 4% 4% 4%">
           <van-collapse-item v-for="item in proceedsHistoryArray" :key="item.id"
                              :title="item.createDate+'\u3000\u3000'+item.proceedsName+'\u3000\u3000'+item.payee"
                              :name="item.id">

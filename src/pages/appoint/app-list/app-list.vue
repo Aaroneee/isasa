@@ -1,19 +1,19 @@
 <template>
   <div>
     <van-sticky>
-      <switchNavBar title="预约列表" switchText="日期" @flag="createDateOpen"/>
+      <switchNavBar title="预约列表" switchText="日期" @flag="createDateShow=true"/>
       <van-search
           @search="queryAppList"
           v-model="searchValue"
           placeholder="请输入搜索关键词"/>
       <van-calendar safe-area-inset-bottom v-model="createDateShow" type="range" @confirm="createDateOnConfirm"/>
       <van-dropdown-menu>
-        <van-dropdown-item :title="appointNameText" v-model="appointName" @change="appointNameChange"
+        <van-dropdown-item  v-model="appointName" @change="appointNameChange"
                            :options="appointNameArray"/>
-        <van-dropdown-item :title="inviterText" v-model="inviter" @change="inviterChange" :options="inviterArray"/>
-        <van-dropdown-item :title="appointDressText" v-model="appointDress" @change="appointDressChange"
+        <van-dropdown-item v-model="inviter" @change="inviterChange" :options="inviterArray"/>
+        <van-dropdown-item v-model="appointDress" @change="appointDressChange"
                            :options="appointDressArray"/>
-        <van-dropdown-item :title="appointShopText" v-model="appointShop" @change="appointShopChange"
+        <van-dropdown-item v-model="appointShop" @change="appointShopChange"
                            :options="appointShopArray"/>
       </van-dropdown-menu>
     </van-sticky>
@@ -56,24 +56,16 @@ export default {
       finished: false,
 
       createDateShow: false,
-      createDate: "日期",
-
-      appointNameText: "",
-      appointName: "",
       appointNameArray: [{text: "项目", value: ""}],
-
-      inviterText: "",
-      inviter: "",
       inviterArray: [{text: "预约人", value: ""}],
-
-      appointDressText: "",
-      appointDress: "",
       appointDressArray: [{text: "礼服师", value: ""}],
-
-      appointShopText: "",
-      appointShop: "",
       appointShopArray: [{text: "店铺", value: ""}],
 
+      createDate: "日期",
+      appointName: "",
+      inviter: "",
+      appointDress: "",
+      appointShop: "",
       state: "",
 
     }
@@ -87,10 +79,6 @@ export default {
     this.queryAppointShop();
   },
   methods: {
-    //打开日历
-    createDateOpen: function (flag) {
-      this.createDateShow = flag;
-    },
     //日历确认
     createDateOnConfirm: function (time) {
       this.createDate = this.$dateUtils.rangeVantDateToYMD(time);

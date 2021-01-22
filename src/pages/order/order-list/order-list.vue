@@ -2,7 +2,7 @@
   <div>
     <div>
       <van-sticky>
-        <switchNavBar title="订单列表" switchText="日期" @flag="createDateOpen"/>
+        <switchNavBar title="订单列表" switchText="日期" @flag="createDateShow=true"/>
         <van-search
             @search="queryOrderList"
             v-model="searchValue"
@@ -79,10 +79,6 @@ export default {
     this.queryOrderList();
   },
   methods:{
-    //打开日期选择
-    createDateOpen:function (flag){
-      this.createDateShow=flag;
-    },
     //时间确认
     createDateOnConfirm:function (time){
       this.createDate = this.$dateUtils.rangeVantDateToYMD(time);
@@ -120,7 +116,6 @@ export default {
         }
       }).then(response=>{
         this.orderList=response.data.data.list;
-        console.log(this.orderList)
         this.finished=true;
       })
     },
