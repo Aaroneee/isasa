@@ -90,7 +90,7 @@ export default {
     },
     //点击每个Item
     clickItem:function (id){
-
+      this.$router.push({name:"proceedsDetails",query:{id:id}})
     },
 
     //搜索收款

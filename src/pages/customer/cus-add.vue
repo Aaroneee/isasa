@@ -31,6 +31,7 @@
           placeholder="客户所在城市"
       />
       <van-field
+          readonly
           name="source"
           :value="sourceText"
           label="来源渠道"
@@ -73,6 +74,7 @@
           placeholder="婚礼地点"
       />
       <van-field
+          readonly
           name="service"
           :value="serviceText"
           label="客服"

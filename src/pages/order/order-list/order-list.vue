@@ -45,8 +45,7 @@
             </div>
             <br>
             <van-row>
-              <van-col span="8" offset="3" style="text-align: center;color: darkgreen" @click="proceedsAdd(item)">添加收款</van-col>
-              <van-col span="8" offset="1" style="text-align: center">添加收款</van-col>
+              <van-col span="8" offset="8" style="text-align: center;color: #008000" @click="proceedsAdd(item)">添加收款</van-col>
             </van-row>
           </van-cell>
         </van-list>
