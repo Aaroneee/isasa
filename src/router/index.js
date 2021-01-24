@@ -6,6 +6,7 @@ import customer from "./customer"//客资
 import appoint from "./appoint"//预约
 import order from "./order"//订单
 import proceeds from "./proceeds"//收款
+import clothes from "@/router/clothes";
 
 
 // import login from '../pages/login/login'//首页
@@ -21,5 +22,6 @@ export default new Router({
         ...appoint,
         ...order,
         ...proceeds,
+        ...clothes,
     ]
 })

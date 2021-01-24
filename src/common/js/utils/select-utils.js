@@ -131,7 +131,7 @@ export default {
         })
     },
     //收款人
-    queryPayeeIds:function (type){
+    queryPayeeIds: function (type) {
         return self.$axios({
             method: "GET",
             url: "/select/payeeIds",
@@ -141,5 +141,15 @@ export default {
             }
         })
     },
+    queryStyleIds: function (type) {
+        return self.$axios({
+            method: "GET",
+            url: "/select/styleTypeIds",
+            params: {
+                type: type,
+                tenantCrop: this.tenantCrop
+            }
+        })
+    }
 
 }
