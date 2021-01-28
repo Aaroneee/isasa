@@ -1,10 +1,16 @@
 <template>
   <div>
-    <baseNavBar title="款式添加"/>
-    <van-form scroll-to-error @submit="addStyleSubmit">
+    <baseNavBar title="款式修改"/>
+    <van-form scroll-to-error @submit="updateStyleSubmit">
+      <van-field
+          name="id"
+          :value="style.id"
+          readonly
+          type="hidden"
+      />
       <van-field
           name="styleType"
-          :value="styleTypeText"
+          :value="style.typeName"
           label="款式类型"
           placeholder="点击选择款式类型"
           readonly
@@ -23,7 +29,7 @@
 
       <van-field
           name="styleName"
-          :value="styleNameText"
+          v-model = "style.styleName"
           readonly
           label="款式名称"
           placeholder="查询款式名称"
@@ -35,7 +41,7 @@
           readonly
           clickable
           name="purchaseDate"
-          :value="purchaseDate"
+          :value="style.purchaseDate"
           label="采购日期"
           placeholder="点击选择采购日期"
           @click="createDateShowPicker = true"
@@ -45,7 +51,7 @@
       <van-field
           class="msg"
           name="styleFit"
-          v-model="styleFit"
+          v-model="style.styleFit"
           rows="1"
           autosize
           label="适合身形"
@@ -55,7 +61,7 @@
       <van-field
           class="msg"
           name="styleNoFit"
-          v-model="styleNoFit"
+          v-model="style.styleNoFit"
           rows="1"
           autosize
           label="不适合身形"
@@ -65,19 +71,19 @@
       <van-field
           class="msg"
           name="factoryName"
-          v-model="factoryName"
+          v-model="style.factoryName"
           rows="1"
           autosize
           label="工厂来源"
           type="textarea"
           placeholder="请输入工厂来源"
       />
-          <van-button
-              color="linear-gradient(to right, #50E64D, #03B300)"
-              class="bottom-button"
-              round block type="primary"
-              native-type="submit">提交
-          </van-button>
+      <van-button
+          color="linear-gradient(to right, #50E64D, #03B300)"
+          class="bottom-button"
+          round block type="primary"
+          native-type="submit">提交
+      </van-button>
     </van-form>
   </div>
 </template>
@@ -86,36 +92,20 @@
 import baseNavBar from '@/components/nav-bar/base-nav-bar'
 
 export default {
-  name: "styleAdd",
+  name: "styleEdit",
   data() {
     return {
       //款式id
-      styleType: "",
-      //款式文字显示
-      styleTypeText: "",
-      //款式可选数组
+      style: {},
+      tenantCrop:localStorage.getItem("tenantCrop"),
       styleColumnsArray: [],
-      //款式下拉是否展示
       styleShowPicker: false,
-      //款式名称id
-      //款式名称文字显示
-      styleName: "",
-      styleNameText: "",
-      tenantCrop: localStorage.getItem("tenantCrop"),
-      //创建日期
-      purchaseDate: "",
-      //日期选择框展示
       createDateShowPicker: false,
-      //适合身形
-      styleFit: "",
-      //不适合身形
-      styleNoFit: "",
-      //工厂信息
-      factoryName: "",
-
     }
   },
   created() {
+    this.style = this.$route.query
+    this.styleType = this.$route.query.styleType
     this.queryStyleIds()
   },
   components: {
@@ -129,7 +119,7 @@ export default {
     }
     , styleOnConfirm: function (value) {
       this.styleType = value.id
-      this.styleTypeText = value.text
+      this.style.typeName = value.text
       this.styleShowPicker = false
       this.queryStyleName(value.id).then((response) => {
         var name = response.data.data + "";
@@ -158,17 +148,18 @@ export default {
         }
       })
     }
-    , addStyleSubmit(data) {
+    , updateStyleSubmit(data) {
       data.styleType = this.styleType
+      data.tenantCrop = this.tenantCrop
       console.log(data)
       this.$dialog.confirm({
-        title: '添加款式',
-        message: '确定要添加该款式吗？',
+        title: '修改款式',
+        message: '确定要修改该款式吗？',
       }).then(() => {
         data.tenantCrop = this.tenantCrop
         this.$axios({
-          method: "POST",
-          url: "/style/saveStyle",
+          method: "PUT",
+          url: "/style/editStyle",
           params: data
         }).then((response) => {
           if (response.data.code === 200) {
@@ -176,7 +167,7 @@ export default {
               title: '添加成功',
               message: '是否跳转款式列表查看?',
             }).then(() => {
-              this.$router.replace({name: "clothesList"})
+              this.$router.replace({name:"styleList"})
             })
           } else {
             this.$toast.fail(response.data.msg);
@@ -186,7 +177,7 @@ export default {
 
     }
     , createDateOnConfirm: function (time) {
-      this.purchaseDate = this.$dateUtils.vantDateToYMD(time);
+      this.style.purchaseDate = this.$dateUtils.vantDateToYMD(time);
       this.createDateShowPicker = false;
 
     },
