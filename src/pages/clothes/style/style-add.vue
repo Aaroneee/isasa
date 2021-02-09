@@ -72,12 +72,12 @@
           type="textarea"
           placeholder="请输入工厂来源"
       />
-          <van-button
-              color="linear-gradient(to right, #50E64D, #03B300)"
-              class="bottom-button"
-              round block type="primary"
-              native-type="submit">提交
-          </van-button>
+      <van-button
+          color="linear-gradient(to right, #50E64D, #03B300)"
+          class="bottom-button"
+          round block type="primary"
+          native-type="submit">提交
+      </van-button>
     </van-form>
   </div>
 </template>
@@ -124,7 +124,7 @@ export default {
   methods: {
     queryStyleIds: function () {
       this.$selectUtils.queryStyleIds(this.$selectUtils.Picker).then(response => {
-        this.styleColumnsArray = JSON.parse(response.data.data);
+        this.styleColumnsArray = JSON.parse(response.data.data)
       })
     }
     , styleOnConfirm: function (value) {
@@ -176,7 +176,7 @@ export default {
               title: '添加成功',
               message: '是否跳转款式列表查看?',
             }).then(() => {
-              this.$router.replace({name: "clothesList"})
+              this.$router.replace({name: "styleList"})
             })
           } else {
             this.$toast.fail(response.data.msg);

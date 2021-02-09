@@ -113,7 +113,7 @@ export default {
       console.log(value)
     }
     , addClothes(value) {
-      console.log(value)
+      this.$router.push({name: "clothesAdd", query: value})
     }
   }
 }

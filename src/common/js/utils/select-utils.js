@@ -95,6 +95,18 @@ export default {
             }
         })
     },
+    //根据店铺查询位置
+    queryPositionIdsByShop:function (shopId,type){
+        return self.$axios({
+            method: "GET",
+            url: "/select/positionIdsByShopId",
+            params: {
+                type:type,
+                shopId: shopId,
+                tenantCrop:this.tenantCrop
+            }
+        })
+    },
     //礼服师
     queryDressIds: function (type) {
         return self.$axios({
