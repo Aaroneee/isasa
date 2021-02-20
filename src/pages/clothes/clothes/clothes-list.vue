@@ -9,8 +9,8 @@
       <van-dropdown-menu>
         <van-dropdown-item v-model="styleType" @change="styleTypeChange" :options="styleTypeArray"/>
         <van-dropdown-item v-model="clothesSize" @change="clothesSizeChange" :options="clothesSizeArray"/>
-        <!--        <van-dropdown-item :title="stateText" v-model="state" @change="stateChange" :options="stateArray"/>-->
-        <!--        <van-dropdown-item :title="serviceText" v-model="service" @change="serviceChange" :options="serviceArray" />-->
+        <van-dropdown-item v-model="shop" @change="shopChange" :options="shopArray"/>
+        <van-dropdown-item v-model="position" @change="positionChange" :options="positionArray"/>
       </van-dropdown-menu>
     </van-sticky>
     <div>
@@ -56,18 +56,19 @@ export default {
   created() {
     this.queryClothesList()
     this.queryStyleType()
+    this.queryShopIds()
   },
   data() {
     return {
       tenantCrop: localStorage.getItem("tenantCrop"),
       clothesNo: "",
       styleType: "",
-      styleTypeArray: [{text: "款式类型", value: ""}],
+      styleTypeArray: [{text: "款式", value: ""}],
       loading: false,
       finished: false,
       clothesList: [],
       clothesSize: "",
-      clothesSizeArray: [{text: "婚纱尺寸", value: ''}
+      clothesSizeArray: [{text: "尺寸", value: ''}
         , {text: "M", value: "M"}
         , {text: "S", value: "S"}
         , {text: "L", value: "L"}
@@ -75,7 +76,10 @@ export default {
         , {text: "XXL", value: "XXL"}
         , {text: "F", value: "F"}
       ],
-
+      shop: "",
+      shopArray: [{text: "店铺", value: ""}],
+      position: "",
+      positionArray: [],
     }
   },
   components: {
@@ -106,6 +110,14 @@ export default {
       this.styleType = type
       this.queryClothesList()
     }
+    , shopChange: function (shop) {
+      this.shop = shop
+      console.log(shop)
+      this.queryClothesList()
+    },
+    positionChange: function (value) {
+      console.log(value)
+    }
     , clothesSizeChange: function (size) {
       this.clothesSize = size
       this.queryClothesList()
@@ -117,6 +129,11 @@ export default {
       this.$selectUtils.queryStyleIds(this.$selectUtils.DropDownMenu).then((response) => {
         this.styleTypeArray.push(...JSON.parse(response.data.data));
         console.log(response)
+      })
+    }
+    , queryShopIds: function () {
+      this.$selectUtils.queryShopIds(this.$selectUtils.DropDownMenu).then(response => {
+        this.shopArray.push(...JSON.parse(response.data.data))
       })
     }
   }
