@@ -21,7 +21,7 @@
         <van-cell v-for="item in clothesList" :key="item.id">
           <van-grid :border="false" :column-num="2" :gutter="1">
             <van-grid-item v-if="item[0] != null">
-              <van-image src="https://www.ivorybai.com:443/clothes/a9b3603e5229241ce30ba8b545d3c325.jpg">
+              <van-image radius="7" src="https://www.ivorybai.com:443/clothes/a9b3603e5229241ce30ba8b545d3c325.jpg">
                 <template v-slot:loading>
                   <van-loading type="spinner" size="20"/>
                 </template>
@@ -32,7 +32,7 @@
             </van-grid-item>
 
             <van-grid-item v-if="item[1] != null">
-              <van-image src="https://www.ivorybai.com:443/clothes/a9b3603e5229241ce30ba8b545d3c325.jpg">
+              <van-image radius="7" src="https://www.ivorybai.com:443/clothes/a9b3603e5229241ce30ba8b545d3c325.jpg">
                 <template v-slot:loading>
                   <van-loading type="spinner" size="20"/>
                 </template>

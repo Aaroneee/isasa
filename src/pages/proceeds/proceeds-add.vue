@@ -204,8 +204,7 @@ export default {
         this.payment = this.paymentArray.find(k => k.text === value[0]).id;
       } else {
         this.paymentText = value[1];
-        let children = this.paymentArray.find(k => k.text === value[0]).children;
-        this.payment = children.find(k => k.text === value[1]).id;
+        this.payment = this.paymentArray.find(k => k.text === value[0]).children.find(k => k.text === value[1]).id;
       }
       this.paymentPicker = false;
     },

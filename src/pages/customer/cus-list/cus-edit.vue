@@ -31,6 +31,7 @@
           placeholder="客户所在城市"
       />
       <van-field
+          readonly
           name="source"
           :value="sourceText"
           label="来源渠道"
@@ -38,12 +39,13 @@
           @click="sourceShowPicker = true"
           :rules="[{ required: true}]"
       />
-      <van-popup v-model="sourceShowPicker" round position="bottom">
+      <van-popup v-model="sourceShowPicker" round position="bottom" :lazy-render="false" @open="sourceClick">
         <van-picker
             show-toolbar
             :columns="sourceColumns"
             @confirm="sourceOnConfirm"
             @cancel="sourceShowPicker = false"
+            ref="sourceDefault"
         />
       </van-popup>
       <van-field
@@ -72,6 +74,7 @@
           placeholder="婚礼地点"
       />
       <van-field
+          readonly
           name="service"
           :value="serviceText"
           label="客服"
@@ -151,13 +154,34 @@ export default {
     },
     //渠道Picker确认
     sourceOnConfirm:function (value){
-      this.sourceText = value.text;
-      this.source = value.id;
+      if (value[1]===""){
+        this.sourceText = value[0];
+        this.source = this.sourceColumns.find(k=>k.text===value[0]).id;
+      }else {
+        this.sourceText = value[1];
+        this.source = this.sourceColumns.find(k=>k.text===value[0]).children.find(k=>k.text===value[1]).id;
+      }
       this.sourceShowPicker = false;
+    },
+    //source默认选中
+    sourceClick:function (){
+      this.sourceColumns.forEach(va=>{
+        if (va.id===this.customer.source){
+          this.$refs.sourceDefault.setColumnValue(0,va.text);
+          return;
+        }
+        for (let chili of va.children){
+          if (chili.id===this.customer.source){
+            this.$refs.sourceDefault.setColumnValue(0,va.text);
+            this.$refs.sourceDefault.setColumnValue(1,chili.text);
+            return;
+          }
+        }
+      })
     },
     //交接日期确认
     createDateOnConfirm:function (time){
-      this.createDate = this.dateUtils.vantDateToYMD(time);
+      this.createDate = this.$dateUtils.vantDateToYMD(time);
       this.createDateShowPicker = false;
     },
     //客服Picker确认
@@ -192,10 +216,29 @@ export default {
           this.$toast.fail(response.data.msg);
           return;
         }
-        this.sourceColumns = JSON.parse(response.data.data);
-        let value=this.sourceColumns.find(k=>k.id===this.customer.source);
-        this.sourceText=value.text;
-        this.source=value.id;
+        this.sourceColumns = JSON.parse(JSON.parse(response.data.data));
+        this.sourceColumns = this.sourceColumns.map(k => {
+          if (k.children === null) {
+            k.children = [{text: "", id: k.id}];
+            return k;
+          }
+          return k;
+        });
+        //赋值
+        this.sourceColumns.forEach(va=>{
+          if (va.id===this.customer.source){
+            this.sourceText=va.text;
+            this.source=va.id;
+            return;
+          }
+          for (let chili of va.children){
+            if (chili.id===this.customer.source){
+              this.sourceText=chili.text;
+              this.source=chili.id;
+              return;
+            }
+          }
+        })
       });
     },
     //查询客服

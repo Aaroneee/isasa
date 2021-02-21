@@ -145,8 +145,14 @@ export default {
   methods: {
     //渠道选择器确认
     sourceOnConfirm: function (value) {
-      this.sourceText = value.text;
-      this.source = value.id;
+      if (value[1] === "") {
+        this.sourceText = value[0];
+        this.source = this.sourceColumns.find(k => k.text === value[0]).id;
+      } else {
+        this.sourceText = value[1];
+        let children = this.sourceColumns.find(k => k.text === value[0]).children;
+        this.source = children.find(k => k.text === value[1]).id;
+      }
       this.sourceShowPicker = false;
     },
     //对接日期选择器确认
@@ -191,8 +197,15 @@ export default {
 
     //查询渠道
     querySourceColumns: function (){
-      this.$selectUtils.querySourceIds(this.$selectUtils.Picker).then(response=>{
-        this.sourceColumns=JSON.parse(response.data.data);
+      this.$selectUtils.querySourceIds(this.$selectUtils.Picker).then(response => {
+        this.sourceColumns = JSON.parse(JSON.parse(response.data.data));
+        this.sourceColumns = this.sourceColumns.map(k => {
+          if (k.children === null) {
+            k.children = [{text: "", id: k.id}];
+            return k;
+          }
+          return k;
+        });
       })
     },
     //查询客服

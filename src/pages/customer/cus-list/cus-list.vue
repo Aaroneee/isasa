@@ -7,7 +7,16 @@
           v-model="searchValue"
           placeholder="请输入搜索关键词" />
       <van-dropdown-menu>
-        <van-dropdown-item :title="sourceText" v-model="source" @change="sourceChange" :options="sourceArray" />
+        <van-dropdown-item :title="sourceText" ref="sourceShowPicker">
+          <van-picker
+              show-toolbar
+              toolbar-position="bottom"
+              cancel-button-text="清空"
+              :columns="sourceArray"
+              @confirm="sourceOnConfirm"
+              @cancel="sourceCancel"
+          />
+        </van-dropdown-item>
         <van-dropdown-item :title="gradeText" v-model="grade" @change="gradeChange" :options="gradeArray" />
         <van-dropdown-item :title="stateText" v-model="state" @change="stateChange" :options="stateArray" />
 <!--        <van-dropdown-item :title="serviceText" v-model="service" @change="serviceChange" :options="serviceArray" />-->
@@ -51,9 +60,9 @@ export default {
       //顶部搜索
       searchValue:"",
       //客资来源下拉
-      sourceText:"",
+      sourceText:"客资渠道",
       source:"",
-      sourceArray:[{text:"客资渠道",value: ""}],
+      sourceArray:[],
       //意愿程度
       gradeText:"",
       grade:"",
@@ -82,9 +91,23 @@ export default {
 
   methods:{
     //点击渠道
-    sourceChange:function (val){
-      this.source=val;
+    sourceOnConfirm:function (val){
+      if (val[1]===""){
+        this.sourceText = val[0];
+        this.source = this.sourceArray.find(k=>k.text===val[0]).id;
+      }else {
+        this.sourceText = val[1];
+        this.source = this.sourceArray.find(k=>k.text===val[0]).children.find(k=>k.text===val[1]).id;
+      }
+      this.$refs.sourceShowPicker.toggle();
       this.queryCusList();
+    },
+    //清除渠道
+    sourceCancel:function (){
+      this.sourceText="客资渠道";
+      this.source="";
+      this.queryCusList();
+      this.$refs.sourceShowPicker.toggle();
     },
     //点击意愿
     gradeChange:function (val){
@@ -131,11 +154,18 @@ export default {
     //查询渠道
     querySourceIds:function (){
       this.$selectUtils.querySourceIds(this.$selectUtils.DropDownMenu).then(response => {
-        if (response.data.code === 200) {
-          this.sourceArray.push(...JSON.parse(response.data.data));
-        } else {
+        if (response.data.code !== 200) {
           self.$toast.fail(response.data.msg);
+          return
         }
+        this.sourceArray = JSON.parse(JSON.parse(response.data.data));
+        this.sourceArray = this.sourceArray.map(k => {
+          if (k.children === null) {
+            k.children = [{text: "", id: k.id}];
+            return k;
+          }
+          return k;
+        });
       })
     },
     //查询意愿
