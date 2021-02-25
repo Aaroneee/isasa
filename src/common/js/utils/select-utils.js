@@ -101,8 +101,8 @@ export default {
             method: "GET",
             url: "/select/positionIdsByShopId",
             params: {
-                type:type,
                 shopId: shopId,
+                type:type,
                 tenantCrop:this.tenantCrop
             }
         })
