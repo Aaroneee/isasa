@@ -6,22 +6,27 @@
           @search="queryClothesList"
           v-model="clothesNo"
           placeholder="请输入婚纱礼服名称"/>
-      <van-dropdown-menu>
+      <van-dropdown-menu style="font-size: 10px">
         <van-dropdown-item v-model="styleType" @change="styleTypeChange" :options="styleTypeArray"/>
         <van-dropdown-item v-model="clothesSize" @change="clothesSizeChange" :options="clothesSizeArray"/>
         <van-dropdown-item v-model="shop" @change="shopChange" :options="shopArray"/>
-        <van-dropdown-item v-model="position" @change="positionChange" :options="positionArray"/>
+        <van-dropdown-item :title="positionTitle" v-model="position" @change="positionChange" :options="positionArray"/>
       </van-dropdown-menu>
     </van-sticky>
     <div>
       <van-list
           v-model="loading"
           :finished="finished"
-          finished-text="没有更多了">
+          :offset="10"
+          @load="onLoad"
+          :immediate-check="false"
+          finished-text="没有更多了"
+      >
         <van-cell v-for="item in clothesList" :key="item.id">
           <van-grid :border="false" :column-num="2" :gutter="1">
             <van-grid-item v-if="item[0] != null">
-              <van-image radius="7" src="https://www.ivorybai.com:443/clothes/a9b3603e5229241ce30ba8b545d3c325.jpg">
+              <van-image class="img" radius="7"
+                         src="https://www.ivorybai.com:443/clothes/a9b3603e5229241ce30ba8b545d3c325.jpg">
                 <template v-slot:loading>
                   <van-loading type="spinner" size="20"/>
                 </template>
@@ -32,7 +37,8 @@
             </van-grid-item>
 
             <van-grid-item v-if="item[1] != null">
-              <van-image radius="7" src="https://www.ivorybai.com:443/clothes/a9b3603e5229241ce30ba8b545d3c325.jpg">
+              <van-image class="img" radius="7"
+                         src="https://www.ivorybai.com:443/clothes/a9b3603e5229241ce30ba8b545d3c325.jpg">
                 <template v-slot:loading>
                   <van-loading type="spinner" size="20"/>
                 </template>
@@ -78,8 +84,10 @@ export default {
       ],
       shop: "",
       shopArray: [{text: "店铺", value: ""}],
+      positionTitle: "位置",
       position: "",
       positionArray: [],
+      page: 1,
     }
   },
   components: {
@@ -87,54 +95,85 @@ export default {
   },
   methods: {
     queryClothesList: function (value) {
+      this.loading = true
       this.$axios({
         method: "get",
         url: '/clothes/clothesList',
         params: {
+          page: this.page,
           clothesNo: value,
           styleType: this.styleType,
           clothesSize: this.clothesSize,
-          tenantCrop: this.tenantCrop
+          tenantCrop: this.tenantCrop,
+          clothesShop: this.shop,
+          clothesPosition: this.position
         }
       }).then(response => {
         if (response.data.code === 200) {
-          this.clothesList = response.data.data.list
-          this.clothesList = arrTrans(2, response.data.data.list)
-          console.log(this.clothesList)
-          this.finished = true;
+          this.clothesList.push(...arrTrans(2, response.data.data.list))
+          if (response.data.data.nextPage === 0) {
+            this.finished = true
+          }else {
+            this.finished = false
+            this.page = response.data.data.nextPage
+          }
         }
+        this.loading = false
       })
+    }
+    , onLoad() {
+      if (this.loading) {
+        setTimeout(() => {
+          this.queryClothesList()
+        }, 2000);
+      }
     }
     ,
     styleTypeChange: function (type) {
+      this.flushClothesListArray()
       this.styleType = type
       this.queryClothesList()
     }
     , shopChange: function (shop) {
+      this.flushClothesListArray()
       this.shop = shop
-      console.log(shop)
+      this.queryPositionIdsByShop(shop)
       this.queryClothesList()
     },
-    positionChange: function (value) {
-      console.log(value)
-    }
-    , clothesSizeChange: function (size) {
-      this.clothesSize = size
+    positionChange: function (position) {
+      this.flushClothesListArray()
+
+      this.position = position
+      this.positionTitle = this.positionArray.filter(item => item.value === this.position)[0].text
       this.queryClothesList()
     }
-    , clickItem: function (id) {
-      console.log(id)
+    , clothesSizeChange: function (size) {
+      this.flushClothesListArray()
+
+      this.clothesSize = size
+      this.queryClothesList()
     }
     , queryStyleType: function () {
       this.$selectUtils.queryStyleIds(this.$selectUtils.DropDownMenu).then((response) => {
         this.styleTypeArray.push(...JSON.parse(response.data.data));
-        console.log(response)
       })
     }
     , queryShopIds: function () {
       this.$selectUtils.queryShopIds(this.$selectUtils.DropDownMenu).then(response => {
         this.shopArray.push(...JSON.parse(response.data.data))
       })
+    }
+    , queryPositionIdsByShop(shop) {
+      this.positionTitle = "位置"
+      this.positionArray.length = 0
+      this.position = ""
+      this.$selectUtils.queryPositionIdsByShop(shop, this.$selectUtils.DropDownMenu).then(response => {
+        this.positionArray.push(...JSON.parse(response.data.data))
+      })
+    }
+    , flushClothesListArray: function () {
+      this.page = 1
+      this.clothesList = []
     }
   }
 }
@@ -153,6 +192,12 @@ function arrTrans(num, arr) {
 </script>
 
 
-<style scoped>
+<style>
+.van-dropdown-menu__title {
+  font-size: 10px;
+}
 
+.van-image__img {
+  min-height: 200px;
+}
 </style>
