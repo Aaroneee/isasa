@@ -7,6 +7,7 @@ import 'vant/lib/index.css'
 import router from './router'
 import dateUtils from './common/js/utils/date-utils'
 import selectUtils from './common/js/utils/select-utils'
+import upload from "@/common/js/utils/upload";
 import projectsType from './common/js/constant/projects-type'
 
 Vue.use(Vant)
@@ -14,6 +15,7 @@ Vue.use(Vant)
 Vue.prototype.$axios = axios;
 Vue.prototype.$dateUtils = dateUtils;
 Vue.prototype.$selectUtils = selectUtils;
+Vue.prototype.$upload = upload
 Vue.prototype.$projectsType = projectsType;
 
 Vue.config.productionTip = false

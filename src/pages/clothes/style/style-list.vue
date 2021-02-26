@@ -76,7 +76,6 @@ export default {
   }
   , methods: {
     queryStyleList: function (value) {
-      console.log(value)
       this.$axios({
         method: "get",
         url: '/style/styleList',

@@ -72,6 +72,12 @@
           type="textarea"
           placeholder="请输入工厂来源"
       />
+      <van-field name="uploader" label="婚纱图片"  >
+        <template #input>
+          <van-uploader v-model="fileList" :after-read="afterRead"  multiple :max-count="1" />
+        </template>
+      </van-field>
+
       <van-button
           color="linear-gradient(to right, #50E64D, #03B300)"
           class="bottom-button"
@@ -112,6 +118,8 @@ export default {
       styleNoFit: "",
       //工厂信息
       factoryName: "",
+      fileName:"",
+      fileList:[],
 
     }
   },
@@ -196,6 +204,15 @@ export default {
       } else {
         done();
       }
+    }
+    ,afterRead(file){
+      console.log(file)
+      this.fileList[0].status = "uploading"
+      this.fileList[0].message = "上传中..."
+      this.$upload.clothesImageUpload(file)
+      .then(response=>{
+        console.log(response)
+      })
     }
 
   },
