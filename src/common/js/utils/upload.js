@@ -11,15 +11,13 @@ export default {
 
     clothesImageUpload: function (file) {
         const data = new FormData();
-        data.append('file', file.file)
+        data.append('file',file)
+        data.append("tenant",this.tenantCrop)
+        data.append("imageType",this.clothesImage)
         return self.$axios({
             method: "post",
             url: '/upload/uploadImage', //用于文件上传的服务器端请求地址
             data: data,
-            params:{
-                tenant:this.tenantCrop,
-                imageType:this.clothesImage
-            }
         })
     }
 }

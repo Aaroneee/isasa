@@ -9,6 +9,8 @@ import dateUtils from './common/js/utils/date-utils'
 import selectUtils from './common/js/utils/select-utils'
 import upload from "@/common/js/utils/upload";
 import projectsType from './common/js/constant/projects-type'
+import SlimCropper from 'vue-slim-cropper'
+
 
 Vue.use(Vant)
 
@@ -17,8 +19,9 @@ Vue.prototype.$dateUtils = dateUtils;
 Vue.prototype.$selectUtils = selectUtils;
 Vue.prototype.$upload = upload
 Vue.prototype.$projectsType = projectsType;
-
+Vue.use(SlimCropper)
 Vue.config.productionTip = false
+
 
 export default new Vue({
   router,

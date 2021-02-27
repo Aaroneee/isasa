@@ -72,12 +72,6 @@
           type="textarea"
           placeholder="请输入工厂来源"
       />
-      <van-field name="uploader" label="婚纱图片"  >
-        <template #input>
-          <van-uploader v-model="fileList" :after-read="afterRead"  multiple :max-count="1" />
-        </template>
-      </van-field>
-
       <van-button
           color="linear-gradient(to right, #50E64D, #03B300)"
           class="bottom-button"
@@ -85,11 +79,46 @@
           native-type="submit">提交
       </van-button>
     </van-form>
+
+    <van-field name="uploader" label="婚纱图片">
+      <template #input>
+        <van-uploader v-model="fileList" :after-read="afterRead" multiple :max-count="1"/>
+      </template>
+    </van-field>
+    <!-- 裁剪页 -->
+    <transition name="slim-fade">
+      <div v-show="cropShow" class="crop-wrap">
+        <SlimCropper ref="cropper" :src="inputImgUrl" :aspect-ratio="0.8"></SlimCropper>
+        <div class="btn-box">
+          <button class="crop-btn" @click="hideCrop">取消</button>
+          <button class="crop-btn" @click="submitCrop">使用</button>
+        </div>
+      </div>
+    </transition>
+    <van-overlay :show="overlayShow"/>
   </div>
 </template>
 
 <script>
 import baseNavBar from '@/components/nav-bar/base-nav-bar'
+
+// 将 blob 对象转化为 url
+const getObjectURL = (file) => {
+  let url
+  if (window.createObjectURL) { // basic
+    url = window.createObjectURL(file)
+  } else if (window.URL) { // mozilla(firefox)
+    url = window.URL.createObjectURL(file)
+  } else if (window.webkitURL) { // webkit or chrome
+    url = window.webkitURL.createObjectURL(file)
+  }
+  return url
+}
+
+function blobToFile(theBlob, fileName) {
+  //A Blob() is almost a File() - it's just missing the two properties below which we will add
+  return new window.File([theBlob], fileName, {type: 'image/jpeg'})
+}
 
 export default {
   name: "styleAdd",
@@ -118,9 +147,14 @@ export default {
       styleNoFit: "",
       //工厂信息
       factoryName: "",
-      fileName:"",
-      fileList:[],
+      fileName: "",
+      fileList: [],
 
+      cropShow: false, // 裁剪弹窗显示
+      inputImgUrl: '', // input 选中的图片 url
+      getObjectURL,
+      loading: false,
+      overlayShow: false,
     }
   },
   created() {
@@ -167,31 +201,43 @@ export default {
       })
     }
     , addStyleSubmit(data) {
+      this.overlayShow = true
       data.styleType = this.styleType
-      console.log(data)
       this.$dialog.confirm({
         title: '添加款式',
         message: '确定要添加该款式吗？',
       }).then(() => {
-        data.tenantCrop = this.tenantCrop
-        this.$axios({
-          method: "POST",
-          url: "/style/saveStyle",
-          params: data
-        }).then((response) => {
-          if (response.data.code === 200) {
-            this.$dialog.confirm({
-              title: '添加成功',
-              message: '是否跳转款式列表查看?',
-            }).then(() => {
-              this.$router.replace({name: "styleList"})
-            })
+        this.$toast.loading({
+          message: '上传图片中...',
+          forbidClick: true,
+          duration: 5000
+        })
+        this.uploadClothesImage().then(value => {
+          if (!value) {
+            this.$toast.fail("图片上传发生错误,请检查后进行上传")
+            this.overlayShow = false
           } else {
-            this.$toast.fail(response.data.msg);
+            data.tenantCrop = this.tenantCrop
+            this.$axios({
+              method: "POST",
+              url: "/style/saveStyle",
+              params: data
+            }).then((response) => {
+              if (response.data.code === 200) {
+                this.overlayShow = false
+                this.$dialog.confirm({
+                  title: '添加成功',
+                  message: '是否跳转款式列表查看?',
+                }).then(() => {
+                  this.$router.replace({name: "styleList"})
+                })
+              } else {
+                this.$toast.fail(response.data.msg);
+              }
+            })
           }
         })
       })
-
     }
     , createDateOnConfirm: function (time) {
       this.purchaseDate = this.$dateUtils.vantDateToYMD(time);
@@ -205,16 +251,56 @@ export default {
         done();
       }
     }
-    ,afterRead(file){
+    , afterRead(file) {
       console.log(file)
-      this.fileList[0].status = "uploading"
-      this.fileList[0].message = "上传中..."
-      this.$upload.clothesImageUpload(file)
-      .then(response=>{
-        console.log(response)
+      this.fileName = file.file.name
+      this.inputImgUrl = getObjectURL(file.file)
+      this.showCrop()
+      // this.fileList[0].status = "uploading"
+      // this.fileList[0].message = "上传中..."
+      // this.$upload.clothesImageUpload(file)
+      // .then(response=>{
+      //   let data = response.data
+      //   if (data.code === 200){
+      //     this.fileList[0].status = ""
+      //   }
+      // })
+    }
+    , uploadClothesImage: function () {
+      return new Promise((resolve, reject) => {
+        if (this.fileList.length !== 0) {
+          this.fileList[0].status = "uploading"
+          this.fileList[0].message = "上传中..."
+          this.$upload.clothesImageUpload(this.fileList[0].file)
+              .then(response => {
+                let data = response.data
+                if (data.code === 200) {
+                  this.fileList[0].status = ""
+                  resolve(true)
+                } else {
+                  reject(false)
+                }
+              })
+        }
       })
     }
-
+    ,// 显示裁剪页
+    showCrop() {
+      this.cropShow = true
+      console.log(this.fileList)
+    },
+    // 隐藏裁剪页
+    hideCrop: function () {
+      this.cropShow = false
+    },
+    // 裁剪页确认
+    async submitCrop() {
+      this.hideCrop()
+      const img = await this.$refs.cropper.getCroppedBlob()
+      console.log(img)
+      this.fileList[0].file = blobToFile(img, this.fileName)
+      console.log(this.fileList)
+    },
   },
 
 }
@@ -225,11 +311,62 @@ export default {
   height: 100px;
 }
 
+* {
+  /*padding: 0;*/
+  margin: 0;
+  border: none;
+  outline: none;
+  box-sizing: border-box;
+  /*background: transparent;*/
+}
+
 .bottom-button {
   width: 90%;
   position: absolute;
-  bottom: 10%;
+  bottom: 2%;
   left: 5%;
   margin: 0 auto;
 }
+
+.crop-wrap {
+  z-index: 1;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  background: #000;
+}
+
+.btn-box {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+}
+
+.crop-btn {
+  width: 60px;
+  height: 100%;
+  font-size: 16px;
+  color: #ffffff;
+  text-align: center;
+  background: transparent;
+
+}
+
+.slim-fade-enter-active, .slim-fade-leave-active {
+  transition: all 0.4s ease;
+}
+
+.slim-fade-enter, .slim-fade-leave-to {
+  opacity: 0;
+  transform-origin: top;
+  transform: translateY(100%);
+}
+
 </style>
