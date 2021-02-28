@@ -10,12 +10,12 @@
 <script>
 export default {
   name: "base-nav-bar",
-  props:{
-    title:String
+  props: {
+    title: String
   },
-  methods:{
-    onClickLeft:function (){
-      this.$router.go(-1);
+  methods: {
+    onClickLeft: function () {
+      this.$router.back()
     }
   }
 }

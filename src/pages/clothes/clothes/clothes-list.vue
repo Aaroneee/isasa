@@ -25,7 +25,7 @@
         <van-cell v-for="item in clothesList" :key="item.id">
           <van-grid :border="false" :column-num="2" :gutter="1">
             <van-grid-item v-if="item[0] != null">
-              <van-image class="img" radius="7"
+              <van-image class="img" radius="7" @click="clickItem(item[0])"
                          src="https://www.ivorybai.com:443/clothes/a9b3603e5229241ce30ba8b545d3c325.jpg">
                 <template v-slot:loading>
                   <van-loading type="spinner" size="20"/>
@@ -37,7 +37,7 @@
             </van-grid-item>
 
             <van-grid-item v-if="item[1] != null">
-              <van-image class="img" radius="7"
+              <van-image class="img" radius="7" @click="clickItem(item[1])"
                          src="https://www.ivorybai.com:443/clothes/a9b3603e5229241ce30ba8b545d3c325.jpg">
                 <template v-slot:loading>
                   <van-loading type="spinner" size="20"/>
@@ -94,6 +94,10 @@ export default {
     baseNavBar
   },
   methods: {
+    clickItem: function (value) {
+      this.$router.push({name:"clothesDetails",query:value})
+    }
+    ,
     queryClothesList: function (value) {
       this.loading = true
       this.$axios({
@@ -113,7 +117,7 @@ export default {
           this.clothesList.push(...arrTrans(2, response.data.data.list))
           if (response.data.data.nextPage === 0) {
             this.finished = true
-          }else {
+          } else {
             this.finished = false
             this.page = response.data.data.nextPage
           }
