@@ -12,6 +12,9 @@ export default [
         path: '/orderList',
         name: 'orderList',
         component: orderList,
+        meta: {
+            keepAlive: true
+        }
     },
     {
         path: '/orderDetails',

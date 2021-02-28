@@ -11,6 +11,9 @@ export default [
         path: '/proceedsList',
         name: 'proceedsList',
         component: proceedsList,
+        meta: {
+            keepAlive: true
+        }
     },
     {
         path: '/proceedsDetails',

@@ -23,5 +23,12 @@ export default new Router({
         ...order,
         ...proceeds,
         ...clothes,
-    ]
+    ],
+    scrollBehavior (to, from, savedPosition) {
+        if (savedPosition) {
+            return savedPosition
+        } else {
+            return { x: 0, y: 0 }
+        }
+    }
 })
