@@ -26,7 +26,7 @@
           <van-grid :border="false" :column-num="2" :gutter="1">
             <van-grid-item v-if="item[0] != null">
               <van-image class="img" radius="7" @click="clickItem(item[0])"
-                         src="https://www.ivorybai.com:443/clothes/a9b3603e5229241ce30ba8b545d3c325.jpg">
+                         :src="'\thttps://order-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[0].styleImage">
                 <template v-slot:loading>
                   <van-loading type="spinner" size="20"/>
                 </template>
@@ -38,7 +38,7 @@
 
             <van-grid-item v-if="item[1] != null">
               <van-image class="img" radius="7" @click="clickItem(item[1])"
-                         src="https://www.ivorybai.com:443/clothes/a9b3603e5229241ce30ba8b545d3c325.jpg">
+                         :src="'\thttps://order-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[1].styleImage">
                 <template v-slot:loading>
                   <van-loading type="spinner" size="20"/>
                 </template>

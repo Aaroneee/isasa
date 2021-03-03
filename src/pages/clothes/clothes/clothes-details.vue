@@ -34,17 +34,12 @@ export default {
   name: "clothesDetails",
   created() {
     this.clothes = this.$route.query
-    console.log(this.clothes)
+    this.queryStyleImageByClothesId(this.clothes.id)
   },
   data() {
     return {
       clothes: {},
-      images: [
-        "https://www.ivorybai.com:443/clothes/a9b3603e5229241ce30ba8b545d3c325.jpg",
-        "https://www.ivorybai.com:443/clothes/a9b3603e5229241ce30ba8b545d3c325.jpg",
-        "https://www.ivorybai.com:443/clothes/a9b3603e5229241ce30ba8b545d3c325.jpg",
-        "https://www.ivorybai.com:443/clothes/1bd7fb2e784466ee326b7a882886fbeb.jpg",
-      ],
+      images: [],
     }
   }
   , components: {
@@ -53,6 +48,22 @@ export default {
   , methods: {
     clickItem: function (value) {
       ImagePreview([value])
+    }
+    ,queryStyleImageByClothesId(clothesId){
+      console.log(clothesId)
+      this.$axios({
+        method:"GET",
+        url:"/styleImage/queryStyleImageByClothesId",
+        params:{
+          clothesId:clothesId,
+        }
+      }).then(response=>{
+        const data = response.data.data;
+        for (let index in data){
+          data[index] = "https://www.ivorybai.com:443/clothes/"+data[index]
+        }
+        this.images = data
+      })
     }
   }
 }

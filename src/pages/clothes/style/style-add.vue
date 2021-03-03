@@ -122,6 +122,7 @@ function blobToFile(theBlob, fileName) {
 
 export default {
   name: "styleAdd",
+  inject:['reload'],
   data() {
     return {
       //款式id
@@ -201,23 +202,25 @@ export default {
       })
     }
     , addStyleSubmit(data) {
-      this.overlayShow = true
       data.styleType = this.styleType
       this.$dialog.confirm({
         title: '添加款式',
         message: '确定要添加该款式吗？',
       }).then(() => {
-        this.$toast.loading({
-          message: '上传图片中...',
-          forbidClick: true,
-          duration: 5000
-        })
+        if (this.fileList.length !== 0) {
+          this.$toast.loading({
+            message: '上传图片中...',
+            forbidClick: true,
+            duration: 5000
+          })
+        }
         this.uploadClothesImage().then(value => {
           if (!value) {
             this.$toast.fail("图片上传发生错误,请检查后进行上传")
             this.overlayShow = false
           } else {
             data.tenantCrop = this.tenantCrop
+            data.styleImage = this.fileName
             this.$axios({
               method: "POST",
               url: "/style/saveStyle",
@@ -230,6 +233,10 @@ export default {
                   message: '是否跳转款式列表查看?',
                 }).then(() => {
                   this.$router.replace({name: "styleList"})
+                })
+                .catch(()=>{
+                  console.log("取消按钮 刷新当前页面")
+                  this.reload()
                 })
               } else {
                 this.$toast.fail(response.data.msg);
@@ -276,11 +283,14 @@ export default {
                 let data = response.data
                 if (data.code === 200) {
                   this.fileList[0].status = ""
+                  this.fileName = data.data
                   resolve(true)
                 } else {
                   reject(false)
                 }
               })
+        } else {
+          resolve(true)
         }
       })
     }
