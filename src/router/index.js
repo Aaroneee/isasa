@@ -6,7 +6,7 @@ import customer from "@/router/customer"//客资
 import appoint from "@/router/appoint"//预约
 import order from "@/router/order"//订单
 import proceeds from "@/router/proceeds"//收款
-import clothes from "@/router/clothes";
+import clothes from "@/router/clothes"
 
 
 // import login from '../pages/login/login'//首页
@@ -14,7 +14,7 @@ import clothes from "@/router/clothes";
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
     mode: 'history',
     routes: [
         ...home,
@@ -24,11 +24,19 @@ export default new Router({
         ...proceeds,
         ...clothes,
     ],
-    scrollBehavior (to, from, savedPosition) {
+    scrollBehavior(to, from, savedPosition) {
         if (savedPosition) {
             return savedPosition
         } else {
-            return { x: 0, y: 0 }
+            return {x: 0, y: 0}
         }
     }
 })
+
+router.afterEach(() => {
+
+    window.scrollTo(0, 0);
+
+});
+
+export default router

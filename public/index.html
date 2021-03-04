@@ -5,9 +5,26 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <!--    <meta name="viewport" content="width=device-width,initial-scale=1.0">-->
 <!--      防止页面放大缩小-->
-      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+      <meta name ="viewport" content ="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title><%= htmlWebpackPlugin.options.title %></title>
+      <style>
+
+          /*设置IOS页面长按不可复制粘贴，但是IOS上出现input、textarea不能输入，因此将使用-webkit-user-select:auto;*/
+          *{
+              -webkit-touch-callout:none;  /*系统默认菜单被禁用*/
+              -webkit-user-select:none; /*webkit浏览器*/
+              -moz-user-select:none;/*火狐*/
+              -ms-user-select:none; /*IE10*/
+              user-select:none;
+          }
+          input,textarea {
+              -webkit-user-select:auto; /*webkit浏览器*/
+              margin: 0px;
+              padding: 0px;
+              outline: none;
+          }
+      </style>
   </head>
   <body>
     <noscript>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <van-sticky>
-      <baseNavBar title="婚纱列表"/>
+      <switchNavBar title="婚纱列表" switchText="扫一扫" @flag="codeScanShow=!codeScanShow"/>
       <van-search
           @search="queryClothesList"
           v-model="clothesNo"
@@ -19,6 +19,7 @@
           :finished="finished"
           :offset="10"
           @load="onLoad"
+          class="auto"
           :immediate-check="false"
           finished-text="没有更多了"
       >
@@ -27,9 +28,9 @@
             <van-grid-item v-if="item[0] != null">
               <van-image class="img" radius="7" @click="clickItem(item[0])"
                          :src="'\thttps://order-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[0].styleImage">
-                <template v-slot:loading>
-                  <van-loading type="spinner" size="20"/>
-                </template>
+<!--                <template v-slot:loading>-->
+<!--                  <van-loading type="spinner" size="20" />-->
+<!--                </template>-->
               </van-image>
               <span
                   v-text="item[0].styleType+'-'+item[0].styleName+'-'+item[0].clothesSize+'-'+item[0].clothesNo"></span>
@@ -39,9 +40,9 @@
             <van-grid-item v-if="item[1] != null">
               <van-image class="img" radius="7" @click="clickItem(item[1])"
                          :src="'\thttps://order-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[1].styleImage">
-                <template v-slot:loading>
-                  <van-loading type="spinner" size="20"/>
-                </template>
+<!--                <template v-slot:loading>-->
+<!--                  <van-loading type="spinner" size="20"/>-->
+<!--                </template>-->
               </van-image>
               <span
                   v-text="item[1].styleType+'-'+item[1].styleName+'-'+item[1].clothesSize+'-'+item[1].clothesNo"></span>
@@ -55,7 +56,7 @@
 </template>
 
 <script>
-import baseNavBar from '@/components/nav-bar/base-nav-bar'
+import switchNavBar from "@/components/nav-bar/switch-nav-bar"
 
 export default {
   name: "clothesList",
@@ -66,6 +67,7 @@ export default {
   },
   data() {
     return {
+      codeScanShow: false,
       tenantCrop: localStorage.getItem("tenantCrop"),
       clothesNo: "",
       styleType: "",
@@ -91,11 +93,17 @@ export default {
     }
   },
   components: {
-    baseNavBar
+    switchNavBar
+  },
+  watch: {
+    codeScanShow: function (newVal, oldVal) {
+      console.log(newVal)
+      console.log(oldVal)
+    }
   },
   methods: {
     clickItem: function (value) {
-      this.$router.push({name:"clothesDetails",query:value})
+      this.$router.push({name: "clothesDetails", query: value})
     }
     ,
     queryClothesList: function (value) {
@@ -179,6 +187,10 @@ export default {
       this.page = 1
       this.clothesList = []
     }
+    , toScan: function () {
+      // TODO
+      // 消息通知到 原生 原生隐藏vue页面   拉起扫码  扫码结束传递 值
+    }
   }
 }
 
@@ -197,6 +209,17 @@ function arrTrans(num, arr) {
 
 
 <style>
+*{
+  -webkit-overflow-scrolling: touch;
+}
+body{
+  overflow-x: hidden
+}
+.auto{
+  overflow-y: auto;
+  position:relative;
+  z-index:1;
+}
 .van-dropdown-menu__title {
   font-size: 10px;
 }

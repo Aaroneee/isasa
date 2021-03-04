@@ -30,7 +30,7 @@ export default {
         message: '确定要退出登录吗，将回到登陆界面',
         overlay: false,
       }).then(() => {
-        // window.webkit.messageHandlers.logout.postMessage("已退出")
+        window.webkit.messageHandlers.logout.postMessage("已退出")
         this.show = true
       }).catch(() => {
         // on cancel

@@ -55,7 +55,6 @@
           rows="1"
           autosize
           label="适合身形"
-          type="textarea"
           placeholder="请输入适合身形"
       />
       <van-field
@@ -65,7 +64,6 @@
           rows="1"
           autosize
           label="不适合身形"
-          type="textarea"
           placeholder="请输入不适合身形"
       />
       <van-field
@@ -75,12 +73,11 @@
           rows="1"
           autosize
           label="工厂来源"
-          type="textarea"
+          onblur="window.scrollTo(0,0)"
           placeholder="请输入工厂来源"
       />
       <van-button
           color="linear-gradient(to right, #50E64D, #03B300)"
-          class="bottom-button"
           round block type="primary"
           native-type="submit">提交
       </van-button>
