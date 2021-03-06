@@ -27,10 +27,10 @@
           <van-grid :border="false" :column-num="2" :gutter="1">
             <van-grid-item v-if="item[0] != null">
               <van-image class="img" radius="7" @click="clickItem(item[0])"
-                         :src="'\thttps://order-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[0].styleImage">
-<!--                <template v-slot:loading>-->
-<!--                  <van-loading type="spinner" size="20" />-->
-<!--                </template>-->
+                         :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[0].styleImage">
+                <!--                <template v-slot:loading>-->
+                <!--                  <van-loading type="spinner" size="20" />-->
+                <!--                </template>-->
               </van-image>
               <span
                   v-text="item[0].styleType+'-'+item[0].styleName+'-'+item[0].clothesSize+'-'+item[0].clothesNo"></span>
@@ -39,10 +39,10 @@
 
             <van-grid-item v-if="item[1] != null">
               <van-image class="img" radius="7" @click="clickItem(item[1])"
-                         :src="'\thttps://order-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[1].styleImage">
-<!--                <template v-slot:loading>-->
-<!--                  <van-loading type="spinner" size="20"/>-->
-<!--                </template>-->
+                         :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[1].styleImage">
+                <!--                <template v-slot:loading>-->
+                <!--                  <van-loading type="spinner" size="20"/>-->
+                <!--                </template>-->
               </van-image>
               <span
                   v-text="item[1].styleType+'-'+item[1].styleName+'-'+item[1].clothesSize+'-'+item[1].clothesNo"></span>
@@ -96,9 +96,10 @@ export default {
     switchNavBar
   },
   watch: {
-    codeScanShow: function (newVal, oldVal) {
-      console.log(newVal)
-      console.log(oldVal)
+    codeScanShow: function (newVal) {
+      if (newVal) {
+        window.webkit.messageHandlers.scaner.postMessage({"msg": "调用原生扫码界面"})
+      }
     }
   },
   methods: {
@@ -209,17 +210,20 @@ function arrTrans(num, arr) {
 
 
 <style>
-*{
+* {
   -webkit-overflow-scrolling: touch;
 }
-body{
+
+body {
   overflow-x: hidden
 }
-.auto{
+
+.auto {
   overflow-y: auto;
-  position:relative;
-  z-index:1;
+  position: relative;
+  z-index: 1;
 }
+
 .van-dropdown-menu__title {
   font-size: 10px;
 }
