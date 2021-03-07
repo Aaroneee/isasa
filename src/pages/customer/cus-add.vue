@@ -78,7 +78,7 @@
           name="service"
           :value="serviceText"
           label="客服"
-          placeholder="点击选择客资渠道"
+          placeholder="点击选择客服"
           @click="serviceShowPicker = true"
           :rules="[{ required: true }]"
       />

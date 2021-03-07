@@ -46,6 +46,7 @@
 
       <van-field
           name="appointTime"
+          readonly
           :value="appointTime"
           label="到店时间"
           placeholder="点击选择到店时间"
@@ -64,6 +65,7 @@
 
       <van-field
           name="inviter"
+          readonly
           :value="inviterText"
           label="预约人"
           placeholder="点击选择预约人"
@@ -82,6 +84,7 @@
 
       <van-field
           name="appointName"
+          readonly
           :value="appointNameText"
           label="预约项目"
           placeholder="点击选择预约项目"
@@ -100,6 +103,7 @@
 
       <van-field
           name="appointShop"
+          readonly
           :value="appointShopText"
           label="预约店铺"
           placeholder="点击选择预约店铺"
@@ -278,7 +282,7 @@ export default {
     //根据店铺查询城市
     queryCityByShopIds:function (id){
       this.$selectUtils.queryCityByShopIds(id).then(response=>{
-        this.appointCity=JSON.parse(response.data.msg);
+        this.appointCity= response.data.msg;
       })
     },
   }
