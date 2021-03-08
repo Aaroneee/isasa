@@ -128,7 +128,6 @@
           placeholder="点击选择预约店铺"
           :rules="[{ required: true }]"
       />
-
       <br>
       <br>
       <br>
@@ -176,6 +175,7 @@ export default {
       inviterShowPicker:false,
       appointNameShowPicker:false,
       appointShopShowPicker:false,
+      tenantCrop:localStorage.getItem("tenantCrop"),
     }
   },
   components: {
@@ -233,7 +233,7 @@ export default {
       values.appointName=this.appointName;
       values.appointShop=this.appointShop;
       values.type="售前预约";
-      values.tenantCrop = 1;
+      values.tenantCrop = this.tenantCrop;
       this.$dialog.confirm({
         title: '添加预约',
         message: '是否确认给该条客资添加预约?',

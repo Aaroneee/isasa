@@ -216,7 +216,7 @@ export default {
       data.washingTip = this.washingTip
       data.clothesPosition = this.clothesPosition
       data.clothesShop = this.clothesShop
-      console.log(this.style)
+      data.styleId = this.style.id
       this.$dialog.confirm({
         title: "婚纱添加",
         message: "您要添加的婚纱编号为"+"<br><br>"+this.style.typeName+"-"+this.style.styleName+"-"+data.clothesSize+"-"+data.clothesNo,

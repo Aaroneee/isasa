@@ -41,6 +41,10 @@
             @cancel="roomPicker = false"
         />
       </van-popup>
+      <br>
+      <br>
+      <br>
+      <br>
       <van-row>
         <van-col span="14" offset="5">
           <van-button round block type="primary" native-type="submit">提交</van-button>

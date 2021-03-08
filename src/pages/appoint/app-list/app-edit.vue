@@ -16,6 +16,7 @@
 
       <van-field
           name="appointTime"
+          readonly
           :value="appoint.appointTime"
           label="到店时间"
           placeholder="点击选择到店时间"
@@ -33,6 +34,7 @@
       </van-popup>
 
       <van-field
+          readonly
           name="inviter"
           :value="inviterText"
           label="预约人"
@@ -51,6 +53,7 @@
       </van-popup>
 
       <van-field
+          readonly
           name="appointName"
           :value="appointNameText"
           label="预约项目"
@@ -69,6 +72,7 @@
       </van-popup>
 
       <van-field
+          readonly
           name="appointShop"
           :value="appointShopText"
           label="预约店铺"
@@ -94,6 +98,10 @@
           placeholder="点击选择预约店铺"
           :rules="[{ required: true }]"
       />
+      <br>
+      <br>
+      <br>
+      <br>
       <van-row>
         <van-col span="14" offset="5">
           <van-button round block type="primary" native-type="submit">提交</van-button>

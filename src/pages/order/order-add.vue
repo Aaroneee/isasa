@@ -170,7 +170,8 @@
           placeholder="收款进度"
           :rules="[{ required: true }]"
       />
-
+      <br>
+      <br>
       <van-row>
         <van-col span="14" offset="5">
           <van-button round block type="primary" native-type="submit">提交</van-button>

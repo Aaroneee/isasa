@@ -104,7 +104,9 @@ export default {
   },
   methods: {
     clickItem: function (value) {
-      this.$router.push({name: "clothesDetails", query: value})
+      console.log(value)
+      // TODO  婚纱详情待开发
+      // this.$router.push({name: "clothesDetails", query: value})
     }
     ,
     queryClothesList: function (value) {
