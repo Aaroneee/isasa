@@ -15,9 +15,7 @@ export default [
         path: '/appList',
         name: 'appList',
         component: appList,
-        meta: {
-            keepAlive: true
-        }
+
     },
     {
         path: '/appDetails',

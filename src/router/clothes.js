@@ -15,9 +15,7 @@ export default [
         path: '/clothesList',
         name: 'clothesList',
         component: clothesList,
-        meta: {
-            keepAlive: true
-        }
+
     },
     {
         path: '/styleAdd',
@@ -28,9 +26,7 @@ export default [
         path: '/styleList',
         name: 'styleList',
         component: styleList,
-        meta: {
-            keepAlive: true
-        }
+
     },
     {
         path: '/styleEdit',

@@ -10,9 +10,7 @@ export default [
         path: '/cusList',
         name: 'cusList',
         component: cusList,
-        meta: {
-            keepAlive: true
-        }
+
     },
     {
         path: '/cusDetails',
