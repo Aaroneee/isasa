@@ -21,7 +21,6 @@
         <van-cell v-for="item in styleList" :key="item.id" @click="clickItem(item.id)">
           <p>款式名称:{{ item.typeName + item.styleName }}</p>
           <van-row>
-            <van-col span="12">采购日期:{{ item.purchaseDate }}</van-col>
             <van-col span="12">采购来源:{{ item.factoryName }}</van-col>
           </van-row>
           <van-row>
