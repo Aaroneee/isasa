@@ -27,7 +27,7 @@
             finished-text="没有更多了"
         >
           <van-cell v-for="item in orderList" :key="item.id">
-            <div  @click="clickItem(item.id)">
+            <div  @click="clickItem(item.id,item.cusId)">
               <p>姓名:{{ item.name }}</p>
               <van-row>
                 <van-col span="12">订单编号:{{ item.orderNo }}</van-col>
@@ -85,8 +85,8 @@ export default {
       this.createDateShow=false;
     },
     //点击每个item
-    clickItem:function (id){
-      this.$router.push({name:"orderDetails",query:{id:id}})
+    clickItem:function (id,cusId){
+      this.$router.push({name:"orderDetails",query:{id:id,cusId:cusId}})
     },
     //点击增加收款
     proceedsAdd:function (item){
