@@ -94,10 +94,10 @@ export default {
     sourceOnConfirm:function (val){
       if (val[1]===""){
         this.sourceText = val[0];
-        this.source = this.sourceArray.find(k=>k.text===val[0]).id;
+        this.source = this.sourceArray.find(k=>k.text===val[0]).value;
       }else {
         this.sourceText = val[1];
-        this.source = this.sourceArray.find(k=>k.text===val[0]).children.find(k=>k.text===val[1]).id;
+        this.source = this.sourceArray.find(k=>k.text===val[0]).children.find(k=>k.text===val[1]).value;
       }
       this.$refs.sourceShowPicker.toggle();
       this.queryCusList();
