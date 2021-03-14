@@ -7,10 +7,19 @@
                            :title="item.orderName"
                            :name="item.id">
           <van-cell-group style="text-align: center">
-            <van-image radius="7"  :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.imageUrl"/>
+            <van-image radius="7"  :src="'\thttps://order-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.imageUrl"/>
           </van-cell-group>
         </van-collapse-item>
       </van-collapse>
+
+
+
+
+
+
+
+
+
     </van-popup>
     <div v-cloak>
       <van-cell-group>

@@ -41,7 +41,7 @@ export default {
       console.log(styleId)
       this.$axios({
         method:"GET",
-        url:"/styleImage/queryStylePhotos",
+        url:"/image/queryStyleImages",
         params:{
           styleId:styleId,
         }

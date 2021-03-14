@@ -170,10 +170,25 @@
           placeholder="收款进度"
           :rules="[{ required: true }]"
       />
+      <van-field name="uploader" label="订单图片">
+        <template #input>
+          <van-uploader v-model="fileList" :after-read="afterRead" multiple :max-count="1"/>
+        </template>
+      </van-field>
+      <!-- 裁剪页 -->
+      <transition name="slim-fade">
+        <div v-show="cropShow" class="crop-wrap">
+          <SlimCropper ref="cropper" :src="inputImgUrl" :aspect-ratio="0.8"></SlimCropper>
+          <div class="btn-box">
+            <button type="button" class="crop-btn" @click="hideCrop">取消</button>
+            <button type="button" class="crop-btn" @click="submitCrop">使用</button>
+          </div>
+        </div>
+      </transition>
+      <van-overlay :show="overlayShow"/>
       <br>
       <br>
-      <van-row>
-        <van-col span="14" offset="5">
+      <van-row >
           <van-button
               color="linear-gradient(to right, #50E64D, #03B300)"
               class="bottom-button"
@@ -181,26 +196,10 @@
               type="primary"
               native-type="submit">提交
           </van-button>
-        </van-col>
       </van-row>
     </van-form>
 
-    <van-field name="uploader" label="婚纱图片">
-      <template #input>
-        <van-uploader v-model="fileList" :after-read="afterRead" multiple :max-count="1"/>
-      </template>
-    </van-field>
-    <!-- 裁剪页 -->
-    <transition name="slim-fade">
-      <div v-show="cropShow" class="crop-wrap">
-        <SlimCropper ref="cropper" :src="inputImgUrl" :aspect-ratio="0.8"></SlimCropper>
-        <div class="btn-box">
-          <button class="crop-btn" @click="hideCrop">取消</button>
-          <button class="crop-btn" @click="submitCrop">使用</button>
-        </div>
-      </div>
-    </transition>
-    <van-overlay :show="overlayShow"/>
+
 
 
   </div>
@@ -384,16 +383,16 @@ export default {
           this.$toast.loading({
             message: '上传图片中...',
             forbidClick: true,
-            duration: 5000
+            duration: 3000
           })
         }
-        this.uploadClothesImage().then(value => {
+        this.uploadOrderImage().then(value => {
           if (!value) {
             this.$toast.fail("图片上传发生错误,请检查后进行上传")
             this.overlayShow = false
           } else {
-            console.log(this.fileName)
             data.orderImage = this.fileName
+            data.uploader = []
             this.$axios({
               method: "POST",
               url: "/order/saveOrder",
@@ -486,12 +485,12 @@ export default {
       // })
     }
     ,
-    uploadClothesImage: function () {
+    uploadOrderImage: function () {
       return new Promise((resolve, reject) => {
         if (this.fileList.length !== 0) {
           this.fileList[0].status = "uploading"
           this.fileList[0].message = "上传中..."
-          this.$upload.clothesImageUpload(this.fileList[0].file)
+          this.$upload.orderImageUpload(this.fileList[0].file)
               .then(response => {
                 let data = response.data
                 if (data.code === 200) {
@@ -633,11 +632,10 @@ const citys = [
 }
 
 .bottom-button {
+  /*position: absolute;*/
   width: 90%;
-  position: absolute;
-  bottom: 2%;
   left: 5%;
-  margin: 0 auto;
+  bottom: 20px;
 }
 
 .crop-wrap {

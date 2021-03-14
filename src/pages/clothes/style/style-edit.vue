@@ -14,7 +14,6 @@
           label="款式类型"
           placeholder="点击选择款式类型"
           readonly
-          @click="styleShowPicker = true"
           :rules="[{ required: true }]"
       />
       <van-popup v-model="styleShowPicker" position="bottom">
@@ -50,33 +49,48 @@
       <van-calendar v-model="createDateShowPicker" @confirm="createDateOnConfirm"/>
       <van-field
           class="msg"
+          name="styleInfo"
+          v-model="style.styleInfo"
+          type="textarea"
+          label="款式介绍"
+          placeholder="款式介绍"
+          maxlength="40"
+          show-word-limit
+      />
+      <van-field
+          class="msg"
           name="styleFit"
           v-model="style.styleFit"
-          rows="1"
-          autosize
           label="适合身形"
           placeholder="请输入适合身形"
+          type="textarea"
+          maxlength="40"
+          show-word-limit
       />
       <van-field
           class="msg"
           name="styleNoFit"
           v-model="style.styleNoFit"
-          rows="1"
-          autosize
           label="不适合身形"
           placeholder="请输入不适合身形"
+          type="textarea"
+          maxlength="40"
+          show-word-limit
       />
       <van-field
-          class="msg"
           name="factoryName"
           v-model="style.factoryName"
-          rows="1"
-          autosize
           label="工厂来源"
           onblur="window.scrollTo(0,0)"
           placeholder="请输入工厂来源"
       />
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
       <van-button
+          class="bottom-button"
           color="linear-gradient(to right, #50E64D, #03B300)"
           round block type="primary"
           native-type="submit">提交

@@ -44,31 +44,59 @@
       <van-calendar v-model="createDateShowPicker" @confirm="createDateOnConfirm"/>
       <van-field
           class="msg"
+          name="styleInfo"
+          v-model="styleInfo"
+          type="textarea"
+          label="款式介绍"
+          placeholder="款式介绍"
+          maxlength="40"
+          show-word-limit
+      />
+      <van-field
+          class="msg"
           name="styleFit"
           v-model="styleFit"
-          rows="1"
-          autosize
+          type="textarea"
           label="适合身形"
           placeholder="请输入适合身形"
+          maxlength="40"
+          show-word-limit
       />
       <van-field
           class="msg"
           name="styleNoFit"
           v-model="styleNoFit"
-          rows="1"
-          autosize
+          type="textarea"
           label="不适合身形"
           placeholder="请输入不适合身形"
+          maxlength="40"
+          show-word-limit
       />
       <van-field
-          class="msg"
           name="factoryName"
           v-model="factoryName"
           rows="1"
-          autosize
           label="工厂来源"
           placeholder="请输入工厂来源"
       />
+
+      <van-field name="uploader" label="婚纱图片">
+        <template #input>
+          <van-uploader v-model="fileList" :after-read="afterRead" multiple :max-count="1"/>
+        </template>
+      </van-field>
+      <!-- 裁剪页 -->
+      <transition name="slim-fade">
+        <div v-show="cropShow" class="crop-wrap">
+          <SlimCropper ref="cropper" :src="inputImgUrl" :aspect-ratio="0.7"></SlimCropper>
+          <div class="btn-box">
+            <button type="button" class="crop-btn" @click="hideCrop">取消</button>
+            <button type="button" class="crop-btn" @click="submitCrop">使用</button>
+          </div>
+        </div>
+      </transition>
+
+      <br>
       <van-button
           color="linear-gradient(to right, #50E64D, #03B300)"
           class="bottom-button"
@@ -77,21 +105,7 @@
       </van-button>
     </van-form>
 
-    <van-field name="uploader" label="婚纱图片">
-      <template #input>
-        <van-uploader v-model="fileList" :after-read="afterRead" multiple :max-count="1"/>
-      </template>
-    </van-field>
-    <!-- 裁剪页 -->
-    <transition name="slim-fade">
-      <div v-show="cropShow" class="crop-wrap">
-        <SlimCropper ref="cropper" :src="inputImgUrl" :aspect-ratio="0.8"></SlimCropper>
-        <div class="btn-box">
-          <button class="crop-btn" @click="hideCrop">取消</button>
-          <button class="crop-btn" @click="submitCrop">使用</button>
-        </div>
-      </div>
-    </transition>
+
     <van-overlay :show="overlayShow"/>
   </div>
 </template>
@@ -139,6 +153,8 @@ export default {
       purchaseDate: "",
       //日期选择框展示
       createDateShowPicker: false,
+      //款式介绍
+      styleInfo:"",
       //适合身形
       styleFit: "",
       //不适合身形
@@ -208,7 +224,7 @@ export default {
           this.$toast.loading({
             message: '上传图片中...',
             forbidClick: true,
-            duration: 5000
+            duration: 3000
           })
         }
         this.uploadClothesImage().then(value => {
@@ -218,6 +234,7 @@ export default {
           } else {
             data.tenantCrop = this.tenantCrop
             data.styleImage = this.fileName
+            data.uploader = []
             this.$axios({
               method: "POST",
               url: "/style/saveStyle",
@@ -303,7 +320,7 @@ export default {
     // 裁剪页确认
     async submitCrop() {
       this.hideCrop()
-      const img = await this.$refs.cropper.getCroppedBlob()
+      const img = await this.$refs.cropper.getCroppedBlob('image/jpeg',0.7)
       console.log(img)
       this.fileList[0].file = blobToFile(img, this.fileName)
       console.log(this.fileList)
@@ -316,6 +333,7 @@ export default {
 <style scoped>
 .msg {
   height: 100px;
+  word-break:break-all
 }
 
 * {
@@ -329,10 +347,8 @@ export default {
 
 .bottom-button {
   width: 90%;
-  position: absolute;
-  bottom: 2%;
+  bottom: 5%;
   left: 5%;
-  margin: 0 auto;
 }
 
 .crop-wrap {
