@@ -1,7 +1,7 @@
 <template>
   <div>
     <van-sticky>
-      <baseNavBar title="客资列表"/>
+      <baseNavBar url="work" title="客资列表"/>
       <van-search
           @search="queryCusList"
           v-model="searchValue"
@@ -36,7 +36,14 @@
           </van-row>
           <van-row>
             <van-col span="12">来源:{{item.source}}</van-col>
+            <van-col span="12">城市:{{item.city}}</van-col>
+          </van-row>
+          <van-row>
+            <van-col span="12">客服:{{item.service}}</van-col>
             <van-col span="12">状态:{{item.state}}</van-col>
+          </van-row>
+          <van-row>
+            <van-col span="24">备注:{{item.remark}}</van-col>
           </van-row>
         </van-cell>
       </van-list>

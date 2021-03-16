@@ -1,14 +1,15 @@
 <template>
   <div>
     <van-sticky>
-      <switchNavBar title="预约列表" switchText="日期" @flag="createDateShow=true"/>
+      <switchNavBar  title="预约列表" switchText="日期" @flag="createDateShow=true"/>
       <van-search
           @search="queryAppList"
           v-model="searchValue"
           placeholder="请输入搜索关键词"/>
-      <van-calendar safe-area-inset-bottom v-model="createDateShow" type="range" @confirm="createDateOnConfirm"/>
+      <van-calendar safe-area-inset-bottom v-model="createDateShow" :min-date="new Date('2020/01/01')"
+                    :max-date="new Date('2022/01/01')" type="range" @confirm="createDateOnConfirm"/>
       <van-dropdown-menu>
-        <van-dropdown-item  v-model="appointName" @change="appointNameChange"
+        <van-dropdown-item v-model="appointName" @change="appointNameChange"
                            :options="appointNameArray"/>
         <van-dropdown-item v-model="inviter" @change="inviterChange" :options="inviterArray"/>
         <van-dropdown-item v-model="appointDress" @change="appointDressChange"
@@ -24,14 +25,30 @@
           finished-text="没有更多了"
       >
         <van-cell v-for="item in appointList" :key="item.id" @click="clickItem(item.id)">
-          <p>姓名:{{ item.name }}</p>
+          <van-row style="padding-bottom: 10px">
+            <van-col span="12">姓名:{{ item.name }}</van-col>
+            <van-col v-if="item.isValid === '1'" style="color: coral">状态 : 预约</van-col>
+            <van-col v-if="item.isValid === '2'" style="color: #39a9ed">状态 : 到店</van-col>
+            <van-col v-if="item.isValid ==='3'" style="color: red">状态 : 取消</van-col>
+          </van-row>
           <van-row>
-            <van-col span="12">预约时间:{{ item.createDate }}</van-col>
-            <van-col span="12">到店时间:{{ item.appointDate }}</van-col>
+            <van-col span="12">预约日期:{{ item.createDate }}</van-col>
+            <van-col span="12">到店日期:{{ item.appointDate }}</van-col>
+          </van-row>
+          <van-row>
+            <van-col span="12">来源:{{ item.sourceName }}</van-col>
+            <van-col span="12">到店时间:{{ item.appointTime }}</van-col>
           </van-row>
           <van-row>
             <van-col span="12">预约项目:{{ item.appointName }}</van-col>
-            <van-col span="12">预约店铺:{{ item.state }}</van-col>
+            <van-col span="12">城市:{{ item.appointCity }}</van-col>
+          </van-row>
+          <van-row>
+            <van-col span="12">预约人:{{ item.inviter }}</van-col>
+            <van-col span="12">店铺:{{ item.appointShop }}</van-col>
+          </van-row>
+          <van-row>
+            <van-col span="24">备注:{{ item.appointRemark }}</van-col>
           </van-row>
         </van-cell>
       </van-list>
@@ -49,7 +66,7 @@ export default {
   },
   data() {
     return {
-      tenantCrop:localStorage.getItem("tenantCrop"),
+      tenantCrop: localStorage.getItem("tenantCrop"),
       appointList: [],
       searchValue: "",
       loading: false,
@@ -102,7 +119,7 @@ export default {
       this.queryAppList();
     },
     clickItem: function (id) {
-      this.$router.push({name:"appDetails",query:{id:id}})
+      this.$router.push({name: "appDetails", query: {id: id}})
     },
 
 

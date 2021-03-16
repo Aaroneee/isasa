@@ -58,7 +58,7 @@
           @click="createDateShowPicker = true"
           :rules="[{ required: true }]"
       />
-      <van-calendar v-model="createDateShowPicker" @confirm="createDateOnConfirm"/>
+      <van-calendar v-model="createDateShowPicker" :min-date="new Date('2020/01/01')" :max-date="new Date('2022/01/01')" @confirm="createDateOnConfirm"/>
       <van-field
           v-model="customer.weddingDay"
           type="string"

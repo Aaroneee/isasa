@@ -1,6 +1,6 @@
 <template>
   <div>
-    <baseNavBar title="款式添加"/>
+    <baseNavBar  title="款式添加"/>
     <van-form scroll-to-error @submit="addStyleSubmit">
       <van-field
           name="styleType"
@@ -41,7 +41,7 @@
           @click="createDateShowPicker = true"
           :rules="[{ required: true }]"
       />
-      <van-calendar v-model="createDateShowPicker" @confirm="createDateOnConfirm"/>
+      <van-calendar v-model="createDateShowPicker" :min-date="new Date('2020/01/01')" :max-date="new Date('2022/01/01')" @confirm="createDateOnConfirm"/>
       <van-field
           class="msg"
           name="styleInfo"

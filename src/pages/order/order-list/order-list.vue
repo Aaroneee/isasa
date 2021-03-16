@@ -2,12 +2,12 @@
   <div>
     <div>
       <van-sticky>
-        <switchNavBar title="订单列表" switchText="日期" @flag="createDateShow=true"/>
+        <switchNavBar  title="订单列表" switchText="日期" @flag="createDateShow=true"/>
         <van-search
             @search="queryOrderList"
             v-model="searchValue"
             placeholder="请输入搜索关键词"/>
-        <van-calendar safe-area-inset-bottom v-model="createDateShow" type="range" @confirm="createDateOnConfirm"/>
+        <van-calendar safe-area-inset-bottom v-model="createDateShow" :min-date="new Date('2020/01/01')" :max-date="new Date('2022/01/01')" type="range" @confirm="createDateOnConfirm"/>
         <!--      <van-dropdown-menu>-->
         <!--        <van-dropdown-item :title="appointNameText" v-model="appointName" @change="appointNameChange"-->
         <!--                           :options="appointNameArray"/>-->
@@ -38,9 +38,12 @@
                 <van-col span="12" style="text-align: right">婚期:{{ item.weddingDay }}</van-col>
               </van-row>
               <van-row>
-                <van-col span="8">订单总价:{{ item.orderPrice }}</van-col>
+                <van-col span="8">总价:{{ item.orderPrice }}</van-col>
                 <van-col span="8" style="text-align: center">收款:{{ item.spareMoney }}</van-col>
                 <van-col span="8" style="text-align: right">余款:{{ item.orderSpare }}</van-col>
+              </van-row>
+              <van-row>
+                <van-col span="24">备注:{{ item.orderRemark }}</van-col>
               </van-row>
             </div>
             <br>

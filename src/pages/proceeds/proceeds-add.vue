@@ -77,7 +77,7 @@
             :rules="[{ required: true }]"
             @click="createDatePicker=true"
         />
-        <van-calendar v-model="createDatePicker" @confirm="createDateConfirm"/>
+        <van-calendar v-model="createDatePicker" :min-date="new Date('2020/01/01')" :max-date="new Date('2022/01/01')" @confirm="createDateConfirm"/>
 
         <van-field
             readonly
@@ -155,7 +155,7 @@ export default {
       proceedsName: "",
       spareMoney: null,
       payee: "",
-      createDate: "",
+      createDate: this.$dateUtils.vantDateToYMD(new Date()),
       payment: "",
       proceedsRate:""
 

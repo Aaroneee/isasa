@@ -1,12 +1,12 @@
 <template>
   <div>
     <van-sticky >
-      <switchNavBar title="收款列表" switchText="日期" @flag="dateSectionShow=true"/>
+      <switchNavBar  title="收款列表" switchText="日期" @flag="dateSectionShow=true"/>
       <van-search
           @search="queryProceedsList"
           v-model="searchValue"
           placeholder="请输入搜索关键词"/>
-      <van-calendar safe-area-inset-bottom v-model="dateSectionShow" type="range" @confirm="dateSectionConfirm"/>
+      <van-calendar safe-area-inset-bottom v-model="dateSectionShow" :min-date="new Date('2020/01/01')" :max-date="new Date('2022/01/01')" type="range" @confirm="dateSectionConfirm"/>
       <van-dropdown-menu>
         <van-dropdown-item v-model="payee" @change="payeeChange"
                            :options="payeeArray"/>

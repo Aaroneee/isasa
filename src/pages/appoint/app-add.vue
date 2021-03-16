@@ -30,7 +30,7 @@
           @click="createDateShowPicker = true"
           :rules="[{ required: true }]"
       />
-      <van-calendar v-model="createDateShowPicker" @confirm="createDateOnConfirm"/>
+      <van-calendar v-model="createDateShowPicker" :min-date="new Date('2020/01/01')" :max-date="new Date('2022/01/01')" @confirm="createDateOnConfirm"/>
 
       <van-field
           readonly
@@ -159,7 +159,7 @@ export default {
   data(){
     return{
       customer:{},
-      createDate:"",
+      createDate:this.$dateUtils.vantDateToYMD(new Date()),
       appointDate:"",
       appointTime:"",
 
@@ -265,7 +265,7 @@ export default {
               this.$router.replace({name:"appList"})
             })
           }else {
-            this.$toast.fail('添加失败,请返回重试');
+            this.$toast.fail(response.data.code);
           }
         })
       })

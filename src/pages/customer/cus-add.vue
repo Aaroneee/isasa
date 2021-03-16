@@ -58,7 +58,8 @@
           @click="createDateShowPicker = true"
           :rules="[{ required: true }]"
       />
-      <van-calendar v-model="createDateShowPicker" @confirm="createDateOnConfirm"/>
+      <van-calendar v-model="createDateShowPicker" :min-date="new Date('2020/01/01')" :max-date="new Date('2022/01/01')"
+                    @confirm="createDateOnConfirm"/>
       <van-field
           v-model="weddingDay"
           type="string"
@@ -120,7 +121,7 @@ export default {
   name: "cus-add",
   data() {
     return {
-      tenantCrop:localStorage.getItem("tenantCrop"),
+      tenantCrop: localStorage.getItem("tenantCrop"),
       name: "",
       phone: "",
       weChat: "",
@@ -133,7 +134,7 @@ export default {
       sourceColumns: [],
       sourceShowPicker: false,
 
-      createDate: "",
+      createDate:this.$dateUtils.vantDateToYMD(new Date()),
       createDateShowPicker: false,
 
       weddingDay: "",
@@ -143,7 +144,7 @@ export default {
       service: "",
       serviceColumns: [],
       serviceShowPicker: false,
-      remark:"",
+      remark: "",
     }
   },
   components: {
@@ -187,18 +188,18 @@ export default {
         message: '是否确认添加客资?',
       }).then(() => {
         this.$axios({
-          method:"POST",
-          url:"/customer/saveCustomer",
-          params:values
-        }).then(response=>{
-          if (response.data.code===200){
+          method: "POST",
+          url: "/customer/saveCustomer",
+          params: values
+        }).then(response => {
+          if (response.data.code === 200) {
             this.$dialog.confirm({
               title: '添加成功',
               message: '是否跳转客资列表查看',
             }).then(() => {
-              this.$router.replace({name:"cusList"})
+              this.$router.replace({name: "cusList"})
             })
-          }else {
+          } else {
             this.$toast.fail(response.data.msg);
           }
         })
@@ -207,7 +208,7 @@ export default {
     },
 
     //查询渠道
-    querySourceColumns: function (){
+    querySourceColumns: function () {
       this.$selectUtils.querySourceIds(this.$selectUtils.Picker).then(response => {
         this.sourceColumns = JSON.parse(JSON.parse(response.data.data));
         this.sourceColumns = this.sourceColumns.map(k => {
@@ -221,8 +222,8 @@ export default {
     },
     //查询客服
     queryServiceColumns: function () {
-      this.$selectUtils.queryServiceIds(this.$selectUtils.Picker).then(response=>{
-        this.serviceColumns=JSON.parse(response.data.data);
+      this.$selectUtils.queryServiceIds(this.$selectUtils.Picker).then(response => {
+        this.serviceColumns = JSON.parse(response.data.data);
       })
     },
   }

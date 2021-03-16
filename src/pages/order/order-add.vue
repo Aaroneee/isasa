@@ -26,7 +26,7 @@
           :rules="[{ required: true }]"
           @click="createDatePicker=true"
       />
-      <van-calendar v-model="createDatePicker" @confirm="createDateConfirm"/>
+      <van-calendar v-model="createDatePicker" :min-date="new Date('2020/01/01')" :max-date="new Date('2022/01/01')" @confirm="createDateConfirm"/>
 
       <van-field
           readonly
@@ -37,7 +37,7 @@
           :rules="[{ required: true }]"
           @click="weddingDayPicker=true"
       />
-      <van-calendar v-model="weddingDayPicker" @confirm="weddingDayConfirm"/>
+      <van-calendar v-model="weddingDayPicker" :min-date="new Date('2020/01/01')" :max-date="new Date('2022/01/01')" @confirm="weddingDayConfirm"/>
 
       <van-field
           readonly
@@ -236,7 +236,7 @@ export default {
 
       //对象
       orderNo: "",
-      createDate: "",
+      createDate: this.$dateUtils.vantDateToYMD(new Date()),
       weddingDay: "",
       orderName: "",
       orderDress: "",

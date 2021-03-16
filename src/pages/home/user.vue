@@ -17,6 +17,23 @@
       <van-cell title="参数查询" icon="search" is-link/>
       <van-cell  border="false" title="系统消息" icon="comment-o" is-link/>
     </van-cell-group>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <van-button
+        class="logout"
+        color="linear-gradient(to right, #ff6134, #ee0a24)"
+        round
+        type="info"
+        @click="logout"
+        block>退出
+    </van-button>
   </div>
 </template>
 
@@ -46,8 +63,7 @@ export default {
 }
 
 .logout {
-  width: 50%;
-  bottom: 10%;
+  width: 90%;
   margin: 0 auto;
 }
 </style>

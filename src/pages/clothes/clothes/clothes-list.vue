@@ -1,7 +1,7 @@
 <template>
   <div>
     <van-sticky>
-      <switchNavBar title="婚纱列表" switchText="扫一扫" @flag="codeScanShow=!codeScanShow"/>
+      <switchNavBar  title="婚纱列表" switchText="扫一扫" @flag="codeScanShow=!codeScanShow"/>
       <van-search
           @search="queryClothesList"
           v-model="clothesNo"
