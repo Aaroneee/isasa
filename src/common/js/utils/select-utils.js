@@ -163,5 +163,15 @@ export default {
             }
         })
     }
+    ,queryStyleLabels:function (){
+        return self.$axios({
+            method: "GET",
+            url: "/select/labelIds",
+            params: {
+                labelType: 2,
+                tenantCrop: localStorage.getItem("tenantCrop")
+            }
+        })
+    }
 
 }
