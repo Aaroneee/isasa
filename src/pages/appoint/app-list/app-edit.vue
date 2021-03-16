@@ -98,6 +98,16 @@
           placeholder="点击选择预约店铺"
           :rules="[{ required: true }]"
       />
+      <van-field
+          class="msg"
+          name="appointRemark"
+          v-model="appoint.appointRemark"
+          type="textarea"
+          label="备注"
+          placeholder="备注"
+          maxlength="40"
+          show-word-limit
+      />
       <br>
       <br>
       <br>

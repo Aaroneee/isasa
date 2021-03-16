@@ -170,22 +170,66 @@
           placeholder="收款进度"
           :rules="[{ required: true }]"
       />
+      <van-field name="uploader" label="订单图片">
+        <template #input>
+          <van-uploader v-model="fileList" :after-read="afterRead" multiple :max-count="1"/>
+        </template>
+      </van-field>
+      <!-- 裁剪页 -->
+      <transition name="slim-fade">
+        <div v-show="cropShow" class="crop-wrap">
+          <SlimCropper ref="cropper" :src="inputImgUrl" :aspect-ratio="0.8"></SlimCropper>
+          <div class="btn-box">
+            <button type="button" class="crop-btn" @click="hideCrop">取消</button>
+            <button type="button" class="crop-btn" @click="submitCrop">使用</button>
+          </div>
+        </div>
+      </transition>
+      <van-overlay :show="overlayShow"/>
       <br>
       <br>
-      <van-row>
-        <van-col span="14" offset="5">
-          <van-button round block type="primary" native-type="submit">提交</van-button>
-        </van-col>
+      <van-row >
+          <van-button
+              color="linear-gradient(to right, #50E64D, #03B300)"
+              class="bottom-button"
+              round block
+              type="primary"
+              native-type="submit">提交
+          </van-button>
       </van-row>
     </van-form>
+
+
+
+
   </div>
+
+
 </template>
 
 <script>
 import baseNavBar from "@/components/nav-bar/base-nav-bar"
+// 将 blob 对象转化为 url
+const getObjectURL = (file) => {
+  let url
+  if (window.createObjectURL) { // basic
+    url = window.createObjectURL(file)
+  } else if (window.URL) { // mozilla(firefox)
+    url = window.URL.createObjectURL(file)
+  } else if (window.webkitURL) { // webkit or chrome
+    url = window.webkitURL.createObjectURL(file)
+  }
+  return url
+}
+
+function blobToFile(theBlob, fileName) {
+  //A Blob() is almost a File() - it's just missing the two properties below which we will add
+  return new window.File([theBlob], fileName, {type: 'image/jpeg'})
+}
 
 export default {
   name: "order-add",
+  inject:['reload'],
   data() {
     return {
       appointVo: this.$route.query.appointVo,
@@ -225,6 +269,17 @@ export default {
       proceedsNameText: "",
       paymentText: "",
       payeeText: "",
+
+
+      //订单图片
+      fileName: "",
+      fileList: [],
+
+      cropShow: false, // 裁剪弹窗显示
+      inputImgUrl: '', // input 选中的图片 url
+      getObjectURL,
+      loading: false,
+      overlayShow: false,
 
 
     }
@@ -310,62 +365,82 @@ export default {
     },
 
     //提交订单
-    addAppointSubmit: function (value) {
-      value.cusId = this.appointVo.cusId;
-      value.appId = this.appointVo.id;
-      value.orderName = this.orderName;
-      value.orderDress = this.orderDress;
-      value.proceedsName = this.proceedsName;
-      value.payment = this.payment;
-      value.payee = this.payee;
-      value.orderCity = this.appointVo.appointCity;
-      value.tenantCrop = localStorage.getItem("tenantCrop");
+    addAppointSubmit: function (data) {
+      data.cusId = this.appointVo.cusId;
+      data.appId = this.appointVo.id;
+      data.orderName = this.orderName;
+      data.orderDress = this.orderDress;
+      data.proceedsName = this.proceedsName;
+      data.payment = this.payment;
+      data.payee = this.payee;
+      data.orderCity = this.appointVo.appointCity;
+      data.tenantCrop = localStorage.getItem("tenantCrop");
       this.$dialog.confirm({
         title: '添加订单',
         message: '是否确认给 : ' + this.appointVo.name + ' 添加订单?',
       }).then(() => {
-        this.$axios({
-          method: "POST",
-          url: "/order/saveOrder",
-          params: value
-        }).then(response => {
-          console.log(response)
-          if (response.data.code !== 200) {
-            this.$toast.fail(response.data.msg())
-            return
-          }
-          this.$toast.success("订单添加成功!")
-          this.$dialog.confirm({
-            message: '是否确认跳转到订单列表?',
-          }).then(() => {
-            this.$router.push({name:"orderList"})
+        if (this.fileList.length !== 0) {
+          this.$toast.loading({
+            message: '上传图片中...',
+            forbidClick: true,
+            duration: 3000
           })
+        }
+        this.uploadOrderImage().then(value => {
+          if (!value) {
+            this.$toast.fail("图片上传发生错误,请检查后进行上传")
+            this.overlayShow = false
+          } else {
+            data.orderImage = this.fileName
+            data.uploader = []
+            this.$axios({
+              method: "POST",
+              url: "/order/saveOrder",
+              params: data
+            }).then(response => {
+              console.log(response)
+              if (response.data.code !== 200) {
+                this.$toast.fail(response.data.msg())
+                return
+              }
+              this.$toast.success("订单添加成功!")
+              this.$dialog.confirm({
+                message: '是否确认跳转到订单列表?',
+              }).then(() => {
+                this.$router.push({name: "orderList"})
+              }).catch(() => {
+                console.log("取消按钮 刷新当前页面")
+                this.reload()
+              })
+            })
+          }
         })
       })
-
     },
-
     //查询订单项目
     queryOrderNameIds: function () {
       this.$selectUtils.queryProjectsIds(this.$projectsType.order, this.$selectUtils.Picker).then(response => {
         this.orderNameArray = JSON.parse(response.data.data);
       })
-    },
-    //查询礼服师
+    }
+    ,
+//查询礼服师
     queryAppointDress: function () {
       this.$selectUtils.queryDressIds(
           this.$selectUtils.Picker
       ).then(response => {
         this.orderDressArray = JSON.parse(response.data.data);
       })
-    },
-    //查询收款项目
+    }
+    ,
+//查询收款项目
     queryProceedsNameIds: function () {
       this.$selectUtils.queryProjectsIds(this.$projectsType.proceeds, this.$selectUtils.Picker).then(response => {
         this.proceedsNameArray = JSON.parse(response.data.data)
       })
-    },
-    //查询收款方式
+    }
+    ,
+//查询收款方式
     queryPaymentIds: function () {
       this.$selectUtils.queryPaymentIds(this.$selectUtils.Picker).then(response => {
         this.paymentArray = JSON.parse(JSON.parse(response.data.data));
@@ -377,13 +452,80 @@ export default {
           return k;
         });
       })
-    },
-    //查询收款人
+    }
+    ,
+//查询收款人
     queryPayeeIds: function () {
       this.$selectUtils.queryPayeeIds(this.$selectUtils.Picker).then(response => {
         this.payeeArray = JSON.parse(response.data.data)
       })
-    },
+    }
+    ,
+    beforeClose: function (action, done) {
+      if (action === 'confirm') {
+        setTimeout(done, 1000);
+      } else {
+        done();
+      }
+    }
+    ,
+    afterRead(file) {
+      console.log(file)
+      this.fileName = file.file.name
+      this.inputImgUrl = getObjectURL(file.file)
+      this.showCrop()
+      // this.fileList[0].status = "uploading"
+      // this.fileList[0].message = "上传中..."
+      // this.$upload.clothesImageUpload(file)
+      // .then(response=>{
+      //   let data = response.data
+      //   if (data.code === 200){
+      //     this.fileList[0].status = ""
+      //   }
+      // })
+    }
+    ,
+    uploadOrderImage: function () {
+      return new Promise((resolve, reject) => {
+        if (this.fileList.length !== 0) {
+          this.fileList[0].status = "uploading"
+          this.fileList[0].message = "上传中..."
+          this.$upload.orderImageUpload(this.fileList[0].file)
+              .then(response => {
+                let data = response.data
+                if (data.code === 200) {
+                  this.fileList[0].status = ""
+                  this.fileName = data.data
+                  resolve(true)
+                } else {
+                  reject(false)
+                }
+              })
+        } else {
+          resolve(true)
+        }
+      })
+    }
+    ,// 显示裁剪页
+    showCrop() {
+      this.cropShow = true
+      console.log(this.fileList)
+    }
+    ,
+// 隐藏裁剪页
+    hideCrop: function () {
+      this.cropShow = false
+    }
+    ,
+// 裁剪页确认
+    async submitCrop() {
+      this.hideCrop()
+      const img = await this.$refs.cropper.getCroppedBlob()
+      console.log(img)
+      this.fileList[0].file = blobToFile(img, this.fileName)
+      console.log(this.fileList)
+    }
+    ,
   }
 
 }
@@ -476,5 +618,64 @@ const citys = [
 </script>
 
 <style scoped>
+.msg {
+  height: 100px;
+}
 
+* {
+  /*padding: 0;*/
+  margin: 0;
+  border: none;
+  outline: none;
+  box-sizing: border-box;
+  /*background: transparent;*/
+}
+
+.bottom-button {
+  /*position: absolute;*/
+  width: 90%;
+  left: 5%;
+  bottom: 20px;
+}
+
+.crop-wrap {
+  z-index: 1;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  background: #000;
+}
+
+.btn-box {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+}
+
+.crop-btn {
+  width: 60px;
+  height: 100%;
+  font-size: 16px;
+  color: #ffffff;
+  text-align: center;
+  background: transparent;
+
+}
+
+.slim-fade-enter-active, .slim-fade-leave-active {
+  transition: all 0.4s ease;
+}
+
+.slim-fade-enter, .slim-fade-leave-to {
+  opacity: 0;
+  transform-origin: top;
+  transform: translateY(100%);
+}
 </style>

@@ -26,24 +26,33 @@
         <van-cell v-for="item in clothesList" :key="item.id">
           <van-grid :border="false" :column-num="2" :gutter="1">
             <van-grid-item v-if="item[0] != null">
-              <van-image class="img" radius="7" @click="clickItem(item[0])"
+              <div v-if="item[0].styleImage !== ''">
+
+              <van-image  radius="7" @click="clickItem(item[0])"
                          :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[0].styleImage">
-                <!--                <template v-slot:loading>-->
-                <!--                  <van-loading type="spinner" size="20" />-->
-                <!--                </template>-->
               </van-image>
+              </div>
+              <div v-else>
+                <van-image class="style-img">
+                  <template v-slot:error>未上传图片</template>
+                </van-image>
+              </div>
               <span
                   v-text="item[0].styleType+'-'+item[0].styleName+'-'+item[0].clothesSize+'-'+item[0].clothesNo"></span>
               <span v-text="item[0].shopName"></span><span v-text="item[0].positionName"></span>
             </van-grid-item>
 
             <van-grid-item v-if="item[1] != null">
-              <van-image class="img" radius="7" @click="clickItem(item[1])"
+              <div v-if="item[1].styleImage !== ''">
+              <van-image radius="7" @click="clickItem(item[1])"
                          :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[1].styleImage">
-                <!--                <template v-slot:loading>-->
-                <!--                  <van-loading type="spinner" size="20"/>-->
-                <!--                </template>-->
               </van-image>
+              </div>
+              <div v-else>
+                <van-image class="style-img" >
+                  <template v-slot:error>未上传图片</template>
+                </van-image>
+              </div>
               <span
                   v-text="item[1].styleType+'-'+item[1].styleName+'-'+item[1].clothesSize+'-'+item[1].clothesNo"></span>
               <span v-text="item[1].shopName"></span><span v-text="item[1].positionName"></span>
@@ -232,5 +241,9 @@ body {
 
 .van-image__img {
   min-height: 200px;
+}
+
+.style-img {
+  height: 200px;
 }
 </style>

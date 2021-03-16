@@ -91,6 +91,16 @@
             @cancel="serviceShowPicker = false"
         />
       </van-popup>
+      <van-field
+          class="msg"
+          name="remark"
+          v-model="remark"
+          type="textarea"
+          label="备注"
+          placeholder="备注"
+          maxlength="40"
+          show-word-limit
+      />
       <br>
       <br>
       <br>
@@ -133,6 +143,7 @@ export default {
       service: "",
       serviceColumns: [],
       serviceShowPicker: false,
+      remark:"",
     }
   },
   components: {

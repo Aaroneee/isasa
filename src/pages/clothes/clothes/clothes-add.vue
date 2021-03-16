@@ -162,20 +162,7 @@ export default {
         }
       }).then(response => {
         if (response.data.code === 200) {
-          let styleName = response.data.data + "";
-          switch (styleName.length) {
-            case 1:
-              styleName = "000" + styleName;
-              break;
-            case 2:
-              styleName = "00" + styleName;
-              break;
-            case 3:
-              styleName = "0" + styleName;
-              break;
-          }
-          console.log(styleName)
-          this.clothesNo = styleName
+          this.clothesNo = response.data.data
         }
       })
     },
@@ -219,11 +206,11 @@ export default {
       data.styleId = this.style.id
       this.$dialog.confirm({
         title: "婚纱添加",
-        message: "您要添加的婚纱编号为"+"<br><br>"+this.style.typeName+"-"+this.style.styleName+"-"+data.clothesSize+"-"+data.clothesNo,
+        message: "您要添加的婚纱编号为" + "<br><br>" + this.style.typeName + "-" + this.style.styleName + "-" + data.clothesSize + "-" + data.clothesNo,
       }).then(() => {
         this.$axios({
           method: "POST",
-          url:"/clothes/saveClothes",
+          url: "/clothes/saveClothes",
           params: data
         }).then((response) => {
           if (response.data.code === 200) {

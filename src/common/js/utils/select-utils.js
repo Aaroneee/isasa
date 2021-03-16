@@ -15,7 +15,7 @@ export default {
             url: "/select/sourceIds",
             params: {
                 type: type,
-                tenantCrop: this.tenantCrop,
+                tenantCrop: localStorage.getItem("tenantCrop"),
             }
         })
     },
@@ -26,7 +26,7 @@ export default {
             url: "/select/gradeIds",
             params: {
                 type: type,
-                tenantCrop: this.tenantCrop,
+                tenantCrop: localStorage.getItem("tenantCrop"),
             }
         })
     },
@@ -46,7 +46,7 @@ export default {
             method: "GET",
             url: "/select/serviceIds",
             params: {
-                tenantCrop: this.tenantCrop,
+                tenantCrop: localStorage.getItem("tenantCrop"),
                 type: type,
             }
         })
@@ -57,7 +57,7 @@ export default {
             method: "GET",
             url: "/select/empIds",
             params: {
-                tenantCrop: this.tenantCrop,
+                tenantCrop: localStorage.getItem("tenantCrop"),
                 type: type,
             }
         })
@@ -68,7 +68,7 @@ export default {
             method: "GET",
             url: "/select/projectsIds",
             params: {
-                tenantCrop: this.tenantCrop,
+                tenantCrop: localStorage.getItem("tenantCrop"),
                 type: type,
                 projectsType: projectType,
             }
@@ -80,7 +80,7 @@ export default {
             method: "GET",
             url: "/select/shopIds",
             params: {
-                tenantCrop: this.tenantCrop,
+                tenantCrop: localStorage.getItem("tenantCrop"),
                 type: type,
             }
         })
@@ -103,7 +103,7 @@ export default {
             params: {
                 shopId: shopId,
                 type:type,
-                tenantCrop:this.tenantCrop
+                tenantCrop:localStorage.getItem("tenantCrop")
             }
         })
     },
@@ -114,7 +114,7 @@ export default {
             url: "/select/dressIds",
             params: {
                 type: type,
-                tenantCrop: this.tenantCrop,
+                tenantCrop: localStorage.getItem("tenantCrop"),
             }
         })
     },
@@ -127,7 +127,7 @@ export default {
                 type: type,
                 shopId: shopId,
 
-                tenantCrop: this.tenantCrop,
+                tenantCrop: localStorage.getItem("tenantCrop"),
             }
         })
     },
@@ -138,7 +138,7 @@ export default {
             url: "/select/paymentIds",
             params: {
                 type: type,
-                tenantCrop: this.tenantCrop,
+                tenantCrop: localStorage.getItem("tenantCrop"),
             }
         })
     },
@@ -149,7 +149,7 @@ export default {
             url: "/select/payeeIds",
             params: {
                 type: type,
-                tenantCrop: this.tenantCrop,
+                tenantCrop: localStorage.getItem("tenantCrop"),
             }
         })
     },
@@ -159,7 +159,7 @@ export default {
             url: "/select/styleTypeIds",
             params: {
                 type: type,
-                tenantCrop: this.tenantCrop
+                tenantCrop: localStorage.getItem("tenantCrop")
             }
         })
     }

@@ -18,10 +18,9 @@
           v-model="loading"
           :finished="finished"
           finished-text="没有更多了">
-        <van-cell v-for="item in styleList" :key="item.id" @click="clickItem(item.id)">
+        <van-cell v-for="item in styleList" :key="item.id" @click="clickItem(item)">
           <p>款式名称:{{ item.typeName + item.styleName }}</p>
           <van-row>
-            <van-col span="12">采购日期:{{ item.purchaseDate }}</van-col>
             <van-col span="12">采购来源:{{ item.factoryName }}</van-col>
           </van-row>
           <van-row>
@@ -31,19 +30,12 @@
             <van-col span="12">不适合身形:{{ item.styleNoFit }}</van-col>
           </van-row>
           <br>
-          <van-row>
-
-            <van-col span="6" offset="1">
-              <van-button @click="addClothes(item)" size="small" style="width: 100%" type="info">添加婚纱</van-button>
-            </van-col>
-            <van-col span="6" offset="1">
-              <van-button @click="updateStyle(item)" size="small" type="warning" style="width: 100%">编辑</van-button>
-            </van-col>
-            <van-col span="6" offset="1">
-              <van-button @click="deleteStyle(item.id)" size="small" type="danger" style="width: 100%">删除</van-button>
-            </van-col>
-          </van-row>
-
+<!--          <van-row>-->
+<!--            <van-tag round class="tag-padding" closeable size="large"  @close="close" type="primary">标签</van-tag>-->
+<!--            <van-tag round class="tag-padding" closeable size="large"  @close="close" type="success">标签</van-tag>-->
+<!--            <van-tag round class="tag-padding" closeable size="large"  @close="close" type="danger">标签</van-tag>-->
+<!--            <van-tag round class="tag-padding" closeable size="large"  @close="close" type="warning">标签</van-tag>-->
+<!--          </van-row>-->
         </van-cell>
       </van-list>
     </div>
@@ -92,7 +84,7 @@ export default {
       })
     }
     , clickItem(value) {
-      console.log(value)
+      this.$router.push({name:"styleDetails",query:value})
     }
     , queryStyleType: function () {
       this.$selectUtils.queryStyleIds(this.$selectUtils.DropDownMenu).then((response) => {
@@ -103,21 +95,16 @@ export default {
     , styleTypeChange: function (value) {
       this.styleType = value
       this.queryStyleList();
-    }
-    , updateStyle(value) {
-      console.log(value)
-      this.$router.push({name: "styleEdit", query: value});
-    }
-    , deleteStyle(value) {
-      console.log(value)
-    }
-    , addClothes(value) {
-      this.$router.push({name: "clothesAdd", query: value})
+    },close:function (){
+
     }
   }
 }
 </script>
 
 <style scoped>
-
+.tag-padding{
+  margin-left: 5px;
+  margin-right: 5px;
+}
 </style>
