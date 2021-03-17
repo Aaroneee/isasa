@@ -27,7 +27,14 @@ export default {
   methods: {
     onClickItem: function (event) {
       this.$router.push({name: event})
+    },
+    setLocalStorage:function (tenantCrop,empId){
+      localStorage.setItem("tenantCrop",tenantCrop);
+      localStorage.setItem("empId",empId);
     }
+  },
+  mounted() {
+    window.setLocalStorage=this.setLocalStorage
   }
 }
 </script>
