@@ -1,10 +1,10 @@
 <template>
   <div>
     <van-sticky>
-      <switchNavBar  title="婚纱列表" switchText="扫一扫" @flag="codeScanShow=!codeScanShow"/>
+      <switchNavBar title="婚纱列表" switchText="扫一扫" @flag="codeScanShow=!codeScanShow"/>
       <van-search
-          @search="queryClothesList"
-          v-model="clothesNo"
+          @search="searchStyleName"
+          v-model="styleName"
           placeholder="请输入婚纱礼服名称"/>
       <van-dropdown-menu style="font-size: 10px">
         <van-dropdown-item v-model="styleType" @change="styleTypeChange" :options="styleTypeArray"/>
@@ -28,9 +28,9 @@
             <van-grid-item v-if="item[0] != null">
               <div v-if="item[0].styleImage !== ''">
 
-              <van-image  radius="7" @click="clickItem(item[0])"
-                         :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[0].styleImage">
-              </van-image>
+                <van-image radius="7" @click="clickItem(item[0])"
+                           :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[0].styleImage">
+                </van-image>
               </div>
               <div v-else>
                 <van-image class="style-img">
@@ -44,12 +44,12 @@
 
             <van-grid-item v-if="item[1] != null">
               <div v-if="item[1].styleImage !== ''">
-              <van-image radius="7" @click="clickItem(item[1])"
-                         :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[1].styleImage">
-              </van-image>
+                <van-image radius="7" @click="clickItem(item[1])"
+                           :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[1].styleImage">
+                </van-image>
               </div>
               <div v-else>
-                <van-image class="style-img" >
+                <van-image class="style-img">
                   <template v-slot:error>未上传图片</template>
                 </van-image>
               </div>
@@ -78,7 +78,7 @@ export default {
     return {
       codeScanShow: false,
       tenantCrop: localStorage.getItem("tenantCrop"),
-      clothesNo: "",
+      styleName: "",
       styleType: "",
       styleTypeArray: [{text: "款式", value: ""}],
       loading: false,
@@ -109,23 +109,28 @@ export default {
       if (newVal) {
         window.webkit.messageHandlers.scaner.postMessage({"msg": "调用原生扫码界面"})
       }
-    }
+    },
   },
   methods: {
     clickItem: function (value) {
       console.log(value)
       // TODO  婚纱详情待开发
       // this.$router.push({name: "clothesDetails", query: value})
+    }, searchStyleName: function (value) {
+      this.page = 1
+      this.styleName = value
+      this.clothesList = []
+      this.queryClothesList()
     }
     ,
-    queryClothesList: function (value) {
+    queryClothesList: function () {
       this.loading = true
       this.$axios({
         method: "get",
         url: '/clothes/clothesList',
         params: {
           page: this.page,
-          clothesNo: value,
+          styleName: this.styleName,
           styleType: this.styleType,
           clothesSize: this.clothesSize,
           tenantCrop: this.tenantCrop,

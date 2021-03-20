@@ -89,7 +89,6 @@ export default {
   },
   created() {
     this.queryAppList();
-
     this.queryAppointName();
     this.queryInviter();
     this.queryAppointDress();

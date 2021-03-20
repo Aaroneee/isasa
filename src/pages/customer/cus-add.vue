@@ -134,7 +134,7 @@ export default {
       sourceColumns: [],
       sourceShowPicker: false,
 
-      createDate:this.$dateUtils.vantDateToYMD(new Date()),
+      createDate: this.$dateUtils.vantDateToYMD(new Date()),
       createDateShowPicker: false,
 
       weddingDay: "",
@@ -224,6 +224,17 @@ export default {
     queryServiceColumns: function () {
       this.$selectUtils.queryServiceIds(this.$selectUtils.Picker).then(response => {
         this.serviceColumns = JSON.parse(response.data.data);
+      })
+      this.$roleUtils.ifService().then(response => {
+        let flag = response.data.data
+        if (flag) {
+          this.serviceColumns.find(s => {
+            if (s.id == localStorage.getItem("empId")){
+              this.service = s.id
+              this.serviceText = s.text
+            }
+          })
+        }
       })
     },
   }
