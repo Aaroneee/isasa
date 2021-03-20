@@ -8,6 +8,7 @@ import router from './router'
 import dateUtils from './common/js/utils/date-utils'
 import selectUtils from './common/js/utils/select-utils'
 import upload from "@/common/js/utils/upload";
+import roleUtils from "@/common/js/utils/role-utils";
 import projectsType from './common/js/constant/projects-type'
 import SlimCropper from 'vue-slim-cropper'
 
@@ -17,6 +18,7 @@ Vue.use(Vant)
 Vue.prototype.$axios = axios;
 Vue.prototype.$dateUtils = dateUtils;
 Vue.prototype.$selectUtils = selectUtils;
+Vue.prototype.$roleUtils = roleUtils;
 Vue.prototype.$upload = upload
 Vue.prototype.$projectsType = projectsType;
 Vue.use(SlimCropper)
@@ -24,6 +26,6 @@ Vue.config.productionTip = false
 
 axios.defaults.baseURL = '/api'
 export default new Vue({
-  router,
-  render: h => h(App),
+    router,
+    render: h => h(App),
 }).$mount('#app')

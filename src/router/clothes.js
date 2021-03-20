@@ -6,6 +6,7 @@ import styleImage from "@/pages/clothes/style/style-image"
 import styleDetails from "@/pages/clothes/style/style-details"
 import styleAdd from "@/pages/clothes/style/style-add"
 import styleEdit from "@/pages/clothes/style/style-edit"
+import scheduleList from "@/pages/clothes/schedule/schedule-list"
 
 export default [
     {
@@ -49,5 +50,10 @@ export default [
         path: '/styleDetails',
         name: 'styleDetails',
         component: styleDetails,
+    },
+    {
+        path: '/scheduleList',
+        name: 'scheduleList',
+        component: scheduleList,
     },
 ]
