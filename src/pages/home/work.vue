@@ -54,7 +54,7 @@ export default {
         {id: 6, name: "款式添加", link: 'styleAdd', icon: "add"},
         {id: 7, name: "款式列表", link: 'styleList', icon: "bar-chart-o"},
         {id: 8, name: "婚纱列表", link: 'clothesList', icon: "bar-chart-o"},
-        {id: 9, name: "档期查看", link: 'scheduleList', icon: "bar-chart-o"},
+        {id: 9, name: "档期查看", link: 'scheduleList', icon: "browsing-history"},
       ],
     }
   },
