@@ -30,6 +30,77 @@
           :rules="[{ required: true }]">
       </van-field>
 
+      <van-field label="第一件婚纱">
+        <template #input>
+          <van-switch v-model="firstSwitch" size="20"/>
+        </template>
+      </van-field>
+
+      <van-field
+          name="clothesSize"
+          v-if="firstSwitch"
+          :value="clothesSize"
+          label="选择尺寸"
+          placeholder="点击选择第一件婚纱的尺寸"
+          readonly
+          @click="clothesSizeShowPicker = true"
+          :rules="[{ required: true }]"
+      />
+      <van-popup v-model="clothesSizeShowPicker" position="bottom">
+        <van-picker
+            getColumnValues
+            show-toolbar
+            :columns="clothesSizeColumnsArray"
+            @confirm="clothesSizeOnConfirm"
+            @cancel="clothesSizeShowPicker = false"
+        />
+      </van-popup>
+
+      <!-- 所在店铺 start-->
+      <van-field
+          name="clothesShop"
+          v-if="firstSwitch"
+          label="所在店铺"
+          placeholder="点击选择所在店铺"
+          readonly
+          v-model="clothesShopText"
+          v-on:click="shopShowPicker=true"
+          :rules="[{ required: true}]"
+      >
+      </van-field>
+      <van-popup v-model="shopShowPicker" position="bottom">
+        <van-picker
+            getColumnValues
+            show-toolbar
+            :columns="shopColumnsArray"
+            @confirm="shopOnConfirm"
+            @cancel="shopShowPicker = false"
+        />
+      </van-popup>
+      <!-- 所在店铺 end-->
+
+      <!-- 所在位置 start-->
+      <van-field
+          name="clothesPosition"
+          v-if="firstSwitch"
+          v-model="clothesPositionText"
+          label="所在位置"
+          placeholder="点击选择所在位置"
+          readonly
+          v-on:click="positionShowPicker = true"
+          :rules="[{ required: true}]"
+      >
+      </van-field>
+      <van-popup v-model="positionShowPicker" position="bottom">
+        <van-picker
+            getColumnValues
+            show-toolbar
+            :columns="positionColumnsArray"
+            @confirm="positionOnConfirm"
+            @cancel="positionShowPicker = false"
+        />
+      </van-popup>
+      <!-- 所在位置 end-->
 
       <van-field
           readonly
@@ -164,6 +235,20 @@ export default {
       fileName: "",
       fileList: [],
 
+      firstSwitch:true,
+      clothesSize:"",
+      clothesSizeShowPicker:false,
+      clothesSizeColumnsArray:clothesSizeColumnsArray,
+
+      clothesShop: "",
+      clothesShopText: "",
+      shopColumnsArray: [],
+      shopShowPicker: false,
+      positionColumnsArray: [],
+      clothesPosition: "",
+      clothesPositionText: "",
+      positionShowPicker: false,
+
       cropShow: false, // 裁剪弹窗显示
       inputImgUrl: '', // input 选中的图片 url
       getObjectURL,
@@ -172,7 +257,8 @@ export default {
     }
   },
   created() {
-    this.queryStyleIds()
+    this.queryStyleIds();
+    this.queryShopIds();
   },
   components: {
     baseNavBar
@@ -182,14 +268,14 @@ export default {
       this.$selectUtils.queryStyleIds(this.$selectUtils.Picker).then(response => {
         this.styleColumnsArray = JSON.parse(response.data.data)
       })
-    }
-    , styleOnConfirm: function (value) {
+    },
+    styleOnConfirm: function (value) {
       this.styleType = value.id
       this.styleTypeText = value.text
       this.styleShowPicker = false
       this.queryStyleName(value.id).then((response) => {
-        var name = response.data.data + "";
-        var styleNameLen = name.length
+        let name = response.data.data + "";
+        let styleNameLen = name.length
         switch (styleNameLen) {
           case 1:
             name = "000" + name;
@@ -203,8 +289,8 @@ export default {
         }
         this.styleNameText = name
       })
-    }
-    , queryStyleName: function (value) {
+    },
+    queryStyleName: function (value) {
       return this.$axios({
         method: "GET",
         url: "/style/queryStyleName",
@@ -213,9 +299,11 @@ export default {
           tenantCrop: this.tenantCrop
         }
       })
-    }
-    , addStyleSubmit(data) {
-      data.styleType = this.styleType
+    },
+    addStyleSubmit(data) {
+      data.styleType = this.styleType;
+      data.clothesShop=this.clothesShop;
+      data.clothesPosition=this.clothesPosition;
       this.$dialog.confirm({
         title: '添加款式',
         message: '确定要添加该款式吗？',
@@ -249,7 +337,6 @@ export default {
                   this.$router.replace({name: "styleList"})
                 })
                 .catch(()=>{
-                  console.log("取消按钮 刷新当前页面")
                   this.reload()
                 })
               } else {
@@ -259,11 +346,40 @@ export default {
           }
         })
       })
-    }
-    , createDateOnConfirm: function (time) {
+    },
+    createDateOnConfirm: function (time) {
       this.purchaseDate = this.$dateUtils.vantDateToYMD(time);
       this.createDateShowPicker = false;
 
+    },
+    clothesSizeOnConfirm:function (value){
+      this.clothesSize=value.id;
+      this.clothesSizeShowPicker=false;
+    },
+    shopOnConfirm: function (value) {
+      //查询店铺下所有位置
+      this.queryPositionIdsByShop(value.id)
+      //先清空店铺下的所有位置
+      this.clothesPosition = ""
+      this.clothesPositionText = ""
+      this.clothesShopText = value.text
+      this.clothesShop = value.id
+      this.shopShowPicker = false
+    },
+    queryShopIds: function () {
+      this.$selectUtils.queryShopIds(this.$selectUtils.Picker).then(response => {
+        this.shopColumnsArray = JSON.parse(response.data.data)
+      })
+    },
+    queryPositionIdsByShop: function (shop) {
+      this.$selectUtils.queryPositionIdsByShop(shop, this.$selectUtils.Picker).then(response => {
+        this.positionColumnsArray = JSON.parse(response.data.data)
+      })
+    },
+    positionOnConfirm: function (value) {
+      this.clothesPosition = value.id
+      this.clothesPositionText = value.text
+      this.positionShowPicker = false
     },
     beforeClose: function (action, done) {
       if (action === 'confirm') {
@@ -271,9 +387,8 @@ export default {
       } else {
         done();
       }
-    }
-    , afterRead(file) {
-      console.log(file)
+    },
+    afterRead(file) {
       this.fileName = file.file.name
       this.inputImgUrl = getObjectURL(file.file)
       this.showCrop()
@@ -286,8 +401,8 @@ export default {
       //     this.fileList[0].status = ""
       //   }
       // })
-    }
-    , uploadClothesImage: function () {
+    },
+    uploadClothesImage: function () {
       return new Promise((resolve, reject) => {
         if (this.fileList.length !== 0) {
           this.fileList[0].status = "uploading"
@@ -307,11 +422,10 @@ export default {
           resolve(true)
         }
       })
-    }
-    ,// 显示裁剪页
+    },
+    // 显示裁剪页
     showCrop() {
       this.cropShow = true
-      console.log(this.fileList)
     },
     // 隐藏裁剪页
     hideCrop: function () {
@@ -321,13 +435,20 @@ export default {
     async submitCrop() {
       this.hideCrop()
       const img = await this.$refs.cropper.getCroppedBlob('image/jpeg',0.7)
-      console.log(img)
       this.fileList[0].file = blobToFile(img, this.fileName)
-      console.log(this.fileList)
     },
   },
 
 }
+const clothesSizeColumnsArray=[
+  { id:"XS",text:"XS" },
+  { id:"S",text:"S" },
+  { id:"M",text:"M" },
+  { id:"L",text:"L" },
+  { id:"XL",text:"XL" },
+  { id:"XXL",text:"XXL" },
+  { id:"XXXL",text:"XXXL" },
+]
 </script>
 
 <style scoped>

@@ -179,13 +179,13 @@ export default {
       this.clothesShopText = value.text
       this.clothesShop = value.id
       this.shopShowPicker = false
-    }
-    , queryShopIds: function () {
+    },
+    queryShopIds: function () {
       this.$selectUtils.queryShopIds(this.$selectUtils.Picker).then(response => {
         this.shopColumnsArray = JSON.parse(response.data.data)
       })
-    }
-    , queryPositionIdsByShop: function (shop) {
+    },
+    queryPositionIdsByShop: function (shop) {
       this.$selectUtils.queryPositionIdsByShop(shop, this.$selectUtils.Picker).then(response => {
         this.positionColumnsArray = JSON.parse(response.data.data)
       })
@@ -194,12 +194,12 @@ export default {
       this.clothesPosition = value.id
       this.clothesPositionText = value.text
       this.positionShowPicker = false
-    }
-    , washingTipCheck: function (value) {
+    },
+    washingTipCheck: function (value) {
       console.log(value)
       this.washingTip = value ? 1 : 0
-    }
-    , addClothesSubmit: function (data) {
+    },
+    addClothesSubmit: function (data) {
       data.washingTip = this.washingTip
       data.clothesPosition = this.clothesPosition
       data.clothesShop = this.clothesShop
