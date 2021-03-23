@@ -1,6 +1,8 @@
 <template>
   <div>
-    <baseNavBar title="款式修改"/>
+    <van-sticky>
+      <baseNavBar title="款式修改"/>
+    </van-sticky>
     <van-form scroll-to-error @submit="updateStyleSubmit">
       <van-field
           name="id"
@@ -84,16 +86,15 @@
           onblur="window.scrollTo(0,0)"
           placeholder="请输入工厂来源"
       />
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
+
       <van-button
           class="bottom-button"
           color="linear-gradient(to right, #50E64D, #03B300)"
           round block type="primary"
-          native-type="submit">提交
+          native-type="submit"
+
+      >
+        提交
       </van-button>
     </van-form>
   </div>
@@ -211,10 +212,7 @@ export default {
 }
 
 .bottom-button {
-  width: 90%;
-  position: absolute;
-  bottom: 10%;
-  left: 5%;
-  margin: 0 auto;
+  width: 80%;
+  margin: 5% auto;
 }
 </style>

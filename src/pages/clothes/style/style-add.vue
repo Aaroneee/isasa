@@ -1,6 +1,8 @@
 <template>
   <div>
-    <baseNavBar  title="款式添加"/>
+    <van-sticky>
+      <baseNavBar  title="款式添加"/>
+    </van-sticky>
     <van-form scroll-to-error @submit="addStyleSubmit">
       <van-field
           name="styleType"
@@ -467,9 +469,8 @@ const clothesSizeColumnsArray=[
 }
 
 .bottom-button {
-  width: 90%;
-  bottom: 5%;
-  left: 5%;
+  width: 80%;
+  margin: 3% auto;
 }
 
 .crop-wrap {
