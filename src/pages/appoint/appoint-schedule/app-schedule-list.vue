@@ -1,13 +1,13 @@
 <template>
   <div>
     <van-sticky>
-      <switchNavBar title="每日预约" switchText="日期" @flag="createDateShow=true"/>
+      <switchNavBar :title="titleText" switchText="到店日期" @flag="createDateShow=true"/>
       <van-search
           @search="queryAppList"
           v-model="searchValue"
           placeholder="请输入搜索关键词"/>
-      <van-calendar  v-model="createDateShow" :min-date="new Date('2020/01/01')"
-                    :max-date="new Date('2022/01/01')"  @confirm="createDateOnConfirm"/>
+      <van-calendar v-model="createDateShow" :min-date="new Date('2020/01/01')"
+                    :max-date="new Date('2022/01/01')" @confirm="createDateOnConfirm"/>
       <van-dropdown-menu>
         <van-dropdown-item v-model="appointName" @change="appointNameChange"
                            :options="appointNameArray"/>
@@ -24,28 +24,32 @@
           :finished="finished"
           finished-text="没有更多了"
       >
-        <van-cell v-for="item in appointList" :key="item.id" @click="clickItem(item.id)">
-          <van-row style="padding-bottom: 10px">
-            <van-col span="12">姓名:{{ item.name }}</van-col>
-            <van-col v-if="item.isValid === '1'" style="color: coral">状态 : 预约</van-col>
-            <van-col v-if="item.isValid === '2'" style="color: #39a9ed">状态 : 到店</van-col>
-            <van-col v-if="item.isValid ==='3'" style="color: red">状态 : 取消</van-col>
+        <van-cell style="font-size: 12px" v-for="item in appointList" :key="item.id" @click="clickItem(item.id)">
+          <van-row  style="padding-bottom: 5px">
+            <van-col style="color: #39a9ed;font-size: 15px" span="12">预约档期:{{ item.appointTime }}</van-col>
+
           </van-row>
-          <van-row>
-            <van-col span="12">预约日期:{{ item.createDate }}</van-col>
-            <van-col span="12">到店日期:{{ item.appointDate }}</van-col>
+          <van-row >
+            <van-col  span="12">婚期:{{ item.weddingDay }}</van-col>
+            <van-col span="12" v-if="item.isValid === '1'" style="color: coral">已预约</van-col>
+            <van-col span="12" v-if="item.isValid === '2'" style="color: #39a9ed">已到店</van-col>
+            <van-col span="12" v-if="item.isValid ==='3'" style="color: red">预约已取消</van-col>
+          </van-row>
+          <van-row >
+            <van-col span="12">姓名:{{ item.name }}</van-col>
+            <van-col span="12">手机号:{{item.phone}}</van-col>
           </van-row>
           <van-row>
             <van-col span="12">来源:{{ item.sourceName }}</van-col>
-            <van-col span="12">到店时间:{{ item.appointTime }}</van-col>
+            <van-col span="12">预约项目:{{ item.appointName }}</van-col>
           </van-row>
           <van-row>
-            <van-col span="12">预约项目:{{ item.appointName }}</van-col>
             <van-col span="12">城市:{{ item.appointCity }}</van-col>
+            <van-col span="12">店铺:{{ item.appointShop }}</van-col>
           </van-row>
           <van-row>
             <van-col span="12">预约人:{{ item.inviter }}</van-col>
-            <van-col span="12">店铺:{{ item.appointShop }}</van-col>
+            <van-col span="12">礼服师:{{ item.appointDress }}</van-col>
           </van-row>
           <van-row>
             <van-col span="24">备注:{{ item.appointRemark }}</van-col>
@@ -69,6 +73,7 @@ export default {
       loading: false,
       finished: false,
 
+      titleText: this.$dateUtils.vantDateToYMD(new Date()),
       createDateShow: false,
       appointNameArray: [{text: "项目", value: ""}],
       inviterArray: [{text: "预约人", value: ""}],
@@ -97,6 +102,7 @@ export default {
     //日历确认
     createDateOnConfirm: function (time) {
       this.appointDate = this.$dateUtils.vantDateToYMD(time);
+      this.titleText = this.$dateUtils.vantDateToYMD(time);
       this.queryAppList();
       this.createDateShow = false;
     },
@@ -163,7 +169,24 @@ export default {
         this.appointShopArray.push(...JSON.parse(response.data.data));
       })
     },
+  },
+  beforeRouteLeave (to, from, next) {
+    // 从列表页去到别的页面，如果不是判断页面，则不缓存列表页
+    if (to.name === 'appDetails') {
+      this.$route.meta.keepAlive = true
+    } else {
+      this.$route.meta.keepAlive = false
+    }
+    next()
+  },activated(){
+    console.log("哎呀看见我了")
+    console.log("----------activated--------")
+  },
+  deactivated(){
+    console.log("讨厌！！你又走了")
+    console.log("----------deactivated--------")
   }
+
 }
 </script>
 

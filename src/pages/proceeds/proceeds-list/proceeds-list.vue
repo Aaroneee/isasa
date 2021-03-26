@@ -20,7 +20,7 @@
           :finished="finished"
           finished-text="没有更多了"
       >
-        <van-cell v-for="item in proceedsList" :key="item.id" @click="clickItem(item.id)">
+        <van-cell style="font-size: 12px" v-for="item in proceedsList" :key="item.id" @click="clickItem(item.id)">
           <van-row style="margin-bottom: 2%">
             <van-col span="12">姓名:{{ item.name }}</van-col>
             <van-col span="12">订单编号:{{ item.orderNo }}</van-col>

@@ -11,6 +11,23 @@
         <van-dropdown-item v-model="clothesSize" @change="clothesSizeChange" :options="clothesSizeArray"/>
         <van-dropdown-item v-model="shop" @change="shopChange" :options="shopArray"/>
         <van-dropdown-item :title="positionTitle" v-model="position" @change="positionChange" :options="positionArray"/>
+
+        <van-dropdown-item title="标签" ref="labelRef">
+          <van-row type="flex" style="padding: 10px">
+            <van-col style="margin: 5px" v-for="item in styleLabelList" :key="item.value">
+              <van-tag color="#B6B1BD" :class="{'bgcolor':styleLabels.indexOf(item.value)>-1}"
+                       round plain size="large"
+                       @click="pushStyleLabel(item.value)">{{ item.name }}
+              </van-tag>
+            </van-col>
+          </van-row>
+          <div style="padding: 100px 30px 30px 30px;">
+            <van-button type="danger" block round @click="styleLabelConfirm">
+              确认
+            </van-button>
+          </div>
+        </van-dropdown-item>
+
       </van-dropdown-menu>
     </van-sticky>
     <div>
@@ -73,6 +90,7 @@ export default {
     this.queryClothesList()
     this.queryStyleType()
     this.queryShopIds()
+    this.queryStyleLabelList()
   },
   data() {
     return {
@@ -98,6 +116,9 @@ export default {
       positionTitle: "位置",
       position: "",
       positionArray: [],
+      styleLabelList: [],
+      styleLabels: [],
+      isactive: false,
       page: 1,
     }
   },
@@ -130,6 +151,7 @@ export default {
         url: '/clothes/clothesList',
         params: {
           page: this.page,
+          styleLabels: this.styleLabels.toString(),
           styleName: this.styleName,
           styleType: this.styleType,
           clothesSize: this.clothesSize,
@@ -146,8 +168,11 @@ export default {
             this.finished = false
             this.page = response.data.data.nextPage
           }
+        } else {
+          this.finished = true
+          this.loading = false
+          this.$toast.fail(response.data.msg);
         }
-        this.loading = false
       })
     }
     , onLoad() {
@@ -207,11 +232,27 @@ export default {
     , toScan: function () {
       // TODO
       // 消息通知到 原生 原生隐藏vue页面   拉起扫码  扫码结束传递 值
+    }, queryStyleLabelList: function () {
+      this.$selectUtils.queryStyleLabels().then((response) => {
+        this.styleLabelList.push(...response.data.data);
+        console.log(response)
+      })
+    }, styleLabelConfirm: function () {
+      this.flushClothesListArray()
+      this.$refs.labelRef.toggle()
+      this.queryClothesList();
+    }, pushStyleLabel: function (value) {
+      if (this.styleLabels.indexOf(value) > -1) {
+        this.styleLabels.splice(this.styleLabels.indexOf(value, 0), 1)
+      } else {
+        this.styleLabels.push(value)
+      }
     }
   }
 }
 
 function arrTrans(num, arr) {
+  console.log(Math.floor(-1.9))
   const iconsArr = [];
   arr.forEach((item, index) => {
     const page = Math.floor(index / num);

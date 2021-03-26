@@ -34,7 +34,7 @@
           v-model="loading"
           :finished="finished"
           finished-text="没有更多了">
-        <van-cell v-for="item in styleList" :key="item.id" @click="clickItem(item)">
+        <van-cell style="font-size: 12px" v-for="item in styleList" :key="item.id" @click="clickItem(item)">
           <p>款式名称:{{ item.typeName + item.styleName }}</p>
           <van-row>
             <van-col span="12">采购来源:{{ item.factoryName }}</van-col>
@@ -134,14 +134,6 @@ export default {
       } else {
         this.styleLabels.push(value)
       }
-      // let arrIndex = this.spanIndex.indexOf(index);
-      // // console.log(arrIndex);
-      //
-      // if(arrIndex>-1){
-      //   this.spanIndex.splice(arrIndex,1);
-      // }else{
-      //   this.spanIndex.push(index);
-      // }
     }
   }
 }

@@ -15,7 +15,7 @@
           v-model="loading"
           :finished="finished"
           finished-text="没有更多了">
-        <van-cell v-for="item in clothesScheduleVO" :key="item.id" @click="clickItem(item)">
+        <van-cell style="font-size: 12px" v-for="item in clothesScheduleVO" :key="item.id" @click="clickItem(item)">
           <p>婚纱名称   :  {{ item.styleType + "-" + item.styleName + "-" + item.clothesSize + "-" + item.clothesNo }}</p>
           <van-row>
             <van-col span="12">目前位置:{{ item.positionName }}</van-col>
