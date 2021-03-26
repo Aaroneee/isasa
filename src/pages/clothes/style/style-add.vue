@@ -103,8 +103,16 @@
         />
       </van-popup>
       <!-- 所在位置 end-->
-
       <van-field
+          v-if="firstSwitch"
+          name="factoryName"
+          v-model="factoryName"
+          rows="1"
+          label="采购来源"
+          placeholder="请输入采购来源"
+      />
+      <van-field
+          v-if="firstSwitch"
           readonly
           clickable
           name="purchaseDate"
@@ -144,13 +152,6 @@
           placeholder="请输入不适合身形"
           maxlength="40"
           show-word-limit
-      />
-      <van-field
-          name="factoryName"
-          v-model="factoryName"
-          rows="1"
-          label="工厂来源"
-          placeholder="请输入工厂来源"
       />
 
       <van-field name="uploader" label="婚纱图片">
@@ -237,7 +238,7 @@ export default {
       fileName: "",
       fileList: [],
 
-      firstSwitch:true,
+      firstSwitch:false,
       clothesSize:"",
       clothesSizeShowPicker:false,
       clothesSizeColumnsArray:clothesSizeColumnsArray,
