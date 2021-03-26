@@ -34,18 +34,15 @@
       <van-list
           v-model="loading"
           :finished="finished"
-          :offset="10"
+          offset="-50"
           @load="onLoad"
-          class="auto"
-          :immediate-check="false"
           finished-text="没有更多了"
       >
-        <van-cell v-for="item in clothesList" :key="item.id">
+        <van-cell style="font-size: 12px" v-for="item in clothesList" :key="item.id">
           <van-grid :border="false" :column-num="2" :gutter="1">
             <van-grid-item v-if="item[0] != null">
               <div v-if="item[0].styleImage !== ''">
-
-                <van-image radius="7" @click="clickItem(item[0])"
+                <van-image class="style-img"  radius="7" @click="clickItem(item[0])"
                            :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[0].styleImage">
                 </van-image>
               </div>
@@ -57,11 +54,12 @@
               <span
                   v-text="item[0].styleType+'-'+item[0].styleName+'-'+item[0].clothesSize+'-'+item[0].clothesNo"></span>
               <span v-text="item[0].shopName"></span><span v-text="item[0].positionName"></span>
+              <span v-if="item[0].shopName === ''">店铺未选择</span> <span v-if="item[0].positionName === ''">位置未选择</span>
             </van-grid-item>
 
             <van-grid-item v-if="item[1] != null">
               <div v-if="item[1].styleImage !== ''">
-                <van-image radius="7" @click="clickItem(item[1])"
+                <van-image class="style-img" radius="7" @click="clickItem(item[1])"
                            :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[1].styleImage">
                 </van-image>
               </div>
@@ -73,6 +71,7 @@
               <span
                   v-text="item[1].styleType+'-'+item[1].styleName+'-'+item[1].clothesSize+'-'+item[1].clothesNo"></span>
               <span v-text="item[1].shopName"></span><span v-text="item[1].positionName"></span>
+              <span v-if="item[1].shopName === ''">店铺未选择</span> <span v-if="item[1].positionName === ''">位置未选择</span>
             </van-grid-item>
           </van-grid>
         </van-cell>
@@ -87,7 +86,7 @@ import switchNavBar from "@/components/nav-bar/switch-nav-bar"
 export default {
   name: "clothesList",
   created() {
-    this.queryClothesList()
+    // this.queryClothesList()
     this.queryStyleType()
     this.queryShopIds()
     this.queryStyleLabelList()
@@ -165,22 +164,20 @@ export default {
           if (response.data.data.nextPage === 0) {
             this.finished = true
           } else {
-            this.finished = false
+            this.loading = false
             this.page = response.data.data.nextPage
           }
         } else {
           this.finished = true
-          this.loading = false
           this.$toast.fail(response.data.msg);
         }
       })
     }
     , onLoad() {
-      if (this.loading) {
-        setTimeout(() => {
-          this.queryClothesList()
-        }, 2000);
-      }
+      const that = this
+      setTimeout(function (){
+        that.queryClothesList()
+      },2000)
     }
     ,
     styleTypeChange: function (type) {
@@ -226,8 +223,9 @@ export default {
       })
     }
     , flushClothesListArray: function () {
-      this.page = 1
       this.clothesList = []
+      this.page = 1
+      this.finished = false
     }
     , toScan: function () {
       // TODO
@@ -252,7 +250,6 @@ export default {
 }
 
 function arrTrans(num, arr) {
-  console.log(Math.floor(-1.9))
   const iconsArr = [];
   arr.forEach((item, index) => {
     const page = Math.floor(index / num);
@@ -290,6 +287,6 @@ body {
 }
 
 .style-img {
-  height: 200px;
+  width: 100%;
 }
 </style>

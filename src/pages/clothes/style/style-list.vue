@@ -35,19 +35,30 @@
           :finished="finished"
           finished-text="没有更多了">
         <van-cell style="font-size: 12px" v-for="item in styleList" :key="item.id" @click="clickItem(item)">
-          <p>款式名称:{{ item.typeName + item.styleName }}</p>
           <van-row>
-            <van-col span="12">采购来源:{{ item.factoryName }}</van-col>
-            <van-col span="12">采购日期:{{ item.purchaseDate }}</van-col>
-          </van-row>
-          <van-row>
-            <van-col span="12">适合身形:{{ item.styleFit }}</van-col>
-          </van-row>
-          <van-row>
-            <van-col span="12">不适合身形:{{ item.styleNoFit }}</van-col>
-          </van-row>
-          <van-row>
-            <van-col span="24">标签:{{ item.labelName }}</van-col>
+            <van-col span="13">
+              <van-col style="color: #39a9ed;font-size: 15px">款式名称:{{ item.typeName + item.styleName }}</van-col>
+              <van-row>
+                <van-col span="24">采购来源:{{ item.factoryName }}</van-col>
+              </van-row>
+              <van-row>
+                <van-col span="24">采购日期:{{ item.purchaseDate }}</van-col>
+              </van-row>
+              <van-row>
+                <van-col span="24">适合身形:{{ item.styleFit }}</van-col>
+              </van-row>
+              <van-row>
+                <van-col span="24">不适合身形:{{ item.styleNoFit }}</van-col>
+              </van-row>
+              <van-row>
+                <van-col span="24">标签:{{ item.labelName }}</van-col>
+              </van-row>
+            </van-col>
+            <van-col offset="1" span="10">
+              <van-image radius="7" @click="clickItem(item)"
+                         :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage">
+              </van-image>
+            </van-col>
           </van-row>
           <br>
           <!--          <van-row>-->

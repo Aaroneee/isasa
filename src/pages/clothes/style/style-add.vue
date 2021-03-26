@@ -112,7 +112,6 @@
           placeholder="请输入采购来源"
       />
       <van-field
-          v-if="firstSwitch"
           readonly
           clickable
           name="purchaseDate"
@@ -238,7 +237,7 @@ export default {
       fileName: "",
       fileList: [],
 
-      firstSwitch:false,
+      firstSwitch:true,
       clothesSize:"",
       clothesSizeShowPicker:false,
       clothesSizeColumnsArray:clothesSizeColumnsArray,
