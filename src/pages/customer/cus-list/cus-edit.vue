@@ -58,7 +58,8 @@
           @click="createDateShowPicker = true"
           :rules="[{ required: true }]"
       />
-      <van-calendar v-model="createDateShowPicker" :min-date="new Date('2020/01/01')" :max-date="new Date('2022/01/01')" @confirm="createDateOnConfirm"/>
+      <van-calendar v-model="createDateShowPicker" :min-date="new Date('2020/01/01')" :max-date="new Date('2022/01/01')"
+                    @confirm="createDateOnConfirm"/>
       <van-field
           v-model="customer.weddingDay"
           type="string"
@@ -115,27 +116,28 @@
 
 <script>
 import baseNavBar from '@/components/nav-bar/base-nav-bar'
+
 export default {
   name: "cus-edit",
-  data(){
-    return{
-      tenantCrop:localStorage.getItem("tenantCrop"),
-      id:this.$route.query.cusId,
-      customer:{},
+  data() {
+    return {
+      tenantCrop: localStorage.getItem("tenantCrop"),
+      id: this.$route.query.cusId,
+      customer: {},
 
-      sourceText:"",
-      sourceColumns:[],
-      sourceShowPicker:false,
-      createDateShowPicker:false,
+      sourceText: "",
+      sourceColumns: [],
+      sourceShowPicker: false,
+      createDateShowPicker: false,
 
-      serviceText:"",
-      serviceColumns:[],
-      serviceShowPicker:false,
+      serviceText: "",
+      serviceColumns: [],
+      serviceShowPicker: false,
 
-      remark:"",
+      remark: "",
     }
   },
-  components:{
+  components: {
     baseNavBar
   },
   created() {
@@ -143,68 +145,68 @@ export default {
     this.queryCustomerById();
 
   },
-  methods:{
+  methods: {
     //根据客资Id查询客资
-    queryCustomerById:function (){
+    queryCustomerById: function () {
       this.$axios({
-        method:"GET",
-        url:"/customer/queryCustomerById",
-        params:{
-          id:this.id
+        method: "GET",
+        url: "/customer/queryCustomerById",
+        params: {
+          id: this.id
         }
-      }).then(response=>{
-        if (response.data.code===200){
-          this.customer=response.data.data;
+      }).then(response => {
+        if (response.data.code === 200) {
+          this.customer = response.data.data;
           //查询渠道参数
           this.querySourceColumns();
           //查询客服参数
           this.queryServiceColumns();
-        }else {
+        } else {
           this.$toast.fail(response.data.msg);
         }
       })
     },
     //渠道Picker确认
-    sourceOnConfirm:function (value){
-      if (value[1]===""){
+    sourceOnConfirm: function (value) {
+      if (value[1] === "") {
         this.sourceText = value[0];
-        this.source = this.sourceColumns.find(k=>k.text===value[0]).id;
-      }else {
+        this.source = this.sourceColumns.find(k => k.text === value[0]).id;
+      } else {
         this.sourceText = value[1];
-        this.source = this.sourceColumns.find(k=>k.text===value[0]).children.find(k=>k.text===value[1]).id;
+        this.source = this.sourceColumns.find(k => k.text === value[0]).children.find(k => k.text === value[1]).id;
       }
       this.sourceShowPicker = false;
     },
     //source默认选中
-    sourceClick:function (){
-      this.sourceColumns.forEach(va=>{
-        if (va.id===this.customer.source){
-          this.$refs.sourceDefault.setColumnValue(0,va.text);
+    sourceClick: function () {
+      this.sourceColumns.forEach(va => {
+        if (va.id === this.customer.source) {
+          this.$refs.sourceDefault.setColumnValue(0, va.text);
           return;
         }
-        for (let chili of va.children){
-          if (chili.id===this.customer.source){
-            this.$refs.sourceDefault.setColumnValue(0,va.text);
-            this.$refs.sourceDefault.setColumnValue(1,chili.text);
+        for (let chili of va.children) {
+          if (chili.id === this.customer.source) {
+            this.$refs.sourceDefault.setColumnValue(0, va.text);
+            this.$refs.sourceDefault.setColumnValue(1, chili.text);
             return;
           }
         }
       })
     },
     //交接日期确认
-    createDateOnConfirm:function (time){
+    createDateOnConfirm: function (time) {
       this.customer.createDate = this.$dateUtils.vantDateToYMD(time);
       this.createDateShowPicker = false;
     },
     //客服Picker确认
-    serviceOnConfirm:function (value){
+    serviceOnConfirm: function (value) {
       this.serviceText = value.text;
       this.service = value.id;
       this.serviceShowPicker = false;
     },
-    editCustomerSubmit:function (values){
+    editCustomerSubmit: function (values) {
       console.log(values)
-      values.id=this.id;
+      values.id = this.id;
       values.source = this.source;
       values.service = this.service;
       values.tenantCrop = this.tenantCrop;
@@ -213,19 +215,27 @@ export default {
         message: '是否确认修改该条客资?',
       }).then(() => {
         this.$axios({
-          method:"PUT",
-          url:"/customer/updateCustomer",
-          params:values
-        }).then(response=>{
-          response.data.code===200?this.$toast.success("添加成功"):this.$toast.fail(response.data.msg);
+          method: "PUT",
+          url: "/customer/updateCustomer",
+          params: values
+        }).then(response => {
+          if (response.data.code === 200) {
+            this.$toast.success("修改成功")
+            const that = this
+            setTimeout(function () {
+              that.$router.back()
+            }, 1000)
+          } else {
+            this.$toast.fail(response.data.msg);
+          }
         })
       })
 
     },
     //查询渠道
     querySourceColumns: function () {
-      this.$selectUtils.querySourceIds(this.$selectUtils.Picker).then(response=>{
-        if (response.data.code !== 200){
+      this.$selectUtils.querySourceIds(this.$selectUtils.Picker).then(response => {
+        if (response.data.code !== 200) {
           this.$toast.fail(response.data.msg);
           return;
         }
@@ -238,16 +248,16 @@ export default {
           return k;
         });
         //赋值
-        this.sourceColumns.forEach(va=>{
-          if (va.id===this.customer.source){
-            this.sourceText=va.text;
-            this.source=va.id;
+        this.sourceColumns.forEach(va => {
+          if (va.id === this.customer.source) {
+            this.sourceText = va.text;
+            this.source = va.id;
             return;
           }
-          for (let chili of va.children){
-            if (chili.id===this.customer.source){
-              this.sourceText=chili.text;
-              this.source=chili.id;
+          for (let chili of va.children) {
+            if (chili.id === this.customer.source) {
+              this.sourceText = chili.text;
+              this.source = chili.id;
               return;
             }
           }
@@ -256,15 +266,15 @@ export default {
     },
     //查询客服
     queryServiceColumns: function () {
-      this.$selectUtils.queryServiceIds(this.$selectUtils.Picker).then(response=>{
+      this.$selectUtils.queryServiceIds(this.$selectUtils.Picker).then(response => {
         if (response.data.code !== 200) {
           this.$toast.fail(response.data.msg);
           return;
         }
         this.serviceColumns = JSON.parse(response.data.data);
-        let value=this.serviceColumns.find(k=>k.id===this.customer.service);
-        this.serviceText=value.text;
-        this.service=value.id;
+        let value = this.serviceColumns.find(k => k.id === this.customer.service);
+        this.serviceText = value.text;
+        this.service = value.id;
       })
     },
   }

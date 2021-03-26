@@ -11,6 +11,7 @@
         <van-cell title="来源:" :value="customer.source"  />
         <van-cell title="客服:" :value="customer.service"  />
         <van-cell title="意愿度:" :value="customer.grade"  />
+        <van-cell title="所在城市:" :value="customer.city"  />
         <van-cell title="婚期:" :value="customer.weddingDay"/>
         <van-cell title="婚礼地点:" :value="customer.weddingVenue"/>
         <van-cell title="备注:" :label="customer.remark" />

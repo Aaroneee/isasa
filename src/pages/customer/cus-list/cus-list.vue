@@ -33,10 +33,10 @@
         <van-cell style="font-size: 12px" v-for="item in customerList" :key="item.id" @click="clickItem(item.id)">
           <van-row>
             <van-col span="12" :style="{color:item.gradeColor}">姓名:{{ item.name }}</van-col>
-            <van-col  style="color: #de0d0d" span="12" >客资状态:{{ item.state }}</van-col>
+            <van-col style="color: #de0d0d" span="12">客资状态:{{ item.state }}</van-col>
           </van-row>
           <van-row>
-            <van-col span="12" >婚期:{{ item.weddingDay }}</van-col>
+            <van-col span="12">婚期:{{ item.weddingDay }}</van-col>
             <van-col span="12">对接日期:{{ item.createDate }}</van-col>
           </van-row>
           <van-row>
@@ -45,11 +45,7 @@
           </van-row>
           <van-row>
             <van-col span="12">来源:{{ item.source }}</van-col>
-            <van-col span="12">城市:{{ item.city }}</van-col>
-          </van-row>
-          <van-row>
             <van-col span="12">客服:{{ item.service }}</van-col>
-            <van-col span="12">意愿度:{{ item.grade }}</van-col>
           </van-row>
           <van-row>
             <van-col span="24">备注:{{ item.remark }}</van-col>
@@ -73,9 +69,9 @@ export default {
       customerList: [],
       loading: false,
       finished: false,
-      titleText:"客资列表",
-      createDateShow:false,
-      createDate:"",
+      titleText: "客资列表",
+      createDateShow: false,
+      createDate: "",
       //顶部搜索
       searchValue: "",
       //客资来源下拉
@@ -100,6 +96,7 @@ export default {
     switchNavBar
   },
   created() {
+    console.log("create")
     this.querySourceIds();
     this.queryGradeIds();
     this.queryStateIds();
@@ -155,7 +152,7 @@ export default {
         url: "/customer/mCustomerList",
         params: {
           value: val,
-          createDate:this.createDate,
+          createDate: this.createDate,
           source: this.source,
           grade: this.grade,
           state: this.state,
@@ -224,21 +221,25 @@ export default {
         }
         this.queryCusList()
       })
-    },createDateOnConfirm: function (time) {
+    }, createDateOnConfirm: function (time) {
       this.createDate = this.$dateUtils.vantDateToYMD(time);
       this.titleText = this.$dateUtils.vantDateToYMD(time);
       this.queryCusList();
       this.createDateShow = false;
     },
   },
-  beforeRouteLeave (to, from, next) {
+  beforeRouteLeave(to, from, next) {
     // 从列表页去到别的页面，如果不是详情页，则不缓存列表页
-    if (to.name === 'cusDetails'|| to.name === 'cusEdit') {
-      this.$route.meta.keepAlive = true
-    } else {
-      this.$route.meta.keepAlive = false
-    }
+    this.$route.meta.keepAlive = to.name === 'cusDetails';
     next()
+  }
+  , activated() {
+    console.log("哎呀看见我了")
+    console.log("----------activated--------")
+  },
+  deactivated() {
+    console.log("讨厌！！你又走了")
+    console.log("----------deactivated--------")
   }
 }
 </script>
