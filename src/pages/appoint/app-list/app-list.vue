@@ -85,6 +85,9 @@ export default {
       appointShop: "",
       state: "",
 
+
+      customer:{},
+
     }
   },
   created() {

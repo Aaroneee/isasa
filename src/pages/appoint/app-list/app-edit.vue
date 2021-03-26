@@ -126,167 +126,172 @@ import baseNavBar from "@/components/nav-bar/base-nav-bar"
 
 export default {
   name: "app-edit",
-  components:{
+  components: {
     baseNavBar
   },
 
-  data(){
-    return{
-      appId:this.$route.query.id,
-      appoint:{},
+  data() {
+    return {
+      appId: this.$route.query.id,
+      appoint: {},
 
-      appointDateShowPicker:false,
-      appointTimeShowPicker:false,
-      appointTimeColumns:appointTime,
-      inviterShowPicker:false,
-      appointNameShowPicker:false,
-      appointShopShowPicker:false,
+      appointDateShowPicker: false,
+      appointTimeShowPicker: false,
+      appointTimeColumns: appointTime,
+      inviterShowPicker: false,
+      appointNameShowPicker: false,
+      appointShopShowPicker: false,
 
-      inviterText:"",
-      inviterArray:[],
+      inviterText: "",
+      inviterArray: [],
 
-      appointNameText:"",
-      appointNameArray:[],
+      appointNameText: "",
+      appointNameArray: [],
 
-      appointShopText:"",
-      appointShopArray:[],
+      appointShopText: "",
+      appointShopArray: [],
 
     }
   },
   created() {
     this.queryAppoint();
   },
-  methods:{
+  methods: {
     //到店日期
-    appointDateOnConfirm:function (time){
-      this.appoint.appointDate=this.dateUtils.vantDateToYMD(time);
-      this.appointDateShowPicker=false;
+    appointDateOnConfirm: function (time) {
+      this.appoint.appointDate = this.$dateUtils.vantDateToYMD(time);
+      this.appointDateShowPicker = false;
     },
     //到店时间
-    appointTimeOnConfirm:function (value){
-      this.appoint.appointTime=value.text;
-      this.appointTimeShowPicker=false;
+    appointTimeOnConfirm: function (value) {
+      this.appoint.appointTime = value.text;
+      this.appointTimeShowPicker = false;
     },
     //预约人
-    inviterOnConfirm:function (value){
-      this.appoint.inviter=value.id;
-      this.inviterText=value.text;
-      this.inviterShowPicker=false;
+    inviterOnConfirm: function (value) {
+      this.appoint.inviter = value.id;
+      this.inviterText = value.text;
+      this.inviterShowPicker = false;
 
     },
     //预约项目
-    appointNameOnConfirm:function (value){
-      this.appoint.appointName=value.id;
-      this.appointNameText=value.text;
-      this.appointNameShowPicker=false;
+    appointNameOnConfirm: function (value) {
+      this.appoint.appointName = value.id;
+      this.appointNameText = value.text;
+      this.appointNameShowPicker = false;
     },
     //店铺
-    appointShopOnConfirm:function (value){
-      this.appointShopText=value.text;
-      this.appoint.appointShop=value.id;
-      this.appointShopShowPicker=false;
+    appointShopOnConfirm: function (value) {
+      this.appointShopText = value.text;
+      this.appoint.appointShop = value.id;
+      this.appointShopShowPicker = false;
       //查询店铺所在的城市
       this.queryCityByShopIds(value.id);
     },
-    editAppointSubmit:function (){
+    editAppointSubmit: function () {
       console.log(this.appoint);
       this.$dialog.confirm({
-        title: '修改客资',
-        message: '是否确认修改该条客资?',
+        title: '修改预约',
+        message: '是否确认修改该条预约?',
       }).then(() => {
-        this.axios({
-          method:"POST",
-          url:"/appoint/editAppoint",
-          params:this.appoint
-        }).then(response=>{
-          if (response.data.code!==200){
+        this.$axios({
+          method: "POST",
+          url: "/appoint/updateAppoint",
+          params: this.appoint
+        }).then(response => {
+          if (response.data.code === 200) {
+            this.$toast.success("修改成功")
+            const that = this
+            setTimeout(function () {
+              that.$router.back()
+            }, 1000)
+          } else {
             this.$toast.fail(response.data.msg);
-            return
           }
-          this.$toast.success("修改成功")
         })
       })
     },
 
 
-    queryAppoint:function (){
+    queryAppoint: function () {
       this.$axios({
-        method:"GET",
-        url:"/appoint/queryAppointById",
-        params:{
-          id:this.appId
+        method: "GET",
+        url: "/appoint/queryAppointById",
+        params: {
+          id: this.appId
         }
-      }).then(response=>{
-        if (response.data.code!==200){
-          this.$toast.fail(response.data.msg); return;
+      }).then(response => {
+        if (response.data.code !== 200) {
+          this.$toast.fail(response.data.msg);
+          return;
         }
-        this.appoint=response.data.data;
+        this.appoint = response.data.data;
         this.queryInviterIds();
         this.queryProjectsIds();
         this.queryShopIds();
       })
     },
     //查询预约人
-    queryInviterIds:function (){
-      this.$selectUtils.queryEmpIds(this.$selectUtils.Picker).then(response=>{
-        this.inviterArray=JSON.parse(response.data.data);
-        this.inviterText=this.inviterArray.find(k=>k.id===this.appoint.inviter).text;
+    queryInviterIds: function () {
+      this.$selectUtils.queryEmpIds(this.$selectUtils.Picker).then(response => {
+        this.inviterArray = JSON.parse(response.data.data);
+        this.inviterText = this.inviterArray.find(k => k.id === this.appoint.inviter).text;
       })
     },
     //查询预约项目
-    queryProjectsIds:function (){
-      this.$selectUtils.queryProjectsIds(this.$projectsType.appoint,this.$selectUtils.Picker).then(response=>{
-        this.appointNameArray=JSON.parse(response.data.data);
-        this.appointNameText=this.appointNameArray.find(k=>k.id===this.appoint.appointName).text;
+    queryProjectsIds: function () {
+      this.$selectUtils.queryProjectsIds(this.$projectsType.appoint, this.$selectUtils.Picker).then(response => {
+        this.appointNameArray = JSON.parse(response.data.data);
+        this.appointNameText = this.appointNameArray.find(k => k.id === this.appoint.appointName).text;
       })
     },
     //查询店铺
-    queryShopIds:function (){
-      this.$selectUtils.queryShopIds(this.$selectUtils.Picker).then(response=>{
-        this.appointShopArray=JSON.parse(response.data.data);
-        this.appointShopText=this.appointShopArray.find(k=>k.id===this.appoint.appointShop).text;
+    queryShopIds: function () {
+      this.$selectUtils.queryShopIds(this.$selectUtils.Picker).then(response => {
+        this.appointShopArray = JSON.parse(response.data.data);
+        this.appointShopText = this.appointShopArray.find(k => k.id === this.appoint.appointShop).text;
       })
     },
     //根据店铺查询城市
-    queryCityByShopIds:function (id){
-      this.$selectUtils.queryCityByShopIds(id).then(response=>{
-        this.appoint.appointCity=JSON.parse(response.data.msg);
+    queryCityByShopIds: function (id) {
+      this.$selectUtils.queryCityByShopIds(id).then(response => {
+        this.appoint.appointCity = JSON.parse(response.data.msg);
       })
     },
   },
 
 }
 
-const appointTime=[
-  {text:"06:00",id:"06:00"},
-  {text:"07:00",id:"07:00"},
-  {text:"08:00",id:"08:00"},
-  {text:"08:30",id:"08:30"},
-  {text:"09:00",id:"09:00"},
-  {text:"09:30",id:"09:30"},
-  {text:"10:00",id:"10:00"},
-  {text:"10:30",id:"10:30"},
-  {text:"11:00",id:"11:00"},
-  {text:"11:30",id:"11:30"},
-  {text:"12:00",id:"12:00"},
-  {text:"12:30",id:"12:30"},
-  {text:"13:00",id:"13:00"},
-  {text:"13:30",id:"13:30"},
-  {text:"14:00",id:"14:00"},
-  {text:"14:30",id:"14:30"},
-  {text:"15:00",id:"15:00"},
-  {text:"15:30",id:"15:30"},
-  {text:"16:00",id:"16:00"},
-  {text:"16:30",id:"16:30"},
-  {text:"17:00",id:"17:00"},
-  {text:"17:30",id:"17:30"},
-  {text:"18:00",id:"18:00"},
-  {text:"18:30",id:"18:30"},
-  {text:"19:00",id:"19:00"},
-  {text:"19:30",id:"19:30"},
-  {text:"20:00",id:"20:00"},
-  {text:"20:30",id:"20:30"},
-  {text:"21:00",id:"21:00"},
+const appointTime = [
+  {text: "06:00", id: "06:00"},
+  {text: "07:00", id: "07:00"},
+  {text: "08:00", id: "08:00"},
+  {text: "08:30", id: "08:30"},
+  {text: "09:00", id: "09:00"},
+  {text: "09:30", id: "09:30"},
+  {text: "10:00", id: "10:00"},
+  {text: "10:30", id: "10:30"},
+  {text: "11:00", id: "11:00"},
+  {text: "11:30", id: "11:30"},
+  {text: "12:00", id: "12:00"},
+  {text: "12:30", id: "12:30"},
+  {text: "13:00", id: "13:00"},
+  {text: "13:30", id: "13:30"},
+  {text: "14:00", id: "14:00"},
+  {text: "14:30", id: "14:30"},
+  {text: "15:00", id: "15:00"},
+  {text: "15:30", id: "15:30"},
+  {text: "16:00", id: "16:00"},
+  {text: "16:30", id: "16:30"},
+  {text: "17:00", id: "17:00"},
+  {text: "17:30", id: "17:30"},
+  {text: "18:00", id: "18:00"},
+  {text: "18:30", id: "18:30"},
+  {text: "19:00", id: "19:00"},
+  {text: "19:30", id: "19:30"},
+  {text: "20:00", id: "20:00"},
+  {text: "20:30", id: "20:30"},
+  {text: "21:00", id: "21:00"},
 ]
 </script>
 

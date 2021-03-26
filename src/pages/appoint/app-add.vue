@@ -258,12 +258,11 @@ export default {
 
           response.data.code===200?this.$toast.success("添加成功"):this.$toast.fail(response.data.msg);
           if (response.data.code===200){
-            this.$dialog.confirm({
-              title: '添加成功',
-              message: '是否跳转预约列表查看?',
-            }).then(() => {
-              this.$router.replace({name:"appList"})
-            })
+            this.$toast.success("添加预约成功")
+            const that = this
+            setTimeout(function () {
+              that.$router.back()
+            }, 1000)
           }else {
             this.$toast.fail(response.data.code);
           }

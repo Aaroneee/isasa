@@ -32,7 +32,7 @@
           <van-row >
             <van-col  span="12">婚期:{{ item.weddingDay }}</van-col>
             <van-col span="12" v-if="item.isValid === '1'" style="color: coral">已预约</van-col>
-            <van-col span="12" v-if="item.isValid === '2'" style="color: #39a9ed">已到店</van-col>
+            <van-col span="12" v-if="item.isValid === '2'" style="color: mediumseagreen">已到店</van-col>
             <van-col span="12" v-if="item.isValid ==='3'" style="color: red">预约已取消</van-col>
           </van-row>
           <van-row >
@@ -73,7 +73,7 @@ export default {
       loading: false,
       finished: false,
 
-      titleText: this.$dateUtils.vantDateToYMD(new Date()),
+      titleText: this.$dateUtils.vantDateToYMD(new Date()) +' ' + this.$dateUtils.getweekday(new Date()),
       createDateShow: false,
       appointNameArray: [{text: "项目", value: ""}],
       inviterArray: [{text: "预约人", value: ""}],
@@ -102,7 +102,7 @@ export default {
     //日历确认
     createDateOnConfirm: function (time) {
       this.appointDate = this.$dateUtils.vantDateToYMD(time);
-      this.titleText = this.$dateUtils.vantDateToYMD(time);
+      this.titleText = this.$dateUtils.vantDateToYMD(time)  +' ' + this.$dateUtils.getweekday(time);
       this.queryAppList();
       this.createDateShow = false;
     },
@@ -172,11 +172,7 @@ export default {
   },
   beforeRouteLeave (to, from, next) {
     // 从列表页去到别的页面，如果不是判断页面，则不缓存列表页
-    if (to.name === 'appDetails') {
-      this.$route.meta.keepAlive = true
-    } else {
-      this.$route.meta.keepAlive = false
-    }
+    this.$route.meta.keepAlive = to.name === 'appDetails';
     next()
   },activated(){
     console.log("哎呀看见我了")
