@@ -37,5 +37,8 @@ export default [
         path: '/appScheduleList',
         name: 'appScheduleList',
         component: appScheduleList,
+        meta: {
+            keepAlive: true
+        }
     }
 ];
