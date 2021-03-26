@@ -90,6 +90,16 @@
             @cancel="serviceShowPicker = false"
         />
       </van-popup>
+      <van-field
+          class="msg"
+          name="remark"
+          v-model="customer.remark"
+          type="textarea"
+          label="备注"
+          placeholder="备注"
+          maxlength="40"
+          show-word-limit
+      />
       <br>
       <br>
       <br>
@@ -120,7 +130,9 @@ export default {
 
       serviceText:"",
       serviceColumns:[],
-      serviceShowPicker:false
+      serviceShowPicker:false,
+
+      remark:"",
     }
   },
   components:{
@@ -181,7 +193,7 @@ export default {
     },
     //交接日期确认
     createDateOnConfirm:function (time){
-      this.createDate = this.$dateUtils.vantDateToYMD(time);
+      this.customer.createDate = this.$dateUtils.vantDateToYMD(time);
       this.createDateShowPicker = false;
     },
     //客服Picker确认
@@ -191,6 +203,7 @@ export default {
       this.serviceShowPicker = false;
     },
     editCustomerSubmit:function (values){
+      console.log(values)
       values.id=this.id;
       values.source = this.source;
       values.service = this.service;

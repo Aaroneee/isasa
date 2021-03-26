@@ -42,7 +42,7 @@
           @click="appointDateShowPicker = true"
           :rules="[{ required: true }]"
       />
-      <van-calendar v-model="appointDateShowPicker" @confirm="appointDateOnConfirm"/>
+      <van-calendar v-model="appointDateShowPicker" :min-date="new Date('2020/01/01')" :max-date="new Date('2022/01/01')" @confirm="appointDateOnConfirm"/>
 
       <van-field
           name="appointTime"
@@ -301,6 +301,12 @@ export default {
 
 }
 const appointTime=[
+  {text:"06:00",id:"06:00"},
+  {text:"07:00",id:"07:00"},
+  {text:"08:00",id:"08:00"},
+  {text:"08:30",id:"08:30"},
+  {text:"09:00",id:"09:00"},
+  {text:"09:30",id:"09:30"},
   {text:"10:00",id:"10:00"},
   {text:"10:30",id:"10:30"},
   {text:"11:00",id:"11:00"},
@@ -321,6 +327,9 @@ const appointTime=[
   {text:"18:30",id:"18:30"},
   {text:"19:00",id:"19:00"},
   {text:"19:30",id:"19:30"},
+  {text:"20:00",id:"20:00"},
+  {text:"20:30",id:"20:30"},
+  {text:"21:00",id:"21:00"},
 ]
 </script>
 

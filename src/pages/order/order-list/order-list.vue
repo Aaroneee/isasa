@@ -26,7 +26,7 @@
             :finished="finished"
             finished-text="没有更多了"
         >
-          <van-cell v-for="item in orderList" :key="item.id">
+          <van-cell style="font-size: 12px" v-for="item in orderList" :key="item.id">
             <div  @click="clickItem(item.id,item.cusId)">
               <p>姓名:{{ item.name }}</p>
               <van-row>

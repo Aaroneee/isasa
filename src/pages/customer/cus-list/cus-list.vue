@@ -1,7 +1,9 @@
 <template>
   <div>
     <van-sticky>
-      <baseNavBar url="work" title="客资列表"/>
+      <switchNavBar :title="titleText" switchText="对接日期" @flag="createDateShow=true"/>
+      <van-calendar v-model="createDateShow" :min-date="new Date('2020/01/01')"
+                    :max-date="new Date('2022/01/01')" @confirm="createDateOnConfirm"/>
       <van-search
           @search="queryCusList"
           v-model="searchValue"
@@ -28,8 +30,15 @@
           :finished="finished"
           finished-text="没有更多了"
       >
-        <van-cell v-for="item in customerList" :key="item.id" @click="clickItem(item.id)">
-          <p :style="{color:item.gradeColor}">姓名:{{ item.name }}</p>
+        <van-cell style="font-size: 12px" v-for="item in customerList" :key="item.id" @click="clickItem(item.id)">
+          <van-row>
+            <van-col span="12" :style="{color:item.gradeColor}">姓名:{{ item.name }}</van-col>
+            <van-col  style="color: #de0d0d" span="12" >客资状态:{{ item.state }}</van-col>
+          </van-row>
+          <van-row>
+            <van-col span="12" >婚期:{{ item.weddingDay }}</van-col>
+            <van-col span="12">对接日期:{{ item.createDate }}</van-col>
+          </van-row>
           <van-row>
             <van-col span="12">微信:{{ item.weChat }}</van-col>
             <van-col span="12">手机:{{ item.phone }}</van-col>
@@ -40,7 +49,7 @@
           </van-row>
           <van-row>
             <van-col span="12">客服:{{ item.service }}</van-col>
-            <van-col span="12">状态:{{ item.state }}</van-col>
+            <van-col span="12">意愿度:{{ item.grade }}</van-col>
           </van-row>
           <van-row>
             <van-col span="24">备注:{{ item.remark }}</van-col>
@@ -53,7 +62,7 @@
 </template>
 
 <script>
-import baseNavBar from '@/components/nav-bar/base-nav-bar'
+import switchNavBar from '@/components/nav-bar/switch-nav-bar'
 
 export default {
   name: "cus-list",
@@ -64,6 +73,9 @@ export default {
       customerList: [],
       loading: false,
       finished: false,
+      titleText:"客资列表",
+      createDateShow:false,
+      createDate:"",
       //顶部搜索
       searchValue: "",
       //客资来源下拉
@@ -85,7 +97,7 @@ export default {
     }
   },
   components: {
-    baseNavBar
+    switchNavBar
   },
   created() {
     this.querySourceIds();
@@ -143,6 +155,7 @@ export default {
         url: "/customer/mCustomerList",
         params: {
           value: val,
+          createDate:this.createDate,
           source: this.source,
           grade: this.grade,
           state: this.state,
@@ -211,7 +224,21 @@ export default {
         }
         this.queryCusList()
       })
+    },createDateOnConfirm: function (time) {
+      this.createDate = this.$dateUtils.vantDateToYMD(time);
+      this.titleText = this.$dateUtils.vantDateToYMD(time);
+      this.queryCusList();
+      this.createDateShow = false;
+    },
+  },
+  beforeRouteLeave (to, from, next) {
+    // 从列表页去到别的页面，如果不是详情页，则不缓存列表页
+    if (to.name === 'cusDetails'|| to.name === 'cusEdit') {
+      this.$route.meta.keepAlive = true
+    } else {
+      this.$route.meta.keepAlive = false
     }
+    next()
   }
 }
 </script>

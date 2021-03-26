@@ -116,8 +116,8 @@ export default {
       positionTitle: "位置",
       position: "",
       positionArray: [],
-      styleLabelList:[],
-      styleLabels:[],
+      styleLabelList: [],
+      styleLabels: [],
       isactive: false,
       page: 1,
     }
@@ -168,8 +168,11 @@ export default {
             this.finished = false
             this.page = response.data.data.nextPage
           }
+        } else {
+          this.finished = true
+          this.loading = false
+          this.$toast.fail(response.data.msg);
         }
-        this.loading = false
       })
     }
     , onLoad() {
@@ -249,6 +252,7 @@ export default {
 }
 
 function arrTrans(num, arr) {
+  console.log(Math.floor(-1.9))
   const iconsArr = [];
   arr.forEach((item, index) => {
     const page = Math.floor(index / num);
