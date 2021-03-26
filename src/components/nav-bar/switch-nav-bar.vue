@@ -27,7 +27,7 @@ export default {
   },
   methods: {
     onClickLeft: function () {
-      this.$router.go(-1);
+      this.$router.back();
     },
     onClickRight: function () {
       this.$emit("flag", true);
