@@ -15,7 +15,7 @@
           v-model="loading"
           :finished="finished"
           finished-text="没有更多了">
-        <van-cell style="font-size: 12px" v-for="item in clothesScheduleVO" :key="item.id" @click="clickItem(item)">
+        <van-cell style="font-size: 12px" v-for="item in clothesScheduleVO" :key="item.id" @click="clickItem(item)"  is-link >
           <p>婚纱名称   :  {{ item.styleType + "-" + item.styleName + "-" + item.clothesSize + "-" + item.clothesNo }}</p>
           <van-row>
             <van-col span="12">目前位置:{{ item.positionName }}</van-col>
@@ -51,7 +51,7 @@ export default {
   }
   , methods: {
     clickItem:function (value){
-      console.log(value)
+      this.$router.push({name:"clothesSchedule",query:value})
     },
     checkScheduleState: function () {
       this.$axios({
@@ -78,6 +78,10 @@ export default {
       this.searchValue = value
       this.checkScheduleState()
     }
+  }, beforeRouteLeave (to, from, next) {
+    // 从列表页去到别的页面，如果不是判断页面，则不缓存列表页
+    this.$route.meta.keepAlive = to.name === 'clothesSchedule';
+    next()
   }
 }
 </script>

@@ -7,6 +7,7 @@ import styleDetails from "@/pages/clothes/style/style-details"
 import styleAdd from "@/pages/clothes/style/style-add"
 import styleEdit from "@/pages/clothes/style/style-edit"
 import scheduleList from "@/pages/clothes/schedule/schedule-list"
+import clothesSchedule from "@/pages/clothes/schedule/clothes-schedule"
 
 export default [
     {
@@ -18,7 +19,9 @@ export default [
         path: '/clothesList',
         name: 'clothesList',
         component: clothesList,
-
+        meta: {
+            keepAlive: true
+        }
     },
     {
         path: '/styleAdd',
@@ -29,6 +32,9 @@ export default [
         path: '/styleList',
         name: 'styleList',
         component: styleList,
+        meta: {
+            keepAlive: true
+        }
 
     },
     {
@@ -55,5 +61,11 @@ export default [
         path: '/scheduleList',
         name: 'scheduleList',
         component: scheduleList,
+
+    },
+    {
+        path: '/clothesSchedule',
+        name: 'clothesSchedule',
+        component: clothesSchedule,
     },
 ]

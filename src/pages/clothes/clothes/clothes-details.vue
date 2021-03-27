@@ -2,7 +2,8 @@
   <div>
     <baseNavBar title="婚纱详情"/>
 
-    <H5 class="van-field van-col--offset-1">婚纱0101-0101-F-12</H5>
+    <H5 class="van-field van-col--offset-1">
+      {{ clothes.styleType + '-' + clothes.styleName + '-' + clothes.clothesSize + '-' + clothes.clothesNo }}</H5>
 
     <div>
       <van-swipe height="300" :autoplay="3000">
@@ -16,11 +17,18 @@
     </div>
 
 
-    <H5 class="van-field van-col--offset-1">操作记录</H5>
-    <van-empty description="描述文字" />
+    <H5 class="van-field van-col--offset-1">款式档期</H5>
+    <van-cell-group v-for="(item,index) in clothesScheduleList" :key="index">
+      <van-cell  :title="item.customerName" :label="'婚期: '+ item.weddingDay"
+                :value="item.scheduleDate">
 
-    <H5 class="van-field van-col--offset-1">婚纱操作</H5>
-    <van-empty description="描述文字" />
+      </van-cell>
+    </van-cell-group>
+    <van-empty v-if="clothesScheduleList.length === 0" image="search" description="该婚纱下暂未查询到档期使用" />
+
+
+    <!--    <H5 class="van-field van-col&#45;&#45;offset-1">婚纱操作</H5>-->
+<!--    <van-empty description="描述文字"/>-->
 
 
   </div>
@@ -34,12 +42,16 @@ export default {
   name: "clothesDetails",
   created() {
     this.clothes = this.$route.query
-    this.queryStyleImageByClothesId(this.clothes.id)
+    this.queryStyleImageByClothesId(this.clothes.clothesId)
+    this.queryClothesSchedules(this.clothes.clothesId)
   },
   data() {
     return {
       clothes: {},
       images: [],
+      clothesScheduleList: [],
+
+
     }
   }
   , components: {
@@ -49,20 +61,31 @@ export default {
     clickItem: function (value) {
       ImagePreview([value])
     }
-    ,queryStyleImageByClothesId(clothesId){
+    , queryStyleImageByClothesId(clothesId) {
       console.log(clothesId)
       this.$axios({
-        method:"GET",
-        url:"/styleImage/queryStyleImageByClothesId",
-        params:{
-          clothesId:clothesId,
+        method: "GET",
+        url: "/styleImage/queryStyleImageByClothesId",
+        params: {
+          clothesId: clothesId,
         }
-      }).then(response=>{
+      }).then(response => {
         const data = response.data.data;
-        for (let index in data){
-          data[index] = "https://www.ivorybai.com:443/clothes/"+data[index]
+        for (let index in data) {
+          data[index] = "https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/" + data[index]
         }
         this.images = data
+      })
+    }
+    , queryClothesSchedules: function (clothesId) {
+      this.$axios({
+        method: "GET",
+        url: "/schedule/clothesSchedules",
+        params: {
+          clothesId: clothesId,
+        }
+      }).then(response => {
+        this.clothesScheduleList = response.data.data
       })
     }
   }

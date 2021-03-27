@@ -175,12 +175,11 @@ export default {
           params: data
         }).then((response) => {
           if (response.data.code === 200) {
-            this.$dialog.confirm({
-              title: '添加成功',
-              message: '是否跳转款式列表查看?',
-            }).then(() => {
-              this.$router.replace({name:"styleList"})
-            })
+            this.$toast.success("修改成功")
+            const that = this
+            setTimeout(function () {
+              that.$router.back()
+            }, 1000)
           } else {
             this.$toast.fail(response.data.msg);
           }

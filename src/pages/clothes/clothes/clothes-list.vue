@@ -135,7 +135,7 @@ export default {
     clickItem: function (value) {
       console.log(value)
       // TODO  婚纱详情待开发
-      // this.$router.push({name: "clothesDetails", query: value})
+      this.$router.push({name: "clothesDetails", query: value})
     }, searchStyleName: function (value) {
       this.page = 1
       this.styleName = value
