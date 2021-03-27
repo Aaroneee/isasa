@@ -1,7 +1,7 @@
 <template>
   <div>
     <van-sticky>
-      <baseNavBar  title="款式添加"/>
+      <baseNavBar title="款式添加"/>
     </van-sticky>
     <van-form scroll-to-error @submit="addStyleSubmit">
       <van-field
@@ -121,7 +121,29 @@
           @click="createDateShowPicker = true"
           :rules="[{ required: true }]"
       />
-      <van-calendar v-model="createDateShowPicker" :min-date="new Date('2020/01/01')" :max-date="new Date('2022/01/01')" @confirm="createDateOnConfirm"/>
+      <van-calendar v-model="createDateShowPicker" :min-date="new Date('2020/01/01')" :max-date="new Date('2022/01/01')"
+                    @confirm="createDateOnConfirm"/>
+
+      <van-field
+          readonly
+          clickable
+          type="textarea"
+          name="styleLabels"
+          :value="styleLabelsText"
+          label="款式标签"
+          placeholder="点击选择标签"
+          @click="styleLabelShowPicker = true"
+      />
+      <van-popup v-model="styleLabelShowPicker" position="bottom">
+        <van-row type="flex" style="padding: 10px">
+          <van-col style="margin: 5px" v-for="item in styleLabelList" :key="item.value">
+            <van-tag color="#B6B1BD" :class="{'bgcolor':styleLabels.indexOf(item.value)>-1}"
+                     round plain size="large"
+                     @click="pushStyleLabel(item.value,item.name)">{{ item.name }}
+            </van-tag>
+          </van-col>
+        </van-row>
+      </van-popup>
       <van-field
           class="msg"
           name="styleInfo"
@@ -206,7 +228,7 @@ function blobToFile(theBlob, fileName) {
 
 export default {
   name: "styleAdd",
-  inject:['reload'],
+  inject: ['reload'],
   data() {
     return {
       //款式id
@@ -227,7 +249,7 @@ export default {
       //日期选择框展示
       createDateShowPicker: false,
       //款式介绍
-      styleInfo:"",
+      styleInfo: "",
       //适合身形
       styleFit: "",
       //不适合身形
@@ -237,10 +259,10 @@ export default {
       fileName: "",
       fileList: [],
 
-      firstSwitch:true,
-      clothesSize:"",
-      clothesSizeShowPicker:false,
-      clothesSizeColumnsArray:clothesSizeColumnsArray,
+      firstSwitch: true,
+      clothesSize: "",
+      clothesSizeShowPicker: false,
+      clothesSizeColumnsArray: clothesSizeColumnsArray,
 
       clothesShop: "",
       clothesShopText: "",
@@ -256,11 +278,18 @@ export default {
       getObjectURL,
       loading: false,
       overlayShow: false,
+
+      styleLabelShowPicker: false,
+      styleLabelsText: "",
+      styleLabelsTextArray: [],
+      styleLabelList: [],
+      styleLabels: [],
     }
   },
   created() {
     this.queryStyleIds();
     this.queryShopIds();
+    this.queryStyleLabelList()
   },
   components: {
     baseNavBar
@@ -304,8 +333,9 @@ export default {
     },
     addStyleSubmit(data) {
       data.styleType = this.styleType;
-      data.clothesShop=this.clothesShop;
-      data.clothesPosition=this.clothesPosition;
+      data.clothesShop = this.clothesShop;
+      data.clothesPosition = this.clothesPosition;
+      data.styleLabels = this.styleLabels.toString();
       this.$dialog.confirm({
         title: '添加款式',
         message: '确定要添加该款式吗？',
@@ -314,7 +344,7 @@ export default {
           this.$toast.loading({
             message: '上传图片中...',
             forbidClick: true,
-            duration: 3000
+            duration: 2500
           })
         }
         this.uploadClothesImage().then(value => {
@@ -338,9 +368,9 @@ export default {
                 }).then(() => {
                   this.$router.replace({name: "styleList"})
                 })
-                .catch(()=>{
-                  this.reload()
-                })
+                    .catch(() => {
+                      this.reload()
+                    })
               } else {
                 this.$toast.fail(response.data.msg);
               }
@@ -348,15 +378,42 @@ export default {
           }
         })
       })
+    }, queryStyleLabelList: function () {
+      this.$selectUtils.queryStyleLabels().then((response) => {
+        this.styleLabelList.push(...response.data.data);
+        console.log(response)
+      })
+    }
+    , styleLabelConfirm: function () {
+      this.styleLabelShowPicker = false
+    }
+    , pushStyleLabel: function (value,name) {
+      console.log(value)
+      console.log(name)
+      if (this.styleLabels.indexOf(value) > -1) {
+        this.styleLabels.splice(this.styleLabels.indexOf(value, 0), 1)
+      } else {
+        this.styleLabels.push(value)
+      }
+
+      if (this.styleLabelsTextArray.indexOf(name) > -1) {
+        this.styleLabels.splice(this.styleLabelsTextArray.indexOf(name, 0), 1)
+      } else {
+        this.styleLabelsTextArray.push(name)
+      }
+      this.styleLabelsText = this.styleLabelsTextArray.toString()
+
+
+
     },
     createDateOnConfirm: function (time) {
       this.purchaseDate = this.$dateUtils.vantDateToYMD(time);
       this.createDateShowPicker = false;
 
     },
-    clothesSizeOnConfirm:function (value){
-      this.clothesSize=value.id;
-      this.clothesSizeShowPicker=false;
+    clothesSizeOnConfirm: function (value) {
+      this.clothesSize = value.id;
+      this.clothesSizeShowPicker = false;
     },
     shopOnConfirm: function (value) {
       //查询店铺下所有位置
@@ -436,27 +493,27 @@ export default {
     // 裁剪页确认
     async submitCrop() {
       this.hideCrop()
-      const img = await this.$refs.cropper.getCroppedBlob('image/jpeg',0.7)
+      const img = await this.$refs.cropper.getCroppedBlob('image/jpeg', 0.7)
       this.fileList[0].file = blobToFile(img, this.fileName)
     },
   },
 
 }
-const clothesSizeColumnsArray=[
-  { id:"XS",text:"XS" },
-  { id:"S",text:"S" },
-  { id:"M",text:"M" },
-  { id:"L",text:"L" },
-  { id:"XL",text:"XL" },
-  { id:"XXL",text:"XXL" },
-  { id:"XXXL",text:"XXXL" },
+const clothesSizeColumnsArray = [
+  {id: "XS", text: "XS"},
+  {id: "S", text: "S"},
+  {id: "M", text: "M"},
+  {id: "L", text: "L"},
+  {id: "XL", text: "XL"},
+  {id: "XXL", text: "XXL"},
+  {id: "XXXL", text: "XXXL"},
 ]
 </script>
 
 <style scoped>
 .msg {
   height: 100px;
-  word-break:break-all
+  word-break: break-all
 }
 
 * {
@@ -514,4 +571,13 @@ const clothesSizeColumnsArray=[
   transform: translateY(100%);
 }
 
+.tag-padding {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.bgcolor {
+  border: 1px solid #de0d0d;
+  color: rgb(182, 177, 189);
+}
 </style>
