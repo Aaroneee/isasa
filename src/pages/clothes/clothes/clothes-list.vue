@@ -34,7 +34,7 @@
       <van-list
           v-model="loading"
           :finished="finished"
-          offset="-50"
+          offset="20"
           @load="onLoad"
           finished-text="没有更多了"
       >
