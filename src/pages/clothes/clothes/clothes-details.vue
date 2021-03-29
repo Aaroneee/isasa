@@ -2,33 +2,41 @@
   <div>
     <baseNavBar title="婚纱详情"/>
 
-    <H5 class="van-field van-col--offset-1">
-      {{ clothes.styleType + '-' + clothes.styleName + '-' + clothes.clothesSize + '-' + clothes.clothesNo }}</H5>
-
-    <div>
-      <van-swipe height="300" :autoplay="3000">
-        <van-swipe-item v-for="(image, index) in images" :key="index">
-          <div class="img-box">
-            <van-image fit="scale-down" round radius="7" width="50%" height="90%" :src="image"
-                       @click="clickItem(image)"/>
-          </div>
-        </van-swipe-item>
-      </van-swipe>
-    </div>
-
-
-    <H5 class="van-field van-col--offset-1">款式档期</H5>
-    <van-cell-group v-for="(item,index) in clothesScheduleList" :key="index">
-      <van-cell  :title="item.customerName" :label="'婚期: '+ item.weddingDay"
-                :value="item.scheduleDate">
-
-      </van-cell>
+    <van-cell-group
+        :title="clothes.styleType + '-' + clothes.styleName + '-' + clothes.clothesSize + '-' + clothes.clothesNo">
+      <div style="padding-top: 5px">
+        <van-swipe height="300" :autoplay="3000">
+          <van-swipe-item v-for="(image, index) in images" :key="index">
+            <div class="img-box">
+              <van-image fit="scale-down" round radius="7" width="50%" height="90%" :src="image"
+                         @click="clickItem(image)"/>
+            </div>
+          </van-swipe-item>
+        </van-swipe>
+      </div>
     </van-cell-group>
-    <van-empty v-if="clothesScheduleList.length === 0" image="search" description="该婚纱下暂未查询到档期使用" />
-
+<!--    <van-cell-group title="婚纱操作记录" v-for="(item,index) in clothesScheduleList" :key="index">-->
+<!--      <van-cell :title="item.customerName" :label="'婚期: '+ item.weddingDay"-->
+<!--                :value="item.scheduleDate">-->
+<!--      </van-cell>-->
+<!--    </van-cell-group>-->
+<!--    <van-empty v-if="clothesScheduleList.length === 0" image="search" description="该婚纱下暂未查询到操作记录"/>-->
+    <van-cell-group title="婚纱操作">
+      <van-grid :border="false" clickable :column-num="4">
+        <van-grid-item @click="clothesOperation"
+                       icon="back-top"
+                       text="出样陈列"/>
+        <van-grid-item @click="clothesSchedules"
+                       icon="chart-trending-o"
+                       text="档期查看"/>
+        <van-grid-item @click="styleInfoView"
+                       icon="newspaper-o"
+                       text="款式介绍"/>
+      </van-grid>
+    </van-cell-group>
 
     <!--    <H5 class="van-field van-col&#45;&#45;offset-1">婚纱操作</H5>-->
-<!--    <van-empty description="描述文字"/>-->
+    <!--    <van-empty description="描述文字"/>-->
 
 
   </div>
@@ -87,6 +95,20 @@ export default {
       }).then(response => {
         this.clothesScheduleList = response.data.data
       })
+    }
+    //出样陈列
+    , clothesOperation: function () {
+      this.$toast.fail("正在开发中哦！")
+      // this.$router.push({name: "clothesOperation", query: this.clothes})
+    }
+    , clothesSchedules: function () {
+      console.log(this.clothes)
+      this.$router.push({name: "clothesSchedule", query: this.clothes})
+    }
+    , styleInfoView: function () {
+      this.$toast.fail("正在开发中哦！")
+      // this.clothes.id = this.clothes.styleId
+      // this.$router.push({name: "styleDetails", query: this.clothes})
     }
   }
 }
