@@ -1,6 +1,7 @@
 import clothesAdd from "@/pages/clothes/clothes/clothes-add"
 import clothesList from "@/pages/clothes/clothes/clothes-list"
 import clothesDetails from "@/pages/clothes/clothes/clothes-details"
+import clothesOperation from "@/pages/clothes/clothes/clothes-operation"
 import styleList from "@/pages/clothes/style/style-list"
 import styleImage from "@/pages/clothes/style/style-image"
 import styleDetails from "@/pages/clothes/style/style-details"
@@ -67,5 +68,10 @@ export default [
         path: '/clothesSchedule',
         name: 'clothesSchedule',
         component: clothesSchedule,
+    },
+    {
+        path: '/clothesOperation',
+        name: 'clothesOperation',
+        component: clothesOperation,
     },
 ]

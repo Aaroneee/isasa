@@ -15,12 +15,12 @@
         </van-swipe>
       </div>
     </van-cell-group>
-<!--    <van-cell-group title="婚纱操作记录" v-for="(item,index) in clothesScheduleList" :key="index">-->
-<!--      <van-cell :title="item.customerName" :label="'婚期: '+ item.weddingDay"-->
-<!--                :value="item.scheduleDate">-->
-<!--      </van-cell>-->
-<!--    </van-cell-group>-->
-<!--    <van-empty v-if="clothesScheduleList.length === 0" image="search" description="该婚纱下暂未查询到操作记录"/>-->
+    <!--    <van-cell-group title="婚纱操作记录" v-for="(item,index) in clothesScheduleList" :key="index">-->
+    <!--      <van-cell :title="item.customerName" :label="'婚期: '+ item.weddingDay"-->
+    <!--                :value="item.scheduleDate">-->
+    <!--      </van-cell>-->
+    <!--    </van-cell-group>-->
+    <!--    <van-empty v-if="clothesScheduleList.length === 0" image="search" description="该婚纱下暂未查询到操作记录"/>-->
     <van-cell-group title="婚纱操作">
       <van-grid :border="false" clickable :column-num="4">
         <van-grid-item @click="clothesOperation"

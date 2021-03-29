@@ -246,7 +246,12 @@ export default {
         this.styleLabels.push(value)
       }
     }
-  }
+  },
+  beforeRouteLeave (to, from, next) {
+    // 从列表页去到别的页面，如果不是判断页面，则不缓存列表页
+    this.$route.meta.keepAlive = to.name === 'clothesDetails';
+    next()
+  },
 }
 
 function arrTrans(num, arr) {

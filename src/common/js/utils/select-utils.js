@@ -173,5 +173,15 @@ export default {
             }
         })
     }
+    ,queryOperationIds:function (type){
+        return self.$axios({
+            method: "GET",
+            url: "/select/operationIds",
+            params: {
+                type: type,
+                tenantCrop: localStorage.getItem("tenantCrop")
+            }
+        })
+    }
 
 }
