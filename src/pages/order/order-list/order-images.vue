@@ -4,7 +4,7 @@
     <van-cell-group :title="imageTitle">
       <van-collapse v-model="activeNames" style="padding:4% 4% 4% 4%">
         <van-collapse-item v-for="item in orderImageArray" :key="item.id"
-                           :title="item.orderName"
+                           :title="item.orderName+'  '+item.createDate"
                            :name="item.id">
           <van-cell-group style="text-align: center">
             <van-image radius="7"
@@ -137,7 +137,7 @@ export default {
           } else {
             data.orderImage = this.fileName
             data.cusId = this.order.cusId
-            data.registrant = this.order.dress
+            data.registrant = localStorage.getItem("empId")
             data.orderProject = this.order.orderNameId
             data.tenantCrop = this.tenantCrop
             data.uploader = []
