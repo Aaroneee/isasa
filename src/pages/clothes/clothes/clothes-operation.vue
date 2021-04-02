@@ -22,7 +22,7 @@
       <van-field
           name="historyPosition"
           readonly
-          :value="clothes.positionName"
+          :value="historyPosition"
           label="当前位置"
       />
 
@@ -72,8 +72,8 @@
           name="remark"
           v-model="remark"
           type="textarea"
-          label="描述"
-          placeholder="描述"
+          label="备注"
+          placeholder="本次操作备注"
           maxlength="40"
           show-word-limit
       />
@@ -98,6 +98,7 @@ export default {
   created() {
     this.clothes = this.$route.query
     this.clothesNameText = this.clothes.styleType + "-" + this.clothes.styleName + "-" + this.clothes.clothesSize + "-" + this.clothes.clothesNo
+    this.historyPosition = this.clothes.positionName === "" ?"无":this.clothes.positionName
     console.log(this.clothes)
     this.queryOperationArray()
     this.queryPositionIdsByShop(this.clothes.shopId)
@@ -109,6 +110,7 @@ export default {
       clothesNameText: "",
       clothesName: "",
       operationShowPicker: false,
+      historyPosition:"",
       operationId: "",
       operationText: "",
       operationArray: [],
@@ -165,6 +167,22 @@ export default {
       this.operationShowPicker = false
     }
     , queryPositionIdsByShop: function (shop) {
+      if (shop === ""){
+        this.$axios({
+          url: "/emp/queryEmpById",
+          method: "GET",
+          params: {
+            empId: localStorage.getItem("empId")
+          }
+        }).then(response => {
+          if (response.data.code !== 200) {
+            this.$toast.fail("信息查询有误,请重新登陆!");
+            return false;
+          }
+          this.clothes.shopId = response.data.data.shopId
+          this.queryPositionIdsByShop(response.data.data.shopId)
+        })
+      }
       this.$selectUtils.queryPositionIdsByShop(shop, this.$selectUtils.Picker).then(response => {
         this.positionColumnsArray = JSON.parse(response.data.data)
       })

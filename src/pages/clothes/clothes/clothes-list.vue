@@ -252,6 +252,10 @@ export default {
     this.$route.meta.keepAlive = to.name === 'clothesDetails';
     next()
   },
+  activated(){
+    this.flushClothesListArray()
+    this.queryClothesList()
+  }
 }
 
 function arrTrans(num, arr) {

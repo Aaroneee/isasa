@@ -98,8 +98,8 @@ export default {
     }
     //出样陈列
     , clothesOperation: function () {
-      this.$toast.fail("正在开发中哦！")
-      // this.$router.push({name: "clothesOperation", query: this.clothes})
+      // this.$toast.fail("正在开发中哦！")
+      this.$router.push({name: "clothesOperation", query: this.clothes})
     }
     , clothesSchedules: function () {
       console.log(this.clothes)
