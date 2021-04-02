@@ -27,6 +27,16 @@ export default {
         var week = weekArray[new Date(date).getDay()];//注意此处必须是先new一个Date
         return week;
     },
+    dateSectionStrToDateArray: function (dateSectionStr) {
+        const start = dateSectionStr.substring(0, dateSectionStr.length / 2).trim()
+        const end = dateSectionStr.substring(dateSectionStr.length / 2 + 1).trim()
+        console.log(start)
+        console.log(end)
+        const  dateArray = new Array(2)
+        dateArray[0] = new Date(start.replace(/-/g, "/"))
+        dateArray[1] =  new Date(end.replace(/-/g, "/"))
+        return dateArray
+    },
 
 
     //如果时间是 一位数则补充0
