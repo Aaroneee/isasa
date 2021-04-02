@@ -1,17 +1,6 @@
 <template>
   <div>
-    <switchNavBar title="订单详情" switchText="订单图片" @flag="orderImages=true"/>
-    <van-popup v-model="orderImages" round position="bottom" :style="{ height: '60%' }">
-      <van-collapse  v-model="activeNames"  style="padding:4% 4% 4% 4%">
-        <van-collapse-item v-for="item in orderImageArray" :key="item.id"
-                           :title="item.orderName"
-                           :name="item.id">
-          <van-cell-group style="text-align: center">
-            <van-image radius="7"  :src="'\thttps://order-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.imageUrl"/>
-          </van-cell-group>
-        </van-collapse-item>
-      </van-collapse>
-    </van-popup>
+    <baseNavBar title="订单详情"/>
     <div v-cloak>
       <van-cell style="font-size: 12px">
         <van-row>
@@ -83,30 +72,26 @@
 </template>
 
 <script>
-import switchNavBar from "@/components/nav-bar/switch-nav-bar"
+import baseNavBar from "@/components/nav-bar/base-nav-bar"
 
 export default {
   name: "order-details",
   components: {
-    switchNavBar
+    baseNavBar
   },
   data() {
     return {
       id: this.$route.query.id,
       cusId: this.$route.query.cusId,
       orderVo: {},
-      orderImages:false,
       tenantCrop: localStorage.getItem("tenantCrop"),
 
 
-      activeNames: ['1'],
-      orderImageArray: [],
       clothesScheduleList:[],
     }
   },
   created() {
     this.queryOrderVo();
-    this.queryOrderImages();
     this.queryCusSchedules(this.cusId)
   },
   methods: {
@@ -119,19 +104,6 @@ export default {
         }
       }).then(response => {
         this.orderVo = response.data.data;
-      })
-    },
-    queryOrderImages: function () {
-      this.$axios({
-        method: 'GET',
-        params: {
-          cusId: this.cusId,
-          tenantCrop:this.tenantCrop,
-        },
-        url: '/image/orderImagesByCus',
-      }).then(response => {
-        console.log(response)
-        this.orderImageArray = response.data.data
       })
     }
     ,queryCusSchedules:function (){
