@@ -21,6 +21,24 @@
             @cancel="appointDressPicker = false"
         />
       </van-popup>
+      <van-field
+          readonly
+          clickable
+          name="appointCosmetics"
+          :value="appointCosmeticsText"
+          label="化妆师"
+          placeholder="点击选择化妆师"
+          @click="appointCosmeticsPicker = true"
+      />
+      <van-popup v-model="appointCosmeticsPicker" position="bottom">
+        <van-picker
+            getColumnValues
+            show-toolbar
+            :columns="appointCosmeticsArray"
+            @confirm="appointCosmeticsOnConfirm"
+            @cancel="appointCosmeticsPicker = false"
+        />
+      </van-popup>
 
       <van-field
           readonly
@@ -65,11 +83,17 @@ export default {
       appoint: {},
 
       appointDressPicker: false,
+      appointCosmeticsPicker: false,
       roomPicker: false,
 
       appointDress: "",
       appointDressText: "",
       appointDressArray: [],
+
+      appointCosmeticsText: "",
+      appointCosmetics: "",
+      appointCosmeticsArray: [],
+
 
       room: "",
       roomText: "",
@@ -97,6 +121,12 @@ export default {
       this.roomText = value.text;
       this.roomPicker = false;
     },
+    //化妆师
+    appointCosmeticsOnConfirm: function (value) {
+      this.appointCosmetics = value.id;
+      this.appointCosmeticsText = value.text;
+      this.appointCosmeticsPicker = false;
+    },
     appointArrival: function () {
       this.$dialog.confirm({
         title: '预约到店',
@@ -111,6 +141,7 @@ export default {
             id: this.appId,
             cusId: this.appoint.cusId,
             appointDress: this.appointDress,
+            appointCosmetics: this.appointCosmetics,
             room: this.room,
           }
         }).then(response => {
@@ -147,6 +178,7 @@ export default {
         this.room = this.appoint.room
         this.queryAppointDress();
         this.queryRoomIdsByShopId();
+        this.queryAppointCosmetics();
       })
     },
     //查询礼服师
@@ -155,8 +187,19 @@ export default {
           this.$selectUtils.Picker
       ).then(response => {
         this.appointDressArray = JSON.parse(response.data.data);
-        if (this.appoint.appointDress!==""){
+        if (this.appoint.appointDress !== "") {
           this.appointDressText = this.appointDressArray.find(k => k.id === this.appoint.appointDress).text;
+        }
+      })
+    },
+    //查询化妆师
+    queryAppointCosmetics: function () {
+      this.$selectUtils.queryCosmeticsIds(
+          this.$selectUtils.Picker
+      ).then(response => {
+        this.appointCosmeticsArray = JSON.parse(response.data.data);
+        if (this.appoint.appointCosmetics !== "") {
+          this.appointCosmeticsText = this.appointCosmeticsArray.find(k => k.id === this.appoint.appointCosmetics).text;
         }
       })
     },
@@ -176,7 +219,7 @@ export default {
         }
         this.roomArray = JSON.parse(response.data.data);
         // 到店分配 text 找不到
-        if (this.appoint.room !== ""){
+        if (this.appoint.room !== "") {
           this.roomText = this.roomArray.find(k => k.id === this.appoint.room).text;
         }
       })

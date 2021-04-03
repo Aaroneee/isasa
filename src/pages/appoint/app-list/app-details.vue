@@ -14,6 +14,7 @@
         <van-cell title="预约店铺:" :value="appointVo.appointShop"/>
         <van-cell title="预约人:" :value="appointVo.inviter"/>
         <van-cell title="礼服师:" :value="appointVo.appointDress"/>
+        <van-cell title="化妆师:" :value="appointVo.appointCosmetics"/>
         <van-cell title="分配房间:" :value="appointVo.room"/>
         <van-cell title="备注:" :label="appointVo.appointRemark" />
       </van-cell-group>

@@ -48,8 +48,9 @@
             <van-col span="12">店铺:{{ item.appointShop }}</van-col>
           </van-row>
           <van-row>
-            <van-col span="12">预约人:{{ item.inviter }}</van-col>
-            <van-col span="12">礼服师:{{ item.appointDress }}</van-col>
+            <van-col span="8">预约人:{{ item.inviter }}</van-col>
+            <van-col span="8">礼服师:{{ item.appointDress }}</van-col>
+            <van-col span="8">化妆师:{{ item.appointCosmetics }}</van-col>
           </van-row>
           <van-row>
             <van-col span="24">备注:{{ item.appointRemark }}</van-col>
