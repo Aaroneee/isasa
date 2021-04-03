@@ -118,6 +118,17 @@ export default {
             }
         })
     },
+    //化妆师
+    queryCosmeticsIds: function (type) {
+        return self.$axios({
+            method: "GET",
+            url: "/select/cosmeticsIds",
+            params: {
+                type: type,
+                tenantCrop: localStorage.getItem("tenantCrop"),
+            }
+        })
+    },
     //根据店铺ID查询房间
     queryRoomIdsByShopId: function (shopId, type) {
         return self.$axios({
