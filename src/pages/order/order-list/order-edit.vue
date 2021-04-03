@@ -1,14 +1,17 @@
 <template>
   <div>
-    <baseNavBar title="订单添加"/>
-    <van-field
-        readonly
-        v-model="this.appointVo.name"
-        label="客资名"
-        placeholder="客资名"
-        :rules="[{ required: true }]"
-    />
+    <baseNavBar title="订单修改"/>
+
     <van-form @submit="addAppointSubmit">
+
+      <van-field
+          readonly
+          v-model="this.orderVo.name"
+          label="客资名"
+          placeholder="客资名"
+          :rules="[{ required: true }]"
+      />
+
       <van-field
           name="orderNo"
           v-model="orderNo"
@@ -99,44 +102,6 @@
       </van-popup>
 
       <van-field
-          readonly
-          name="proceedsName"
-          :value="proceedsNameText"
-          label="收款项目"
-          placeholder="收款项目"
-          :rules="[{ required: true }]"
-          @click="proceedsNamePicker=true"
-      />
-      <van-popup v-model="proceedsNamePicker" position="bottom">
-        <van-picker
-            getColumnValues
-            show-toolbar
-            :columns="proceedsNameArray"
-            @confirm="proceedsNameConfirm"
-            @cancel="proceedsNamePicker = false"
-        />
-      </van-popup>
-
-      <van-field
-          readonly
-          name="payment"
-          :value="paymentText"
-          label="收款方式"
-          placeholder="收款方式"
-          :rules="[{ required: true }]"
-          @click="paymentPicker=true"
-      />
-      <van-popup v-model="paymentPicker" position="bottom">
-        <van-picker
-            getColumnValues
-            show-toolbar
-            :columns="paymentArray"
-            @confirm="paymentConfirm"
-            @cancel="paymentPicker = false"
-        />
-      </van-popup>
-
-      <van-field
           name="orderPrice"
           v-model.number="orderPrice"
           label="订单总价"
@@ -150,6 +115,7 @@
           v-model.number="spareMoney"
           label="收款金额"
           type="digit"
+          readonly
           placeholder="收款金额"
           :rules="[{ required: true }]"
       />
@@ -166,47 +132,12 @@
 
       <van-field
           readonly
-          name="payee"
-          :value="payeeText"
-          label="收款人"
-          placeholder="收款人"
-          @click="payeePicker=true"
-          :rules="[{ required: true }]"
-      />
-      <van-popup v-model="payeePicker" position="bottom">
-        <van-picker
-            getColumnValues
-            show-toolbar
-            :columns="payeeArray"
-            @confirm="payeeConfirm"
-            @cancel="payeePicker = false"
-        />
-      </van-popup>
-
-      <van-field
-          readonly
           name="proceedsRate"
           :value="proceedsRate"
           label="收款进度"
           placeholder="收款进度"
           :rules="[{ required: true }]"
       />
-      <van-field name="uploader" label="订单图片">
-        <template #input>
-          <van-uploader v-model="fileList" :after-read="afterRead" multiple :max-count="1"/>
-        </template>
-      </van-field>
-      <!-- 裁剪页 -->
-      <transition name="slim-fade">
-        <div v-show="cropShow" class="crop-wrap">
-          <SlimCropper ref="cropper" :src="inputImgUrl" :aspect-ratio="0.8"></SlimCropper>
-          <div class="btn-box">
-            <button type="button" class="crop-btn" @click="hideCrop">取消</button>
-            <button type="button" class="crop-btn" @click="submitCrop">使用</button>
-          </div>
-        </div>
-      </transition>
-      <van-overlay :show="overlayShow"/>
       <br>
       <br>
       <van-row>
@@ -228,44 +159,23 @@
 
 <script>
 import baseNavBar from "@/components/nav-bar/base-nav-bar"
-// 将 blob 对象转化为 url
-const getObjectURL = (file) => {
-  let url
-  if (window.createObjectURL) { // basic
-    url = window.createObjectURL(file)
-  } else if (window.URL) { // mozilla(firefox)
-    url = window.URL.createObjectURL(file)
-  } else if (window.webkitURL) { // webkit or chrome
-    url = window.webkitURL.createObjectURL(file)
-  }
-  return url
-}
-
-function blobToFile(theBlob, fileName) {
-  //A Blob() is almost a File() - it's just missing the two properties below which we will add
-  return new window.File([theBlob], fileName, {type: 'image/jpeg'})
-}
 
 export default {
-  name: "order-add",
-  inject: ['reload'],
+  name: "orderEdit",
   data() {
     return {
-      appointVo: this.$route.query.appointVo,
-
+      orderId:"",
+      orderVo: this.$route.query,
       //对象
       orderNo: "",
-      createDate: this.$dateUtils.vantDateToYMD(new Date()),
+      createDate: "",
       weddingDay: "",
       orderName: "",
       orderDress: "",
       orderCosmetics: "",
-      proceedsName: "",
-      payment: "",
       orderPrice: null,
       spareMoney: null,
       orderSpare: null,
-      payee: "",
       proceedsRate: "",
       //Picker
       createDatePicker: false,
@@ -273,38 +183,16 @@ export default {
       orderNamePicker: false,
       orderDressPicker: false,
       orderCosmeticsPicker: false,
-      proceedsNamePicker: false,
-      paymentPicker: false,
-      payeePicker: false,
 
       //数据
       orderNameArray: [],
       orderDressArray: [],
       orderCosmeticsArray: [],
-      proceedsNameArray: [],
-      paymentArray: [],
-      payeeArray: [],
 
       //显示文本
       orderNameText: "",
       orderDressText: "",
       orderCosmeticsText: "",
-      proceedsNameText: "",
-      paymentText: "",
-      payeeText: "",
-
-
-      //订单图片
-      fileName: "",
-      fileList: [],
-
-      cropShow: false, // 裁剪弹窗显示
-      inputImgUrl: '', // input 选中的图片 url
-      getObjectURL,
-      loading: false,
-      overlayShow: false,
-
-
     }
   },
   components: {
@@ -314,23 +202,30 @@ export default {
     orderPrice(valOne) {
       this.orderSpare = valOne - this.spareMoney;
       this.selectProceedsRate();
-      console.log(this.proceedsRate)
 
     },
     spareMoney(valOne) {
       this.orderSpare = this.orderPrice - valOne;
       this.selectProceedsRate();
-      console.log(this.proceedsRate)
     }
+  },
+  mounted() {
+    this.orderNo = this.orderVo.orderNo
+    this.createDate = this.orderVo.createDate
+    this.weddingDay = this.orderVo.weddingDay
+    this.orderNameText = this.orderVo.orderName
+    this.orderDressText = this.orderVo.dress
+    this.orderCosmeticsText = this.orderVo.cosmetics
+    this.orderPrice = this.orderVo.orderPrice
+    this.spareMoney = this.orderVo.spareMoney
+    this.orderSpare = this.orderVo.orderSpare
   },
   created() {
     this.queryOrderNameIds();
     this.queryAppointDress();
     this.queryAppointCosmetics();
-    this.queryProceedsNameIds();
-    this.queryPaymentIds();
-    this.queryPayeeIds();
-    console.log(this.appointVo);
+    this.queryOrderById();
+    console.log(this.orderVo);
   },
   methods: {
     //订单日期
@@ -361,30 +256,6 @@ export default {
       this.orderCosmeticsText = value.text;
       this.orderCosmeticsPicker = false;
     },
-    //收款项目确认
-    proceedsNameConfirm: function (value) {
-      this.proceedsName = value.id;
-      this.proceedsNameText = value.text;
-      this.proceedsNamePicker = false;
-    },
-    //收款方式确认
-    paymentConfirm: function (value) {
-      if (value[1] === "") {
-        this.paymentText = value[0];
-        this.payment = this.paymentArray.find(k => k.text === value[0]).id;
-      } else {
-        this.paymentText = value[1];
-        let children = this.paymentArray.find(k => k.text === value[0]).children;
-        this.payment = children.find(k => k.text === value[1]).id;
-      }
-      this.paymentPicker = false;
-    },
-    //收款人确认
-    payeeConfirm: function (value) {
-      this.payee = value.id;
-      this.payeeText = value.text;
-      this.payeePicker = false;
-    },
     //选择收款进度
     selectProceedsRate: function () {
       let proportion = this.spareMoney / this.orderPrice;
@@ -396,56 +267,48 @@ export default {
 
     //提交订单
     addAppointSubmit: function (data) {
-      data.cusId = this.appointVo.cusId;
-      data.appId = this.appointVo.id;
       data.orderName = this.orderName;
       data.orderDress = this.orderDress;
       data.orderCosmetics = this.orderCosmetics;
-      data.proceedsName = this.proceedsName;
-      data.payment = this.payment;
-      data.payee = this.payee;
-      data.orderCity = this.appointVo.appointCity;
       data.tenantCrop = localStorage.getItem("tenantCrop");
+      data.id = this.orderId
+      console.log(data)
       this.$dialog.confirm({
-        title: '添加订单',
-        message: '是否确认给 : ' + this.appointVo.name + ' 添加订单?',
+        title: '修改订单',
+        message: '是否确认修改 《 ' + this.orderVo.name + ' 》的这条订单订单?',
       }).then(() => {
-        if (this.fileList.length !== 0) {
-          this.$toast.loading({
-            message: '上传图片中...',
-            forbidClick: true,
-            duration: 3000
-          })
-        }
-        this.uploadOrderImage().then(value => {
-          if (!value) {
-            this.$toast.fail("图片上传发生错误,请检查后进行上传")
-            this.overlayShow = false
-          } else {
-            data.orderImage = this.fileName
-            data.uploader = []
-            this.$axios({
-              method: "POST",
-              url: "/order/saveOrder",
-              params: data
-            }).then(response => {
-              console.log(response)
-              if (response.data.code !== 200) {
-                this.$toast.fail(response.data.msg())
-                return
-              }
-              this.$toast.success("订单添加成功!")
-              this.$dialog.confirm({
-                message: '是否确认跳转到订单列表?',
-              }).then(() => {
-                this.$router.push({name: "orderList"})
-              }).catch(() => {
-                console.log("取消按钮 刷新当前页面")
-                this.reload()
-              })
-            })
+        this.$axios({
+          method: "PUT",
+          url: "/order/updateOrderById",
+          params: data
+        }).then(response => {
+          console.log(response)
+          if (response.data.code !== 200) {
+            this.$toast.fail(response.data.msg())
+            return
           }
+          let that = this;
+          this.$toast.success("订单修改成功!")
+          setTimeout(function () {
+            that.$router.back()
+          }, 1000)
         })
+      })
+    },
+    queryOrderById: function () {
+      this.$axios({
+        method: "GET",
+        url: "/order/getById",
+        params: {
+          id: this.orderVo.id
+        }
+      }).then(response => {
+        const data = response.data.data
+        this.orderDress = data.orderDress
+        this.orderName = data.orderName
+        this.orderCosmetics = data.orderCosmetics
+        this.orderId = data.id
+        console.log(data)
       })
     },
     //查询订单项目
@@ -472,100 +335,7 @@ export default {
         this.orderCosmeticsArray = JSON.parse(response.data.data);
       })
     },
-//查询收款项目
-    queryProceedsNameIds: function () {
-      this.$selectUtils.queryProjectsIds(this.$projectsType.proceeds, this.$selectUtils.Picker).then(response => {
-        this.proceedsNameArray = JSON.parse(response.data.data)
-      })
-    }
-    ,
-//查询收款方式
-    queryPaymentIds: function () {
-      this.$selectUtils.queryPaymentIds(this.$selectUtils.Picker).then(response => {
-        this.paymentArray = JSON.parse(JSON.parse(response.data.data));
-        this.paymentArray = this.paymentArray.map(k => {
-          if (k.children === null) {
-            k.children = [{text: "", id: k.id}];
-            return k;
-          }
-          return k;
-        });
-      })
-    }
-    ,
-//查询收款人
-    queryPayeeIds: function () {
-      this.$selectUtils.queryPayeeIds(this.$selectUtils.Picker).then(response => {
-        this.payeeArray = JSON.parse(response.data.data)
-      })
-    }
-    ,
-    beforeClose: function (action, done) {
-      if (action === 'confirm') {
-        setTimeout(done, 1000);
-      } else {
-        done();
-      }
-    }
-    ,
-    afterRead(file) {
-      console.log(file)
-      this.fileName = file.file.name
-      this.inputImgUrl = getObjectURL(file.file)
-      this.showCrop()
-      // this.fileList[0].status = "uploading"
-      // this.fileList[0].message = "上传中..."
-      // this.$upload.clothesImageUpload(file)
-      // .then(response=>{
-      //   let data = response.data
-      //   if (data.code === 200){
-      //     this.fileList[0].status = ""
-      //   }
-      // })
-    }
-    ,
-    uploadOrderImage: function () {
-      return new Promise((resolve, reject) => {
-        if (this.fileList.length !== 0) {
-          this.fileList[0].status = "uploading"
-          this.fileList[0].message = "上传中..."
-          this.$upload.orderImageUpload(this.fileList[0].file)
-              .then(response => {
-                let data = response.data
-                if (data.code === 200) {
-                  this.fileList[0].status = ""
-                  this.fileName = data.data
-                  resolve(true)
-                } else {
-                  reject(false)
-                }
-              })
-        } else {
-          resolve(true)
-        }
-      })
-    }
-    ,// 显示裁剪页
-    showCrop() {
-      this.cropShow = true
-      console.log(this.fileList)
-    }
-    ,
-// 隐藏裁剪页
-    hideCrop: function () {
-      this.cropShow = false
-    }
-    ,
-// 裁剪页确认
-    async submitCrop() {
-      this.hideCrop()
-      const img = await this.$refs.cropper.getCroppedBlob()
-      console.log(img)
-      this.fileList[0].file = blobToFile(img, this.fileName)
-      console.log(this.fileList)
-    }
-    ,
-  }
+  },
 
 }
 const citys = [

@@ -130,6 +130,9 @@ export default {
       this.$router.push({name:"orderImages",query:value})
     }
   }
+  , activated(){
+    this.queryOrderList()
+  }
 }
 </script>
 

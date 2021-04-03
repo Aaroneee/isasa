@@ -3,6 +3,7 @@ import orderList from "@/pages/order/order-list/order-list"//订单列表
 import orderDetails from "@/pages/order/order-list/order-details"//订单详情
 import orderClothes from "@/pages/order/order-list/order-clothes"//订单款式上传
 import orderImages from "@/pages/order/order-list/order-images"//订单图片及上传订单图片
+import orderEdit from "@/pages/order/order-list/order-edit"//订单图片及上传订单图片
 
 export default [
     {
@@ -14,7 +15,9 @@ export default [
         path: '/orderList',
         name: 'orderList',
         component: orderList,
-
+        meta: {
+            keepAlive: true
+        }
     },
     {
         path: '/orderDetails',
@@ -30,5 +33,10 @@ export default [
         path: '/orderImages',
         name: 'orderImages',
         component: orderImages,
+    },
+    {
+        path: '/orderEdit',
+        name: 'orderEdit',
+        component: orderEdit,
     },
 ]
