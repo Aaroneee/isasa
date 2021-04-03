@@ -27,7 +27,7 @@
         <van-cell style="font-size: 12px" v-for="item in appointList" :key="item.id" @click="clickItem(item.id)">
           <van-row  style="padding-bottom: 5px">
             <van-col style="color: #39a9ed;font-size: 15px" span="12">预约档期:{{ item.appointTime }}</van-col>
-
+            <van-col style="color: coral;font-size: 15px" span="12">客资状态:{{ item.stateName }}</van-col>
           </van-row>
           <van-row >
             <van-col  span="12">婚期:{{ item.weddingDay }}</van-col>
