@@ -31,12 +31,13 @@ export default {
         })
     },
     //状态
-    queryStateIds: function (type) {
+    queryStateIds: function (type,stateType) {
         return self.$axios({
             method: "GET",
             url: "/select/stateIds",
             params: {
                 type: type,
+                stateType:stateType,
             }
         })
     },
