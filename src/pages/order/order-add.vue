@@ -431,7 +431,7 @@ export default {
             }).then(response => {
               console.log(response)
               if (response.data.code !== 200) {
-                this.$toast.fail(response.data.msg())
+                this.$toast.fail(response.data.msg)
                 return
               }
               this.$toast.success("订单添加成功!")

@@ -282,9 +282,8 @@ export default {
           url: "/order/updateOrderById",
           params: data
         }).then(response => {
-          console.log(response)
           if (response.data.code !== 200) {
-            this.$toast.fail(response.data.msg())
+            this.$toast.fail(response.data.msg)
             return
           }
           let that = this;

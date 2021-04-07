@@ -9,6 +9,7 @@
           <van-cell-group style="text-align: center">
             <van-image radius="7"
                        :src="'\thttps://order-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.imageUrl"/>
+            <van-icon style="margin-left: 90%" size="20" @click="deleteOrderImage(item)" name="delete-o"/>
           </van-cell-group>
         </van-collapse-item>
       </van-collapse>
@@ -115,6 +116,31 @@ export default {
       }).then(response => {
         this.orderImageArray = response.data.data
       })
+    },
+    deleteOrderImage: function (value) {
+      console.log(value)
+      this.$dialog.confirm({
+        title: '移除订单图片',
+        message: '是否确认移除该订单图片?',
+      }).then(() => {
+        this.$axios({
+          method: 'delete',
+          params: {
+            orderImage: value.imageUrl,
+            cusId: this.order.cusId,
+            tenantCrop: this.tenantCrop,
+          },
+          url: '/image/deleteOrderImage',
+        }).then(response => {
+          var code = response.data.code;
+          if (code === 200) {
+            this.$toast.success("移除订单图片成功")
+            this.reload()
+          } else {
+            this.$toast.fail(response.data.msg)
+          }
+        })
+      })
     }
     , addOrderImage: function (data) {
       this.$dialog.confirm({
@@ -148,7 +174,7 @@ export default {
             }).then(response => {
               console.log(response)
               if (response.data.code !== 200) {
-                this.$toast.fail(response.data.msg())
+                this.$toast.fail(response.data.msg)
                 return
               }
               this.$toast.success("订单图片添加成功!")
