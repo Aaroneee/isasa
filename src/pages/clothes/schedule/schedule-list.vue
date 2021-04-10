@@ -2,10 +2,12 @@
   <div>
     <van-sticky>
       <switchNavBar title="档期查询" :switchText="dateText" @flag="dateShow=true"/>
+      <form action="javascript:return true">
       <van-search
           @search="searchStyleName"
           v-model="searchValue"
           placeholder="请输入婚纱编号"/>
+      </form>
       <van-calendar safe-area-inset-bottom v-model="dateShow" :min-date="new Date('2020/01/01')"
                     :max-date="new Date('2022/01/01')" @confirm="dateOnConfirm"/>
     </van-sticky>

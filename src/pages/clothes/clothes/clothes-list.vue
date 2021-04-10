@@ -2,10 +2,12 @@
   <div>
     <van-sticky>
       <switchNavBar title="婚纱列表" switchText="扫一扫" @flag="codeScanShow=!codeScanShow"/>
-      <van-search
-          @search="searchStyleName"
-          v-model="styleName"
-          placeholder="请输入婚纱礼服名称"/>
+      <form action="javascript:return true">
+        <van-search
+            @search="searchStyleName"
+            v-model="styleName"
+            placeholder="请输入婚纱礼服名称"/>
+      </form>
       <van-dropdown-menu style="font-size: 10px">
         <van-dropdown-item v-model="styleType" @change="styleTypeChange" :options="styleTypeArray"/>
         <van-dropdown-item v-model="clothesSize" @change="clothesSizeChange" :options="clothesSizeArray"/>
@@ -42,7 +44,7 @@
           <van-grid :border="false" :column-num="2" :gutter="1">
             <van-grid-item v-if="item[0] != null">
               <div v-if="item[0].styleImage !== ''">
-                <van-image class="style-img"  radius="7" @click="clickItem(item[0])"
+                <van-image class="style-img" radius="7" @click="clickItem(item[0])"
                            :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[0].styleImage">
                 </van-image>
               </div>
@@ -175,9 +177,9 @@ export default {
     }
     , onLoad() {
       const that = this
-      setTimeout(function (){
+      setTimeout(function () {
         that.queryClothesList()
-      },2000)
+      }, 2000)
     }
     ,
     styleTypeChange: function (type) {
@@ -247,7 +249,7 @@ export default {
       }
     }
   },
-  beforeRouteLeave (to, from, next) {
+  beforeRouteLeave(to, from, next) {
     // 从列表页去到别的页面，如果不是判断页面，则不缓存列表页
     this.$route.meta.keepAlive = to.name === 'clothesDetails';
     next()

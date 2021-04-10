@@ -2,10 +2,12 @@
   <div>
     <van-sticky>
       <switchNavBar :title="titleText" switchText="到店日期" @flag="createDateShow=true"/>
+      <form action="javascript:return true">
       <van-search
           @search="queryAppList"
           v-model="searchValue"
           placeholder="请输入搜索关键词"/>
+      </form>
       <van-calendar v-model="createDateShow" :min-date="new Date('2020/01/01')"
                     :max-date="new Date('2022/01/01')" @confirm="createDateOnConfirm"/>
       <van-dropdown-menu>

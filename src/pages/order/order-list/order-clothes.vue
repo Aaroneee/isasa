@@ -1,12 +1,12 @@
 <template>
   <div>
     <baseNavBar title="订单添加款式"/>
-
+    <form action="javascript:return true">
     <van-search
         @search="searchStyleName"
         v-model="styleName"
         placeholder="请输入婚纱礼服名称来搜索款式"/>
-
+    </form>
     <van-cell style="font-size: 12px" v-for="item in clothesList" :key="item.id">
       <van-grid :border="false" :column-num="2" :gutter="1">
         <van-grid-item v-if="item[0] != null">
