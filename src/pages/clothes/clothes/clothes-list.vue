@@ -1,18 +1,26 @@
 <template>
   <div>
     <van-sticky>
-      <switchNavBar title="婚纱列表" switchText="扫一扫" @flag="codeScanShow=!codeScanShow"/>
+      <switchNavBar title="婚纱列表" :switchText="dateText" @flag="dateShow=true"/>
       <form action="javascript:return true">
-        <van-search
-            @search="searchStyleName"
-            v-model="styleName"
-            placeholder="请输入婚纱礼服名称"/>
+          <van-search
+              show-action
+              @search="searchStyleName"
+              v-model="styleName"
+              placeholder="请输入婚纱礼服名称">
+          <template #action>
+            <div @click="codeScanShow=!codeScanShow"><van-icon name="scan" /></div>
+          </template>
+          </van-search>
       </form>
+      <van-calendar safe-area-inset-bottom v-model="dateShow" :min-date="new Date('2020/01/01')"
+                    :max-date="new Date('2022/01/01')" @confirm="dateOnConfirm"/>
       <van-dropdown-menu style="font-size: 10px">
         <van-dropdown-item v-model="styleType" @change="styleTypeChange" :options="styleTypeArray"/>
         <van-dropdown-item v-model="clothesSize" @change="clothesSizeChange" :options="clothesSizeArray"/>
-        <van-dropdown-item v-model="shop" @change="shopChange" :options="shopArray"/>
+<!--        <van-dropdown-item v-model="shop" @change="shopChange" :options="shopArray"/>-->
         <van-dropdown-item :title="positionTitle" v-model="position" @change="positionChange" :options="positionArray"/>
+        <van-dropdown-item v-model="isOrder" @change="isOrderChange" :options="isOrderArray"/>
 
         <van-dropdown-item title="标签" ref="labelRef">
           <van-row type="flex" style="padding: 10px">
@@ -92,10 +100,14 @@ export default {
     this.queryStyleType()
     this.queryShopIds()
     this.queryStyleLabelList()
+    this.queryPositionIdsByShop()
   },
   data() {
     return {
       codeScanShow: false,
+      dateShow:false,
+      dateText:"选择档期",
+      scheduleDate:"",
       tenantCrop: localStorage.getItem("tenantCrop"),
       styleName: "",
       styleType: "",
@@ -119,6 +131,9 @@ export default {
       positionArray: [],
       styleLabelList: [],
       styleLabels: [],
+      isOrder:"",
+      isOrderArray:[{text: "定款", value: ""},{text: "已定款", value: "isOrder"},{text: "未定款", value: "notOrder"}],
+
       isactive: false,
       page: 1,
     }
@@ -158,17 +173,19 @@ export default {
           clothesSize: this.clothesSize,
           tenantCrop: this.tenantCrop,
           clothesShop: this.shop,
-          clothesPosition: this.position
+          clothesPosition: this.position,
+          scheduleDate:this.scheduleDate,
+          isOrder:this.isOrder,
         }
       }).then(response => {
         if (response.data.code === 200) {
-          this.clothesList.push(...arrTrans(2, response.data.data.list))
           if (response.data.data.nextPage === 0) {
             this.finished = true
           } else {
             this.loading = false
             this.page = response.data.data.nextPage
           }
+          this.clothesList.push(...arrTrans(2, response.data.data.list))
         } else {
           this.finished = true
           this.$toast.fail(response.data.msg);
@@ -190,12 +207,10 @@ export default {
     , shopChange: function (shop) {
       this.flushClothesListArray()
       this.shop = shop
-      this.queryPositionIdsByShop(shop)
       this.queryClothesList()
     },
     positionChange: function (position) {
       this.flushClothesListArray()
-
       this.position = position
       this.positionTitle = this.positionArray.filter(item => item.value === this.position)[0].text
       this.queryClothesList()
@@ -216,11 +231,8 @@ export default {
         this.shopArray.push(...JSON.parse(response.data.data))
       })
     }
-    , queryPositionIdsByShop(shop) {
-      this.positionTitle = "位置"
-      this.positionArray.length = 0
-      this.position = ""
-      this.$selectUtils.queryPositionIdsByShop(shop, this.$selectUtils.DropDownMenu).then(response => {
+    , queryPositionIdsByShop() {
+      this.$selectUtils.queryPositionIdsByShop("", this.$selectUtils.DropDownMenu).then(response => {
         this.positionArray.push(...JSON.parse(response.data.data))
       })
     }
@@ -248,6 +260,24 @@ export default {
         this.styleLabels.push(value)
       }
     }
+    ,dateOnConfirm:function (value){
+      const s = this.$dateUtils.vantDateToYMD(value);
+      this.scheduleDate = s
+      this.dateText = s
+      this.dateShow = false
+      if (this.isOrder === ""){
+        this.isOrder = "isOrder"
+      }
+      this.flushClothesListArray()
+      this.queryClothesList()
+    },isOrderChange:function (){
+      if (this.scheduleDate === ""){
+        this.$toast.fail("选择档期后该选项生效")
+        return
+      }
+      this.flushClothesListArray()
+      this.queryClothesList()
+    }
   },
   beforeRouteLeave(to, from, next) {
     // 从列表页去到别的页面，如果不是判断页面，则不缓存列表页
@@ -258,13 +288,15 @@ export default {
 
 function arrTrans(num, arr) {
   const iconsArr = [];
-  arr.forEach((item, index) => {
-    const page = Math.floor(index / num);
-    if (!iconsArr[page]) {
-      iconsArr[page] = [];
-    }
-    iconsArr[page].push(item);
-  });
+  if (arr!==""){
+    arr.forEach((item, index) => {
+      const page = Math.floor(index / num);
+      if (!iconsArr[page]) {
+        iconsArr[page] = [];
+      }
+      iconsArr[page].push(item);
+    });
+  }
   return iconsArr;
 }
 </script>

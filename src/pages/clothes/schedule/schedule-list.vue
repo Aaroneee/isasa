@@ -8,7 +8,7 @@
           v-model="searchValue"
           placeholder="请输入婚纱编号"/>
       </form>
-      <van-calendar safe-area-inset-bottom v-model="dateShow" :min-date="new Date('2020/01/01')"
+      <van-calendar safe-area-inset-bottom v-model="dateShowPicker" :min-date="new Date('2020/01/01')"
                     :max-date="new Date('2022/01/01')" @confirm="dateOnConfirm"/>
     </van-sticky>
 
@@ -42,6 +42,7 @@ export default {
     return {
       searchValue: "",
       dateShow: false,
+      dateShowPicker:false,
       scheduleDate: "",
       dateText: "选择档期",
 
@@ -74,16 +75,27 @@ export default {
       const s = this.$dateUtils.vantDateToYMD(value);
       this.scheduleDate = s
       this.dateText = s
-      this.dateShow = false
+      this.dateShowPicker = false
       this.checkScheduleState()
     }, searchStyleName: function (value) {
       this.searchValue = value
       this.checkScheduleState()
     }
-  }, beforeRouteLeave (to, from, next) {
+  },beforeRouteLeave (to, from, next) {
     // 从列表页去到别的页面，如果不是判断页面，则不缓存列表页
     this.$route.meta.keepAlive = to.name === 'clothesSchedule';
     next()
+  },watch:{
+    dateShow:function (newValue){
+      console.log(newValue)
+      if (this.clothesScheduleVO.length === 0){
+        this.$toast.fail("请先查询款式")
+        this.dateShow = false
+      }else {
+        this.dateShowPicker = true
+        this.dateShow = false
+      }
+    }
   }
 }
 </script>
