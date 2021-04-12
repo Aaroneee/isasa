@@ -18,10 +18,19 @@
           :finished="finished"
           finished-text="没有更多了">
         <van-cell style="font-size: 12px" v-for="item in clothesScheduleVO" :key="item.id" @click="clickItem(item)"  is-link >
-          <p>婚纱名称   :  {{ item.styleType + "-" + item.styleName + "-" + item.clothesSize + "-" + item.clothesNo }}</p>
+          <div v-show="dateText==='选择档期' ">
+            <van-col span="12"> 客户名   :  {{ item.customerName }}</van-col>
+            <van-col span="12">婚期:{{ item.weddingDay }}</van-col>
+            <van-row>
+              <van-col span="16">档期:{{ item.scheduleDate }}</van-col>
+            </van-row>
+          </div>
           <van-row>
-            <van-col span="12">目前位置:{{ item.positionName }}</van-col>
-            <van-col span="12">档期状态:{{ dateText === "选择档期"?"未选择":item.scheduleState }}</van-col>
+          <van-col span="14">婚纱名称   :  {{ item.styleType + "-" + item.styleName + "-" + item.clothesSize + "-" + item.clothesNo }}</van-col>
+          <van-col span="10">位置:{{ item.positionName }}</van-col>
+          </van-row>
+            <van-row>
+            <van-col v-show="dateText!=='选择档期'" span="12">档期状态:{{ dateText === "选择档期"?"未选择":item.scheduleState }}</van-col>
           </van-row>
         </van-cell>
       </van-list>
