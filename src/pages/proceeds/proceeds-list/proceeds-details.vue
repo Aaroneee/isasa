@@ -14,6 +14,11 @@
         <van-cell title="收款金额:" :value="proceedsVo.spareMoney"  />
       </van-cell-group>
     </div>
+    <van-row style="padding-top: 10%">
+      <van-col span="6" offset="8">
+        <van-button @click="openProcEdit" type="warning" style="width: 100%">收款修改</van-button>
+      </van-col>
+    </van-row>
   </div>
 </template>
 
@@ -47,6 +52,9 @@ export default {
         this.proceedsVo=response.data.data;
       })
     },
+    openProcEdit:function (){
+      this.$router.push({name:"proceedsEdit",query:this.proceedsVo})
+    }
   }
 }
 

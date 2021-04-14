@@ -43,10 +43,14 @@
               </div>
               <span
                   v-text="item[0].styleType+'-'+item[0].styleName+'-'+item[0].clothesSize+'-'+item[0].clothesNo"></span>
-              <span
-                  :class="{'color-red':item[0].scheduleState==='撞挡','color-blue':item[0].scheduleState==='可用'}">{{
-                  '档期状态:' + item[0].scheduleState
-                }}</span>
+              <van-row>
+                   <span
+                       :class="{'color-red':item[0].scheduleState==='撞挡','color-blue':item[0].scheduleState==='可用'}">{{
+                       '档期状态:' + item[0].scheduleState
+                     }}</span>
+                <van-icon style="margin-left: 30px" size="15" @click="deleteSchedule(item[0])" name="delete-o"/>
+              </van-row>
+
               <span>{{ item[0].scheduleDate }}</span>
 
             </van-grid-item>
@@ -64,10 +68,13 @@
               </div>
               <span
                   v-text="item[1].styleType+'-'+item[1].styleName+'-'+item[1].clothesSize+'-'+item[1].clothesNo"></span>
-              <span
-                  :class="{'color-red':item[1].scheduleState==='撞挡','color-blue':item[1].scheduleState==='可用'}">{{
-                  '档期状态:' + item[1].scheduleState
-                }}</span>
+              <van-row>
+                   <span
+                       :class="{'color-red':item[1].scheduleState==='撞挡','color-blue':item[1].scheduleState==='可用'}">{{
+                       '档期状态:' + item[1].scheduleState
+                     }}</span>
+                <van-icon style="margin-left: 30px" size="15" @click="deleteSchedule(item[1])" name="delete-o"/>
+              </van-row>
               <span>{{ item[1].scheduleDate }}</span>
             </van-grid-item>
           </van-grid>
@@ -83,6 +90,7 @@ import switchNavBar from "@/components/nav-bar/switch-nav-bar"
 
 export default {
   name: "order-details",
+  inject: ['reload'],
   components: {
     switchNavBar
   },
@@ -126,6 +134,31 @@ export default {
         if (response.data.code === 200) {
           this.clothesScheduleList.push(...arrTrans(2, response.data.data))
         }
+      })
+    },
+    deleteSchedule: function (value) {
+      console.log(value.clothesId)
+      console.log(this.cusId)
+      this.$dialog.confirm({
+        title: '移除档期',
+        message: '是否确认移除该婚纱礼服?',
+      }).then(() => {
+        this.$axios({
+          method: 'delete',
+          params: {
+            clothesId: value.clothesId,
+            cusId: this.cusId,
+          },
+          url: '/schedule/removeClothesSchedule',
+        }).then(response => {
+          var code = response.data.code;
+          if (code == 200) {
+            this.$toast.success("移除档期成功")
+            this.reload()
+          } else {
+            this.$toast.fail(response.data.msg)
+          }
+        })
       })
     }
   }, watch: {

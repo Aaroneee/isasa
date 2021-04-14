@@ -3,12 +3,14 @@
     <div>
       <van-sticky>
         <switchNavBar title="订单列表" switchText="婚期" @flag="createDateShow=true"/>
+        <form action="javascript:return true">
         <van-search
             @search="queryOrderList"
             v-model="searchValue"
             placeholder="请输入搜索关键词"/>
+        </form>
         <van-calendar safe-area-inset-bottom v-model="createDateShow" :min-date="new Date('2020/01/01')"
-                      :max-date="new Date('2022/01/01')" type="range" @confirm="createDateOnConfirm"/>
+                      :max-date="new Date('2022/01/01')"  @confirm="createDateOnConfirm"/>
         <!--      <van-dropdown-menu>-->
         <!--        <van-dropdown-item :title="appointNameText" v-model="appointName" @change="appointNameChange"-->
         <!--                           :options="appointNameArray"/>-->
@@ -86,7 +88,7 @@ export default {
   methods: {
     //时间确认
     createDateOnConfirm: function (time) {
-      this.createDate = this.$dateUtils.rangeVantDateToYMD(time);
+      this.createDate = this.$dateUtils.vantDateToYMD(time);
       this.queryOrderList();
       this.createDateShow = false;
     },

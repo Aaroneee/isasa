@@ -1,12 +1,20 @@
 <template>
   <div>
-    <baseNavBar title="订单添加款式"/>
-
-    <van-search
-        @search="searchStyleName"
-        v-model="styleName"
-        placeholder="请输入婚纱礼服名称来搜索款式"/>
-
+    <van-sticky>
+      <baseNavBar title="订单添加款式"/>
+      <form action="javascript:return true">
+        <van-search
+            @search="searchStyleName"
+            v-model="styleName"
+            placeholder="请输入婚纱礼服名称来搜索款式"/>
+      </form>
+      <van-dropdown-menu style="font-size: 10px">
+      <van-dropdown-item v-model="styleType" @change="styleTypeChange" :options="styleTypeArray"/>
+      <van-dropdown-item v-model="clothesSize" @change="clothesSizeChange" :options="clothesSizeArray"/>
+      <van-dropdown-item v-model="shop" @change="shopChange" :options="shopArray"/>
+      <van-dropdown-item :title="positionTitle" v-model="position" @change="positionChange" :options="positionArray"/>
+      </van-dropdown-menu>
+    </van-sticky>
     <van-cell style="font-size: 12px" v-for="item in clothesList" :key="item.id">
       <van-grid :border="false" :column-num="2" :gutter="1">
         <van-grid-item v-if="item[0] != null">
@@ -22,6 +30,8 @@
           </div>
           <span
               v-text="item[0].styleType+'-'+item[0].styleName+'-'+item[0].clothesSize+'-'+item[0].clothesNo"></span>
+          <span v-text="item[0].positionName"></span>
+          <span v-if="item[0].positionName === ''">位置未选择</span>
           <span style="color: red" @click="clickItem(item[0])">选择此件</span>
         </van-grid-item>
 
@@ -38,6 +48,8 @@
           </div>
           <span
               v-text="item[1].styleType+'-'+item[1].styleName+'-'+item[1].clothesSize+'-'+item[1].clothesNo"></span>
+          <span v-text="item[1].positionName"></span>
+          <span v-if="item[1].positionName === ''">位置未选择</span>
           <span style="color: red" @click="clickItem(item[1])">选择此件</span>
         </van-grid-item>
       </van-grid>
@@ -115,6 +127,8 @@ export default {
   , created() {
     this.order = this.$route.query
     console.log(this.order)
+    this.queryStyleType()
+    this.queryShopIds()
   }
   , data() {
     return {
@@ -135,6 +149,22 @@ export default {
       clothesId: "",
       cusId: "",
 
+      styleType: "",
+      styleTypeArray: [{text: "款式", value: ""}],
+      clothesSize: "",
+      clothesSizeArray: [{text: "尺寸", value: ''}
+        , {text: "M", value: "M"}
+        , {text: "S", value: "S"}
+        , {text: "L", value: "L"}
+        , {text: "XL", value: "XL"}
+        , {text: "XXL", value: "XXL"}
+        , {text: "F", value: "F"}
+      ],
+      shop: "",
+      shopArray: [{text: "店铺", value: ""}],
+      positionTitle: "位置",
+      position: "",
+      positionArray: [],
 
     }
   }
@@ -193,6 +223,10 @@ export default {
         params: {
           page: 1,
           limit: 100,
+          styleType: this.styleType,
+          clothesSize: this.clothesSize,
+          clothesShop: this.shop,
+          clothesPosition: this.position,
           styleName: this.styleName,
           tenantCrop: this.tenantCrop,
         }
@@ -209,6 +243,50 @@ export default {
         }
       })
     }
+    ,
+    styleTypeChange: function (type) {
+      this.clothesList = []
+      this.styleType = type
+      this.queryClothesList()
+    }
+    , shopChange: function (shop) {
+      this.clothesList = []
+      this.shop = shop
+      this.queryPositionIdsByShop(shop)
+      this.queryClothesList()
+    },
+    positionChange: function (position) {
+      this.clothesList = []
+
+      this.position = position
+      this.positionTitle = this.positionArray.filter(item => item.value === this.position)[0].text
+      this.queryClothesList()
+    }
+    , clothesSizeChange: function (size) {
+      this.clothesList = []
+
+      this.clothesSize = size
+      this.queryClothesList()
+    }
+    , queryStyleType: function () {
+      this.$selectUtils.queryStyleIds(this.$selectUtils.DropDownMenu).then((response) => {
+        this.styleTypeArray.push(...JSON.parse(response.data.data));
+      })
+    }
+    , queryShopIds: function () {
+      this.$selectUtils.queryShopIds(this.$selectUtils.DropDownMenu).then(response => {
+        this.shopArray.push(...JSON.parse(response.data.data))
+      })
+    }
+    , queryPositionIdsByShop(shop) {
+      this.positionTitle = "位置"
+      this.positionArray.length = 0
+      this.position = ""
+      this.$selectUtils.queryPositionIdsByShop(shop, this.$selectUtils.DropDownMenu).then(response => {
+        this.positionArray.push(...JSON.parse(response.data.data))
+      })
+    }
+
   }
 }
 

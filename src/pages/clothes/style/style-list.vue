@@ -2,10 +2,12 @@
   <div>
     <van-sticky>
       <baseNavBar title="款式列表"/>
+      <form action="javascript:return true">
       <van-search
           @search="queryStyleList"
           v-model="styleName"
           placeholder="请输入款式名称"/>
+      </form>
       <van-dropdown-menu>
         <van-dropdown-item :title="styleText" v-model="styleType" @change="styleTypeChange" :options="styleTypeArray"/>
         <!--        <van-dropdown-item :title="gradeText" v-model="grade" @change="gradeChange" :options="gradeArray"/>-->

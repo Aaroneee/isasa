@@ -189,7 +189,6 @@ export default {
       this.queryCityByShopIds(value.id);
     },
     editAppointSubmit: function () {
-      console.log(this.appoint);
       this.$dialog.confirm({
         title: '修改预约',
         message: '是否确认修改该条预约?',

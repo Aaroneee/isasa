@@ -33,6 +33,33 @@
       <van-calendar v-model="createDateShowPicker" :min-date="new Date('2020/01/01')" :max-date="new Date('2022/01/01')"
                     @confirm="createDateOnConfirm"/>
 
+
+
+
+      <van-field
+          readonly
+          clickable
+          name="state"
+          :value="stateText"
+          label="状态"
+          placeholder="点击选择状态"
+          v-if="stateDisplay"
+          @click="stateShowPicker = true"
+          :rules="[{ required: stateFlag }]"
+      />
+      <van-popup v-model="stateShowPicker" position="bottom">
+        <van-picker
+            getColumnValues
+            show-toolbar
+            :columns="stateArray"
+            @confirm="stateArrayOnConfirm"
+            @cancel="stateShowPicker = false"
+        />
+      </van-popup>
+
+
+
+
       <van-field
           readonly
           clickable
@@ -190,6 +217,16 @@ export default {
       appointNameShowPicker: false,
       appointShopShowPicker: false,
       tenantCrop: localStorage.getItem("tenantCrop"),
+
+
+
+      //售后状态
+      state:"",
+      stateText:"",
+      stateShowPicker:false,
+      stateDisplay:false,
+      stateFlag:false,
+      stateArray:false,
     }
   },
   components: {
@@ -200,6 +237,7 @@ export default {
     this.queryInviterIds();
     this.queryProjectsIds();
     this.queryShopIds();
+    this.ifStateType()
 
   },
   methods: {
@@ -225,6 +263,12 @@ export default {
       this.inviter = value.id;
       this.inviterShowPicker = false;
     },
+    //客资状态
+    stateArrayOnConfirm:function (value){
+      this.state = value.id
+      this.stateText = value.text
+      this.stateShowPicker = false
+    },
     //预约项目
     appointNameOnConfirm: function (value) {
       this.appointNameText = value.text;
@@ -248,6 +292,10 @@ export default {
       values.appointShop = this.appointShop;
       values.type = "售前预约";
       values.tenantCrop = this.tenantCrop;
+      if (this.state!==""){
+        values.type = "售后预约";
+        values.state = this.state
+      }
       this.$dialog.confirm({
         title: '添加预约',
         message: '是否确认给该条客资添加预约?',
@@ -277,6 +325,12 @@ export default {
         this.inviterArray = JSON.parse(response.data.data);
       })
     },
+    queryStateIds:function (){
+      this.$selectUtils.queryStateIds(this.$selectUtils.Picker,"售后状态").then(response=>{
+        let data = JSON.parse(response.data.data)
+        this.stateArray = data.filter(k=>k.text !== "已订单"&&k.text !== "已交接")
+      })
+    },
     //查询预约项目
     queryProjectsIds: function () {
       this.$selectUtils.queryProjectsIds(this.$projectsType.appoint, this.$selectUtils.Picker).then(response => {
@@ -295,6 +349,22 @@ export default {
         this.appointCity = response.data.msg;
       })
     },
+    ifStateType:function (){
+      this.$axios({
+        method:"get",
+        url:"state/getById",
+        params:{
+          id:this.customer.stateId,
+        }
+      }).then(response=>{
+        var data = response.data.data;
+        if (data.stateType === "售后状态"){
+          this.stateDisplay = true
+          this.stateFlag = true
+          this.queryStateIds()
+        }
+      })
+    }
   }
 
 }
