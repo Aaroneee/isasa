@@ -129,6 +129,7 @@ export default {
     console.log(this.order)
     this.queryStyleType()
     this.queryShopIds()
+    this.queryScheduleRule()
   }
   , data() {
     return {
@@ -166,6 +167,8 @@ export default {
       position: "",
       positionArray: [],
 
+
+      rule:"",
     }
   }
   , components: {
@@ -175,7 +178,13 @@ export default {
     clickItem: function (value) {
       console.log(value)
       this.clothesNo = value.styleType + '-' + value.styleName + '-' + value.clothesSize + '-' + value.clothesNo
-      this.dateAmong = get_before_date(this.order.weddingDay, 1, 0)
+      if (this.rule === 1){
+        this.dateAmong = get_before_date(this.order.weddingDay, 0, 0)
+      }else if(this.rule === 3){
+        this.dateAmong = get_before_date(this.order.weddingDay, 1, 0)
+      }else {
+        this.dateAmong = get_before_date(this.order.weddingDay, 2, 2)
+      }
       this.defaultDate = this.$dateUtils.dateSectionStrToDateArray(this.dateAmong)
       this.clothesId = value.clothesId
       this.cusId = this.order.cusId
@@ -284,6 +293,17 @@ export default {
       this.position = ""
       this.$selectUtils.queryPositionIdsByShop(shop, this.$selectUtils.DropDownMenu).then(response => {
         this.positionArray.push(...JSON.parse(response.data.data))
+      })
+    },queryScheduleRule:function (){
+      this.$axios({
+        method:"get",
+        url:"schedule/queryScheduleRule",
+        params:{
+          tenantCrop:this.tenantCrop
+        }
+      }).then(response=>{
+        console.log(response.data)
+        this.rule = response.data.data.rule
       })
     }
 

@@ -1,7 +1,7 @@
 <template>
   <div>
     <van-sticky>
-      <switchNavBar title="婚纱列表" :switchText="dateText" @flag="dateShow=true"/>
+      <switchNavBar title="订单档期查询" :switchText="dateText" @flag="dateShow=true"/>
       <form action="javascript:return true">
           <van-search
               show-action
@@ -16,11 +16,11 @@
       <van-calendar safe-area-inset-bottom v-model="dateShow" :min-date="new Date('2020/01/01')"
                     :max-date="new Date('2022/01/01')" @confirm="dateOnConfirm"/>
       <van-dropdown-menu style="font-size: 10px">
+        <van-dropdown-item v-model="isOrder" @change="isOrderChange" :options="isOrderArray"/>
         <van-dropdown-item v-model="styleType" @change="styleTypeChange" :options="styleTypeArray"/>
         <van-dropdown-item v-model="clothesSize" @change="clothesSizeChange" :options="clothesSizeArray"/>
-<!--        <van-dropdown-item v-model="shop" @change="shopChange" :options="shopArray"/>-->
+        <!--        <van-dropdown-item v-model="shop" @change="shopChange" :options="shopArray"/>-->
         <van-dropdown-item :title="positionTitle" v-model="position" @change="positionChange" :options="positionArray"/>
-        <van-dropdown-item v-model="isOrder" @change="isOrderChange" :options="isOrderArray"/>
 
         <van-dropdown-item title="标签" ref="labelRef">
           <van-row type="flex" style="padding: 10px">
@@ -63,8 +63,8 @@
               </div>
               <span
                   v-text="item[0].styleType+'-'+item[0].styleName+'-'+item[0].clothesSize+'-'+item[0].clothesNo"></span>
-              <span v-text="item[0].shopName"></span><span v-text="item[0].positionName"></span>
-              <span v-if="item[0].shopName === ''">店铺未选择</span> <span v-if="item[0].positionName === ''">位置未选择</span>
+<!--              <span v-text="item[0].shopName"></span><span v-text="item[0].positionName"></span>-->
+<!--              <span v-if="item[0].shopName === ''">店铺未选择</span> <span v-if="item[0].positionName === ''">位置未选择</span>-->
             </van-grid-item>
 
             <van-grid-item v-if="item[1] != null">
@@ -80,8 +80,8 @@
               </div>
               <span
                   v-text="item[1].styleType+'-'+item[1].styleName+'-'+item[1].clothesSize+'-'+item[1].clothesNo"></span>
-              <span v-text="item[1].shopName"></span><span v-text="item[1].positionName"></span>
-              <span v-if="item[1].shopName === ''">店铺未选择</span> <span v-if="item[1].positionName === ''">位置未选择</span>
+<!--              <span v-text="item[1].shopName"></span><span v-text="item[1].positionName"></span>-->
+<!--              <span v-if="item[1].shopName === ''">店铺未选择</span> <span v-if="item[1].positionName === ''">位置未选择</span>-->
             </van-grid-item>
           </van-grid>
         </van-cell>

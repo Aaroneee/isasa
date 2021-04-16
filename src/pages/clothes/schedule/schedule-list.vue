@@ -1,7 +1,7 @@
 <template>
   <div>
     <van-sticky>
-      <switchNavBar title="档期查询" :switchText="dateText" @flag="dateShow=true"/>
+      <switchNavBar title="款式档期查询" :switchText="dateText" @flag="dateShow=true"/>
       <form action="javascript:return true">
       <van-search
           @search="searchStyleName"
