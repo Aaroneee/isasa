@@ -227,6 +227,10 @@ export default {
       stateDisplay:false,
       stateFlag:false,
       stateArray:false,
+
+      dress:"",
+      cosmetics:"",
+
     }
   },
   components: {
@@ -295,6 +299,12 @@ export default {
       if (this.state!==""){
         values.type = "售后预约";
         values.state = this.state
+        if (this.dress!==""){
+          values.appointDress = this.dress
+        }
+        if (this.cosmetics!==""){
+          values.appointCosmetics = this.dress
+        }
       }
       this.$dialog.confirm({
         title: '添加预约',
@@ -349,6 +359,19 @@ export default {
         this.appointCity = response.data.msg;
       })
     },
+    saleAppDefaultDressAndCosmetics:function (){
+      this.$axios({
+        method:"GET",
+        url:"order/saleAppDefaultDressAndCosmetics",
+        params:{
+          cusId:this.customer.id
+        }
+      }).then(response=>{
+        const data = response.data.data
+        this.dress = data.dress
+        this.cosmetics = data.cosmetics
+      })
+    },
     ifStateType:function (){
       this.$axios({
         method:"get",
@@ -362,6 +385,7 @@ export default {
           this.stateDisplay = true
           this.stateFlag = true
           this.queryStateIds()
+          this.saleAppDefaultDressAndCosmetics()
         }
       })
     }
