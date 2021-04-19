@@ -303,7 +303,7 @@ export default {
           values.appointDress = this.dress
         }
         if (this.cosmetics!==""){
-          values.appointCosmetics = this.dress
+          values.appointCosmetics = this.cosmetics
         }
       }
       this.$dialog.confirm({
