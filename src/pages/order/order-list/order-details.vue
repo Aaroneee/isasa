@@ -12,8 +12,12 @@
           <van-col span="8">婚期:{{ orderVo.weddingDay }}</van-col>
         </van-row>
         <van-row>
+          <van-col span="16">订单项目:{{ orderVo.orderName }}</van-col>
           <van-col span="8">客服:{{ orderVo.service }}</van-col>
+        </van-row>
+        <van-row>
           <van-col span="8">礼服师:{{ orderVo.dress }}</van-col>
+          <van-col span="8">辅销:{{ orderVo.auxiliary }}</van-col>
           <van-col span="8">化妆师:{{ orderVo.cosmetics }}</van-col>
         </van-row>
         <van-row>

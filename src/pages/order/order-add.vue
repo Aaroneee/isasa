@@ -69,6 +69,15 @@
           :rules="[{ required: true }]"
           @click="orderDressPicker=true"
       />
+
+      <van-field
+          readonly
+          name="orderAuxiliaryDress"
+          :value="orderAuxiliaryDressText"
+          label="辅销"
+          placeholder="辅销"
+          @click="auxiliaryDressPicker=true"
+      />
       <van-popup v-model="orderDressPicker" position="bottom">
         <van-picker
             getColumnValues
@@ -76,6 +85,16 @@
             :columns="orderDressArray"
             @confirm="orderDressConfirm"
             @cancel="orderDressPicker = false"
+        />
+      </van-popup>
+
+      <van-popup v-model="auxiliaryDressPicker" position="bottom">
+        <van-picker
+            getColumnValues
+            show-toolbar
+            :columns="orderDressArray"
+            @confirm="auxiliaryDressConfirm"
+            @cancel="auxiliaryDressPicker = false"
         />
       </van-popup>
 
@@ -265,6 +284,7 @@ export default {
       weddingDay: "",
       orderName: "",
       orderDress: "",
+      orderAuxiliaryDress:"",
       orderCosmetics: "",
       proceedsName: "",
       payment: "",
@@ -278,6 +298,7 @@ export default {
       weddingDayPicker: false,
       orderNamePicker: false,
       orderDressPicker: false,
+      auxiliaryDressPicker:false,
       orderCosmeticsPicker: false,
       proceedsNamePicker: false,
       paymentPicker: false,
@@ -294,6 +315,7 @@ export default {
       //显示文本
       orderNameText: "",
       orderDressText: "",
+      orderAuxiliaryDressText:"",
       orderCosmeticsText: "",
       proceedsNameText: "",
       paymentText: "",
@@ -361,6 +383,12 @@ export default {
       this.orderDressText = value.text;
       this.orderDressPicker = false;
     },
+    //辅助销售确认
+    auxiliaryDressConfirm:function (value){
+      this.orderAuxiliaryDress = value.id
+      this.orderAuxiliaryDressText = value.text;
+      this.auxiliaryDressPicker = false
+    },
     //化妆师确认
     orderCosmeticsOnConfirm: function (value) {
       this.orderCosmetics = value.id;
@@ -406,6 +434,7 @@ export default {
       data.appId = this.appointVo.id;
       data.orderName = this.orderName;
       data.orderDress = this.orderDress;
+      data.orderAuxiliaryDress = this.orderAuxiliaryDress;
       data.orderCosmetics = this.orderCosmetics;
       data.proceedsName = this.proceedsName;
       data.payment = this.payment;
