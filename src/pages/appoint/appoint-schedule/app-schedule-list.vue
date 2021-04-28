@@ -2,6 +2,14 @@
   <div>
     <van-sticky>
       <switchNavBar :title="titleText" switchText="到店日期" @flag="createDateShow=true"/>
+      <div style="z-index: 999;position: absolute;width: 70%;
+      left:0; right:0; top:12px;margin: auto">
+        <div style="text-align: center;">
+          <van-icon name="arrow-left" size="20" color="#1989fa" @click="dayBefore()"/>
+          <div style="display: inline-block;width:60%"></div>
+          <van-icon name="arrow" size="20" color="#1989fa" @click="nextDay()"/>
+        </div>
+      </div>
       <form action="javascript:return true">
       <van-search
           @search="queryAppList"
@@ -129,6 +137,28 @@ export default {
     },
     clickItem: function (id) {
       this.$router.push({name: "appDetails", query: {id: id}})
+    },
+    //前一天
+    dayBefore:function (){
+      //获取顶部当前日期
+      let date=new Date(this.appointDate);
+      date.setDate(date.getDate()-1);
+      //日期格式化后字符串
+      let dateStr=this.$dateUtils.vantDateToYMD(date);
+      this.appointDate=dateStr;
+      this.titleText=dateStr+' '+this.$dateUtils.getweekday(date)
+      this.queryAppList();
+    },
+    //后一天
+    nextDay :function (){
+      //获取顶部当前日期
+      let date=new Date(this.appointDate);
+      date.setDate(date.getDate()+1);
+      //日期格式化后字符串
+      let dateStr=this.$dateUtils.vantDateToYMD(date);
+      this.appointDate=dateStr;
+      this.titleText=dateStr+' '+this.$dateUtils.getweekday(date)
+      this.queryAppList();
     },
 
 
