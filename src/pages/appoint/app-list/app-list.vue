@@ -8,8 +8,8 @@
           v-model="searchValue"
           placeholder="请输入搜索关键词"/>
       </form>
-      <van-calendar safe-area-inset-bottom v-model="createDateShow" :min-date="new Date('2020/01/01')"
-                    :max-date="new Date('2022/01/01')" type="range" @confirm="createDateOnConfirm"/>
+      <van-calendar safe-area-inset-bottom v-model="createDateShow" :min-date="minDate" :max-date="maxDate"
+                    type="range" @confirm="createDateOnConfirm"/>
       <van-dropdown-menu>
         <van-dropdown-item v-model="appointName" @change="appointNameChange"
                            :options="appointNameArray"/>
@@ -73,6 +73,9 @@ export default {
       searchValue: "",
       loading: false,
       finished: false,
+
+      maxDate:this.$dateUtils.getMaxMinDate()[0],
+      minDate:this.$dateUtils.getMaxMinDate()[1],
 
       createDateShow: false,
       appointNameArray: [{text: "项目", value: ""}],

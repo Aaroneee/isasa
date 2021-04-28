@@ -58,7 +58,7 @@
           @click="createDateShowPicker = true"
           :rules="[{ required: true }]"
       />
-      <van-calendar v-model="createDateShowPicker" :min-date="new Date('2020/01/01')" :max-date="new Date('2022/01/01')"
+      <van-calendar v-model="createDateShowPicker" :min-date="minDate" :max-date="maxDate"
                     @confirm="createDateOnConfirm"/>
       <van-field
           v-model="weddingDay"
@@ -126,6 +126,9 @@ export default {
       phone: "",
       weChat: "",
       city: "",
+
+      maxDate:this.$dateUtils.getMaxMinDate()[0],
+      minDate:this.$dateUtils.getMaxMinDate()[1],
 
       //展示来源文本
       sourceText: "",

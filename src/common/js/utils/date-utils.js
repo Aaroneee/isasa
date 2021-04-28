@@ -36,6 +36,15 @@ export default {
         return dateArray
     },
 
+    //日历选择器 获取最大时间和最小时间
+    getMaxMinDate:function (){
+        const maxDate=new Date();
+        maxDate.setFullYear(maxDate.getFullYear()+3);
+        const minDate=new Date();
+        minDate.setFullYear(minDate.getFullYear()-3);
+        return [maxDate,minDate];
+    },
+
 
     //如果时间是 一位数则补充0
     //1 返回 01

@@ -8,8 +8,7 @@
           v-model="searchValue"
           placeholder="请输入婚纱编号"/>
       </form>
-      <van-calendar safe-area-inset-bottom v-model="dateShowPicker" :min-date="new Date('2020/01/01')"
-                    :max-date="new Date('2022/01/01')" @confirm="dateOnConfirm"/>
+      <van-calendar safe-area-inset-bottom v-model="dateShowPicker" :min-date="minDate" :max-date="maxDate" @confirm="dateOnConfirm"/>
     </van-sticky>
 
     <div>
@@ -54,6 +53,9 @@ export default {
       dateShowPicker:false,
       scheduleDate: "",
       dateText: "选择档期",
+
+      maxDate:this.$dateUtils.getMaxMinDate()[0],
+      minDate:this.$dateUtils.getMaxMinDate()[1],
 
       loading: false,
       finished: true,

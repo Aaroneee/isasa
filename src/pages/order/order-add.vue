@@ -247,11 +247,7 @@
 
 <script>
 import baseNavBar from "@/components/nav-bar/base-nav-bar"
-//获取当前时间
-const maxDate=new Date();
-maxDate.setFullYear(maxDate.getFullYear()+3);
-const minDate=new Date();
-minDate.setFullYear(minDate.getFullYear()-3);
+
 // 将 blob 对象转化为 url
 const getObjectURL = (file) => {
   let url
@@ -276,8 +272,8 @@ export default {
   data() {
     return {
       appointVo: this.$route.query.appointVo,
-      maxDate:maxDate,
-      minDate:minDate,
+      maxDate:this.$dateUtils.getMaxMinDate()[0],
+      minDate:this.$dateUtils.getMaxMinDate()[1],
       //对象
       orderNo: "",
       createDate: this.$dateUtils.vantDateToYMD(new Date()),

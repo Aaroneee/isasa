@@ -12,7 +12,9 @@
           @click="appointDateShowPicker = true"
           :rules="[{ required: true }]"
       />
-      <van-calendar v-model="appointDateShowPicker" @confirm="appointDateOnConfirm"/>
+      <van-calendar
+          :min-date="minDate" :max-date="maxDate"
+          v-model="appointDateShowPicker" @confirm="appointDateOnConfirm"/>
 
       <van-field
           name="appointTime"
@@ -134,6 +136,9 @@ export default {
     return {
       appId: this.$route.query.id,
       appoint: {},
+
+      maxDate:this.$dateUtils.getMaxMinDate()[0],
+      minDate:this.$dateUtils.getMaxMinDate()[1],
 
       appointDateShowPicker: false,
       appointTimeShowPicker: false,

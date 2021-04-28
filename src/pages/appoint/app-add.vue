@@ -30,7 +30,7 @@
           @click="createDateShowPicker = true"
           :rules="[{ required: true }]"
       />
-      <van-calendar v-model="createDateShowPicker" :min-date="new Date('2020/01/01')" :max-date="new Date('2022/01/01')"
+      <van-calendar v-model="createDateShowPicker" :min-date="minDate" :max-date="maxDate"
                     @confirm="createDateOnConfirm"/>
 
 
@@ -70,8 +70,7 @@
           @click="appointDateShowPicker = true"
           :rules="[{ required: true }]"
       />
-      <van-calendar v-model="appointDateShowPicker" :min-date="new Date('2020/01/01')"
-                    :max-date="new Date('2022/01/01')" @confirm="appointDateOnConfirm"/>
+      <van-calendar v-model="appointDateShowPicker" :min-date="minDate" :max-date="maxDate" @confirm="appointDateOnConfirm"/>
 
       <van-field
           name="appointTime"
@@ -189,6 +188,10 @@ export default {
     return {
       customer: {},
       createDate: this.$dateUtils.vantDateToYMD(new Date()),
+
+      maxDate:this.$dateUtils.getMaxMinDate()[0],
+      minDate:this.$dateUtils.getMaxMinDate()[1],
+
       appointDate: "",
       appointTime: "",
 

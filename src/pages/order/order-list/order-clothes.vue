@@ -99,8 +99,7 @@
               :rules="[{ required: true }]"
           />
           <van-calendar ref="dateRef" safe-area-inset-bottom v-model="dateSectionShow"
-                        :min-date="new Date('2020/01/01')"
-                        :max-date="new Date('2022/01/01')" :default-date="defaultDate" type="range"
+                        :min-date="minDate" :max-date="maxDate" :default-date="defaultDate" type="range"
                         @confirm="dateSectionConfirm"/>
           <br>
           <br>
@@ -126,7 +125,6 @@ export default {
   name: "orderClothes"
   , created() {
     this.order = this.$route.query
-    console.log(this.order)
     this.queryStyleType()
     this.queryShopIds()
     this.queryScheduleRule()
@@ -139,6 +137,8 @@ export default {
       activeNames: ['1'],
       styleName: "",
       clothesList: [],
+      maxDate:this.$dateUtils.getMaxMinDate()[0],
+      minDate:this.$dateUtils.getMaxMinDate()[1],
 
 
       overlayShow: false,
@@ -176,7 +176,6 @@ export default {
   }
   , methods: {
     clickItem: function (value) {
-      console.log(value)
       this.clothesNo = value.styleType + '-' + value.styleName + '-' + value.clothesSize + '-' + value.clothesNo
       if (this.rule === 1){
         this.dateAmong = get_before_date(this.order.weddingDay, 0, 0)
@@ -188,7 +187,6 @@ export default {
       this.defaultDate = this.$dateUtils.dateSectionStrToDateArray(this.dateAmong)
       this.clothesId = value.clothesId
       this.cusId = this.order.cusId
-      console.log(this.defaultDate)
       this.orderClothesPopup = true
     }
     , dateSectionConfirm: function (value) {
@@ -302,7 +300,6 @@ export default {
           tenantCrop:this.tenantCrop
         }
       }).then(response=>{
-        console.log(response.data)
         this.rule = response.data.data.rule
       })
     }

@@ -121,7 +121,7 @@
           @click="createDateShowPicker = true"
           :rules="[{ required: true }]"
       />
-      <van-calendar v-model="createDateShowPicker" :min-date="new Date('2020/01/01')" :max-date="new Date('2022/01/01')"
+      <van-calendar v-model="createDateShowPicker" :min-date="minDate" :max-date="maxDate"
                     @confirm="createDateOnConfirm"/>
 
       <van-field
@@ -244,6 +244,8 @@ export default {
       styleName: "",
       styleNameText: "",
       tenantCrop: localStorage.getItem("tenantCrop"),
+      maxDate:this.$dateUtils.getMaxMinDate()[0],
+      minDate:this.$dateUtils.getMaxMinDate()[1],
       //创建日期
       purchaseDate: "",
       //日期选择框展示

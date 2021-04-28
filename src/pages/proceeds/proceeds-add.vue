@@ -77,7 +77,7 @@
             :rules="[{ required: true }]"
             @click="createDatePicker=true"
         />
-        <van-calendar v-model="createDatePicker" :min-date="new Date('2020/01/01')" :max-date="new Date('2022/01/01')" @confirm="createDateConfirm"/>
+        <van-calendar v-model="createDatePicker" :min-date="minDate" :max-date="maxDate" @confirm="createDateConfirm"/>
 
         <van-field
             readonly
@@ -134,6 +134,9 @@ export default {
       tenantCrop: localStorage.getItem("tenantCrop"),
       orderPriceParent:this.$route.query.orderPrice,
       spareMoneyParent:this.$route.query.spareMoney,
+
+      maxDate:this.$dateUtils.getMaxMinDate()[0],
+      minDate:this.$dateUtils.getMaxMinDate()[1],
 
       activeNames: ['1'],
       proceedsHistoryShow: false,

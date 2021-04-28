@@ -99,7 +99,6 @@ export default {
     this.clothes = this.$route.query
     this.clothesNameText = this.clothes.styleType + "-" + this.clothes.styleName + "-" + this.clothes.clothesSize + "-" + this.clothes.clothesNo
     this.historyPosition = this.clothes.positionName === "" ?"无":this.clothes.positionName
-    console.log(this.clothes)
     this.queryOperationArray()
     this.queryPositionIdsByShop(this.clothes.shopId)
   }

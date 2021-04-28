@@ -13,8 +13,8 @@
           </template>
           </van-search>
       </form>
-      <van-calendar safe-area-inset-bottom v-model="dateShow" :min-date="new Date('2020/01/01')"
-                    :max-date="new Date('2022/01/01')" @confirm="dateOnConfirm"/>
+      <van-calendar safe-area-inset-bottom v-model="dateShow"
+                    :min-date="minDate" :max-date="maxDate" @confirm="dateOnConfirm"/>
       <van-dropdown-menu style="font-size: 10px">
         <van-dropdown-item v-model="isOrder" @change="isOrderChange" :options="isOrderArray"/>
         <van-dropdown-item v-model="styleType" @change="styleTypeChange" :options="styleTypeArray"/>
@@ -109,6 +109,10 @@ export default {
       dateText:"选择档期",
       scheduleDate:"",
       tenantCrop: localStorage.getItem("tenantCrop"),
+
+      maxDate:this.$dateUtils.getMaxMinDate()[0],
+      minDate:this.$dateUtils.getMaxMinDate()[1],
+
       styleName: "",
       styleType: "",
       styleTypeArray: [{text: "款式", value: ""}],

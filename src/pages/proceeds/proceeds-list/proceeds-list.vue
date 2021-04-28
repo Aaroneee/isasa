@@ -8,7 +8,7 @@
           v-model="searchValue"
           placeholder="请输入搜索关键词"/>
       </form>
-      <van-calendar safe-area-inset-bottom v-model="dateSectionShow" :min-date="new Date('2020/01/01')" :max-date="new Date('2022/01/01')" type="range" @confirm="dateSectionConfirm"/>
+      <van-calendar safe-area-inset-bottom v-model="dateSectionShow" :min-date="minDate" :max-date="maxDate" type="range" @confirm="dateSectionConfirm"/>
       <van-dropdown-menu>
         <van-dropdown-item v-model="payee" @change="payeeChange"
                            :options="payeeArray"/>
@@ -53,6 +53,9 @@ export default {
     return{
       tenantCrop:localStorage.getItem("tenantCrop"),
       dateSectionShow:false,
+
+      maxDate:this.$dateUtils.getMaxMinDate()[0],
+      minDate:this.$dateUtils.getMaxMinDate()[1],
 
       loading:"",
       finished:"",

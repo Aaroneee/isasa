@@ -2,8 +2,8 @@
   <div>
     <van-sticky>
       <switchNavBar :title="titleText" switchText="对接日期" @flag="createDateShow=true"/>
-      <van-calendar v-model="createDateShow" :min-date="new Date('2020/01/01')"
-                    :max-date="new Date('2022/01/01')" @confirm="createDateOnConfirm"/>
+      <van-calendar v-model="createDateShow" :min-date="minDate" :max-date="maxDate"
+                    @confirm="createDateOnConfirm"/>
       <form action="javascript:return true">
       <van-search
           @search="queryCusList"
@@ -74,6 +74,10 @@ export default {
       titleText: "客资列表",
       createDateShow: false,
       createDate: "",
+
+      maxDate:this.$dateUtils.getMaxMinDate()[0],
+      minDate:this.$dateUtils.getMaxMinDate()[1],
+
       //顶部搜索
       searchValue: "",
       //客资来源下拉

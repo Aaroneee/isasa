@@ -29,7 +29,7 @@
           :rules="[{ required: true }]"
           @click="createDatePicker=true"
       />
-      <van-calendar v-model="createDatePicker" :min-date="new Date('2020/01/01')" :max-date="new Date('2022/01/01')"
+      <van-calendar v-model="createDatePicker" :min-date="minDate" :max-date="maxDate"
                     @confirm="createDateConfirm"/>
 
       <van-field
@@ -41,7 +41,7 @@
           :rules="[{ required: true }]"
           @click="weddingDayPicker=true"
       />
-      <van-calendar v-model="weddingDayPicker" :min-date="new Date('2020/01/01')" :max-date="new Date('2022/01/01')"
+      <van-calendar v-model="weddingDayPicker" :min-date="minDate" :max-date="maxDate"
                     @confirm="weddingDayConfirm"/>
 
       <van-field
@@ -196,6 +196,9 @@ export default {
       spareMoney: null,
       orderSpare: null,
       proceedsRate: "",
+
+      maxDate:this.$dateUtils.getMaxMinDate()[0],
+      minDate:this.$dateUtils.getMaxMinDate()[1],
       //Picker
       createDatePicker: false,
       weddingDayPicker: false,
