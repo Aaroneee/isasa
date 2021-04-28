@@ -38,10 +38,13 @@ export default {
 
     //日历选择器 获取最大时间和最小时间
     getMaxMinDate:function (){
-        const maxDate=new Date();
-        maxDate.setFullYear(maxDate.getFullYear()+3);
-        const minDate=new Date();
-        minDate.setFullYear(minDate.getFullYear()-3);
+        //更改时间格式 IOS:年/月/日
+        let date=new Date();
+        let maxDateStr=date.getFullYear()+3+"/"+(date.getMonth()+1)+"/"+date.getDate();
+        let minDateStr=date.getFullYear()-3+"/"+(date.getMonth()+1)+"/"+date.getDate();
+
+        let maxDate=new Date(maxDateStr.replace(/-/g, '/'));
+        let minDate=new Date(minDateStr.replace(/-/g, '/'));
         return [maxDate,minDate];
     },
 

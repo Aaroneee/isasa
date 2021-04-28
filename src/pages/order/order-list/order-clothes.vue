@@ -308,17 +308,20 @@ export default {
 }
 
 function get_before_date(date, day, after) {
-  var date1 = new Date(date),
-      time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate();//time1表示当前时间
-  var date2 = new Date(date);
+  let date1 = new Date(date);
+  let time1 = date1.getFullYear() + "-" + (dateIsSingle(date1.getMonth() + 1)) + "-" + dateIsSingle(date1.getDate());//time1表示当前时间
+  let date2 = new Date(date);
   date2.setDate(date1.getDate() - day);
-  var time2 = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
-  var date3 = new Date(date);
+  let time2 = date2.getFullYear() + "-" + (dateIsSingle(date2.getMonth() + 1)) + "-" + dateIsSingle(date2.getDate());
+  let date3 = new Date(date);
   date3.setDate(date3.getDate() + (day + after));
-  var time3 = date3.getFullYear() + "-" + (date3.getMonth() + 1) + "-" + date3.getDate();
+  let time3 = date3.getFullYear() + "-" + (dateIsSingle(date3.getMonth() + 1)) + "-" + dateIsSingle(date3.getDate());
   return time2 + ' - ' + time3;
 }
 
+function dateIsSingle(date) {
+  return date < 9 ? "0" + date : date;
+}
 
 function arrTrans(num, arr) {
   const iconsArr = [];
