@@ -13,7 +13,7 @@
           :rules="[{ required: true }]"
       />
       <van-calendar
-          :min-date="minDate" :max-date="maxDate"
+          :min-date="minDate" :max-date="maxDate" :default-date="new Date(appoint.appointDate)"
           v-model="appointDateShowPicker" @confirm="appointDateOnConfirm"/>
 
       <van-field

@@ -78,7 +78,7 @@
             :rules="[{ required: true }]"
             @click="createDatePicker=true"
         />
-        <van-calendar v-model="createDatePicker" :min-date="minDate" :max-date="maxDate"
+        <van-calendar v-model="createDatePicker" :min-date="minDate" :max-date="maxDate" :default-date="new Date(proceedsVo.createDate)"
                       @confirm="createDateConfirm"/>
 
         <van-field

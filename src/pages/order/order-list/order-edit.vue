@@ -29,7 +29,7 @@
           :rules="[{ required: true }]"
           @click="createDatePicker=true"
       />
-      <van-calendar v-model="createDatePicker" :min-date="minDate" :max-date="maxDate"
+      <van-calendar v-model="createDatePicker" :min-date="minDate" :max-date="maxDate" :default-date="new Date(createDate)"
                     @confirm="createDateConfirm"/>
 
       <van-field
@@ -41,7 +41,7 @@
           :rules="[{ required: true }]"
           @click="weddingDayPicker=true"
       />
-      <van-calendar v-model="weddingDayPicker" :min-date="minDate" :max-date="maxDate"
+      <van-calendar v-model="weddingDayPicker" :min-date="minDate" :max-date="maxDate" :default-date="new Date(weddingDay)"
                     @confirm="weddingDayConfirm"/>
 
       <van-field
@@ -182,6 +182,7 @@ export default {
   name: "orderEdit",
   data() {
     return {
+      cusId:"",
       orderId:"",
       orderVo: this.$route.query,
       //对象
@@ -217,6 +218,10 @@ export default {
       orderDressText: "",
       orderAuxiliaryDressText:"",
       orderCosmeticsText: "",
+
+
+      weddingDayDefault:"",
+      createDateDefault:"",
     }
   },
   components: {
@@ -244,6 +249,7 @@ export default {
     this.orderPrice = this.orderVo.orderPrice
     this.spareMoney = this.orderVo.spareMoney
     this.orderSpare = this.orderVo.orderSpare
+    this.cusId = this.orderVo.cusId
   },
   created() {
     this.queryOrderNameIds();
@@ -302,8 +308,11 @@ export default {
       data.orderDress = this.orderDress;
       data.orderAuxiliaryDress = this.orderAuxiliaryDress;
       data.orderCosmetics = this.orderCosmetics;
+      data.weddingDay = this.weddingDay
       data.tenantCrop = localStorage.getItem("tenantCrop");
+      data.cusId = this.cusId
       data.id = this.orderId
+      console.log(data)
       console.log(data)
       this.$dialog.confirm({
         title: '修改订单',
