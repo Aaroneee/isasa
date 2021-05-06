@@ -16,7 +16,8 @@ export default [
         name: 'orderList',
         component: orderList,
         meta: {
-            keepAlive: true
+            keepAlive: true,
+            isBack: false,
         }
     },
     {

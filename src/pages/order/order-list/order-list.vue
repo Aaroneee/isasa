@@ -4,12 +4,13 @@
       <van-sticky>
         <switchNavBar title="订单列表" switchText="婚期" @flag="createDateShow=true"/>
         <form action="javascript:return true">
-        <van-search
-            @search="queryOrderList"
-            v-model="searchValue"
-            placeholder="请输入搜索关键词"/>
+          <van-search
+              @search="queryOrderList"
+              v-model="searchValue"
+              placeholder="请输入搜索关键词"/>
         </form>
-        <van-calendar safe-area-inset-bottom v-model="createDateShow" :min-date="minDate" :max-date="maxDate"  @confirm="createDateOnConfirm"/>
+        <van-calendar safe-area-inset-bottom v-model="createDateShow" :min-date="minDate" :max-date="maxDate"
+                      @confirm="createDateOnConfirm"/>
         <!--      <van-dropdown-menu>-->
         <!--        <van-dropdown-item :title="appointNameText" v-model="appointName" @change="appointNameChange"-->
         <!--                           :options="appointNameArray"/>-->
@@ -77,8 +78,8 @@ export default {
       searchValue: "",
       createDate: "",
 
-      maxDate:this.$dateUtils.getMaxMinDate()[0],
-      minDate:this.$dateUtils.getMaxMinDate()[1],
+      maxDate: this.$dateUtils.getMaxMinDate()[0],
+      minDate: this.$dateUtils.getMaxMinDate()[1],
 
       loading: false,
       finished: false,
@@ -114,6 +115,7 @@ export default {
 
     //查询订单列表
     queryOrderList: function () {
+      console.log("刷新")
       this.$axios({
         method: "GET",
         url: "/order/mOrderList",
@@ -128,13 +130,20 @@ export default {
       })
     },
     clothesAdd: function (value) {
-      this.$router.push({name:"orderClothes",query:value})
+      this.$router.push({name: "orderClothes", query: value})
     }
     , imagesAdd: function (value) {
-      this.$router.push({name:"orderImages",query:value})
+      this.$router.push({name: "orderImages", query: value})
     }
-  }
-  , activated(){
+  },
+  beforeRouteLeave (to, from, next) {
+    if (to.name === "work"){
+      this.createDate = ""
+    }
+    next()
+  },
+  activated() {
+    console.log("回来了")
     this.queryOrderList()
   }
 }

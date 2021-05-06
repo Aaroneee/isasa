@@ -74,7 +74,7 @@
 import switchNavBar from '@/components/nav-bar/switch-nav-bar'
 
 export default {
-  name: "appoint-schedule-list",
+  name: "appScheduleList",
   data() {
     return {
       tenantCrop: localStorage.getItem("tenantCrop"),
@@ -207,6 +207,8 @@ export default {
   },
   beforeRouteLeave (to, from, next) {
     // 从列表页去到别的页面，如果不是判断页面，则不缓存列表页
+    console.log(to)
+    console.log(from)
     this.$route.meta.keepAlive = to.name === 'appDetails';
     next()
   },activated(){
