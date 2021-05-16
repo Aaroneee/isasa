@@ -98,7 +98,6 @@ export default {
     }
     //出样陈列
     , clothesOperation: function () {
-      // this.$toast.fail("正在开发中哦！")
       this.$router.push({name: "clothesOperation", query: this.clothes})
     }
     , clothesSchedules: function () {
@@ -106,9 +105,7 @@ export default {
       this.$router.push({name: "clothesSchedule", query: this.clothes})
     }
     , styleInfoView: function () {
-      this.$toast.fail("正在开发中哦！")
-      // this.clothes.id = this.clothes.styleId
-      // this.$router.push({name: "styleDetails", query: this.clothes})
+      this.$router.push({name: "styleIntroduce", query: this.clothes})
     }
   }
 }

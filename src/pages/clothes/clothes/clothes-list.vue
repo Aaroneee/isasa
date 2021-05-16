@@ -13,7 +13,7 @@
           </template>
           </van-search>
       </form>
-      <van-calendar safe-area-inset-bottom v-model="dateShow"
+      <van-calendar safe-area-inset-bottom v-model="dateShow" type="range" allow-same-day
                     :min-date="minDate" :max-date="maxDate" @confirm="dateOnConfirm"/>
       <van-dropdown-menu style="font-size: 10px">
         <van-dropdown-item v-model="isOrder" @change="isOrderChange" :options="isOrderArray"/>
@@ -136,7 +136,7 @@ export default {
       styleLabelList: [],
       styleLabels: [],
       isOrder:"",
-      isOrderArray:[{text: "定款", value: ""},{text: "已定款", value: "isOrder"},{text: "未定款", value: "notOrder"}],
+      isOrderArray:[{text: "定款", value: ""},{text: "有档期", value: "isOrder"},{text: "无档期", value: "notOrder"}],
 
       isactive: false,
       page: 1,
@@ -265,9 +265,10 @@ export default {
       }
     }
     ,dateOnConfirm:function (value){
-      const s = this.$dateUtils.vantDateToYMD(value);
+      const s = this.$dateUtils.rangeVantDateToYMD(value);
       this.scheduleDate = s
-      this.dateText = s
+      const temp = s.split('-')
+      this.dateText = temp[1] + "-" + temp[2] + " - " + temp[4] + "-" + temp[5]
       this.dateShow = false
       if (this.isOrder === ""){
         this.isOrder = "isOrder"

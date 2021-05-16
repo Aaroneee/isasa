@@ -9,6 +9,7 @@ import styleAdd from "@/pages/clothes/style/style-add"
 import styleEdit from "@/pages/clothes/style/style-edit"
 import scheduleList from "@/pages/clothes/schedule/schedule-list"
 import clothesSchedule from "@/pages/clothes/schedule/clothes-schedule"
+import styleIntroduce from "@/pages/clothes/style/style-introduce"
 
 export default [
     {
@@ -73,5 +74,10 @@ export default [
         path: '/clothesOperation',
         name: 'clothesOperation',
         component: clothesOperation,
+    },
+    {
+        path: '/styleIntroduce',
+        name: 'styleIntroduce',
+        component: styleIntroduce,
     },
 ]
