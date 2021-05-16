@@ -24,7 +24,7 @@ Vue.prototype.$projectsType = projectsType;
 Vue.use(SlimCropper)
 Vue.config.productionTip = false
 
-// axios.defaults.baseURL = '/api'
+axios.defaults.baseURL = '/api'
 export default new Vue({
     router,
     render: h => h(App),
