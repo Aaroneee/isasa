@@ -5,10 +5,10 @@
       <van-calendar v-model="createDateShow" :min-date="minDate" :max-date="maxDate"
                     @confirm="createDateOnConfirm"/>
       <form action="javascript:return true">
-      <van-search
-          @search="queryCusList"
-          v-model="searchValue"
-          placeholder="请输入搜索关键词"/>
+        <van-search
+            @search="queryCusList"
+            v-model="searchValue"
+            placeholder="请输入搜索关键词"/>
       </form>
       <van-dropdown-menu>
         <van-dropdown-item :title="sourceText" ref="sourceShowPicker">
@@ -23,7 +23,6 @@
         </van-dropdown-item>
         <van-dropdown-item :title="gradeText" v-model="grade" @change="gradeChange" :options="gradeArray"/>
         <van-dropdown-item :title="stateText" v-model="state" @change="stateChange" :options="stateArray"/>
-        <van-dropdown-item :title="serviceText" v-model="service" @change="serviceChange" :options="serviceArray" />
       </van-dropdown-menu>
     </van-sticky>
     <div>
@@ -63,15 +62,16 @@
 import switchNavBar from '@/components/nav-bar/switch-nav-bar'
 
 export default {
-  name: "cusList",
+  name: "mCusList",
   data() {
     return {
       tenantCrop: localStorage.getItem("tenantCrop"),
+      service: localStorage.getItem("empId"),
       //List
       customerList: [],
       loading: false,
       finished: false,
-      titleText: "客资列表",
+      titleText: "我的客资",
       createDateShow: false,
       createDate: "",
 
@@ -92,21 +92,17 @@ export default {
       stateText: "",
       state: "",
       stateArray: [{text: "客资状态", value: ""}],
-      //客服
-      serviceText: "",
-      service: "",
-      serviceArray: [{text: "选择客服", value: ""}]
     }
   },
   components: {
     switchNavBar
   },
   created() {
+    console.log("create")
     this.querySourceIds();
     this.queryGradeIds();
     this.queryStateIds();
-    this.queryServiceIds();
-    this.queryCusList();
+    this.queryCusList()
   },
 
   methods: {
@@ -137,11 +133,6 @@ export default {
     //点击状态
     stateChange: function (val) {
       this.state = val;
-      this.queryCusList();
-    },
-    //点击客服
-    serviceChange: function (val) {
-      this.service = val;
       this.queryCusList();
     },
     //点击每个Listitem
@@ -208,16 +199,7 @@ export default {
         }
       })
     },
-    //查询客服
-    queryServiceIds: function () {
-      this.$selectUtils.queryServiceIds(this.$selectUtils.DropDownMenu).then(response => {
-        if (response.data.code === 200) {
-          this.serviceArray.push(...JSON.parse(response.data.data));
-        } else {
-          self.$toast.fail(response.data.msg);
-        }
-      })
-    }, createDateOnConfirm: function (time) {
+    createDateOnConfirm: function (time) {
       this.createDate = this.$dateUtils.vantDateToYMD(time);
       this.titleText = this.$dateUtils.vantDateToYMD(time);
       this.queryCusList();
@@ -228,15 +210,7 @@ export default {
     // 从列表页去到别的页面，如果不是详情页，则不缓存列表页
     this.$route.meta.keepAlive = to.name === 'cusDetails';
     next()
-  }
-  , activated() {
-    console.log("哎呀看见我了")
-    console.log("----------activated--------")
   },
-  deactivated() {
-    console.log("讨厌！！你又走了")
-    console.log("----------deactivated--------")
-  }
 }
 </script>
 

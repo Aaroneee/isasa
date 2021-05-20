@@ -48,6 +48,12 @@ export default {
         return [maxDate,minDate];
     },
 
+    //获取当前时间转化为 年月
+    vantDateToYM: function (date) {
+        let year = date.getFullYear();
+        let month = this.dateIsSingle(date.getMonth() + 1);
+        return year + "-" + month;
+    },
 
     //如果时间是 一位数则补充0
     //1 返回 01

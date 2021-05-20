@@ -4,6 +4,7 @@ import appScheduleList from "@/pages/appoint/appoint-schedule/app-schedule-list"
 import appDetails from "@/pages/appoint/app-list/app-details" //预约详情
 import appEdit from "@/pages/appoint/app-list/app-edit" //预约编辑
 import appArrival from "@/pages/appoint/app-list/app-arrival"//预约到店
+import mScheduleList from "@/pages/appoint/appoint-schedule/m-schedule-list" //我的预约
 
 
 export default [
@@ -40,5 +41,13 @@ export default [
         meta: {
             keepAlive: true
         }
-    }
+    },
+    {
+        path: '/mScheduleList',
+        name: 'mScheduleList',
+        component: mScheduleList,
+        meta: {
+            keepAlive: true
+        }
+    },
 ];

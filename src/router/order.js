@@ -4,6 +4,8 @@ import orderDetails from "@/pages/order/order-list/order-details"//订单详情
 import orderClothes from "@/pages/order/order-list/order-clothes"//订单款式上传
 import orderImages from "@/pages/order/order-list/order-images"//订单图片及上传订单图片
 import orderEdit from "@/pages/order/order-list/order-edit"//订单图片及上传订单图片
+import collOrderList from "@/pages/order/order-list/coll-order-list"//已订单列表
+import unCollOrderList from "@/pages/order/order-list/un-coll-order-list"//未订单列表
 
 export default [
     {
@@ -39,5 +41,21 @@ export default [
         path: '/orderEdit',
         name: 'orderEdit',
         component: orderEdit,
+    },
+    {
+        path: '/collOrderList',
+        name: 'collOrderList',
+        component: collOrderList,
+        meta: {
+            keepAlive: true,
+        },
+    },
+    {
+        path: '/unCollOrderList',
+        name: 'unCollOrderList',
+        component: unCollOrderList,
+        meta: {
+            keepAlive: true,
+        },
     },
 ]
