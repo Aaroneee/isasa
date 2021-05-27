@@ -28,6 +28,13 @@
                          :text="value.viewName"/>
         </van-grid>
       </van-cell-group>
+    <van-cell-group v-if="modules.报表 !=null" title="报表">
+      <van-grid :border="false" clickable :column-num="4">
+        <van-grid-item v-for="value in modules.报表" @click="onClickItem(value.viewLink)" :key="value.id"
+                       :icon="value.viewIcon"
+                       :text="value.viewName"/>
+      </van-grid>
+    </van-cell-group>
 
   </div>
 </template>

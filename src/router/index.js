@@ -7,6 +7,7 @@ import appoint from "@/router/appoint"//预约
 import order from "@/router/order"//订单
 import proceeds from "@/router/proceeds"//收款
 import clothes from "@/router/clothes"
+import statement from "@/router/statement"
 
 
 // import login from '../pages/login/login'//首页
@@ -23,6 +24,7 @@ const router = new Router({
         ...order,
         ...proceeds,
         ...clothes,
+        ...statement,
     ],
     scrollBehavior(to, from, savedPosition) {
         if (savedPosition) {
