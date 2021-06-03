@@ -172,7 +172,12 @@ export default {
         this.appointShopArray.push(...JSON.parse(response.data.data));
       })
     },
+  },
+  beforeRouteLeave (to, from, next) {
+    this.$route.meta.keepAlive = to.name === 'appDetails';
+    next()
   }
+
 }
 </script>
 

@@ -157,7 +157,12 @@ export default {
     }
     , queryOperationArray: function () {
       this.$selectUtils.queryOperationIds(this.$selectUtils.Picker).then(response => {
-        this.operationArray.push(...JSON.parse(response.data.data))
+        const data = JSON.parse(response.data.data)
+        this.operationArray.push(...data)
+        if (data.length > 0) {
+          this.operationText = data[0].text;
+          this.operationId = data[0].id;
+        }
       })
     }
     , operationOnConfirm: function (value) {

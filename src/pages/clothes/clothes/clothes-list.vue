@@ -136,7 +136,7 @@ export default {
       styleLabelList: [],
       styleLabels: [],
       isOrder:"",
-      isOrderArray:[{text: "定款", value: ""},{text: "有档期", value: "isOrder"},{text: "无档期", value: "notOrder"}],
+      isOrderArray:[{text: "全部", value: ""},{text: "有档期", value: "isOrder"},{text: "无档期", value: "notOrder"}],
 
       isactive: false,
       page: 1,

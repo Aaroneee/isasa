@@ -23,10 +23,9 @@
       <van-collapse v-model="activeNames">
         <van-collapse-item title="店铺业绩" name="1">
           <van-grid :border="false" style="text-align: center">
+            <van-grid-item>总业绩<br>{{earning}}</van-grid-item>
             <van-grid-item>售前业绩<br>{{saleEarning}}</van-grid-item>
             <van-grid-item>售后业绩<br>{{afterSaleEarning}}</van-grid-item>
-            <van-grid-item>总业绩<br>{{earning}}</van-grid-item>
-            <van-grid-item>总营收<br>{{proceedsSum}}</van-grid-item>
           </van-grid>
         </van-collapse-item>
         <van-collapse-item title="营收报告" name="2">
@@ -36,14 +35,14 @@
             </van-grid-item>
           </van-grid>
         </van-collapse-item>
-        <van-collapse-item title="接待情况" name="3">
+        <van-collapse-item title="售前情况" name="3">
           <van-grid :border="false" style="text-align: center" :column-num="3">
             <van-grid-item>售前接待数<br>{{saleReception}}</van-grid-item>
             <van-grid-item>售前订单数<br>{{saleOrderNum}}</van-grid-item>
             <van-grid-item>售前转换率<br>{{saleProportion}}</van-grid-item>
           </van-grid>
         </van-collapse-item>
-        <van-collapse-item title="预约订单情况" name="4">
+        <van-collapse-item title="售后情况" name="4">
           <van-grid :border="false" style="text-align: center" :column-num="3">
             <van-grid-item>售后接待数<br>{{afterSaleReception}}</van-grid-item>
             <van-grid-item>售后订单数<br>{{afterSaleOrderNum}}</van-grid-item>

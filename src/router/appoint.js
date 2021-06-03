@@ -5,6 +5,7 @@ import appDetails from "@/pages/appoint/app-list/app-details" //预约详情
 import appEdit from "@/pages/appoint/app-list/app-edit" //预约编辑
 import appArrival from "@/pages/appoint/app-list/app-arrival"//预约到店
 import mScheduleList from "@/pages/appoint/appoint-schedule/m-schedule-list" //我的预约
+import addYarnClothes from "@/pages/appoint/yarn-clothes/add-yarn-clothes" //添加试纱
 
 
 export default [
@@ -17,7 +18,9 @@ export default [
         path: '/appList',
         name: 'appList',
         component: appList,
-
+        meta: {
+            keepAlive: true
+        }
     },
     {
         path: '/appDetails',
@@ -50,4 +53,12 @@ export default [
             keepAlive: true
         }
     },
+    {
+        path: '/addYarnClothes',
+        name: 'addYarnClothes',
+        component: addYarnClothes,
+        meta: {
+            keepAlive: true
+        }
+    }
 ];

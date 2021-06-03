@@ -55,6 +55,21 @@ export default {
         return year + "-" + month;
     },
 
+    //获取时间的前后三天区间
+    getAroundDateToYMD: function (date) {
+        const nowDate = new Date(date);
+        const dateArray = this.vantDateToYMD(new Date(nowDate.getTime() - 24*60*60*1000)) +
+            " - "+this.vantDateToYMD(new Date(nowDate.getTime() + 24*60*60*1000));
+        return dateArray;
+    },
+    getAroundDate: function (date) {
+        const dateArray = new Array(2);
+        const nowDate = new Date(date);
+        dateArray[0] = new Date(nowDate.getTime() - 24*60*60*1000);
+        dateArray[1] = new Date(nowDate.getTime() + 24*60*60*1000);
+        return dateArray;
+    },
+
     //如果时间是 一位数则补充0
     //1 返回 01
     dateIsSingle(date) {

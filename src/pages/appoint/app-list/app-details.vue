@@ -32,6 +32,13 @@
         <van-button @click="openOrderAdd" type="primary" style="width: 100%">添加订单</van-button>
       </van-col>
     </van-row>
+
+    <van-row style="padding-top: 10px">
+      <van-col span="6" offset="2">
+        <van-button @click="openAddYarnClothes" color="#2f4056" style="width: 100%">添加试纱</van-button>
+      </van-col>
+    </van-row>
+    <br>
   </div>
 
 
@@ -78,6 +85,9 @@ export default {
     },
     openOrderAdd: function () {
       this.$router.push({name: "orderAdd", query: {appointVo: this.appointVo}});
+    },
+    openAddYarnClothes: function () {
+      this.$router.push({name:"addYarnClothes", query: {appointVo: this.appointVo}})
     },
   }
 }
