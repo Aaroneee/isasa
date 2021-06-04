@@ -32,11 +32,12 @@
         <van-grid-item @click="styleInfoView"
                        icon="newspaper-o"
                        text="款式介绍"/>
+        <van-grid-item @click="addClothesYarn"
+                       icon="add-o"
+                       text="添加试纱"/>
       </van-grid>
     </van-cell-group>
 
-    <!--    <H5 class="van-field van-col&#45;&#45;offset-1">婚纱操作</H5>-->
-    <!--    <van-empty description="描述文字"/>-->
 
 
   </div>
@@ -106,6 +107,9 @@ export default {
     }
     , styleInfoView: function () {
       this.$router.push({name: "styleIntroduce", query: this.clothes})
+    }
+    , addClothesYarn: function () {
+      this.$router.push({name: "dailyAppList", query: this.clothes})
     }
   }
 }
