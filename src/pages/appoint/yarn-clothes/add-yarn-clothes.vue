@@ -290,7 +290,7 @@ export default {
           appId: this.appointVo.id,
           clothesId: this.clothesId,
           tenantCrop: this.tenantCrop,
-          yarnDate: this.appointVo.appointDate,
+          dress: localStorage.getItem("empId")
         }
       }).then(response => {
         const data = response.data;

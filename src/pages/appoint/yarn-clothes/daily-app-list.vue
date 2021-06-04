@@ -231,7 +231,7 @@ export default {
           appId: data.id,
           clothesId: this.clothes.clothesId,
           tenantCrop: this.tenantCrop,
-          yarnDate: data.appointDate,
+          dress: localStorage.getItem("empId")
         }
       }).then(response => {
         const data = response.data;
