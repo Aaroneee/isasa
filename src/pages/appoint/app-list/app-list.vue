@@ -62,7 +62,7 @@
 import switchNavBar from '@/components/nav-bar/switch-nav-bar'
 
 export default {
-  name: "app-list",
+  name: "appList",
   components: {
     switchNavBar
   },
@@ -126,7 +126,7 @@ export default {
       this.queryAppList();
     },
     clickItem: function (id) {
-      this.$router.push({name: "appDetails", query: {id: id}})
+      this.$router.push({name: "appDetails", query: {id: id,pageSource:'appList'}})
     },
 
 
@@ -174,7 +174,11 @@ export default {
     },
   },
   beforeRouteLeave (to, from, next) {
-    this.$route.meta.keepAlive = to.name === 'appDetails';
+    if (to.name === 'appDetails') {
+      this.$store.commit('setKeepAlive', ['appList'])
+    } else {
+      this.$store.commit('setKeepAlive', [])
+    }
     next()
   }
 

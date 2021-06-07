@@ -1,11 +1,9 @@
 <template>
   <div id="app">
     <div v-if="isRouterAlive">
-      <keep-alive>
-        <router-view v-if="$route.meta.keepAlive"></router-view>
+      <keep-alive :include="keepAlive">
+        <router-view/>
       </keep-alive>
-      <router-view v-if="!$route.meta.keepAlive">
-      </router-view>
     </div>
   </div>
 </template>
@@ -13,6 +11,11 @@
 
 export default {
   name: 'App',
+  computed: {
+    keepAlive() {
+      return this.$store.getters.keepAlive
+    }
+  },
   provide() {
     return {
       reload: this.reload

@@ -208,7 +208,11 @@ export default {
   },
   beforeRouteLeave(to, from, next) {
     // 从列表页去到别的页面，如果不是详情页，则不缓存列表页
-    this.$route.meta.keepAlive = to.name === 'cusDetails';
+    if (to.name === 'cusDetails') {
+      this.$store.commit('setKeepAlive', ['mCusList'])
+    } else {
+      this.$store.commit('setKeepAlive', [])
+    }
     next()
   },
 }

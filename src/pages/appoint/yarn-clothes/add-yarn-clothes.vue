@@ -152,6 +152,7 @@ export default {
     return {
       titleText: "添加试纱",
       appointVo: this.$route.query.appointVo,
+      pageSource: this.$route.query.pageSource,
 
       tenantCrop: localStorage.getItem("tenantCrop"),
       clothesAllName: "",
@@ -325,7 +326,11 @@ export default {
     },
   },
   beforeRouteLeave (to, from, next) {
-    this.$route.meta.keepAlive = to.name === 'clothesSchedule';
+    if (to.name === 'clothesSchedule') {
+      this.$store.commit('setKeepAlive', [this.pageSource,'addYarnClothes'])
+    } else {
+      this.$store.commit('setKeepAlive', [this.pageSource])
+    }
     next()
   }
 

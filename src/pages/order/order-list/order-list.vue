@@ -66,7 +66,7 @@
 import switchNavBar from "@/components/nav-bar/switch-nav-bar"
 
 export default {
-  name: "order-list",
+  name: "orderList",
   components: {
     switchNavBar
   },
@@ -137,8 +137,10 @@ export default {
     }
   },
   beforeRouteLeave (to, from, next) {
-    if (to.name === "work"){
-      this.createDate = ""
+    if (to.name !== 'work') {
+      this.$store.commit('setKeepAlive', ['orderList'])
+    } else {
+      this.$store.commit('setKeepAlive', [])
     }
     next()
   },

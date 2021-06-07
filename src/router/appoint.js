@@ -18,9 +18,6 @@ export default [
         path: '/appList',
         name: 'appList',
         component: appList,
-        meta: {
-            keepAlive: true
-        }
     },
     {
         path: '/appDetails',
@@ -41,25 +38,16 @@ export default [
         path: '/appScheduleList',
         name: 'appScheduleList',
         component: appScheduleList,
-        meta: {
-            keepAlive: true
-        }
     },
     {
         path: '/mScheduleList',
         name: 'mScheduleList',
         component: mScheduleList,
-        meta: {
-            keepAlive: true
-        }
     },
     {
         path: '/addYarnClothes',
         name: 'addYarnClothes',
         component: addYarnClothes,
-        meta: {
-            keepAlive: true
-        }
     },
     {
         path: '/dailyAppList',

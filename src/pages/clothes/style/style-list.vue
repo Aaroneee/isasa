@@ -148,6 +148,14 @@ export default {
         this.styleLabels.push(value)
       }
     }
+  },
+  beforeRouteLeave (to, from, next) {
+    if (to.name === 'styleDetails') {
+      this.$store.commit('setKeepAlive', ['styleList'])
+    } else {
+      this.$store.commit('setKeepAlive', [])
+    }
+    next()
   }
 }
 </script>

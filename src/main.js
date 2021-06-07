@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import App from './App.vue'
+import store from './store'
 
 import Vant from 'vant'
 import axios from 'axios'
@@ -27,5 +28,6 @@ Vue.config.productionTip = false
 axios.defaults.baseURL = '/api'
 export default new Vue({
     router,
+    store,
     render: h => h(App),
 }).$mount('#app')
