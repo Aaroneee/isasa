@@ -125,14 +125,14 @@ export default {
       }).then(response => {
         this.orderVo = response.data.data;
       })
-    }
-    , queryCusSchedules: function () {
+    },
+    queryCusSchedules: function () {
       this.$axios({
         method: 'GET',
         params: {
-          cusId: this.cusId,
+          orderId: this.id,
         },
-        url: '/schedule/clothesAndScheduleByCus',
+        url: '/schedule/clothesAndScheduleByOrderId',
       }).then(response => {
         console.log(response)
         if (response.data.code === 200) {
@@ -141,8 +141,6 @@ export default {
       })
     },
     deleteSchedule: function (value) {
-      console.log(value.clothesId)
-      console.log(this.cusId)
       this.$dialog.confirm({
         title: '移除档期',
         message: '是否确认移除该婚纱礼服?',
@@ -151,7 +149,7 @@ export default {
           method: 'delete',
           params: {
             clothesId: value.clothesId,
-            cusId: this.cusId,
+            orderId: this.id,
           },
           url: '/schedule/removeClothesSchedule',
         }).then(response => {

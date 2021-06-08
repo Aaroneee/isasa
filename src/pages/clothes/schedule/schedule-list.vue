@@ -82,13 +82,15 @@ export default {
           this.finished = true;
         }
       })
-    }, dateOnConfirm: function (value) {
+    },
+    dateOnConfirm: function (value) {
       const s = this.$dateUtils.vantDateToYMD(value);
       this.scheduleDate = s
       this.dateText = s
       this.dateShowPicker = false
       this.checkScheduleState()
-    }, searchStyleName: function (value) {
+    },
+    searchStyleName: function (value) {
       this.searchValue = value
       this.checkScheduleState()
     }
