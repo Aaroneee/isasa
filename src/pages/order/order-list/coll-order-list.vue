@@ -172,7 +172,11 @@ export default {
     }
   },
   beforeRouteLeave (to, from, next) {
-    this.$route.meta.keepAlive = to.name !== 'work';
+    if (to.name !== 'work') {
+      this.$store.commit('setKeepAlive', ['collOrderList'])
+    } else {
+      this.$store.commit('setKeepAlive', [])
+    }
     next()
   },
 }

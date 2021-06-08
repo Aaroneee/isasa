@@ -36,6 +36,11 @@
                        icon="add-o"
                        text="添加试纱"/>
       </van-grid>
+      <van-grid :border="false" clickable :column-num="4">
+        <van-grid-item @click="operationRecord"
+                       icon="todo-list-o"
+                       text="历史操作"/>
+      </van-grid>
     </van-cell-group>
 
 
@@ -110,6 +115,9 @@ export default {
     }
     , addClothesYarn: function () {
       this.$router.push({name: "dailyAppList", query: this.clothes})
+    }
+    , operationRecord: function () {
+      this.$router.push({name: "clothesOperationRecord", query: this.clothes})
     }
   }
 }

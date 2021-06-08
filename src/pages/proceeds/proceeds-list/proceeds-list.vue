@@ -45,7 +45,7 @@
 import switchNavBar from "@/components/nav-bar/switch-nav-bar"
 
 export default {
-  name: "proceeds-list",
+  name: "proceedsList",
   components:{
     switchNavBar
   },
@@ -127,6 +127,14 @@ export default {
         this.proceedsNameArray.push(...JSON.parse(response.data.data));
       })
     },
+  },
+  beforeRouteLeave (to, from, next) {
+    if (to.name === 'proceedsDetails') {
+      this.$store.commit('setKeepAlive', ['proceedsList'])
+    } else {
+      this.$store.commit('setKeepAlive', [])
+    }
+    next()
   }
 
 }

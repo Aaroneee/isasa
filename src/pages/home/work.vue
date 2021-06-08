@@ -70,6 +70,7 @@ export default {
   },
   methods: {
     onClickItem: function (event) {
+      this.$store.commit('setKeepAlive', [event])
       this.$router.push({name: event})
     },
     setLocalStorage: function (tenantCrop, empId) {
@@ -86,7 +87,6 @@ export default {
           empId: this.empId,
         }
       }).then(response => {
-        console.log(response)
         this.modules = response.data.data
       })
 

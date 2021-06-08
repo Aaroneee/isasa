@@ -18,7 +18,6 @@ export default [
         name: 'orderList',
         component: orderList,
         meta: {
-            keepAlive: true,
             isBack: false,
         }
     },
@@ -46,16 +45,10 @@ export default [
         path: '/collOrderList',
         name: 'collOrderList',
         component: collOrderList,
-        meta: {
-            keepAlive: true,
-        },
     },
     {
         path: '/unCollOrderList',
         name: 'unCollOrderList',
         component: unCollOrderList,
-        meta: {
-            keepAlive: true,
-        },
     },
 ]

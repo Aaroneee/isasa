@@ -136,7 +136,7 @@ export default {
       this.queryAppList();
     },
     clickItem: function (id) {
-      this.$router.push({name: "appDetails", query: {id: id}})
+      this.$router.push({name: "appDetails", query: {id: id,pageSource:'appScheduleList'}})
     },
     //前一天
     dayBefore:function (){
@@ -206,10 +206,11 @@ export default {
     },
   },
   beforeRouteLeave (to, from, next) {
-    // 从列表页去到别的页面，如果不是判断页面，则不缓存列表页
-    console.log(to)
-    console.log(from)
-    this.$route.meta.keepAlive = to.name === 'appDetails';
+    if (to.name === 'appDetails') {
+      this.$store.commit('setKeepAlive', ['appScheduleList'])
+    } else {
+      this.$store.commit('setKeepAlive', [])
+    }
     next()
   },activated(){
     console.log("哎呀看见我了")

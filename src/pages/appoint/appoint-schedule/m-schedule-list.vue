@@ -131,11 +131,15 @@ export default {
       })
     },
     clickItem: function (id) {
-      this.$router.push({name: "appDetails", query: {id: id}})
+      this.$router.push({name: "appDetails", query: {id: id,pageSource:'mScheduleList'}})
     },
   },
   beforeRouteLeave (to, from, next) {
-    this.$route.meta.keepAlive = to.name === 'appDetails';
+    if (to.name === 'appDetails') {
+      this.$store.commit('setKeepAlive', ['mScheduleList'])
+    } else {
+      this.$store.commit('setKeepAlive', [])
+    }
     next()
   }
 }

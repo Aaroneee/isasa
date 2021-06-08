@@ -73,6 +73,6 @@ export default {
     //如果时间是 一位数则补充0
     //1 返回 01
     dateIsSingle(date) {
-        return date < 9 ? "0" + date : date;
+        return date < 10 ? "0" + date : date;
     }
 }

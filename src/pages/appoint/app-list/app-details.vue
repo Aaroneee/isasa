@@ -55,7 +55,8 @@ export default {
   data() {
     return {
       appId: this.$route.query.id,
-      appointVo: {}
+      appointVo: {},
+      pageSource: this.$route.query.pageSource,
     }
   },
   created() {
@@ -87,7 +88,8 @@ export default {
       this.$router.push({name: "orderAdd", query: {appointVo: this.appointVo}});
     },
     openAddYarnClothes: function () {
-      this.$router.push({name:"addYarnClothes", query: {appointVo: this.appointVo}})
+      this.$store.commit('setKeepAlive', ['addYarnClothes',this.pageSource])
+      this.$router.push({name:"addYarnClothes", query: {appointVo: this.appointVo,pageSource: this.pageSource}})
     },
   }
 }
