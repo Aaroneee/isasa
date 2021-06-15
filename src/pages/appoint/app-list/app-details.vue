@@ -82,12 +82,24 @@ export default {
       this.$router.push({name: "appEdit", query: {id: this.$route.query.id}})
     },
     openArrival: function () {
+      if (this.appointVo.isValid==="3"){
+        this.$toast.fail("该条预约已取消,不可到店!");
+        return false;
+      }
       this.$router.push({name: "appArrival", query: {id: this.$route.query.id}})
     },
     openOrderAdd: function () {
+      if (this.appointVo.isValid==="1"||this.appointVo.isValid==="3"){
+        this.$toast.fail("取消或未到店的预约不能添加订单");
+        return false;
+      }
       this.$router.push({name: "orderAdd", query: {appointVo: this.appointVo}});
     },
     openAddYarnClothes: function () {
+      if (this.appointVo.isValid==="1"||this.appointVo.isValid==="3"){
+        this.$toast.fail("取消或未到店的预约不能添加订单");
+        return false;
+      }
       this.$store.commit('setKeepAlive', ['addYarnClothes',this.pageSource])
       this.$router.push({name:"addYarnClothes", query: {appointVo: this.appointVo,pageSource: this.pageSource}})
     },
