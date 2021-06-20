@@ -92,15 +92,35 @@ export default {
       this.$router.push({name: "appArrival", query: {id: this.$route.query.id}})
     },
     openOrderAdd: function () {
-      if (this.appointVo.isValid==="1"||this.appointVo.isValid==="3"){
-        this.$toast.fail("取消或未到店的预约不能添加订单");
+      if (this.appointVo.isValid==="3"){
+        this.$toast.fail("取消的预约不能添加订单");
+        return false;
+      }
+      //如果还未到店应提示是否先选择到店
+      if (this.appointVo.isValid==="1"){
+        this.$dialog.confirm({
+          title: '预约尚未到店',
+          message: "预约尚未到店,是否先进行到店操作?",
+        }).then(() => {
+          this.$router.push({name: "appArrival", query: {id: this.$route.query.id}})
+        })
         return false;
       }
       this.$router.push({name: "orderAdd", query: {appointVo: this.appointVo}});
     },
     openAddYarnClothes: function () {
-      if (this.appointVo.isValid==="1"||this.appointVo.isValid==="3"){
-        this.$toast.fail("取消或未到店的预约不能添加订单");
+      if (this.appointVo.isValid==="3"){
+        this.$toast.fail("取消的预约不能添加试纱");
+        return false;
+      }
+      //如果还未到店应提示是否先选择到店
+      if (this.appointVo.isValid==="1"){
+        this.$dialog.confirm({
+          title: '预约尚未到店',
+          message: "预约尚未到店,是否先进行到店操作?",
+        }).then(() => {
+          this.$router.push({name: "appArrival", query: {id: this.$route.query.id}})
+        })
         return false;
       }
       this.$store.commit('setKeepAlive', ['addYarnClothes',this.pageSource])
