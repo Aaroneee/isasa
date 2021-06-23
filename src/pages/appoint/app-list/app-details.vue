@@ -37,6 +37,9 @@
       <van-col span="6" offset="2">
         <van-button @click="openAddYarnClothes" color="#2f4056" style="width: 100%">添加试纱</van-button>
       </van-col>
+      <van-col span="6" offset="1">
+        <van-button @click="cancelApp" color="#EA3311" style="width: 100%">取消预约</van-button>
+      </van-col>
     </van-row>
     <br>
   </div>
@@ -82,14 +85,76 @@ export default {
       this.$router.push({name: "appEdit", query: {id: this.$route.query.id}})
     },
     openArrival: function () {
+      if (this.appointVo.isValid==="3"){
+        this.$toast.fail("该条预约已取消,不可到店!");
+        return false;
+      }
       this.$router.push({name: "appArrival", query: {id: this.$route.query.id}})
     },
     openOrderAdd: function () {
+      if (this.appointVo.isValid==="3"){
+        this.$toast.fail("取消的预约不能添加订单");
+        return false;
+      }
+      //如果还未到店应提示是否先选择到店
+      if (this.appointVo.isValid==="1"){
+        this.$dialog.confirm({
+          title: '预约尚未到店',
+          message: "预约尚未到店,是否先进行到店操作?",
+        }).then(() => {
+          this.$router.push({name: "appArrival", query: {id: this.$route.query.id}})
+        })
+        return false;
+      }
       this.$router.push({name: "orderAdd", query: {appointVo: this.appointVo}});
     },
     openAddYarnClothes: function () {
+      if (this.appointVo.isValid==="3"){
+        this.$toast.fail("取消的预约不能添加试纱");
+        return false;
+      }
+      //如果还未到店应提示是否先选择到店
+      if (this.appointVo.isValid==="1"){
+        this.$dialog.confirm({
+          title: '预约尚未到店',
+          message: "预约尚未到店,是否先进行到店操作?",
+        }).then(() => {
+          this.$router.push({name: "appArrival", query: {id: this.$route.query.id}})
+        })
+        return false;
+      }
       this.$store.commit('setKeepAlive', ['addYarnClothes',this.pageSource])
       this.$router.push({name:"addYarnClothes", query: {appointVo: this.appointVo,pageSource: this.pageSource}})
+    },
+    //取消预约
+    cancelApp:function (){
+      if (this.appointVo.isValid === '2') {
+        this.$toast.fail("当前预约已到店，不可进行取消")
+        return false;
+      }
+      if (this.appointVo.isValid === '3') {
+        this.$toast.fail("当前预约已取消，请勿重复操作")
+        return false;
+      }
+      this.$dialog.confirm({
+        title: '取消预约',
+        message: '确定要取消 '+this.appointVo.name+" 的这条预约?",
+      }).then(() => {
+        this.$axios({
+          method: "POST",
+          url: "/appoint/cancelAppointById",
+          params: {
+            id: this.appId,
+          }
+        }).then(response => {
+          if (response.data.code === 200) {
+            this.$toast.success("取消预约成功")
+          } else {
+            this.$toast.fail(response.data.msg);
+          }
+          this.queryAppointVo();
+        })
+      })
     },
   }
 }

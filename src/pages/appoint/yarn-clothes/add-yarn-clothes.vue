@@ -316,12 +316,21 @@ export default {
       const pattern1 = /\d{4}-\d{2}-\d{2}/;
       const pattern2 = /\d{2}\.\d{1,2}\.\d{1,2}/;
       if (pattern1.test(temp)) {
-        this.useDateValue = this.$dateUtils.vantDateToYMD(new Date(temp))+' - '+this.$dateUtils.vantDateToYMD(new Date(temp));
-        this.userDate = [new Date(temp),new Date(temp)];
+        this.useDateValue =
+            this.$dateUtils.vantDateToYMD(new Date(temp.replaceAll("-","/")))
+            +' - '+
+            this.$dateUtils.vantDateToYMD(new Date(temp.replaceAll("-","/")));
+        this.userDate = [new Date(temp.replaceAll("-","/")),
+          new Date(temp.replaceAll("-","/"))];
       }
       if (pattern2.test(temp)) {
-        this.useDateValue = this.$dateUtils.vantDateToYMD(new Date("20"+temp))+' - '+this.$dateUtils.vantDateToYMD(new Date("20"+temp));
-        this.userDate = [new Date("20"+temp),new Date("20"+temp)];
+        this.useDateValue =
+            this.$dateUtils.vantDateToYMD(new Date("20"+temp.replaceAll(".","/")))
+            +' - '+
+            this.$dateUtils.vantDateToYMD(new Date("20"+temp.replaceAll(".","/")));
+
+        this.userDate = [new Date("20"+temp.replaceAll(".","/"))
+          ,new Date("20"+temp.replaceAll(".","/"))];
       }
     },
   },

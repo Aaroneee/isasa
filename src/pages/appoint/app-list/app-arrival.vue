@@ -143,6 +143,7 @@ export default {
             appointDress: this.appointDress,
             appointCosmetics: this.appointCosmetics,
             room: this.room,
+            appState: this.appoint.appState,
           }
         }).then(response => {
           if (response.data.code === 200) {

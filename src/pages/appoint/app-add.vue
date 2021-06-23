@@ -325,7 +325,7 @@ export default {
               that.$router.back()
             }, 1000)
           } else {
-            this.$toast.fail(response.data.code);
+            this.$toast.fail(response.data.msg);
           }
         })
       })
@@ -339,9 +339,10 @@ export default {
       })
     },
     queryStateIds:function (){
+      let noState=["已订单","已交接","二次预约转订单"]
       this.$selectUtils.queryStateIds(this.$selectUtils.Picker,"售后状态").then(response=>{
         let data = JSON.parse(response.data.data)
-        this.stateArray = data.filter(k=>k.text !== "已订单"&&k.text !== "已交接")
+        this.stateArray = data.filter(k=>!noState.includes(k.text))
       })
     },
     //查询预约项目

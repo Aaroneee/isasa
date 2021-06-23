@@ -77,6 +77,11 @@
               style="display: none"
           />
           <van-field
+              name="orderId"
+              v-model="order.id"
+              style="display: none"
+          />
+          <van-field
               name="cusId"
               v-model="cusId"
               style="display: none"
