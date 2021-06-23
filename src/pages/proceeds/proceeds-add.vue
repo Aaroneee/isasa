@@ -19,6 +19,12 @@
     </div>
     <!--    form-->
     <div>
+      <van-notice-bar
+          v-if="proceedsHistoryArray.length>0"
+          left-icon="chat-o"
+          @click="proceedsHistoryShow=true"
+          :text="`该订单已有${proceedsHistoryArray.length}条收款。`"
+      />
       <van-form @submit="addProceeds">
 
         <van-field
