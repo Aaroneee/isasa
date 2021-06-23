@@ -80,12 +80,23 @@
           show-word-limit
       />
       <van-field
-          name="factoryName"
-          v-model="style.factoryName"
-          label="工厂来源"
-          onblur="window.scrollTo(0,0)"
-          placeholder="请输入工厂来源"
+          readonly
+          label="款式品牌"
+          placeholder="点击选择品牌"
+          clickable
+          name="brand"
+          :value="brand"
+          @click="showPicker = true"
       />
+      <van-popup v-model="showPicker" round position="bottom">
+        <van-picker
+            show-toolbar
+            :columns="brandArray"
+            @cancel="showPicker = false"
+            @confirm="brandConfirm"
+            :default-index="this.style.brandId - 1"
+        />
+      </van-popup>
 
       <van-button
           class="bottom-button"
@@ -116,13 +127,21 @@ export default {
 
       maxDate:this.$dateUtils.getMaxMinDate()[0],
       minDate:this.$dateUtils.getMaxMinDate()[1],
+      brand:"",
+      showPicker: false,
+      brandArray:[],
+      brandIds:[],
+      brandId:0,
 
     }
   },
   created() {
     this.style = this.$route.query
+    console.log(this.style)
+    this.brand = this.style.brandName
     this.styleType = this.$route.query.styleType
     this.queryStyleIds()
+    this.queryBrands()
   },
   components: {
     baseNavBar
@@ -167,6 +186,7 @@ export default {
     , updateStyleSubmit(data) {
       data.styleType = this.styleType
       data.tenantCrop = this.tenantCrop
+      data.brandId = this.brandId
       console.log(data)
       this.$dialog.confirm({
         title: '修改款式',
@@ -202,8 +222,26 @@ export default {
       } else {
         done();
       }
-    }
-
+    },
+    //查询品牌列表
+    queryBrands: function () {
+      this.$axios({
+        method: "GET",
+        url: "/clothesBrand/queryClothesBrands",
+        params:{
+          tenantCrop: this.tenantCrop,
+          isValid: 1,
+        }
+      }).then((response) => {
+        this.brandArray = response.data.data[0];
+        this.brandIds = response.data.data[1];
+      })
+    },
+    brandConfirm: function (value,index) {
+      this.brand = value;
+      this.brandId = this.brandIds[index];
+      this.showPicker = false;
+    },
   },
 
 }

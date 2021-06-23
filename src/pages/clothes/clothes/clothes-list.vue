@@ -37,6 +37,7 @@
             </van-button>
           </div>
         </van-dropdown-item>
+        <van-dropdown-item title="品牌" @change="brandChange" v-model="brand" :options="styleBrandArray"/>
 
       </van-dropdown-menu>
     </van-sticky>
@@ -101,6 +102,7 @@ export default {
     this.queryShopIds()
     this.queryStyleLabelList()
     this.queryPositionIdsByShop()
+    this.queryClothesBrand()
   },
   data() {
     return {
@@ -140,6 +142,10 @@ export default {
 
       isactive: false,
       page: 1,
+
+      brandText:"",
+      brand:"",
+      styleBrandArray: [{text: "品牌", value: ""}],
     }
   },
   components: {
@@ -168,7 +174,7 @@ export default {
       this.loading = true
       this.$axios({
         method: "get",
-        url: '/clothes/clothesList',
+        url: '/clothes/mClothesList',
         params: {
           page: this.page,
           styleLabels: this.styleLabels.toString(),
@@ -180,6 +186,7 @@ export default {
           clothesPosition: this.position,
           scheduleDate:this.scheduleDate,
           isOrder:this.isOrder,
+          brandName: this.brand,
         }
       }).then(response => {
         if (response.data.code === 200) {
@@ -282,7 +289,22 @@ export default {
       }
       this.flushClothesListArray()
       this.queryClothesList()
-    }
+    },
+    brandChange: function () {
+      this.flushClothesListArray()
+      this.queryClothesList();
+    },
+    queryClothesBrand: function () {
+      this.$axios({
+        method:"GET",
+        url: "/select/mBrandIds",
+        params: {
+          tenantCrop: this.tenantCrop,
+        }
+      }).then((response) => {
+        this.styleBrandArray.push(...JSON.parse(response.data.data))
+      })
+    },
   },
   beforeRouteLeave(to, from, next) {
     // 从列表页去到别的页面，如果不是判断页面，则不缓存列表页

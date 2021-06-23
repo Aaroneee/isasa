@@ -103,14 +103,14 @@
         />
       </van-popup>
       <!-- 所在位置 end-->
-      <van-field
-          v-if="firstSwitch"
-          name="factoryName"
-          v-model="factoryName"
-          rows="1"
-          label="采购来源"
-          placeholder="请输入采购来源"
-      />
+<!--      <van-field-->
+<!--          v-if="firstSwitch"-->
+<!--          name="factoryName"-->
+<!--          v-model="factoryName"-->
+<!--          rows="1"-->
+<!--          label="采购来源"-->
+<!--          placeholder="请输入采购来源"-->
+<!--      />-->
       <van-field
           readonly
           clickable
@@ -123,7 +123,23 @@
       />
       <van-calendar v-model="createDateShowPicker" :min-date="minDate" :max-date="maxDate"
                     @confirm="createDateOnConfirm"/>
-
+      <van-field
+          readonly
+          label="款式品牌"
+          placeholder="点击选择品牌"
+          clickable
+          name="brand"
+          :value="brand"
+          @click="showPicker = true"
+      />
+      <van-popup v-model="showPicker" round position="bottom">
+        <van-picker
+            show-toolbar
+            :columns="brandArray"
+            @cancel="showPicker = false"
+            @confirm="brandConfirm"
+        />
+      </van-popup>
       <van-field
           readonly
           clickable
@@ -286,12 +302,20 @@ export default {
       styleLabelsTextArray: [],
       styleLabelList: [],
       styleLabels: [],
+
+
+      showPicker: false,
+      brand:"",
+      brandArray:[],
+      brandIds:[],
+      brandId:0,
     }
   },
   created() {
     this.queryStyleIds();
     this.queryShopIds();
-    this.queryStyleLabelList()
+    this.queryStyleLabelList();
+    this.queryBrands();
   },
   components: {
     baseNavBar
@@ -357,6 +381,7 @@ export default {
             data.tenantCrop = this.tenantCrop
             data.styleImage = this.fileName
             data.uploader = []
+            data.brandId = this.brandId
             this.$axios({
               method: "POST",
               url: "/style/saveStyle",
@@ -497,6 +522,25 @@ export default {
       this.hideCrop()
       const img = await this.$refs.cropper.getCroppedBlob('image/jpeg', 0.7)
       this.fileList[0].file = blobToFile(img, this.fileName)
+    },
+    brandConfirm: function (value,index) {
+      this.brand = value;
+      this.brandId = this.brandIds[index];
+      this.showPicker = false;
+    },
+    //查询品牌列表
+    queryBrands: function () {
+       this.$axios({
+         method: "GET",
+         url: "/clothesBrand/queryClothesBrands",
+         params:{
+           tenantCrop: this.tenantCrop,
+           isValid: 1,
+         }
+       }).then((response) => {
+         this.brandArray = response.data.data[0];
+         this.brandIds = response.data.data[1];
+       })
     },
   },
 

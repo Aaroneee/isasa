@@ -27,6 +27,7 @@
             </van-button>
           </div>
         </van-dropdown-item>
+        <van-dropdown-item :title="brandText" @change="brandChange" v-model="brand" :options="styleBrandArray"/>
         <!--        <van-dropdown-item :title="serviceText" v-model="service" @change="serviceChange" :options="serviceArray" />-->
       </van-dropdown-menu>
 
@@ -41,7 +42,7 @@
             <van-col span="13">
               <van-col style="color: #39a9ed;font-size: 15px">款式名称:{{ item.typeName + item.styleName }}</van-col>
               <van-row>
-                <van-col span="24">采购来源:{{ item.factoryName }}</van-col>
+                <van-col span="24">款式品牌:{{ item.brandName }}</van-col>
               </van-row>
               <van-row>
                 <van-col span="24">采购日期:{{ item.purchaseDate }}</van-col>
@@ -92,13 +93,17 @@ export default {
       styleList: [],
       styleLabelList: [],
       styleLabels: [],
-      isactive: false
+      isactive: false,
+      brandText:"",
+      brand:"",
+      styleBrandArray: [{text: "款式品牌", value: ""}],
     }
   }
   , created() {
     this.queryStyleList()
     this.queryStyleType()
     this.queryStyleLabelList()
+    this.queryClothesBrand()
   }
   , components: {
     baseNavBar
@@ -107,12 +112,13 @@ export default {
     queryStyleList: function (value) {
       this.$axios({
         method: "get",
-        url: '/style/styleList',
+        url: '/style/mStyleList',
         params: {
           styleName: value,
           styleType: this.styleType,
           tenantCrop: this.tenantCrop,
           styleLabels: this.styleLabels.toString(),
+          brandName: this.brand,
         }
       }).then(response => {
         if (response.data.code === 200) {
@@ -147,7 +153,21 @@ export default {
       } else {
         this.styleLabels.push(value)
       }
-    }
+    },
+    brandChange: function () {
+      this.queryStyleList();
+    },
+    queryClothesBrand: function () {
+      this.$axios({
+        method:"GET",
+        url: "/select/mBrandIds",
+        params: {
+          tenantCrop: this.tenantCrop,
+        }
+      }).then((response) => {
+        this.styleBrandArray.push(...JSON.parse(response.data.data))
+      })
+    },
   },
   beforeRouteLeave (to, from, next) {
     if (to.name === 'styleDetails') {

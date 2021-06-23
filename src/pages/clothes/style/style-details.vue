@@ -20,7 +20,7 @@
       <van-cell title="款式介绍:" :value="style.styleInfo"/>
       <van-cell title="适合身形:" :value="style.styleFit"/>
       <van-cell title="不适合身形:" v-cloak :value="style.styleNoFit"/>
-      <van-cell title="工厂来源:" v-cloak :value="style.factoryName"/>
+      <van-cell title="款式品牌:" v-cloak :value="style.brandName"/>
       <van-cell title="采购日期:" :value="style.purchaseDate"/>
       <van-cell title="同款件数:" :value="style.appointCity"/>
     </van-cell-group>
