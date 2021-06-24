@@ -228,7 +228,7 @@ export default {
       this.$selectUtils.queryServiceIds(this.$selectUtils.Picker).then(response => {
         this.serviceColumns = JSON.parse(response.data.data);
       })
-      this.$roleUtils.ifService().then(response => {
+      this.$roleUtils.isService().then(response => {
         let flag = response.data.data
         if (flag) {
           this.serviceColumns.find(s => {
