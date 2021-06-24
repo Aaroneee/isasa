@@ -143,18 +143,28 @@
       <van-field
           readonly
           clickable
-          type="textarea"
+          center
           name="styleLabels"
-          :value="styleLabelsText"
           label="款式标签"
           placeholder="点击选择标签"
           @click="styleLabelShowPicker = true"
-      />
+      >
+        <template #input>
+          <van-col slot="label">
+            <van-tag v-for="item in styleLabelList" :key="item.value" v-if="styleLabels[item.value] === 1" type="danger"
+                     size="large" closeable style="margin: 5px"
+                     @click="pushStyleLabel(item.value,item.name)"
+                     @close="close(item.value)">
+              {{ item.name }}
+            </van-tag>
+          </van-col>
+        </template>
+      </van-field>
       <van-popup v-model="styleLabelShowPicker" position="bottom">
         <van-row type="flex" style="padding: 10px">
           <van-col style="margin: 5px" v-for="item in styleLabelList" :key="item.value">
-            <van-tag color="#B6B1BD" :class="{'bgcolor':styleLabels.indexOf(item.value)>-1}"
-                     round plain size="large"
+            <van-tag type="danger" :class="styleLabels[item.value] === 1?'':'van-tag--plain'"
+                     size="large"
                      @click="pushStyleLabel(item.value,item.name)">{{ item.name }}
             </van-tag>
           </van-col>
@@ -302,7 +312,7 @@ export default {
       styleLabelsTextArray: [],
       styleLabelList: [],
       styleLabels: [],
-
+      finalStyleLabels:[],
 
       showPicker: false,
       brand:"",
@@ -316,6 +326,7 @@ export default {
     this.queryShopIds();
     this.queryStyleLabelList();
     this.queryBrands();
+
   },
   components: {
     baseNavBar
@@ -378,10 +389,19 @@ export default {
             this.$toast.fail("图片上传发生错误,请检查后进行上传")
             this.overlayShow = false
           } else {
+            for (let temp in this.styleLabelList) {
+              var index = this.styleLabelList[temp].value
+              if (this.styleLabels[index] == 1) {
+                this.finalStyleLabels.push(index)
+              }
+            }
+            console.log(this.finalStyleLabels)
             data.tenantCrop = this.tenantCrop
             data.styleImage = this.fileName
             data.uploader = []
             data.brandId = this.brandId
+            data.styleLabels = this.finalStyleLabels.toString()
+            console.log(data)
             this.$axios({
               method: "POST",
               url: "/style/saveStyle",
@@ -408,30 +428,24 @@ export default {
     }, queryStyleLabelList: function () {
       this.$selectUtils.queryStyleLabels().then((response) => {
         this.styleLabelList.push(...response.data.data);
-        console.log(response)
+        for (let temp in this.styleLabelList) {
+          var index = this.styleLabelList[temp].value
+          this.styleLabels[index] = 0
+        }
       })
     }
     , styleLabelConfirm: function () {
       this.styleLabelShowPicker = false
     }
-    , pushStyleLabel: function (value,name) {
-      console.log(value)
-      console.log(name)
-      if (this.styleLabels.indexOf(value) > -1) {
-        this.styleLabels.splice(this.styleLabels.indexOf(value, 0), 1)
+    , pushStyleLabel: function (value) {
+      if (this.styleLabels[value] == 1) {
+        this.$set(this.styleLabels, value, 0)
       } else {
-        this.styleLabels.push(value)
+        this.$set(this.styleLabels, value, 1)
       }
-
-      if (this.styleLabelsTextArray.indexOf(name) > -1) {
-        this.styleLabels.splice(this.styleLabelsTextArray.indexOf(name, 0), 1)
-      } else {
-        this.styleLabelsTextArray.push(name)
-      }
-      this.styleLabelsText = this.styleLabelsTextArray.toString()
-
-
-
+    },
+    close: function (value) {
+      this.$set(this.styleLabels, value, 0)
     },
     createDateOnConfirm: function (time) {
       this.purchaseDate = this.$dateUtils.vantDateToYMD(time);
