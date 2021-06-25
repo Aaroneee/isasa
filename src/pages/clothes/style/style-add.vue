@@ -153,7 +153,6 @@
           <van-col slot="label">
             <van-tag v-for="item in styleLabelList" :key="item.value" v-if="styleLabels[item.value] === 1" type="danger"
                      size="large" closeable style="margin: 5px"
-                     @click="pushStyleLabel(item.value,item.name)"
                      @close="close(item.value)">
               {{ item.name }}
             </van-tag>
@@ -395,13 +394,11 @@ export default {
                 this.finalStyleLabels.push(index)
               }
             }
-            console.log(this.finalStyleLabels)
             data.tenantCrop = this.tenantCrop
             data.styleImage = this.fileName
             data.uploader = []
             data.brandId = this.brandId
             data.styleLabels = this.finalStyleLabels.toString()
-            console.log(data)
             this.$axios({
               method: "POST",
               url: "/style/saveStyle",

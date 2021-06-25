@@ -50,6 +50,54 @@
       />
       <van-calendar v-model="createDateShowPicker" :default-date="new Date(style.purchaseDate)" :min-date="minDate" :max-date="maxDate" @confirm="createDateOnConfirm"/>
       <van-field
+          readonly
+          label="款式品牌"
+          placeholder="点击选择品牌"
+          clickable
+          name="brand"
+          :value="brand"
+          @click="showPicker = true"
+      />
+      <van-popup v-model="showPicker" round position="bottom">
+        <van-picker
+            show-toolbar
+            :columns="brandArray"
+            @cancel="showPicker = false"
+            @confirm="brandConfirm"
+            :default-index="this.style.brandId - 1"
+        />
+      </van-popup>
+      <van-field
+          readonly
+          clickable
+          center
+          name="styleLabels"
+          label="款式标签"
+          placeholder="点击选择标签"
+          @click="styleLabelShowPicker = true"
+      >
+        <template #input>
+          <van-col slot="label">
+            <van-tag v-for="item in styleLabelList" :key="item.value" v-if="styleLabels[item.value] === 1" type="danger"
+                     size="large" closeable style="margin: 5px"
+                     @click="pushStyleLabel(item.value,item.name)"
+                     @close="close(item.value)">
+              {{ item.name }}
+            </van-tag>
+          </van-col>
+        </template>
+      </van-field>
+      <van-popup v-model="styleLabelShowPicker" position="bottom">
+        <van-row type="flex" style="padding: 10px">
+          <van-col style="margin: 5px" v-for="item in styleLabelList" :key="item.value">
+            <van-tag type="danger" :class="styleLabels[item.value] === 1?'':'van-tag--plain'"
+                     size="large"
+                     @click="pushStyleLabel(item.value,item.name)">{{ item.name }}
+            </van-tag>
+          </van-col>
+        </van-row>
+      </van-popup>
+      <van-field
           class="msg"
           name="styleInfo"
           v-model="style.styleInfo"
@@ -79,24 +127,7 @@
           maxlength="40"
           show-word-limit
       />
-      <van-field
-          readonly
-          label="款式品牌"
-          placeholder="点击选择品牌"
-          clickable
-          name="brand"
-          :value="brand"
-          @click="showPicker = true"
-      />
-      <van-popup v-model="showPicker" round position="bottom">
-        <van-picker
-            show-toolbar
-            :columns="brandArray"
-            @cancel="showPicker = false"
-            @confirm="brandConfirm"
-            :default-index="this.style.brandId - 1"
-        />
-      </van-popup>
+
 
       <van-button
           class="bottom-button"
@@ -133,15 +164,23 @@ export default {
       brandIds:[],
       brandId:0,
 
+      styleLabelShowPicker: false,
+      styleLabelsText: "",
+      styleLabelsTextArray: [],
+      styleLabelList: [],
+      styleLabels: [],
+      finalStyleLabels:[],
+
     }
   },
   created() {
     this.style = this.$route.query
-    console.log(this.style)
     this.brand = this.style.brandName
     this.styleType = this.$route.query.styleType
     this.queryStyleIds()
     this.queryBrands()
+    this.queryStyleLabelList();
+
   },
   components: {
     baseNavBar
@@ -187,6 +226,13 @@ export default {
       data.styleType = this.styleType
       data.tenantCrop = this.tenantCrop
       data.brandId = this.brandId
+      for (let temp in this.styleLabelList) {
+        var index = this.styleLabelList[temp].value
+        if (this.styleLabels[index] == 1) {
+          this.finalStyleLabels.push(index)
+        }
+      }
+      data.styleLabels = this.finalStyleLabels.toString()
       console.log(data)
       this.$dialog.confirm({
         title: '修改款式',
@@ -241,6 +287,31 @@ export default {
       this.brand = value;
       this.brandId = this.brandIds[index];
       this.showPicker = false;
+    },
+    queryStyleLabelList: function () {
+      this.$selectUtils.queryStyleLabels().then((response) => {
+        this.styleLabelList.push(...response.data.data);
+        for (let temp in this.styleLabelList) {
+          var index = this.styleLabelList[temp].value
+          this.styleLabels[index] = 0
+        }
+        console.log(this.style)
+        var temp = this.style.styleLabels
+        const orStyleLabels = temp.split(",");
+        for (const flag of orStyleLabels) {
+          this.$set(this.styleLabels, flag, 1)
+        }
+      })
+    },
+    pushStyleLabel: function (value) {
+      if (this.styleLabels[value] == 1) {
+        this.$set(this.styleLabels, value, 0)
+      } else {
+        this.$set(this.styleLabels, value, 1)
+      }
+    },
+    close: function (value) {
+      this.$set(this.styleLabels, value, 0)
     },
   },
 

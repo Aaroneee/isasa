@@ -14,13 +14,22 @@
           </van-swipe-item>
         </van-swipe>
       </div>
+      <van-cell>
+        <van-row>
+          <van-col span="12">品牌：{{clothes.brand===""?"暂无品牌":clothes.brand}}</van-col>
+          <van-col span="12" style="text-align: right">当前位置：{{clothes.positionName===""?"暂无位置":clothes.positionName}}</van-col>
+        </van-row>
+        <van-row style="padding-top: 5px">
+          <van-col>标签：{{styleLabelList.length==0?"暂无标签":""}}
+              <van-tag v-for="item in styleLabelList" :key="item.id" type="danger"
+                          size="large" style="margin: 5px">
+              {{ item.labelName }}
+              </van-tag>
+          </van-col>
+        </van-row>
+      </van-cell>
     </van-cell-group>
-    <!--    <van-cell-group title="婚纱操作记录" v-for="(item,index) in clothesScheduleList" :key="index">-->
-    <!--      <van-cell :title="item.customerName" :label="'婚期: '+ item.weddingDay"-->
-    <!--                :value="item.scheduleDate">-->
-    <!--      </van-cell>-->
-    <!--    </van-cell-group>-->
-    <!--    <van-empty v-if="clothesScheduleList.length === 0" image="search" description="该婚纱下暂未查询到操作记录"/>-->
+
     <van-cell-group title="婚纱操作">
       <van-grid :border="false" clickable :column-num="4">
         <van-grid-item @click="clothesOperation"
@@ -56,6 +65,7 @@ export default {
   name: "clothesDetails",
   created() {
     this.clothes = this.$route.query
+    this.queryStyleLabelList()
     this.queryStyleImageByClothesId(this.clothes.clothesId)
     this.queryClothesSchedules(this.clothes.clothesId)
   },
@@ -64,8 +74,7 @@ export default {
       clothes: {},
       images: [],
       clothesScheduleList: [],
-
-
+      styleLabelList: [],
     }
   }
   , components: {
@@ -76,7 +85,6 @@ export default {
       ImagePreview([value])
     }
     , queryStyleImageByClothesId(clothesId) {
-      console.log(clothesId)
       this.$axios({
         method: "GET",
         url: "/styleImage/queryStyleImageByClothesId",
@@ -100,6 +108,19 @@ export default {
         }
       }).then(response => {
         this.clothesScheduleList = response.data.data
+      })
+    },
+    //查询礼服标签
+    queryStyleLabelList: function () {
+      this.$axios({
+        method: "GET",
+        url: "/styleLabel/queryStyleLabelVoByClothesId",
+        params: {
+          clothesId: this.clothes.clothesId
+        }
+      }).then(response => {
+        this.styleLabelList = response.data.data
+        console.log(this.styleLabelList)
       })
     }
     //出样陈列

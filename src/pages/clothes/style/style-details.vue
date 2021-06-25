@@ -28,7 +28,7 @@
     <br>
     <br>
     <br>
-    <van-col span="6" offset="1">
+    <van-col span="6" offset="2">
       <van-button @click="addClothes" size="small" style="width: 100%" type="info">添加婚纱</van-button>
     </van-col>
     <van-col span="6" offset="1">
