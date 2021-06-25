@@ -1,6 +1,23 @@
 <template>
   <div>
+    <van-overlay :show="overlayShow">
+      <div class="wrapper" @click.stop>
+          <van-loading type="spinner" />
+      </div>
+    </van-overlay>
     <baseNavBar title="预约到店"/>
+    <van-notice-bar
+        v-show="noticeDress"
+        left-icon="volume-o"
+        mode="closeable"
+        text="检测此账号有礼服师职位，已默认填充。"
+    />
+    <van-notice-bar
+        v-show="noticeCosmetics"
+        left-icon="volume-o"
+        mode="closeable"
+        text="检测此账号有化妆师职位，已默认填充。"
+    />
     <van-form @submit="appointArrival">
       <van-field
           readonly
@@ -79,6 +96,12 @@ export default {
   name: "app-arrival",
   data() {
     return {
+      //遮罩层显示
+      overlayShow:true,
+      //默认礼服师化妆师通知栏
+      noticeDress:false,
+      noticeCosmetics:false,
+
       appId: this.$route.query.id,
       appoint: {},
 
@@ -131,6 +154,7 @@ export default {
       this.$dialog.confirm({
         title: '预约到店',
         message: '礼服师 : ' + this.appointDressText +
+            '<br>化妆师 : ' + this.appointCosmeticsText +
             '<br>房间 : ' + this.roomText +
             '<br>是否确认分配?',
       }).then(() => {
@@ -160,7 +184,44 @@ export default {
 
 
     },
+    //根据EmpId查询角色权限,
+    // 如果本身是礼服师或化妆师 并且原订单没有礼服师或化妆师时则默认填充
+    queryRoleByEmpId:function (){
+      this.$roleUtils.queryRoleByEmpId().then(response=>{
+        let roleList=response.data.data;
+        let empId=Number(localStorage.getItem("empId"));
+        //如果此条上预约没有礼服师
+        if (this.appoint.appointDress === ""){
+          for (let item of roleList){
+            let empDress=this.appointDressArray.filter(k=>k.id===empId);
+            //如果是礼服师职位，并且礼服师列表有此登录人 则赋值
+            if (item.roleName==="礼服师"&&empDress.length>0){
+              this.appointDress=empDress[0].id;
+              this.appointDressText=empDress[0].text;
+              this.noticeDress=true;
+              break;
+            }
+          }
+        }
+        //如果此条上预约没有化妆师
+        if (this.appoint.appointCosmetics === ""){
+          for (let item of roleList){
+            let empCosmetics=this.appointCosmeticsArray.filter(k=>k.id===empId);
+            //如果是化妆师职位并且化妆师列表有此登录人 则赋值
+            if (item.roleName==="化妆师"&&empCosmetics.length>0){
+              let empCosmetics=this.appointCosmeticsArray.filter(k=>k.id===empId);
+              this.appointCosmetics=empCosmetics[0].id;
+              this.appointCosmeticsText=empCosmetics[0].text;
+              this.noticeCosmetics=true;
+              break;
+            }
+          }
+        }
+        //关闭遮罩层
+        this.overlayShow=false;
+      })
 
+    },
     //查询预约
     queryAppoint: function () {
       this.$axios({
@@ -175,34 +236,43 @@ export default {
           return;
         }
         this.appoint = response.data.data;
-        this.appointDress = this.appoint.appointDress
-        this.room = this.appoint.room
-        this.queryAppointDress();
         this.queryRoomIdsByShopId();
-        this.queryAppointCosmetics();
+        Promise.all([this.queryAppointCosmetics(),this.queryAppointDress() ]).then(()=>{
+          this.queryRoleByEmpId();
+        })
       })
     },
     //查询礼服师
     queryAppointDress: function () {
-      this.$selectUtils.queryDressIds(
-          this.$selectUtils.Picker
-      ).then(response => {
-        this.appointDressArray = JSON.parse(response.data.data);
-        if (this.appoint.appointDress !== "") {
-          this.appointDressText = this.appointDressArray.find(k => k.id === this.appoint.appointDress).text;
-        }
+      return new Promise((resolve) => {
+        this.$selectUtils.queryDressIds(
+            this.$selectUtils.Picker
+        ).then(response => {
+          this.appointDressArray = JSON.parse(response.data.data);
+          if (this.appoint.appointDress !== "") {
+            this.appointDressText = this.appointDressArray.find(k => k.id === this.appoint.appointDress).text;
+            this.appointDress = this.appointDressArray.find(k => k.id === this.appoint.appointDress).id;
+
+          }
+          resolve();
+        })
       })
     },
     //查询化妆师
     queryAppointCosmetics: function () {
-      this.$selectUtils.queryCosmeticsIds(
-          this.$selectUtils.Picker
-      ).then(response => {
-        this.appointCosmeticsArray = JSON.parse(response.data.data);
-        if (this.appoint.appointCosmetics !== "") {
-          this.appointCosmeticsText = this.appointCosmeticsArray.find(k => k.id === this.appoint.appointCosmetics).text;
-        }
+      return new Promise((resolve) => {
+        this.$selectUtils.queryCosmeticsIds(
+            this.$selectUtils.Picker
+        ).then(response => {
+          this.appointCosmeticsArray = JSON.parse(response.data.data);
+          if (this.appoint.appointCosmetics !== "") {
+            this.appointCosmeticsText = this.appointCosmeticsArray.find(k => k.id === this.appoint.appointCosmetics).text;
+            this.appointCosmetics = this.appointCosmeticsArray.find(k => k.id === this.appoint.appointCosmetics).id;
+          }
+          resolve();
+        })
       })
+
     },
     //查询房间
     queryRoomIdsByShopId: function () {
@@ -222,6 +292,7 @@ export default {
         // 到店分配 text 找不到
         if (this.appoint.room !== "") {
           this.roomText = this.roomArray.find(k => k.id === this.appoint.room).text;
+          this.room = this.roomArray.find(k => k.id === this.appoint.room).id;
         }
       })
     }
@@ -230,5 +301,10 @@ export default {
 </script>
 
 <style scoped>
-
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
 </style>
