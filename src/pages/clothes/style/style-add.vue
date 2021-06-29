@@ -122,7 +122,7 @@
           :rules="[{ required: true }]"
       />
       <van-calendar v-model="createDateShowPicker" :min-date="minDate" :max-date="maxDate"
-                    @confirm="createDateOnConfirm"/>
+                    @confirm="createDateOnConfirm" :default-date="new Date()"/>
       <van-field
           readonly
           label="款式品牌"
@@ -272,7 +272,7 @@ export default {
       maxDate:this.$dateUtils.getMaxMinDate()[0],
       minDate:this.$dateUtils.getMaxMinDate()[1],
       //创建日期
-      purchaseDate: "",
+      purchaseDate: this.$dateUtils.vantDateToYMD(new Date()),
       //日期选择框展示
       createDateShowPicker: false,
       //款式介绍
@@ -398,6 +398,7 @@ export default {
             data.styleImage = this.fileName
             data.uploader = []
             data.brandId = this.brandId
+            data.empId = localStorage.getItem("empId")
             data.styleLabels = this.finalStyleLabels.toString()
             this.$axios({
               method: "POST",

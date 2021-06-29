@@ -204,6 +204,7 @@ export default {
       data.clothesPosition = this.clothesPosition
       data.clothesShop = this.clothesShop
       data.styleId = this.style.id
+      data.empId = localStorage.getItem("empId")
       this.$dialog.confirm({
         title: "婚纱添加",
         message: "您要添加的婚纱编号为" + "<br><br>" + this.style.typeName + "-" + this.style.styleName + "-" + data.clothesSize + "-" + data.clothesNo,

@@ -4,16 +4,19 @@
     <van-cell-group>
       <van-cell style="font-size: 12px" v-for="item in clothesOperations" :key="item.id">
         <van-row>
-          <van-col span="12">经办人:{{ item.empName }}</van-col>
-          <van-col span="12">行为:{{ item.operationName }}</van-col>
+          <van-col span="12">经办人：{{ item.empName }}</van-col>
+          <van-col span="12">行为：{{ item.operationName }}</van-col>
         </van-row>
         <van-row>
-          <van-col span="12">目标店铺:{{' '+ item.localShopName }}</van-col>
-          <van-col span="12">所在店铺:{{' '+ item.shopName }}</van-col>
+          <van-col span="12">目标店铺：{{item.shopName}}</van-col>
+          <van-col span="12">原店铺：{{item.localShopName===''?'暂无':item.localShopName}}</van-col>
         </van-row>
         <van-row>
-          <van-col span="12">位置:{{item.positionName}}</van-col>
-          <van-col span="12">操作日期:{{item.createDate}}</van-col>
+          <van-col span="12">目标位置：{{item.positionName}}</van-col>
+          <van-col span="12">原位置：{{item.localPositionName===''?'暂无':item.localPositionName}}</van-col>
+        </van-row>
+        <van-row>
+          <van-col span="12">操作日期：{{item.createDate}}</van-col>
         </van-row>
       </van-cell>
     </van-cell-group>
