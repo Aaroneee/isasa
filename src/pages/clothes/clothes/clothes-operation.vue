@@ -134,6 +134,9 @@ export default {
       data.shopId = this.clothes.shopId
       data.tenantCrop = this.tenantCrop
       data.clothesId = this.clothes.clothesId
+      data.localShopId = this.clothes.shopId
+      data.localPositionId = this.clothes.positionId
+      data.empId = localStorage.getItem("empId")
       this.$dialog.confirm({
         title: '出样陈列',
         message: '是否将' + data.clothesName + "移动到" + this.clothesPositionText,

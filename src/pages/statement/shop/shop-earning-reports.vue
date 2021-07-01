@@ -38,8 +38,11 @@
         <van-collapse-item title="售前情况" name="3">
           <van-grid :border="false" style="text-align: center" :column-num="3">
             <van-grid-item>售前接待数<br>{{saleReception}}</van-grid-item>
-            <van-grid-item>售前订单数<br>{{saleOrderNum}}</van-grid-item>
-            <van-grid-item>售前转换率<br>{{saleProportion}}</van-grid-item>
+            <van-grid-item>一次订单数<br>{{onceTheOrder}}</van-grid-item>
+            <van-grid-item>一次未订单数<br>{{onceNotOrder}}</van-grid-item>
+            <van-grid-item>二次订单数<br>{{twiceTheOrder}}</van-grid-item>
+            <van-grid-item>一次转换率<br>{{onceProportion}}</van-grid-item>
+            <van-grid-item>综合转换率<br>{{comprehensiveProportion}}</van-grid-item>
           </van-grid>
         </van-collapse-item>
         <van-collapse-item title="售后情况" name="4">
@@ -117,6 +120,16 @@ export default {
       proceedsAnalysis:[],
       //客资来源
       cusSource:[],
+      //一次订单数
+      onceTheOrder: "0",
+      //一次未订单数
+      onceNotOrder: "0",
+      //一次转化率
+      onceProportion: "0",
+      //二次订单数
+      twiceTheOrder: "0",
+      //综合转化率
+      comprehensiveProportion: "0",
     }
   },
   methods: {
@@ -160,6 +173,7 @@ export default {
     },
     processData: function (data) {
       const VO = data[0];
+      console.log(data)
       this.saleEarning =Number(VO.saleEarning);
       this.afterSaleEarning = Number(VO.afterSaleEarning);
       this.earning = Number(VO.earning);
@@ -168,6 +182,13 @@ export default {
       this.saleOrderNum = Number(VO.saleOrderNum);
       this.afterSaleReception = Number(VO.afterSaleReception);
       this.afterSaleOrderNum = Number(VO.afterSaleOrderNum);
+      this.onceTheOrder = Number(VO.onceTheOrder);
+      this.onceNotOrder = this.saleReception - this.onceTheOrder;
+      let temp3 = (this.onceTheOrder/this.saleReception*100).toFixed(2)
+      this.onceProportion = temp3==='NaN'?"0":temp3+"%";
+      this.twiceTheOrder = Number(VO.twiceTheOrder);
+      let temp4 = ((this.twiceTheOrder+this.onceTheOrder)/this.saleReception*100).toFixed(2);
+      this.comprehensiveProportion = temp4==="NaN"?"0":temp4+"%";
       let temp1 = (this.saleOrderNum/this.saleReception*100).toFixed(2);
       let temp2 = (this.afterSaleOrderNum/this.afterSaleReception*100).toFixed(2);
       this.saleProportion = temp1==='NaN'?"0":temp1+"%";
