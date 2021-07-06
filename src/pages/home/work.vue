@@ -9,14 +9,14 @@
     </van-cell-group>
     <van-cell-group v-if="modules.预约 !=null" title="预约">
       <van-grid :border="false" clickable :column-num="4">
-        <van-grid-item v-for="value in modules.预约" @click="onClickItem(value.viewLink)" :key="value.id"
+        <van-grid-item v-for="value in modules.预约" @click="onClickItem(value.viewLink, value.id)" :key="value.id"
                        :icon="value.viewIcon"
                        :text="value.viewName"/>
       </van-grid>
     </van-cell-group>
     <van-cell-group v-if="modules.订单 !=null" title="订单">
       <van-grid :border="false" clickable :column-num="4">
-        <van-grid-item v-for="value in modules.订单" @click="onClickItem(value.viewLink)" :key="value.id"
+        <van-grid-item v-for="value in modules.订单" @click="onClickItem(value.viewLink, value.id)" :key="value.id"
                        :icon="value.viewIcon"
                        :text="value.viewName"/>
       </van-grid>
@@ -69,9 +69,9 @@ export default {
     }
   },
   methods: {
-    onClickItem: function (event) {
+    onClickItem: function (event,id) {
       this.$store.commit('setKeepAlive', [event])
-      this.$router.push({name: event})
+      this.$router.push({name: event,query:{id: id}})
     },
     setLocalStorage: function (tenantCrop, empId) {
       localStorage.setItem("tenantCrop", tenantCrop);
@@ -81,12 +81,13 @@ export default {
     , queryModules() {
       this.$axios({
         method: "GET",
-        url: '/index/mobileManBar',
+        url: '/index/index/mobileManBar',
         params: {
           tenantCrop: this.tenantCrop,
           empId: this.empId,
         }
       }).then(response => {
+        console.log(response)
         this.modules = response.data.data
       })
 

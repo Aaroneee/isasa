@@ -86,6 +86,7 @@ export default {
 
       appointName: "",
       appointDress: "",
+      mobileViewId: this.$route.query.id,
     }
   },
   components: {
@@ -131,7 +132,7 @@ export default {
       })
     },
     clickItem: function (id) {
-      this.$router.push({name: "appDetails", query: {id: id,pageSource:'mScheduleList'}})
+      this.$router.push({name: "appDetails", query: {id: id,pageSource:'mScheduleList',mobileViewId:this.mobileViewId}})
     },
   },
   beforeRouteLeave (to, from, next) {

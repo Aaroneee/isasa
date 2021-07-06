@@ -82,6 +82,7 @@ export default {
       searchValue: "",
       loading: false,
       finished: false,
+      mobileViewId: this.$route.query.id,
 
       maxDate:this.$dateUtils.getMaxMinDate()[0],
       minDate:this.$dateUtils.getMaxMinDate()[1],
@@ -136,7 +137,7 @@ export default {
       this.queryAppList();
     },
     clickItem: function (id) {
-      this.$router.push({name: "appDetails", query: {id: id,pageSource:'appScheduleList'}})
+      this.$router.push({name: "appDetails", query: {id: id,pageSource:'appScheduleList',mobileViewId:this.mobileViewId}})
     },
     //前一天
     dayBefore:function (){
@@ -173,7 +174,8 @@ export default {
           inviter: this.inviter,
           appointDress: this.appointDress,
           appointShop: this.appointShop,
-          tenantCrop: this.tenantCrop
+          tenantCrop: this.tenantCrop,
+          mobileViewId: this.mobileViewId,
         }
       }).then(response => {
         this.appointList = response.data.data.list;

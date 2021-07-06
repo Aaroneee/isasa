@@ -60,6 +60,7 @@ export default {
       appId: this.$route.query.id,
       appointVo: {},
       pageSource: this.$route.query.pageSource,
+      mobileViewId: this.$route.query.mobileViewId,
     }
   },
   created() {
@@ -71,7 +72,9 @@ export default {
         method: "GET",
         url: "/appoint/queryAppointVoById",
         params: {
-          id: this.appId
+          id: this.appId,
+          mobileViewId: this.mobileViewId,
+          tenantCrop: localStorage.getItem("tenantCrop")
         }
       }).then(response => {
         if (response.data.code !== 200) {

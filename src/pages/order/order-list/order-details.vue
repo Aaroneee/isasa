@@ -105,6 +105,7 @@ export default {
 
       id: this.$route.query.id,
       cusId: this.$route.query.cusId,
+      mobileViewId: this.$route.query.mobileViewId,
       orderVo: {},
       tenantCrop: localStorage.getItem("tenantCrop"),
       clothesScheduleList: [],
@@ -120,7 +121,9 @@ export default {
         method: "GET",
         url: "/order/queryOrderVoById",
         params: {
-          id: this.id
+          id: this.id,
+          mobileViewId: this.mobileViewId,
+          tenantCrop: localStorage.getItem("tenantCrop"),
         }
       }).then(response => {
         this.orderVo = response.data.data;

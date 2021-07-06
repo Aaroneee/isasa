@@ -83,6 +83,8 @@ export default {
       loading: false,
       finished: false,
 
+      mobileViewId: this.$route.query.id,
+
     }
   },
   created() {
@@ -98,6 +100,7 @@ export default {
           tenantCrop: localStorage.getItem("tenantCrop"),
           appointDate: this.appointDate,
           empId: this.empId,
+          mobileViewId: this.mobileViewId,
         }
       }).then(response => {
         this.orderList = response.data.data.list;

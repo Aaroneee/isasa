@@ -96,6 +96,7 @@ export default {
 
       empId:localStorage.getItem("empId"),
       tenantCrop:localStorage.getItem("tenantCrop"),
+      mobileViewId: this.$route.query.id,
 
       maxDate: this.$dateUtils.getMaxMinDate()[0],
       minDate: this.$dateUtils.getMaxMinDate()[1],
@@ -121,7 +122,7 @@ export default {
     },
     //点击每个item
     clickItem: function (id, cusId) {
-      this.$router.push({name: "orderDetails", query: {id: id, cusId: cusId}})
+      this.$router.push({name: "orderDetails", query: {id: id, cusId: cusId, mobileViewId: this.mobileViewId}})
     },
     closeItem: function (flag) {
       if (flag == 1) {
