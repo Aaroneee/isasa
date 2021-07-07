@@ -89,10 +89,10 @@ export default {
     }
   },
   created() {
-    this.queryOrderList()
     this.$selectUtils.queryPhoneIsHide(this.mobileViewId, localStorage.getItem("tenantCrop")).then(response => {
       this.isHide = response.data.data
     })
+    this.queryOrderList()
   },
   methods: {
     queryOrderList: function () {

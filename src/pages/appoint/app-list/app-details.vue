@@ -65,10 +65,10 @@ export default {
     }
   },
   created() {
-    this.queryAppointVo();
     this.$selectUtils.queryPhoneIsHide(this.mobileViewId, localStorage.getItem("tenantCrop")).then(response => {
       this.isHide = response.data.data
     })
+    this.queryAppointVo();
   },
   methods: {
     queryAppointVo: function () {
@@ -84,6 +84,7 @@ export default {
           return;
         }
         this.appointVo = response.data.data;
+        console.log(this.isHide)
         if (this.isHide === 1) {
           this.appointVo.phone = this.appointVo.phone.replace(new RegExp("(\\d{3})\\d{4}(\\d{4})"),"$1****$2")
         }

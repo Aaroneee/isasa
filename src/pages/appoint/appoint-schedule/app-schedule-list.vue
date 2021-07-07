@@ -107,14 +107,14 @@ export default {
     switchNavBar: switchNavBar,
   },
   created() {
+    this.$selectUtils.queryPhoneIsHide(this.mobileViewId, this.tenantCrop).then(response => {
+      this.isHide = response.data.data
+    })
     this.queryAppList();
     this.queryAppointName();
     this.queryInviter();
     this.queryAppointDress();
     this.queryAppointShop();
-    this.$selectUtils.queryPhoneIsHide(this.mobileViewId, this.tenantCrop).then(response => {
-      this.isHide = response.data.data
-    })
   },
   methods: {
     //日历确认

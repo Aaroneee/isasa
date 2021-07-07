@@ -113,11 +113,11 @@ export default {
     }
   },
   created() {
-    this.queryOrderVo();
-    this.queryCusSchedules(this.cusId)
     this.$selectUtils.queryPhoneIsHide(this.mobileViewId, localStorage.getItem("tenantCrop")).then(response => {
       this.isHide = response.data.data
     })
+    this.queryOrderVo();
+    this.queryCusSchedules(this.cusId)
   },
   methods: {
     queryOrderVo: function () {
