@@ -109,11 +109,15 @@ export default {
       orderVo: {},
       tenantCrop: localStorage.getItem("tenantCrop"),
       clothesScheduleList: [],
+      isHide: "",
     }
   },
   created() {
     this.queryOrderVo();
     this.queryCusSchedules(this.cusId)
+    this.$selectUtils.queryPhoneIsHide(this.mobileViewId, localStorage.getItem("tenantCrop")).then(response => {
+      this.isHide = response.data.data
+    })
   },
   methods: {
     queryOrderVo: function () {
@@ -122,11 +126,12 @@ export default {
         url: "/order/queryOrderVoById",
         params: {
           id: this.id,
-          mobileViewId: this.mobileViewId,
-          tenantCrop: localStorage.getItem("tenantCrop"),
         }
       }).then(response => {
         this.orderVo = response.data.data;
+        if (this.isHide === 1) {
+          this.orderVo.phone = this.orderVo.phone.replace(new RegExp("(\\d{3})\\d{4}(\\d{4})"),"$1****$2")
+        }
       })
     },
     queryCusSchedules: function () {

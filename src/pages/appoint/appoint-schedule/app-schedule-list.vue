@@ -100,6 +100,7 @@ export default {
       appointDress: "",
       appointShop: "",
       state: "",
+      isHide: "",
     }
   },
   components: {
@@ -111,6 +112,9 @@ export default {
     this.queryInviter();
     this.queryAppointDress();
     this.queryAppointShop();
+    this.$selectUtils.queryPhoneIsHide(this.mobileViewId, this.tenantCrop).then(response => {
+      this.isHide = response.data.data
+    })
   },
   methods: {
     //日历确认
@@ -179,6 +183,11 @@ export default {
         }
       }).then(response => {
         this.appointList = response.data.data.list;
+        if (this.isHide === 1) {
+          this.appointList.forEach(function (element) {
+            element.phone = element.phone.replace(new RegExp("(\\d{3})\\d{4}(\\d{4})"),"$1****$2");
+          })
+        }
         this.finished = true;
       })
     },
