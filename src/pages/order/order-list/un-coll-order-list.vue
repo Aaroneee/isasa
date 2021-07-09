@@ -89,7 +89,7 @@ export default {
     }
   },
   created() {
-    this.$selectUtils.queryPhoneIsHide(this.mobileViewId, localStorage.getItem("tenantCrop")).then(response => {
+    this.$selectUtils.queryPhoneIsHide(this.mobileViewId).then(response => {
       this.isHide = response.data.data
     })
     this.queryOrderList()
@@ -108,9 +108,10 @@ export default {
         }
       }).then(response => {
         this.orderList = response.data.data.list;
+        let stringUtils=this.$stringUtils;
         if (this.isHide === 1) {
           this.orderList.forEach(function (element) {
-            element.phone = element.phone.replace(new RegExp("(\\d{3})\\d{4}(\\d{4})"),"$1****$2");
+            element.phone = stringUtils.phoneIsHide(element.phone);
           })
         }
         this.finished = true;

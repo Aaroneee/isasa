@@ -215,14 +215,14 @@ export default {
                 tenantCrop: localStorage.getItem("tenantCrop"),
             }
         })
-    }
-    ,queryPhoneIsHide: function (mobileViewId, tenantCrop) {
+    },
+    queryPhoneIsHide: function (mobileViewId) {
         return self.$axios({
            method: "GET",
            url: "/specialFun/queryPhoneIsHide",
            params: {
                mobileViewId: mobileViewId,
-               tenantCrop: tenantCrop,
+               tenantCrop: localStorage.getItem("tenantCrop"),
            }
         });
     }
