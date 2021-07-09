@@ -174,8 +174,8 @@ export default {
                 tenantCrop: localStorage.getItem("tenantCrop")
             }
         })
-    }
-    ,queryStyleLabels:function (){
+    },
+    queryStyleLabels:function (){
         return self.$axios({
             method: "GET",
             url: "/select/labelIds",
@@ -184,14 +184,35 @@ export default {
                 tenantCrop: localStorage.getItem("tenantCrop")
             }
         })
-    }
-    ,queryOperationIds:function (type){
+    },
+    queryOperationIds:function (type){
         return self.$axios({
             method: "GET",
             url: "/select/operationIds",
             params: {
                 type: type,
                 tenantCrop: localStorage.getItem("tenantCrop")
+            }
+        })
+    },
+    //查询品牌ID
+    queryBrandIds: function (type) {
+        return self.$axios({
+            method: "GET",
+            url: "/select/brandIds",
+            params:{
+                tenantCrop: localStorage.getItem("tenantCrop"),
+                type:type
+            }
+        })
+    },
+    //查询品牌ID 会隐藏品牌名显示品牌等级
+    queryMBrandIds:function (){
+        return self.$axios({
+            method:"GET",
+            url: "/select/mBrandIds",
+            params: {
+                tenantCrop: localStorage.getItem("tenantCrop"),
             }
         })
     }

@@ -295,13 +295,7 @@ export default {
       this.queryClothesList();
     },
     queryClothesBrand: function () {
-      this.$axios({
-        method:"GET",
-        url: "/select/mBrandIds",
-        params: {
-          tenantCrop: this.tenantCrop,
-        }
-      }).then((response) => {
+      this.$selectUtils.queryMBrandIds().then((response) => {
         this.styleBrandArray.push(...JSON.parse(response.data.data))
       })
     },

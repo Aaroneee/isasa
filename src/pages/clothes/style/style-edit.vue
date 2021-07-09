@@ -161,7 +161,6 @@ export default {
       brand:"",
       showPicker: false,
       brandArray:[],
-      brandIds:[],
       brandId:0,
 
       styleLabelShowPicker: false,
@@ -271,21 +270,13 @@ export default {
     },
     //查询品牌列表
     queryBrands: function () {
-      this.$axios({
-        method: "GET",
-        url: "/clothesBrand/queryClothesBrands",
-        params:{
-          tenantCrop: this.tenantCrop,
-          isValid: 1,
-        }
-      }).then((response) => {
-        this.brandArray = response.data.data[0];
-        this.brandIds = response.data.data[1];
+      this.$selectUtils.queryBrandIds(this.$selectUtils.Picker).then(response=>{
+        this.brandArray = JSON.parse(response.data.data);
       })
     },
     brandConfirm: function (value,index) {
-      this.brand = value;
-      this.brandId = this.brandIds[index];
+      this.brand = value.text;
+      this.brandId = value.id;
       this.showPicker = false;
     },
     queryStyleLabelList: function () {
@@ -295,8 +286,7 @@ export default {
           var index = this.styleLabelList[temp].value
           this.styleLabels[index] = 0
         }
-        console.log(this.style)
-        var temp = this.style.styleLabels
+        let temp = this.style.styleLabels
         const orStyleLabels = temp.split(",");
         for (const flag of orStyleLabels) {
           this.$set(this.styleLabels, flag, 1)
@@ -304,11 +294,9 @@ export default {
       })
     },
     pushStyleLabel: function (value) {
-      if (this.styleLabels[value] == 1) {
-        this.$set(this.styleLabels, value, 0)
-      } else {
-        this.$set(this.styleLabels, value, 1)
-      }
+      this.$set(this.styleLabels, value,
+          this.styleLabels[value] === 1?0:1
+      )
     },
     close: function (value) {
       this.$set(this.styleLabels, value, 0)
