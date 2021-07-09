@@ -61,9 +61,13 @@ export default {
       appointVo: {},
       pageSource: this.$route.query.pageSource,
       mobileViewId: this.$route.query.mobileViewId,
+      isHide:"",
     }
   },
   created() {
+    this.$selectUtils.queryPhoneIsHide(this.mobileViewId, localStorage.getItem("tenantCrop")).then(response => {
+      this.isHide = response.data.data
+    })
     this.queryAppointVo();
   },
   methods: {
@@ -73,8 +77,6 @@ export default {
         url: "/appoint/queryAppointVoById",
         params: {
           id: this.appId,
-          mobileViewId: this.mobileViewId,
-          tenantCrop: localStorage.getItem("tenantCrop")
         }
       }).then(response => {
         if (response.data.code !== 200) {
@@ -82,6 +84,10 @@ export default {
           return;
         }
         this.appointVo = response.data.data;
+        console.log(this.isHide)
+        if (this.isHide === 1) {
+          this.appointVo.phone = this.appointVo.phone.replace(new RegExp("(\\d{3})\\d{4}(\\d{4})"),"$1****$2")
+        }
       })
     },
     openAppEdit: function () {

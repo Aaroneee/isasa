@@ -216,5 +216,15 @@ export default {
             }
         })
     }
+    ,queryPhoneIsHide: function (mobileViewId, tenantCrop) {
+        return self.$axios({
+           method: "GET",
+           url: "/specialFun/queryPhoneIsHide",
+           params: {
+               mobileViewId: mobileViewId,
+               tenantCrop: tenantCrop,
+           }
+        });
+    }
 
 }

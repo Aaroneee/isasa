@@ -85,9 +85,13 @@ export default {
 
       mobileViewId: this.$route.query.id,
 
+      isHide: "",
     }
   },
   created() {
+    this.$selectUtils.queryPhoneIsHide(this.mobileViewId, localStorage.getItem("tenantCrop")).then(response => {
+      this.isHide = response.data.data
+    })
     this.queryOrderList()
   },
   methods: {
@@ -104,7 +108,13 @@ export default {
         }
       }).then(response => {
         this.orderList = response.data.data.list;
+        if (this.isHide === 1) {
+          this.orderList.forEach(function (element) {
+            element.phone = element.phone.replace(new RegExp("(\\d{3})\\d{4}(\\d{4})"),"$1****$2");
+          })
+        }
         this.finished = true;
+
       })
     },
     appointDateOnConfirm: function (time) {

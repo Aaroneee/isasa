@@ -100,12 +100,16 @@ export default {
       appointDress: "",
       appointShop: "",
       state: "",
+      isHide: "",
     }
   },
   components: {
     switchNavBar: switchNavBar,
   },
   created() {
+    this.$selectUtils.queryPhoneIsHide(this.mobileViewId, this.tenantCrop).then(response => {
+      this.isHide = response.data.data
+    })
     this.queryAppList();
     this.queryAppointName();
     this.queryInviter();
@@ -179,6 +183,11 @@ export default {
         }
       }).then(response => {
         this.appointList = response.data.data.list;
+        if (this.isHide === 1) {
+          this.appointList.forEach(function (element) {
+            element.phone = element.phone.replace(new RegExp("(\\d{3})\\d{4}(\\d{4})"),"$1****$2");
+          })
+        }
         this.finished = true;
       })
     },
