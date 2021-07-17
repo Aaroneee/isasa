@@ -225,6 +225,17 @@ export default {
                tenantCrop: localStorage.getItem("tenantCrop"),
            }
         });
-    }
+    },
+    //查询款式图片类型
+    queryStyleImageTypeIds: function (type) {
+        return self.$axios({
+            method: "GET",
+            url: "/select/styleImageTypeIds",
+            params: {
+                type: type,
+                tenantCrop: localStorage.getItem("tenantCrop"),
+            }
+        });
+    },
 
 }

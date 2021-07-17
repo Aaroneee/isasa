@@ -130,13 +130,13 @@
           clickable
           name="brand"
           :value="brand"
-          @click="showPicker = true"
+          @click="brandShowPicker = true"
       />
-      <van-popup v-model="showPicker" round position="bottom">
+      <van-popup v-model="brandShowPicker" round position="bottom">
         <van-picker
             show-toolbar
             :columns="brandArray"
-            @cancel="showPicker = false"
+            @cancel="brandShowPicker = false"
             @confirm="brandConfirm"
         />
       </van-popup>
@@ -199,6 +199,26 @@
           maxlength="40"
           show-word-limit
       />
+      <van-field
+          readonly
+          label="图片类型"
+          placeholder="点击选择图片类型"
+          clickable
+          v-if="fileName.length>0"
+          name="imageType"
+          :value="imageType"
+          @click="imageTypeShowPicker = true"
+          :rules="[{ required: true }]"
+      />
+      <van-popup v-model="imageTypeShowPicker" position="bottom">
+        <van-picker
+            getColumnValues
+            show-toolbar
+            :columns="imageTypeColumnsArray"
+            @confirm="imageTypeOnConfirm"
+            @cancel="imageTypeShowPicker = false"
+        />
+      </van-popup>
 
       <van-field name="uploader" label="婚纱图片">
         <template #input>
@@ -313,10 +333,14 @@ export default {
       styleLabels: [],
       finalStyleLabels:[],
 
-      showPicker: false,
+      brandShowPicker: false,
       brand:"",
       brandArray:[],
       brandId:0,
+
+      imageTypeShowPicker:false,
+      imageType:"",
+      imageTypeColumnsArray:[],
     }
   },
   created() {
@@ -324,6 +348,7 @@ export default {
     this.queryShopIds();
     this.queryStyleLabelList();
     this.queryBrands();
+    this.queryImageType();
 
   },
   components: {
@@ -471,6 +496,11 @@ export default {
         this.positionColumnsArray = JSON.parse(response.data.data)
       })
     },
+    queryImageType:function(){
+      this.$selectUtils.queryStyleImageTypeIds(this.$selectUtils.Picker).then((response) => {
+        this.imageTypeColumnsArray = JSON.parse(response.data.data);
+      })
+    },
     positionOnConfirm: function (value) {
       this.clothesPosition = value.id
       this.clothesPositionText = value.text
@@ -535,7 +565,11 @@ export default {
     brandConfirm: function (value,index) {
       this.brand = value.text;
       this.brandId = value.id;
-      this.showPicker = false;
+      this.brandShowPicker = false;
+    },
+    imageTypeOnConfirm:function (value,index){
+      this.imageType=value.text;
+      this.imageTypeShowPicker=false;
     },
     //查询品牌列表
     queryBrands: function () {
