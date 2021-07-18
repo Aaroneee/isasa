@@ -107,7 +107,7 @@ export default {
     switchNavBar: switchNavBar,
   },
   created() {
-    this.$selectUtils.queryPhoneIsHide(this.mobileViewId, this.tenantCrop).then(response => {
+    this.$selectUtils.queryPhoneIsHide(this.mobileViewId).then(response => {
       this.isHide = response.data.data
     })
     this.queryAppList();
@@ -184,8 +184,10 @@ export default {
       }).then(response => {
         this.appointList = response.data.data.list;
         if (this.isHide === 1) {
+          let stringUtils=this.$stringUtils;
           this.appointList.forEach(function (element) {
-            element.phone = element.phone.replace(new RegExp("(\\d{3})\\d{4}(\\d{4})"),"$1****$2");
+            console.log(element)
+            element.phone = stringUtils.phoneIsHide(element.phone);
           })
         }
         this.finished = true;

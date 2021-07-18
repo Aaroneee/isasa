@@ -65,7 +65,7 @@ export default {
     }
   },
   created() {
-    this.$selectUtils.queryPhoneIsHide(this.mobileViewId, localStorage.getItem("tenantCrop")).then(response => {
+    this.$selectUtils.queryPhoneIsHide(this.mobileViewId).then(response => {
       this.isHide = response.data.data
     })
     this.queryAppointVo();
@@ -86,7 +86,7 @@ export default {
         this.appointVo = response.data.data;
         console.log(this.isHide)
         if (this.isHide === 1) {
-          this.appointVo.phone = this.appointVo.phone.replace(new RegExp("(\\d{3})\\d{4}(\\d{4})"),"$1****$2")
+          this.appointVo.phone = this.$stringUtils.phoneIsHide(this.appointVo.phone);
         }
       })
     },
