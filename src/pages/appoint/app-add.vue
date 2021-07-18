@@ -33,33 +33,6 @@
       <van-calendar v-model="createDateShowPicker" :min-date="minDate" :max-date="maxDate"
                     @confirm="createDateOnConfirm"/>
 
-
-
-
-      <van-field
-          readonly
-          clickable
-          name="state"
-          :value="stateText"
-          label="状态"
-          placeholder="点击选择状态"
-          v-if="stateDisplay"
-          @click="stateShowPicker = true"
-          :rules="[{ required: stateFlag }]"
-      />
-      <van-popup v-model="stateShowPicker" position="bottom">
-        <van-picker
-            getColumnValues
-            show-toolbar
-            :columns="stateArray"
-            @confirm="stateArrayOnConfirm"
-            @cancel="stateShowPicker = false"
-        />
-      </van-popup>
-
-
-
-
       <van-field
           readonly
           clickable
@@ -227,8 +200,7 @@ export default {
       state:"",
       stateText:"",
       stateShowPicker:false,
-      stateDisplay:false,
-      stateFlag:false,
+      stateFlag: 1, //1 售前 2 售后
       stateArray:false,
 
       dress:"",
@@ -242,9 +214,8 @@ export default {
   created() {
     this.customer = this.$route.query;
     this.queryInviterIds();
-    this.queryProjectsIds();
-    this.queryShopIds();
     this.ifStateType()
+    this.queryShopIds();
 
   },
   methods: {
@@ -347,7 +318,16 @@ export default {
     },
     //查询预约项目
     queryProjectsIds: function () {
-      this.$selectUtils.queryProjectsIds(this.$projectsType.appoint, this.$selectUtils.Picker).then(response => {
+      this.$axios({
+          method: "GET",
+          url: "/select/appProjects",
+          params: {
+            tenantCrop: localStorage.getItem("tenantCrop"),
+            type: this.$selectUtils.Picker,
+            projectsType: this.$projectsType.appoint,
+            preAfterSale: this.stateFlag,
+          }
+      }).then(response => {
         this.appointNameArray = JSON.parse(response.data.data);
       })
     },
@@ -386,11 +366,11 @@ export default {
       }).then(response=>{
         var data = response.data.data;
         if (data.stateType === "售后状态"){
-          this.stateDisplay = true
-          this.stateFlag = true
+          this.stateFlag = 2
           this.queryStateIds()
           this.saleAppDefaultDressAndCosmetics()
         }
+        this.queryProjectsIds();
       })
     }
   }
