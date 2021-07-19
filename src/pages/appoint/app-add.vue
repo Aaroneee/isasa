@@ -270,9 +270,8 @@ export default {
       values.appointShop = this.appointShop;
       values.type = "售前预约";
       values.tenantCrop = this.tenantCrop;
-      if (this.state!==""){
+      if (this.stateFlag===2){
         values.type = "售后预约";
-        values.state = this.state
         if (this.dress!==""){
           values.appointDress = this.dress
         }
