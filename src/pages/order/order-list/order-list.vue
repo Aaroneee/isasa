@@ -11,15 +11,16 @@
         </form>
         <van-calendar safe-area-inset-bottom v-model="createDateShow" :min-date="minDate" :max-date="maxDate"
                       @confirm="createDateOnConfirm"/>
-        <!--      <van-dropdown-menu>-->
-        <!--        <van-dropdown-item :title="appointNameText" v-model="appointName" @change="appointNameChange"-->
-        <!--                           :options="appointNameArray"/>-->
-        <!--        <van-dropdown-item :title="inviterText" v-model="inviter" @change="inviterChange" :options="inviterArray"/>-->
-        <!--        <van-dropdown-item :title="appointDressText" v-model="appointDress" @change="appointDressChange"-->
-        <!--                           :options="appointDressArray"/>-->
-        <!--        <van-dropdown-item :title="appointShopText" v-model="appointShop" @change="appointShopChange"-->
-        <!--                           :options="appointShopArray"/>-->
-        <!--      </van-dropdown-menu>-->
+              <van-dropdown-menu>
+                <van-dropdown-item v-model="sort" @change="sortChange" :options="sortArrays"/>
+<!--                <van-dropdown-item :title="appointNameText" v-model="appointName" @change="appointNameChange"-->
+<!--                                   :options="appointNameArray"/>-->
+<!--                <van-dropdown-item :title="inviterText" v-model="inviter" @change="inviterChange" :options="inviterArray"/>-->
+<!--                <van-dropdown-item :title="appointDressText" v-model="appointDress" @change="appointDressChange"-->
+<!--                                   :options="appointDressArray"/>-->
+<!--                <van-dropdown-item :title="appointShopText" v-model="appointShop" @change="appointShopChange"-->
+<!--                                   :options="appointShopArray"/>-->
+              </van-dropdown-menu>
       </van-sticky>
     </div>
     <div>
@@ -83,6 +84,8 @@ export default {
 
       loading: false,
       finished: false,
+      sort:"",
+      sortArrays: [{text: "排序", value: ""},{text: "按婚期升序",value: "asc"},{text: "按婚期降序", value: "desc"}],
     }
   },
   created() {
@@ -123,6 +126,7 @@ export default {
           searchValue: this.searchValue,
           createDate: this.createDate,
           tenantCrop: localStorage.getItem("tenantCrop"),
+          wDSort: this.sort
         }
       }).then(response => {
         this.orderList = response.data.data.list;
@@ -134,7 +138,10 @@ export default {
     }
     , imagesAdd: function (value) {
       this.$router.push({name: "orderImages", query: value})
-    }
+    },
+    sortChange: function () {
+      this.queryOrderList();
+    },
   },
   beforeRouteLeave (to, from, next) {
     if (to.name !== 'work') {
