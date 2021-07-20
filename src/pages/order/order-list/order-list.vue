@@ -84,8 +84,8 @@ export default {
 
       loading: false,
       finished: false,
-      sort:"",
-      sortArrays: [{text: "排序", value: ""},{text: "按婚期升序",value: "asc"},{text: "按婚期降序", value: "desc"}],
+      sort:"desc",
+      sortArrays: [{text: "按订单降序", value: "desc"},{text: "按婚期升序",value: "asc"}],
     }
   },
   created() {

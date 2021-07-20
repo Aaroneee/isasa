@@ -272,6 +272,7 @@ export default {
       }
     }
     ,dateOnConfirm:function (value){
+      this.isOrder = "notOrder";
       const s = this.$dateUtils.rangeVantDateToYMD(value);
       this.scheduleDate = s
       const temp = s.split('-')
