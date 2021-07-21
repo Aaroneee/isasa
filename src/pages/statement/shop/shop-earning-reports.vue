@@ -48,6 +48,7 @@
         <van-collapse-item title="售后情况" name="4">
           <van-grid :border="false" style="text-align: center" :column-num="3">
             <van-grid-item>售后接待数<br>{{afterSaleReception}}</van-grid-item>
+            <van-grid-item>售后升级接待数<br>{{afterSaleUpGradeReception}}</van-grid-item>
             <van-grid-item>售后订单数<br>{{afterSaleOrderNum}}</van-grid-item>
             <van-grid-item>售后转换率<br>{{afterSaleProportion}}</van-grid-item>
           </van-grid>
@@ -130,6 +131,8 @@ export default {
       twiceTheOrder: "0",
       //综合转化率
       comprehensiveProportion: "0",
+      //售后升级接待数
+      afterSaleUpGradeReception: "0",
     }
   },
   methods: {
@@ -181,6 +184,7 @@ export default {
       this.saleReception = Number(VO.saleReception);
       this.saleOrderNum = Number(VO.saleOrderNum);
       this.afterSaleReception = Number(VO.afterSaleReception);
+      this.afterSaleUpGradeReception = Number(VO.afterSaleUpGradeReception);
       this.afterSaleOrderNum = Number(VO.afterSaleOrderNum);
       this.onceTheOrder = Number(VO.onceTheOrder);
       this.onceNotOrder = this.saleReception - this.onceTheOrder;
