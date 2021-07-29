@@ -1,18 +1,14 @@
 <template>
   <div style="margin-bottom: 15%">
-    <div style="text-align: center" v-cloak>
-      <p style="font-size: 35px">{{ tenant.tenantName }}</p>
-      <p style="font-size: 32px">{{ tenant.empName }}</p>
-    </div>
-    <van-cell-group title="功能">
-      <van-cell title="个人资料" value="" icon="friends-o" is-link/>
-      <van-cell title="修改密码" icon="setting-o" is-link/>
-      <van-cell title="我的公司" icon="location-o" is-link/>
-      <van-cell title="我的业绩" icon="diamond-o" is-link/>
-      <van-cell title="参数查询" icon="search" is-link/>
-      <van-cell :border="false" title="系统消息" icon="comment-o" is-link/>
+    <p style="font-size: 35px;text-align: center;margin: 20% 0">{{ tenant.empName }}</p>
+    <van-cell-group>
+      <van-cell title="职位" :value="tenant.roleName" icon="manager-o"/>
+      <van-cell title="店铺" :value="tenant.shopName" icon="wap-home-o"/>
+      <van-cell title="手机号" :value="tenant.empPhone" icon="phone-o"/>
+      <van-cell title="公司名称" :value="tenant.tenantName" icon="coupon-o"/>
+      <van-cell title="公司城市" :value="tenant.tenantCity" icon="location-o"/>
+      <van-cell title="产品到期时间" :value="tenant.tenantEndDate" icon="flag-o"/>
     </van-cell-group>
-
     <van-button
         style="margin-top: 5%"
         class="logout"
