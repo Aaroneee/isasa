@@ -49,23 +49,7 @@ export default {
     return {
       tenantCrop: localStorage.getItem("tenantCrop"),
       empId: localStorage.getItem("empId"),
-      modules: {
-        cusModules: [
-          {id: 1, name: "客资列表", link: 'cusList', icon: "manager"},
-          {id: 2, name: "添加客资", link: 'cusAdd', icon: "add"},
-        ], appModules: [
-          // {id: 3, name: "预约列表", link: 'appList', icon: "friends"},
-          {id: 3, name: "每日预约", link: 'appScheduleList', icon: "wap-nav"},
-        ], orderModules: [
-          {id: 4, name: "订单列表", link: 'orderList', icon: "orders-o"},
-          {id: 5, name: "收款列表", link: 'proceedsList', icon: "balance-list"},
-        ], clothesModules: [
-          {id: 6, name: "款式添加", link: 'styleAdd', icon: "add"},
-          {id: 7, name: "款式列表", link: 'styleList', icon: "bar-chart-o"},
-          {id: 8, name: "婚纱列表", link: 'clothesList', icon: "bar-chart-o"},
-          {id: 9, name: "档期查看", link: 'scheduleList', icon: "browsing-history"},
-        ]
-      },
+      modules: {},
     }
   },
   methods: {
@@ -77,8 +61,8 @@ export default {
       localStorage.setItem("tenantCrop", tenantCrop);
       localStorage.setItem("empId", empId);
       this.queryModules()
-    }
-    , queryModules() {
+    },
+    queryModules() {
       this.$axios({
         method: "GET",
         url: '/index/mobileManBar',
@@ -87,7 +71,6 @@ export default {
           empId: this.empId,
         }
       }).then(response => {
-        console.log(response)
         this.modules = response.data.data
       })
 
