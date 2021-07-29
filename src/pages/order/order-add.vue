@@ -13,7 +13,7 @@
           name="orderNo"
           v-model="orderNo"
           label="订单编号"
-          placeholder="订单号"
+          placeholder="订单编号"
           :rules="[{ required: true }]"
       />
 

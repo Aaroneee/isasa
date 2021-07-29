@@ -6,6 +6,7 @@ import orderImages from "@/pages/order/order-list/order-images"//订单图片及
 import orderEdit from "@/pages/order/order-list/order-edit"//订单图片及上传订单图片
 import collOrderList from "@/pages/order/order-list/coll-order-list"//已订单列表
 import unCollOrderList from "@/pages/order/order-list/un-coll-order-list"//未订单列表
+import onlineOrderAdd from "@/pages/order/online-order-add"//线上订单添加
 
 export default [
     {
@@ -50,5 +51,10 @@ export default [
         path: '/unCollOrderList',
         name: 'unCollOrderList',
         component: unCollOrderList,
+    },
+    {
+        path: '/onlineOrderAdd',
+        name: 'onlineOrderAdd',
+        component: onlineOrderAdd,
     },
 ]

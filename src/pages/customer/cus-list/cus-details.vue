@@ -21,11 +21,14 @@
     <br>
     <van-row>
 
-      <van-col span="8" offset="3">
+      <van-col span="6" offset="2">
         <van-button @click="openCusEdit" style="width: 100%" type="warning">客资编辑</van-button>
       </van-col>
-      <van-col span="8"  offset="1">
+      <van-col span="6"  offset="1">
         <van-button @click="openAppAdd" type="primary" style="width: 100%">添加预约</van-button>
+      </van-col>
+      <van-col span="6" offset="1">
+        <van-button @click="onlineOrderAdd" type="info" style="width: 100%">线上订单</van-button>
       </van-col>
     </van-row>
 
@@ -68,7 +71,10 @@ export default {
     //打开预约添加界面
     openAppAdd:function (){
       this.$router.push({name:"appAdd",query:this.customer});
-    }
+    },
+    onlineOrderAdd:function (){
+      this.$router.push({name:"onlineOrderAdd",query:this.customer})
+    },
   }
 }
 </script>
