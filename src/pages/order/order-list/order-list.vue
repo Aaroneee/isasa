@@ -10,7 +10,7 @@
               placeholder="请输入搜索关键词"/>
         </form>
         <van-calendar safe-area-inset-bottom v-model="createDateShow" :min-date="minDate" :max-date="maxDate"
-                      @confirm="createDateOnConfirm"/>
+                      type="range" @confirm="createDateOnConfirm" allow-same-day/>
               <van-dropdown-menu>
                 <van-dropdown-item v-model="sort" @change="sortChange" :options="sortArrays"/>
 <!--                <van-dropdown-item :title="appointNameText" v-model="appointName" @change="appointNameChange"-->
@@ -94,7 +94,7 @@ export default {
   methods: {
     //时间确认
     createDateOnConfirm: function (time) {
-      this.createDate = this.$dateUtils.vantDateToYMD(time);
+      this.createDate = this.$dateUtils.rangeVantDateToYMD(time);
       this.queryOrderList();
       this.createDateShow = false;
     },
