@@ -2,25 +2,25 @@
   <div>
     <div>
       <van-sticky>
-        <switchNavBar title="订单列表" switchText="婚期" @flag="createDateShow=true"/>
+        <van-nav-bar title="订单列表" left-text="返回" left-arrow @click-left="onClickLeft">
+          <template #right>
+            <span style="color: #1989fb" @click="orderDateShow=true">订单</span>
+            <span style="margin-left: 25px;color: #1989fb" @click="createDateShow=true">婚期</span>
+          </template>
+        </van-nav-bar>
         <form action="javascript:return true">
           <van-search
               @search="queryOrderList"
               v-model="searchValue"
               placeholder="请输入搜索关键词"/>
         </form>
-        <van-calendar safe-area-inset-bottom v-model="createDateShow" :min-date="minDate" :max-date="maxDate"
+        <van-calendar title="下单日期选择" v-model="orderDateShow" :min-date="minDate" :max-date="maxDate"
+                      type="range" allow-same-day @confirm="orderDateConfirm"/>
+        <van-calendar title="婚期选择" safe-area-inset-bottom v-model="createDateShow" :min-date="minDate" :max-date="maxDate"
                       type="range" @confirm="createDateOnConfirm" allow-same-day/>
-              <van-dropdown-menu>
-                <van-dropdown-item v-model="sort" @change="sortChange" :options="sortArrays"/>
-<!--                <van-dropdown-item :title="appointNameText" v-model="appointName" @change="appointNameChange"-->
-<!--                                   :options="appointNameArray"/>-->
-<!--                <van-dropdown-item :title="inviterText" v-model="inviter" @change="inviterChange" :options="inviterArray"/>-->
-<!--                <van-dropdown-item :title="appointDressText" v-model="appointDress" @change="appointDressChange"-->
-<!--                                   :options="appointDressArray"/>-->
-<!--                <van-dropdown-item :title="appointShopText" v-model="appointShop" @change="appointShopChange"-->
-<!--                                   :options="appointShopArray"/>-->
-              </van-dropdown-menu>
+        <van-dropdown-menu>
+          <van-dropdown-item v-model="sort" @change="sortChange" :options="sortArrays"/>
+        </van-dropdown-menu>
       </van-sticky>
     </div>
     <div>
@@ -64,20 +64,17 @@
 </template>
 
 <script>
-import switchNavBar from "@/components/nav-bar/switch-nav-bar"
-
 export default {
   name: "orderList",
-  components: {
-    switchNavBar
-  },
   data() {
     return {
       orderList: [],
       //打开时间
       createDateShow: false,
+      orderDateShow: false,
       searchValue: "",
       createDate: "",
+      orderDate: "",
 
       maxDate: this.$dateUtils.getMaxMinDate()[0],
       minDate: this.$dateUtils.getMaxMinDate()[1],
@@ -94,9 +91,18 @@ export default {
   methods: {
     //时间确认
     createDateOnConfirm: function (time) {
+      this.orderDate = "";
       this.createDate = this.$dateUtils.rangeVantDateToYMD(time);
+      this.sort = "asc"
       this.queryOrderList();
       this.createDateShow = false;
+    },
+    orderDateConfirm: function (time) {
+      this.createDate = "";
+      this.orderDate = this.$dateUtils.rangeVantDateToYMD(time);
+      this.sort = "desc"
+      this.queryOrderList();
+      this.orderDateShow = false;
     },
     //点击每个item
     clickItem: function (id, cusId) {
@@ -125,6 +131,7 @@ export default {
         params: {
           searchValue: this.searchValue,
           createDate: this.createDate,
+          orderDate: this.orderDate,
           tenantCrop: localStorage.getItem("tenantCrop"),
           wDSort: this.sort
         }
@@ -142,6 +149,12 @@ export default {
     sortChange: function () {
       this.queryOrderList();
     },
+    onClickLeft: function () {
+      this.$router.back();
+    },
+    test: function (value) {
+      console.log(value)
+    }
   },
   beforeRouteLeave (to, from, next) {
     if (to.name !== 'work') {
