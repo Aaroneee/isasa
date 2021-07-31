@@ -237,5 +237,16 @@ export default {
             }
         });
     },
+    //线上收款项目
+    queryOnlineOrder: function (type) {
+        return self.$axios({
+           method: "get",
+           url:"/select/onlineProcessProjectIds",
+            params: {
+                type: type,
+                tenantCrop: localStorage.getItem("tenantCrop"),
+            }
+        });
+    }
 
 }
