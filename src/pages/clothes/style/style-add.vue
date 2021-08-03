@@ -25,13 +25,22 @@
 
       <van-field
           name="styleName"
-          :value="styleNameText"
-          readonly
-          label="款式名称"
-          placeholder="查询款式名称"
+          v-model="styleNameText"
+          :readonly="checkbox"
+          center
+          label="款式编号"
+          placeholder="查询款式编号"
           :rules="[{ required: true }]">
+        <template #button>
+          <van-checkbox v-model="checkbox" @click="autoStyleAlias">自动编号</van-checkbox>
+        </template>
       </van-field>
 
+      <van-field
+        label="款式名称"
+        placeholder="款式名称"
+        :value="styleAlias"
+      />
       <van-field label="第一件婚纱">
         <template #input>
           <van-switch v-model="firstSwitch" size="20"/>
@@ -341,6 +350,8 @@ export default {
       imageTypeShowPicker:false,
       imageType:"",
       imageTypeColumnsArray:[],
+      checkbox: true,
+      styleAlias:""
     }
   },
   created() {
@@ -361,25 +372,29 @@ export default {
       })
     },
     styleOnConfirm: function (value) {
+      console.log(value)
       this.styleType = value.id
       this.styleTypeText = value.text
       this.styleShowPicker = false
-      this.queryStyleName(value.id).then((response) => {
-        let name = response.data.data + "";
-        let styleNameLen = name.length
-        switch (styleNameLen) {
-          case 1:
-            name = "000" + name;
-            break;
-          case 2:
-            name = "00" + name;
-            break;
-          case 3:
-            name = "0" + name;
-            break;
-        }
-        this.styleNameText = name
-      })
+      if (this.checkbox) {
+        this.queryStyleName(value.id).then((response) => {
+          let name = response.data.data + "";
+          let styleNameLen = name.length
+          switch (styleNameLen) {
+            case 1:
+              name = "000" + name;
+              break;
+            case 2:
+              name = "00" + name;
+              break;
+            case 3:
+              name = "0" + name;
+              break;
+          }
+          this.styleNameText = name
+        })
+      }
+
     },
     queryStyleName: function (value) {
       return this.$axios({
@@ -424,6 +439,7 @@ export default {
             data.brandId = this.brandId
             data.empId = localStorage.getItem("empId")
             data.styleLabels = this.finalStyleLabels.toString()
+            data.styleAlias = this.styleAlias
             this.$axios({
               method: "POST",
               url: "/style/saveStyle",
@@ -577,6 +593,13 @@ export default {
          this.brandArray = JSON.parse(response.data.data);
        })
     },
+    autoStyleAlias: function () {
+      if (this.styleType !== "") {
+        if (this.checkbox) {
+          this.styleOnConfirm({id:this.styleType,text:this.styleTypeText})
+        }
+      }
+    }
   },
 
 }
