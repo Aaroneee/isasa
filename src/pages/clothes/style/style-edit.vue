@@ -32,11 +32,18 @@
           name="styleName"
           v-model = "style.styleName"
           readonly
-          label="款式名称"
+          label="款式编号"
           placeholder="查询款式名称"
           :rules="[{ required: true }]">
       </van-field>
 
+      <van-field
+          name="styleAlias"
+          v-model = "style.styleAlias"
+          readonly
+          label="款式名称"
+          placeholder="款式名称">
+      </van-field>
 
       <van-field
           readonly

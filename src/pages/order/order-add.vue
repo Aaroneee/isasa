@@ -16,7 +16,6 @@
           placeholder="订单编号"
           :rules="[{ required: true }]"
       />
-
       <van-field
           readonly
           name="createDate"

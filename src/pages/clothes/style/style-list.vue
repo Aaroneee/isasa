@@ -6,7 +6,7 @@
       <van-search
           @search="queryStyleList"
           v-model="styleName"
-          placeholder="请输入款式名称"/>
+          placeholder="请输入款式名称或编号"/>
       </form>
       <van-dropdown-menu>
         <van-dropdown-item :title="styleText" v-model="styleType" @change="styleTypeChange" :options="styleTypeArray"/>
@@ -40,7 +40,10 @@
         <van-cell style="font-size: 12px" v-for="item in styleList" :key="item.id" @click="clickItem(item)">
           <van-row>
             <van-col span="13">
-              <van-col style="color: #39a9ed;font-size: 15px">款式名称:{{ item.typeName + item.styleName }}</van-col>
+              <van-col style="color: #39a9ed;font-size: 15px">款式编号:{{ item.typeName + item.styleName }}</van-col>
+              <van-row>
+                <van-col span="24">款式名称:{{ item.styleAlias }}</van-col>
+              </van-row>
               <van-row>
                 <van-col span="24">款式品牌:{{ item.brandName }}</van-col>
               </van-row>
@@ -123,6 +126,7 @@ export default {
       }).then(response => {
         if (response.data.code === 200) {
           this.styleList = response.data.data.list
+          console.log(this.styleList)
           this.finished = true;
         }
       })

@@ -38,7 +38,6 @@
         placeholder="订单项目"
         :rules="[{required: true}]"
         :value="orderNameText"
-        @click="orderNamePicker=true"
       />
       <van-popup v-model="orderNamePicker" position="bottom">
         <van-picker
@@ -122,6 +121,7 @@
         label="收款人"
         placeholder="收款人"
         @click="payeePicker=true"
+        :default-index="payee"
       />
       <van-popup v-model="payeePicker" position="bottom">
         <van-picker
@@ -153,7 +153,6 @@ import baseNavBar from "@/components/nav-bar/base-nav-bar"
 export default {
   name: "onlineOrderAdd",
   created() {
-    this.queryOrderNameIds()
     this.queryProceedsNameIds()
     this.queryPaymentIds()
     this.queryPayeeIds()
@@ -171,7 +170,7 @@ export default {
       minDate: this.$dateUtils.getMaxMinDate()[1],
       weddingDay: "",
       weddingDayPicker: false,
-      orderNameText: "",
+      orderNameText: "线上订单",
       orderNamePicker: false,
       orderNameArray: [],
       proceedsNameArray: [],
@@ -180,13 +179,14 @@ export default {
       paymentText: "",
       paymentPicker: false,
       paymentArray: [],
-      orderSum: true,
+      orderSum: false,
       orderPrice: null,
       spareMoney: null,
       orderSpare: null,
       payeeText: "",
       payeePicker: false,
       payeeArray: [],
+      payee:localStorage.getItem('empId')
     }
   },
   watch: {
@@ -268,7 +268,7 @@ export default {
       this.payeePicker = false;
     },
     queryProceedsNameIds: function () {
-      this.$selectUtils.queryProjectsIds(this.$projectsType.proceeds, this.$selectUtils.Picker).then(response => {
+      this.$selectUtils.queryOnlineOrder(this.$selectUtils.Picker).then(response => {
         this.proceedsNameArray = JSON.parse(response.data.data)
       })
     },
@@ -292,6 +292,7 @@ export default {
     queryPayeeIds: function () {
       this.$selectUtils.queryPayeeIds(this.$selectUtils.Picker).then(response => {
         this.payeeArray = JSON.parse(response.data.data)
+        this.payeeText = this.payeeArray.find(x => x.id == localStorage.getItem("empId")).text
       })
     },
   }

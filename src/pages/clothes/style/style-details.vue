@@ -17,6 +17,7 @@
     <van-cell-group>
       <van-cell title="款式类型:" :value="style.typeName"/>
       <van-cell title="款式编号:" :value="style.styleName"/>
+      <van-cell title="款式名称:" :value="style.styleAlias"/>
       <van-cell title="款式介绍:" :value="style.styleInfo"/>
       <van-cell title="适合身形:" :value="style.styleFit"/>
       <van-cell title="不适合身形:" v-cloak :value="style.styleNoFit"/>
