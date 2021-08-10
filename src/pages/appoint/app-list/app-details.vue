@@ -84,7 +84,6 @@ export default {
           return;
         }
         this.appointVo = response.data.data;
-        console.log(this.isHide)
         if (this.isHide === 1) {
           this.appointVo.phone = this.$stringUtils.phoneIsHide(this.appointVo.phone);
         }

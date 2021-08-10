@@ -247,6 +247,28 @@ export default {
                 tenantCrop: localStorage.getItem("tenantCrop"),
             }
         });
+    },
+    //订单收款项目
+    queryOrderProceedsProjects: function (type) {
+      return self.$axios({
+          method: "get",
+          url:"/select/orderProceedsProjectId",
+          params: {
+              type: type,
+              tenantCrop: localStorage.getItem("tenantCrop"),
+          }
+      })
+    },
+    //追加收款项目
+    queryAddProceedsProjects: function (type) {
+        return self.$axios({
+            method: "get",
+            url: "/select/addProceedsProjectsId",
+            params: {
+                type: type,
+                tenantCrop: localStorage.getItem("tenantCrop"),
+            }
+        })
     }
 
 }

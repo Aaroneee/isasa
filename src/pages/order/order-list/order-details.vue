@@ -26,7 +26,7 @@
           <van-col span="8">余款:{{ orderVo.orderSpare }}</van-col>
         </van-row>
         <van-row>
-          <van-col span="24">备注:{{ orderVo.remark }}</van-col>
+          <van-col span="24">备注:{{ orderVo.orderRemark }}</van-col>
         </van-row>
       </van-cell>
     </van-sticky>
