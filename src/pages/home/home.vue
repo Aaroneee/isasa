@@ -14,6 +14,16 @@
 <script>
 export default {
   name: "home",
+  methods: {
+    setLocalStorage: function (tenantCrop, empId,token) {
+      localStorage.setItem("tenantCrop", tenantCrop);
+      localStorage.setItem("empId", empId);
+      localStorage.setItem("token", token);
+    },
+  },
+  mounted() {
+    window.setLocalStorage = this.setLocalStorage
+  }
 }
 </script>
 

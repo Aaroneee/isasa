@@ -28,6 +28,31 @@ Vue.use(SlimCropper)
 Vue.config.productionTip = false
 
 axios.defaults.baseURL = '/api'
+let token=localStorage.getItem("token");
+axios.defaults.headers['token'] = `${token!==null?token:""}`;
+axios.defaults.headers['isWebView'] = "WebView";
+axios.interceptors.response.use(
+    function (response) {
+        if (response.data.code===604){
+            const u = navigator.userAgent;
+            const isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+            // localStorage.clear();
+            if (isiOS) {
+                //IOS
+                window.webkit.messageHandlers.logout.postMessage("已退出")
+            } else {
+                //Android
+                androidMethod.logOut();
+            }
+        }
+
+        return response;
+    },
+    function (error) {
+        return Promise.reject(error);
+    }
+);
+
 export default new Vue({
     router,
     store,

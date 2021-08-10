@@ -49,11 +49,12 @@ export default {
       this.$store.commit('setKeepAlive', [event])
       this.$router.push({name: event,query:{id: id}})
     },
-    setLocalStorage: function (tenantCrop, empId) {
-      localStorage.setItem("tenantCrop", tenantCrop);
-      localStorage.setItem("empId", empId);
-      this.queryModules()
-    },
+    // setLocalStorage: function (tenantCrop, empId,token) {
+    //   localStorage.setItem("tenantCrop", tenantCrop);
+    //   localStorage.setItem("empId", empId);
+    //   localStorage.setItem("token", token);
+    //   this.queryModules()
+    // },
     queryModules() {
       this.$axios({
         method: "GET",
@@ -68,9 +69,9 @@ export default {
 
     }
   },
-  mounted() {
-    window.setLocalStorage = this.setLocalStorage
-  }
+  // mounted() {
+  //   window.setLocalStorage = this.setLocalStorage
+  // }
 }
 </script>
 
