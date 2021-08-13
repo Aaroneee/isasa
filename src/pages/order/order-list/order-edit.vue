@@ -156,6 +156,16 @@
           placeholder="收款进度"
           :rules="[{ required: true }]"
       />
+      <van-field
+          class="msg"
+          name="orderRemark"
+          v-model="orderRemark"
+          type="textarea"
+          label="订单备注"
+          placeholder="订单备注"
+          maxlength="40"
+          show-word-limit
+      />
       <br>
       <br>
       <van-row>
@@ -222,6 +232,7 @@ export default {
 
       weddingDayDefault:"",
       createDateDefault:"",
+      orderRemark: "",
     }
   },
   components: {
@@ -250,6 +261,7 @@ export default {
     this.spareMoney = this.orderVo.spareMoney
     this.orderSpare = this.orderVo.orderSpare
     this.cusId = this.orderVo.cusId
+    this.orderRemark = this.orderVo.orderRemark
   },
   created() {
     this.queryOrderNameIds();
@@ -312,11 +324,9 @@ export default {
       data.tenantCrop = localStorage.getItem("tenantCrop");
       data.cusId = this.cusId
       data.id = this.orderId
-      console.log(data)
-      console.log(data)
       this.$dialog.confirm({
         title: '修改订单',
-        message: '是否确认修改 《 ' + this.orderVo.name + ' 》的这条订单订单?',
+        message: "是否确认修改 <a style='color: #39a9ed'>" + this.orderVo.name + ' </a>的这条订单订单?',
       }).then(() => {
         this.$axios({
           method: "PUT",

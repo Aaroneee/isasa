@@ -274,7 +274,7 @@ export default {
       this.$dialog.confirm({
         message: "是否给"+"<a style='color: #39a9ed'>"
             +this.appointVo.name+"<a>"+"添加"+"" +
-            "<a style='color: #39a9ed'>"+this.clothesAllName+"<a>"+"的试纱？",
+            "<a style='color: #39a9ed'>"+this.clothesAllName+"</a>"+"的试纱？",
         theme: 'round-button',
       }).then(() => {
         this.addClothesYarn();

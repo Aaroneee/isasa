@@ -226,6 +226,7 @@ export default {
       value.payee=this.payee;
       value.payment=this.payment;
       value.proceedsName=this.proceedsName;
+      value.orderPrice = this.orderPriceParent;
       console.log(value);
       this.$dialog.confirm({
         title: '添加收款',
@@ -275,8 +276,7 @@ export default {
     },
     //查询收款项目
     queryProjectsIds: function () {
-      this.$selectUtils.queryProjectsIds(
-          this.$projectsType.proceeds,
+      this.$selectUtils.queryAddProceedsProjects(
           this.$selectUtils.Picker
       ).then(response => {
         this.proceedsNameArray = JSON.parse(response.data.data);

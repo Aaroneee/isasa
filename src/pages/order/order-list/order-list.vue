@@ -53,7 +53,7 @@
             <br>
             <van-row>
               <van-col span="8" style="text-align: center;color: #008000" @click="proceedsAdd(item)">添加收款</van-col>
-              <van-col span="8" style="text-align: center;color: #39a9ed" @click="clothesAdd(item)">添加款式</van-col>
+              <van-col span="8" style="text-align: center;color: #39a9ed" @click="clothesAdd(item)">添加婚纱</van-col>
               <van-col span="8" style="text-align: center;color: coral" @click="imagesAdd(item)">订单图片</van-col>
             </van-row>
           </van-cell>

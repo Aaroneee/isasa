@@ -182,6 +182,11 @@ export default {
   , methods: {
     clickItem: function (value) {
       this.clothesNo = value.styleType + '-' + value.styleName + '-' + value.clothesSize + '-' + value.clothesNo
+      this.clothesId = value.clothesId
+      this.cusId = this.order.cusId
+      this.orderClothesPopup = true
+      if (this.order.weddingDay === "")
+        return
       if (this.rule === 1){
         this.dateAmong = get_before_date(this.order.weddingDay, 0, 0)
       }else if(this.rule === 3){
@@ -190,9 +195,6 @@ export default {
         this.dateAmong = get_before_date(this.order.weddingDay, 2, 2)
       }
       this.defaultDate = this.$dateUtils.dateSectionStrToDateArray(this.dateAmong)
-      this.clothesId = value.clothesId
-      this.cusId = this.order.cusId
-      this.orderClothesPopup = true
     }
     , dateSectionConfirm: function (value) {
       this.dateAmong = this.$dateUtils.rangeVantDateToYMD(value)

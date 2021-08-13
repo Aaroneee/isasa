@@ -1,6 +1,26 @@
 <template>
   <div>
     <baseNavBar title="订单添加"/>
+    <van-notice-bar
+        left-icon="chat-o"
+        v-if="onlineOrderArray.length>0"
+        color="#07c160"
+        background="#ffffff"
+        :text="`该客户已有${onlineOrderArray.length}条线上订单`"
+        @click="onlineOrderShow=true"
+    />
+    <van-popup v-model="onlineOrderShow" position="bottom" round :style="{height: '60%'}">
+      <van-collapse v-model="activeNames" style="padding:4% 4% 4% 4%">
+        <van-collapse-item v-for="item in onlineOrderProceedsArray" :key="item.id"
+                           :title="item.createDate+'\u3000\u3000'+item.proceedsName+'\u3000\u3000'+item.payee"
+                           :name="item.id">
+          <van-cell-group>
+            <van-cell title="收款金额" :value="item.spareMoney"/>
+            <van-cell title="收款方式" :value="item.payment"/>
+          </van-cell-group>
+        </van-collapse-item>
+      </van-collapse>
+    </van-popup>
     <van-field
         readonly
         v-model="this.appointVo.name"
@@ -171,7 +191,13 @@
           placeholder="收款金额"
           :rules="[{ required: true }]"
       />
-
+      <van-field
+        v-if="onlineOrderArray.length > 0"
+        label="已收金额"
+        placeholder="已收金额"
+        readonly
+        v-model="receivedMoney"
+      />
       <van-field
           readonly
           name="orderSpare"
@@ -208,6 +234,16 @@
           label="收款进度"
           placeholder="收款进度"
           :rules="[{ required: true }]"
+      />
+      <van-field
+          class="msg"
+          name="orderRemark"
+          v-model="orderRemark"
+          type="textarea"
+          label="订单备注"
+          placeholder="订单备注"
+          maxlength="40"
+          show-word-limit
       />
       <van-field name="uploader" label="订单图片">
         <template #input>
@@ -327,7 +363,13 @@ export default {
       loading: false,
       overlayShow: false,
 
-
+      onlineOrderArray: [],
+      onlineOrderProceedsArray: [],
+      onlineOrderShow: false,
+      orderIds:[],
+      activeNames: ['1'],
+      receivedMoney: 0,
+      orderRemark: "",
     }
   },
   components: {
@@ -335,15 +377,12 @@ export default {
   },
   watch: {
     orderPrice(valOne) {
-      this.orderSpare = valOne - this.spareMoney;
+      this.orderSpare = valOne - this.spareMoney - this.receivedMoney;
       this.selectProceedsRate();
-      console.log(this.proceedsRate)
-
     },
     spareMoney(valOne) {
-      this.orderSpare = this.orderPrice - valOne;
+      this.orderSpare = this.orderPrice - valOne - this.receivedMoney;
       this.selectProceedsRate();
-      console.log(this.proceedsRate)
     }
   },
   created() {
@@ -353,7 +392,12 @@ export default {
     this.queryProceedsNameIds();
     this.queryPaymentIds();
     this.queryPayeeIds();
-    console.log(this.appointVo);
+    this.onlineOrder();
+    this.orderDressText = this.appointVo.appointDress
+    this.orderCosmeticsText = this.appointVo.appointCosmetics
+    this.orderDress = this.appointVo.appointDressId
+    this.orderCosmetics = this.appointVo.appointCosmeticsId
+    console.log(this.appointVo)
   },
   methods: {
     //订单日期
@@ -416,7 +460,7 @@ export default {
     },
     //选择收款进度
     selectProceedsRate: function () {
-      let proportion = this.spareMoney / this.orderPrice;
+      let proportion = this.spareMoney + this.receivedMoney / this.orderPrice;
       if (proportion >= 0 && proportion < 0.8) this.proceedsRate = "N->0-80%";
       else if (proportion < 1) this.proceedsRate = "D->80%-100%";
       else if (proportion === 1) this.proceedsRate = "W->100%";
@@ -454,25 +498,41 @@ export default {
           } else {
             data.orderImage = this.fileName
             data.uploader = []
-            this.$axios({
-              method: "POST",
-              url: "/order/saveOrder",
-              params: data
-            }).then(response => {
-              console.log(response)
-              if (response.data.code !== 200) {
-                this.$toast.fail(response.data.msg)
-                return
-              }
-              this.$toast.success("订单添加成功!")
-              this.$dialog.confirm({
-                message: '是否确认跳转到订单列表?',
-              }).then(() => {
-                this.$router.push({name: "orderList"})
-              }).catch(() => {
-                console.log("取消按钮 刷新当前页面")
-                this.reload()
+            if (this.onlineOrderArray.length > 0) { //改客资有线上订单 修改线上订单并追加收款
+              data.id = this.onlineOrderArray[this.onlineOrderArray.length - 1].id
+              this.$axios({
+                method: "POST",
+                url: "/order/updateOnlineOrderToOrder",
+                params: data
+              }).then(response => {
+                console.log(response)
+                if (response.data.code !== 200) {
+                  if (response.data.code !== 200) {
+                    this.$toast.fail(response.data.msg)
+                    return
+                  }
+                }
               })
+            } else {  //该客资无线上订单则直接添加新订单
+              this.$axios({
+                method: "POST",
+                url: "/order/saveOrder",
+                params: data
+              }).then(response => {
+                if (response.data.code !== 200) {
+                  this.$toast.fail(response.data.msg)
+                  return
+                }
+              })
+            }
+            this.$toast.success("订单添加成功!")
+            this.$dialog.confirm({
+              message: '是否确认跳转到订单列表?',
+            }).then(() => {
+              this.$router.push({name: "orderList"})
+            }).catch(() => {
+              console.log("取消按钮 刷新当前页面")
+              this.reload()
             })
           }
         })
@@ -483,17 +543,15 @@ export default {
       this.$selectUtils.queryProjectsIds(this.$projectsType.order, this.$selectUtils.Picker).then(response => {
         this.orderNameArray = JSON.parse(response.data.data);
       })
-    }
-    ,
-//查询礼服师
+    },
+    //查询礼服师
     queryAppointDress: function () {
       this.$selectUtils.queryDressIds(
           this.$selectUtils.Picker
       ).then(response => {
         this.orderDressArray = JSON.parse(response.data.data);
       })
-    }
-    ,
+    },
     //查询化妆师
     queryAppointCosmetics: function () {
       this.$selectUtils.queryCosmeticsIds(
@@ -502,14 +560,13 @@ export default {
         this.orderCosmeticsArray = JSON.parse(response.data.data);
       })
     },
-//查询收款项目
+    //查询收款项目
     queryProceedsNameIds: function () {
-      this.$selectUtils.queryProjectsIds(this.$projectsType.proceeds, this.$selectUtils.Picker).then(response => {
+      this.$selectUtils.queryOrderProceedsProjects(this.$selectUtils.Picker).then(response => {
         this.proceedsNameArray = JSON.parse(response.data.data)
       })
-    }
-    ,
-//查询收款方式
+    },
+    //查询收款方式
     queryPaymentIds: function () {
       this.$selectUtils.queryPaymentIds(this.$selectUtils.Picker).then(response => {
         this.paymentArray = JSON.parse(JSON.parse(response.data.data));
@@ -521,23 +578,20 @@ export default {
           return k;
         });
       })
-    }
-    ,
-//查询收款人
+    },
+    //查询收款人
     queryPayeeIds: function () {
       this.$selectUtils.queryPayeeIds(this.$selectUtils.Picker).then(response => {
         this.payeeArray = JSON.parse(response.data.data)
       })
-    }
-    ,
+    },
     beforeClose: function (action, done) {
       if (action === 'confirm') {
         setTimeout(done, 1000);
       } else {
         done();
       }
-    }
-    ,
+    },
     afterRead(file) {
       console.log(file)
       this.fileName = file.file.name
@@ -552,8 +606,7 @@ export default {
       //     this.fileList[0].status = ""
       //   }
       // })
-    }
-    ,
+    },
     uploadOrderImage: function () {
       return new Promise((resolve, reject) => {
         if (this.fileList.length !== 0) {
@@ -574,18 +627,15 @@ export default {
           resolve(true)
         }
       })
-    }
-    ,// 显示裁剪页
+    },// 显示裁剪页
     showCrop() {
       this.cropShow = true
       console.log(this.fileList)
-    }
-    ,
+    },
 // 隐藏裁剪页
     hideCrop: function () {
       this.cropShow = false
-    }
-    ,
+    },
 // 裁剪页确认
     async submitCrop() {
       this.hideCrop()
@@ -593,8 +643,49 @@ export default {
       console.log(img)
       this.fileList[0].file = blobToFile(img, this.fileName)
       console.log(this.fileList)
+    },
+    // 查询线上订单
+    async onlineOrder() {
+      const response = await this.$axios({
+        method: "GET",
+        url: "/order/queryOnlineOrderByCusId",
+        params: {
+          cusId: this.appointVo.cusId,
+          tenantCrop: localStorage.getItem("tenantCrop")
+        }
+      });
+      this.onlineOrderArray = response.data.data
+      if (this.onlineOrderArray.length == 0 )
+        return
+      for (let order of this.onlineOrderArray) {
+          this.orderIds.push(order.id)
+      }
+      let temp = this.onlineOrderArray[this.onlineOrderArray.length - 1]
+      this.queryOnlineOrderProceeds()
+      this.orderNo = temp.orderNo
+      this.weddingDay = temp.weddingDay
+      this.orderPrice = temp.orderPrice
+      this.orderSpare = temp.orderSpare
+    },
+    //查询线上订单收款
+    queryOnlineOrderProceeds: function () {
+      this.$axios({
+        method: "POST",
+        url:"/proceeds/queryOnlineOrderProceeds",
+        params: {
+          orderIds:this.orderIds.toString()
+        }
+      }).then(response => {
+        this.onlineOrderProceedsArray = response.data.data
+        let money = 0;
+        // 计算已收金额
+        for (let temp of this.onlineOrderProceedsArray) {
+          money += Number(temp.spareMoney)
+        }
+        this.receivedMoney = money
+        this.orderSpare = (this.orderPrice - money) < 0 ? null : this.orderPrice - money
+      })
     }
-    ,
   }
 
 }
