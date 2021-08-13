@@ -59,6 +59,9 @@
               <van-row>
                 <van-col span="24">标签:{{ item.labelName }}</van-col>
               </van-row>
+              <van-row>
+                <van-col span="24">婚纱数:{{ item.clothesCount }}</van-col>
+              </van-row>
             </van-col>
             <van-col offset="1" span="10">
               <van-image radius="7" @click="clickItem(item)"
