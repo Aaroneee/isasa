@@ -30,6 +30,10 @@
       <van-col span="6" offset="1">
         <van-button @click="onlineOrderAdd" type="info" style="width: 100%">线上订单</van-button>
       </van-col>
+      <van-col span="6" offset="2">
+        <van-button @click="cusCommunicate" type="info" style="width: 100%;top: 20px">客资沟通</van-button>
+      </van-col>
+
     </van-row>
 
   </div>
@@ -72,9 +76,14 @@ export default {
     openAppAdd:function (){
       this.$router.push({name:"appAdd",query:this.customer});
     },
+    //打开线上订单界面  
     onlineOrderAdd:function (){
       this.$router.push({name:"onlineOrderAdd",query:this.customer})
     },
+    //打开客资沟通界面
+    cusCommunicate:function (){
+      this.$router.push({name:"cusCommunicate",query:{cusId:this.$route.query.cusId}})
+    }
   }
 }
 </script>

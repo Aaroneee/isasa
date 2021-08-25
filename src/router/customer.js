@@ -3,6 +3,7 @@ import cusDetails from "@/pages/customer/cus-list/cus-details" //客资详情
 import cusAdd from "@/pages/customer/cus-add" //客资添加
 import mCusList from "@/pages/customer/cus-list/m-cus-list"//我的客资列表
 import cusEdit from "@/pages/customer/cus-list/cus-edit" //客资修改
+import cusCommunicate from "@/pages/customer/cus-communicate" //客资沟通
 
 export default [
     {
@@ -29,5 +30,10 @@ export default [
         path: '/mCusList',
         name: 'mCusList',
         component: mCusList,
+    },
+    {
+        path: '/cusCommunicate',
+        name: 'cusCommunicate',
+        component: cusCommunicate,
     }
 ];
