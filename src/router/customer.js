@@ -4,6 +4,7 @@ import cusAdd from "@/pages/customer/cus-add" //客资添加
 import mCusList from "@/pages/customer/cus-list/m-cus-list"//我的客资列表
 import cusEdit from "@/pages/customer/cus-list/cus-edit" //客资修改
 import cusCommunicate from "@/pages/customer/cus-communicate" //客资沟通
+import directSales from "@/pages/customer/direct-sales" //销售直约
 
 export default [
     {
@@ -35,5 +36,10 @@ export default [
         path: '/cusCommunicate',
         name: 'cusCommunicate',
         component: cusCommunicate,
+    },
+    {
+        path: '/directSales',
+        name: 'directSales',
+        component: directSales,
     }
 ];

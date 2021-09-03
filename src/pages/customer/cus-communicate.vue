@@ -24,7 +24,7 @@
       <van-field
           readonly
           label="意愿程度:"
-          :value="commResult"
+          :value="commResult.name"
           :rules="willRules"
           placeholder="请选择"
           @click="showPickerWill = true"
@@ -34,6 +34,7 @@
         <van-picker
           title="意愿程度"
           show-toolbar
+          value-key="name"
           :columns="willingnessArray"
           @cancel="showPickerWill = false"
           @confirm="changeWillingness"
@@ -65,19 +66,22 @@
         />
       </van-popup>
 
-      <van-field
-          v-model="commNote"
-          rows="3"
-          label="沟通内容:"
-          :rules="messageRules"
-          type="textarea"
-          placeholder="请输入内容"
-          autosize
-          maxlength="40"
-          show-word-limit
-      />
+      <van-cell-group>
+        <van-field
+            v-model="commNote"
+            rows="3"
+            label="沟通内容:"
+            :rules="messageRules"
+            type="textarea"
+            placeholder="请输入内容"
+            autosize
+            maxlength="40"
+            show-word-limit
+        />
+      </van-cell-group>
 
       <van-field
+          readonly
         label="热门沟通:"
         placeholder="点击查看"
         @click="showPickerPopular = true"
@@ -114,9 +118,10 @@ export default {
       commCycle:'',
       communicateContent:'',
       commNote:'',
+      tenantCrop:'',
       cusId: this.$route.query.cusId,
       communicateWayArray:["微信沟通","电话沟通"],
-      willingnessArray:['意向程度高', '意向程度低'],
+      willingnessArray:[],
       communicateArray:['1天','2天','3天','5天','7天','14天','30天','60天'],
       popularArray:['已约试纱','微信跟进','婚博会意向金客户','只看租金','已拉群','取消预约，继续跟进','已加上微信，打招呼未回复','发了款式未回复','微信跟进已删客服微信','打招呼未回复',],
       showPickerWay:false,
@@ -143,9 +148,26 @@ export default {
     }
   },
   created() {
-
+    this.queryGrade();
   },
   methods: {
+    queryGrade(){
+      this.tenantCrop = localStorage.getItem("tenantCrop")
+      this.$axios({
+        method: "GET",
+        url:"/grade/gradeList",
+        params:{
+          tenantCrop: this.tenantCrop,
+        }
+      }).then(response => {
+        for (let i = 0; i < response.data.data.list.length; i++) {
+          this.willingnessArray[i] = {
+            name : response.data.data.list[i].gradeName,
+            value: response.data.data.list[i].id,
+          }
+        }
+      })
+    },
     changeCommunicate(value){
       this.commType = value;
       this.showPickerWay = false;
@@ -166,13 +188,8 @@ export default {
       this.showFlag = false;
     },
     addCusCommunicate(data) {
-      console.log(data)
       data.commType = this.commType;
-      if (this.commResult == "意向程度高"){
-        data.commResult = 44;
-      }else if (this.commResult == "意向程度低"){
-        data.commResult = 45;
-      }
+      data.commResult = this.commResult.value;
       this.commCycle = this.commCycle.replace("天","");
       data.commCycle = this.commCycle;
       data.commNote = this.commNote;
