@@ -67,6 +67,10 @@
       </van-cell-group>
 
       <van-cell-group>
+        <van-field v-model="channelOppositePerson" label="渠道对接人:" placeholder="请输入渠道对接人"></van-field>
+      </van-cell-group>
+
+      <van-cell-group>
         <van-field v-model="cusWedding" label="婚期:" placeholder="请填写婚期"></van-field>
         <van-popup>
 
@@ -100,7 +104,7 @@
         <van-field
             readonly
             :value="inviterText"
-            :rules="inviterTextRule"
+
             label="接待人:"
             placeholder="请选择接待人"
             @click="showPickerInviter = true"
@@ -120,7 +124,7 @@
         <van-field
             readonly
             :value="appoint.text"
-            :rules="appointRule"
+
             label="预约项目:"
             placeholder="请选择预约项目"
             @click="showPickerAppointName = true"
@@ -140,7 +144,7 @@
         <van-field
             readonly
             :value="shop.shopName"
-            :rules="shopRule"
+
             label="店铺:"
             placeholder="请选择店铺"
             @click="showPickerShop = true"
@@ -164,7 +168,7 @@
       <van-cell-group>
         <van-field
             v-model="arriveDate"
-            :rules="arriveDateRule"
+
             label="到店日期:"
             placeholder="请选择到店日期"
             @click="showPickerArriveDate = true"
@@ -177,7 +181,7 @@
         <van-field
             readonly
             v-model="arriveTime"
-            :rules="arriveTimeRule"
+
             label="到店时间:"
             placeholder="请选择到店时间"
             @click="showPickerArriveTime = true"
@@ -229,6 +233,7 @@ export default {
       inviterText:'',
       shop:'',
       appCity:'',
+      channelOppositePerson:'',
       appoint:{},
       emp:{},
       inviters:{},
@@ -263,31 +268,31 @@ export default {
         message:'请输入客户名，没有请暂填无',
         trigger: 'onBlur'
       }],
-      inviterTextRule:[{
-        required:true,
-        message:'请选择接待人',
-        trigger: 'onBlur'
-      }],
-      appointRule:[{
-        required:true,
-        message:'请选择预约项目',
-        trigger: 'onBlur'
-      }],
-      shopRule:[{
-        required:true,
-        message:'请选择店铺',
-        trigger: 'onBlur'
-      }],
-      arriveDateRule:[{
-        required:true,
-        message:'请选择到店日期',
-        trigger: 'onBlur'
-      }],
-      arriveTimeRule:[{
-        required:true,
-        message:'请选择到店时间',
-        trigger: 'onBlur'
-      }]
+      // inviterTextRule:[{
+      //   required:true,
+      //   message:'请选择接待人',
+      //   trigger: 'onBlur'
+      // }],
+      // appointRule:[{
+      //   required:true,
+      //   message:'请选择预约项目',
+      //   trigger: 'onBlur'
+      // }],
+      // shopRule:[{
+      //   required:true,
+      //   message:'请选择店铺',
+      //   trigger: 'onBlur'
+      // }],
+      // arriveDateRule:[{
+      //   required:true,
+      //   message:'请选择到店日期',
+      //   trigger: 'onBlur'
+      // }],
+      // arriveTimeRule:[{
+      //   required:true,
+      //   message:'请选择到店时间',
+      //   trigger: 'onBlur'
+      //}]
     }
   },
   created() {
@@ -318,13 +323,14 @@ export default {
       data.appointTime = this.arriveTime;//预约时间
       data.tenantCrop = this.tenantCrop;//公司
       data.createDate = this.$dateUtils.vantDateToYMD(new Date());//创建时间
+      data.channelOppositePerson = this.channelOppositePerson;//渠道对接人
       console.log(data)
       this.$dialog.confirm({
         title:'新增销售直约',
         message:'是否确认添加该条销售直约？',
       }).then(() => {
         this.$axios({
-          method: "POST",
+          method: "GET",
           url: "/customer/directSales",
           params: data
         }).then(response => {
