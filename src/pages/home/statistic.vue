@@ -29,7 +29,7 @@ export default {
     queryModules() {
       this.$axios({
         method: "GET",
-        url: '/index/mobileManBar',
+        url: 'index/index/mobileManBar',
         params: {
           tenantCrop: localStorage.getItem("tenantCrop"),
           empId: localStorage.getItem("empId"),

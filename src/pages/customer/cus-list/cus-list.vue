@@ -32,7 +32,7 @@
           :finished="finished"
           finished-text="没有更多了"
       >
-        <van-cell style="font-size: 12px" v-for="item in customerList" :key="item.id" @click="clickItem(item.id)">
+        <van-cell style="font-size: 12px" v-for="item in customerList" :key="item.id"  @click="clickItem(item.id)" >
           <van-row>
             <van-col span="12" :style="{color:item.gradeColor}">姓名:{{ item.name }}</van-col>
             <van-col style="color: #de0d0d" span="12">客资状态:{{ item.state }}</van-col>
@@ -43,7 +43,12 @@
           </van-row>
           <van-row>
             <van-col span="12">微信:{{ item.weChat }}</van-col>
-            <van-col span="12">手机:{{ item.phone }}</van-col>
+            <van-col span="12">手机:{{ item.phone }}
+              <van-button class="copy-btn" type="default" size="mini"
+                          @touchstart="copyPhone(item.phone)"
+                          style="top: -5px;left: 10px">复制
+              </van-button>
+            </van-col>
           </van-row>
           <van-row>
             <van-col span="12">来源:{{ item.source }}</van-col>
@@ -61,6 +66,7 @@
 
 <script>
 import switchNavBar from '@/components/nav-bar/switch-nav-bar'
+import {Notify} from "vant";
 
 export default {
   name: "cusList",
@@ -95,7 +101,9 @@ export default {
       //客服
       serviceText: "",
       service: "",
-      serviceArray: [{text: "选择客服", value: ""}]
+      serviceArray: [{text: "选择客服", value: ""}],
+      //计时器
+      timeOutEvent:0,
     }
   },
   components: {
@@ -147,6 +155,20 @@ export default {
     //点击每个Listitem
     clickItem: function (id) {
       this.$router.push({name: "cusDetails", query: {cusId: id}})
+    },
+    //复制手机号
+    copyPhone: function(value){
+      clearTimeout(this.timeOutEvent); //清除定时器
+      this.timeOutEvent = 0 ;
+      let _this = this;
+      this.timeOutEvent = setTimeout(function (){
+        console.log("长按0.6秒")
+        _this.$copyText(value).then(function (e){
+          Notify({ type:'success', message:'复制到剪贴板成功'})
+        },err => {
+          Notify({ type:'warning', message:'复制失败'})
+        })
+      },1000);//设定长按时间
     },
 
 

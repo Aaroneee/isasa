@@ -58,7 +58,7 @@ export default {
     queryModules() {
       this.$axios({
         method: "GET",
-        url: '/index/mobileManBar',
+        url: 'index/index/mobileManBar',
         params: {
           tenantCrop: this.tenantCrop,
           empId: this.empId,
