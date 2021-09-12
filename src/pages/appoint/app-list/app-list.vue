@@ -33,10 +33,6 @@
             <van-col v-if="item.isValid === '2'" style="color: #39a9ed">状态 : {{ item.appStateName }}</van-col>
             <van-col v-if="item.isValid === '3'" style="color: red">状态 : {{ item.appStateName }}</van-col>
           </van-row>
-<!--          <van-row>-->
-<!--            <van-col span="12">客资状态:{{ item.stateName }}</van-col>-->
-<!--            <van-col span="12">预约状态:{{ item.appStateName }}</van-col>-->
-<!--          </van-row>-->
           <van-row>
             <van-col span="12">预约日期:{{ item.createDate }}</van-col>
             <van-col span="12">到店日期:{{ item.appointDate }}</van-col>

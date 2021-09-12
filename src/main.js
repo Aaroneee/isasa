@@ -29,7 +29,7 @@ Vue.use(SlimCropper)
 Vue.use(Clipboard)
 Vue.config.productionTip = false
 
-//axios.defaults.baseURL = '/api'
+axios.defaults.baseURL = '/api'
 let token=localStorage.getItem("token");
 axios.defaults.headers['token'] = `${token!==null?token:""}`;
 axios.defaults.headers['isWebView'] = "WebView";
