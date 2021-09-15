@@ -5,10 +5,10 @@
       <van-calendar v-model="createDateShow" :min-date="minDate" :max-date="maxDate"
                     @confirm="createDateOnConfirm"/>
       <form action="javascript:return true">
-      <van-search
-          @search="queryCusList"
-          v-model="searchValue"
-          placeholder="请输入搜索关键词"/>
+        <van-search
+            @search="queryCusList"
+            v-model="searchValue"
+            placeholder="请输入搜索关键词"/>
       </form>
       <van-dropdown-menu>
         <van-dropdown-item :title="sourceText" ref="sourceShowPicker">
@@ -23,7 +23,6 @@
         </van-dropdown-item>
         <van-dropdown-item :title="gradeText" v-model="grade" @change="gradeChange" :options="gradeArray"/>
         <van-dropdown-item :title="stateText" v-model="state" @change="stateChange" :options="stateArray"/>
-        <van-dropdown-item :title="serviceText" v-model="service" @change="serviceChange" :options="serviceArray" />
       </van-dropdown-menu>
     </van-sticky>
     <div>
@@ -32,7 +31,7 @@
           :finished="finished"
           finished-text="没有更多了"
       >
-        <van-cell style="font-size: 12px" v-for="item in customerList" :key="item.id"  @click="clickItem(item.id)" >
+        <van-cell style="font-size: 12px" v-for="item in customerList" :key="item.id" @click="clickItem(item.id)">
           <van-row>
             <van-col span="12" :style="{color:item.gradeColor}">姓名:{{ item.name }}</van-col>
             <van-col style="color: #de0d0d" span="12">客资状态:{{ item.state }}</van-col>
@@ -43,12 +42,7 @@
           </van-row>
           <van-row>
             <van-col span="12">微信:{{ item.weChat }}</van-col>
-            <van-col span="12" @touchstart="copyPhone(item.phone)">手机:{{ item.phone }}
-              <van-button class="copy-btn" type="default" size="mini"
-                          @click.stop="copyPhone(item.phone)"
-                          style="top: -5px;left: 10px">复制
-              </van-button>
-            </van-col>
+            <van-col span="12">手机:{{ item.phone }}</van-col>
           </van-row>
           <van-row>
             <van-col span="12">来源:{{ item.source }}</van-col>
@@ -66,10 +60,9 @@
 
 <script>
 import switchNavBar from '@/components/nav-bar/switch-nav-bar'
-import {Notify} from "vant";
 
 export default {
-  name: "cusList",
+  name: "directCustomer",
   data() {
     return {
       tenantCrop: localStorage.getItem("tenantCrop"),
@@ -77,7 +70,7 @@ export default {
       customerList: [],
       loading: false,
       finished: false,
-      titleText: "客资列表",
+      titleText: "直约客资",
       createDateShow: false,
       createDate: "",
 
@@ -98,10 +91,6 @@ export default {
       stateText: "",
       state: "",
       stateArray: [{text: "客资状态", value: ""}],
-      //客服
-      serviceText: "",
-      service: "",
-      serviceArray: [{text: "选择客服", value: ""}],
     }
   },
   components: {
@@ -111,7 +100,6 @@ export default {
     this.querySourceIds();
     this.queryGradeIds();
     this.queryStateIds();
-    this.queryServiceIds();
     this.queryCusList();
   },
 
@@ -145,24 +133,9 @@ export default {
       this.state = val;
       this.queryCusList();
     },
-    //点击客服
-    serviceChange: function (val) {
-      this.service = val;
-      this.queryCusList();
-    },
     //点击每个Listitem
     clickItem: function (id) {
-      this.$router.push({name: "cusDetails", query: {cusId: id}})
-    },
-    //复制手机号
-    copyPhone: function(value){
-      let _this = this;
-      console.log("复制电话号码")
-      _this.$copyText(value).then(function (e){
-        Notify({ type:'success', message:'复制到剪贴板成功'})
-      },err => {
-        Notify({ type:'warning', message:'复制失败'})
-      })
+      this.$router.push({name: "cusDirectDetails", query: {cusId: id}})
     },
 
 
@@ -170,14 +143,14 @@ export default {
     queryCusList: function (val) {
       this.$axios({
         method: "get",
-        url: "/customer/mCustomerList",
+        url: "/customer/directCustomerList",
         params: {
           value: val,
           createDate: this.createDate,
           source: this.source,
           grade: this.grade,
           state: this.state,
-          service: this.service,
+          service: 0,
           tenantCrop: this.tenantCrop
         }
       }).then(response => {
@@ -224,16 +197,7 @@ export default {
         }
       })
     },
-    //查询客服
-    queryServiceIds: function () {
-      this.$selectUtils.queryServiceIds(this.$selectUtils.DropDownMenu).then(response => {
-        if (response.data.code === 200) {
-          this.serviceArray.push(...JSON.parse(response.data.data));
-        } else {
-          self.$toast.fail(response.data.msg);
-        }
-      })
-    }, createDateOnConfirm: function (time) {
+    createDateOnConfirm: function (time) {
       this.createDate = this.$dateUtils.vantDateToYMD(time);
       this.titleText = this.$dateUtils.vantDateToYMD(time);
       this.queryCusList();
@@ -247,13 +211,6 @@ export default {
       this.$store.commit('setKeepAlive', [])
     }
     next()
-  }, activated() {
-    console.log("哎呀看见我了")
-    console.log("----------activated--------")
-  },
-  deactivated() {
-    console.log("讨厌！！你又走了")
-    console.log("----------deactivated--------")
   }
 }
 </script>

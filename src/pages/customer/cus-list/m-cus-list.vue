@@ -42,7 +42,12 @@
           </van-row>
           <van-row>
             <van-col span="12">微信:{{ item.weChat }}</van-col>
-            <van-col span="12">手机:{{ item.phone }}</van-col>
+            <van-col span="12">手机:{{ item.phone }}
+              <van-button class="copy-btn" type="default" size="mini"
+                          @click.stop="copyPhone(item.phone)"
+                          style="top: -5px;left: 10px">复制
+              </van-button>
+            </van-col>
           </van-row>
           <van-row>
             <van-col span="12">来源:{{ item.source }}</van-col>
@@ -60,6 +65,7 @@
 
 <script>
 import switchNavBar from '@/components/nav-bar/switch-nav-bar'
+import {Notify} from "vant";
 
 export default {
   name: "mCusList",
@@ -197,6 +203,16 @@ export default {
         } else {
           self.$toast.fail(response.data.msg);
         }
+      })
+    },
+    //复制手机号
+    copyPhone: function(value){
+      let _this = this;
+      console.log("复制电话号码")
+      _this.$copyText(value).then(function (e){
+        Notify({ type:'success', message:'复制到剪贴板成功'})
+      },err => {
+        Notify({ type:'warning', message:'复制失败'})
       })
     },
     createDateOnConfirm: function (time) {

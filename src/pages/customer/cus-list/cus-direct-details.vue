@@ -1,6 +1,6 @@
 <template>
   <div>
-    <baseNavBar title="客资详情"/>
+    <baseNavBar title="直约客资详情"/>
     <div v-cloak>
       <van-cell-group>
         <van-cell title="姓名:" :value="customer.name" />
@@ -24,18 +24,14 @@
       <van-col span="6" offset="2">
         <van-button @click="openCusEdit" style="width: 100%" type="warning">客资编辑</van-button>
       </van-col>
-      <van-col span="6"  offset="1">
-        <van-button @click="openAppAdd" type="primary" style="width: 100%">添加预约</van-button>
+      <van-col span="6" offset="1">
+        <van-button @click="openAppAdd" type="primary" style="width: 100%">销售直约</van-button>
       </van-col>
       <van-col span="6" offset="1">
-        <van-button @click="onlineOrderAdd" type="info" style="width: 100%">线上订单</van-button>
-      </van-col>
-      <van-col span="6" offset="2">
-        <van-button @click="cusCommunicate" type="info" style="width: 100%;top: 20px">客资沟通</van-button>
+        <van-button @click="cusCommunicate" type="info" style="width: 100%">客资沟通</van-button>
       </van-col>
 
     </van-row>
-
   </div>
 </template>
 
@@ -43,7 +39,7 @@
 import baseNavBar from '@/components/nav-bar/base-nav-bar'
 
 export default {
-  name: "cus-details",
+  name: "cus-direct-details",
   data(){
     return{
       cusId:this.$route.query.cusId,
@@ -75,10 +71,6 @@ export default {
     //打开预约添加界面
     openAppAdd:function (){
       this.$router.push({name:"appAdd",query:this.customer});
-    },
-    //打开线上订单界面  
-    onlineOrderAdd:function (){
-      this.$router.push({name:"onlineOrderAdd",query:this.customer})
     },
     //打开客资沟通界面
     cusCommunicate:function (){
