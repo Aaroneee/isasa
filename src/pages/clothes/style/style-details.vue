@@ -69,11 +69,8 @@ export default {
     updateStyle() {
       console.log()
       this.$router.push({name: "styleEdit", query: this.style});
-    }
-    , deleteStyle() {
-      console.log()
-    }
-    , addClothes() {
+    },
+    addClothes() {
       this.$router.push({name: "clothesAdd", query: this.style})
     },
     queryStyleImage(styleId) {
@@ -85,6 +82,30 @@ export default {
         }
       }).then(response => {
         this.styleImageArray = response.data.data
+      })
+    },
+    //删除款式
+    deleteStyle(){
+      this.$dialog.confirm({
+        title: '删除款式',
+        message: '确定要删除该款式吗？',
+      }).then(() => {
+        this.$axios({
+          method:"POST",
+          url:"/style/deleteStyle",
+          params:{
+            styleId:this.style.id
+          }
+        }).then(response=>{
+          if (response.data.code === 200) {
+            this.$toast.success("删除成功");
+            setTimeout(()=>{
+              this.$router.go(-1)
+            },1000)
+          } else {
+            this.$toast.fail(response.data.msg);
+          }
+        })
       })
     }
   }
