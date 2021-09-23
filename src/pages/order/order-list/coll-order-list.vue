@@ -103,6 +103,7 @@ export default {
 
       loading: false,
       finished: false,
+      wDSort: 'desc'
     }
   },
   created() {
@@ -112,11 +113,15 @@ export default {
     //时间确认
     createDateOnConfirm: function (time) {
       this.createDateM = this.$dateUtils.vantDateToYM(time);
+      this.weddingDateM = ""
+      this.wDSort = 'desc'
       this.$refs.item1.toggle();
       this.queryOrderList();
     },
     weddingDayOnConfirm: function (time) {
       this.weddingDateM = this.$dateUtils.vantDateToYM(time);
+      this.createDateM = ""
+      this.wDSort = 'asc'
       this.$refs.item2.toggle()
       this.queryOrderList();
     },
@@ -158,7 +163,7 @@ export default {
           weddingDateM: this.weddingDateM,
           tenantCrop: this.tenantCrop,
           empId: this.empId,
-
+          wDSort: this.wDSort
         }
       }).then(response => {
         this.orderList = response.data.data.list;

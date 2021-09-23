@@ -36,6 +36,7 @@ export default {
   name: "work",
   created() {
     this.queryModules()
+    this.queryButton()
   },
   data() {
     return {
@@ -67,6 +68,17 @@ export default {
         this.modules = response.data.data
       })
 
+    },
+    queryButton() {
+      this.$axios({
+        method: "GET",
+        url: "/index/index/mobileButton",
+        params: {
+          empId: this.empId,
+        }
+      }).then(response => {
+        this.$store.commit("setPermission", response.data.data)
+      })
     }
   },
   // mounted() {
