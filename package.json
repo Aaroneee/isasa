@@ -12,6 +12,7 @@
     "core-js": "^3.6.5",
     "vant": "^2.12.1",
     "vue": "^2.6.12",
+    "vue-clipboard2": "^0.3.1",
     "vue-slim-cropper": "^0.1.0"
   },
   "devDependencies": {

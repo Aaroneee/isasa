@@ -14,6 +14,7 @@ import stringUtils from "@/common/js/utils/string-utils";
 import projectsType from './common/js/constant/projects-type';
 import SlimCropper from 'vue-slim-cropper';
 import PerButton from "./components/button/per-button"
+import Clipboard from "vue-clipboard2";
 
 
 Vue.use(Vant)
@@ -27,6 +28,7 @@ Vue.prototype.$upload = upload
 Vue.prototype.$projectsType = projectsType;
 Vue.prototype.$stringUtils = stringUtils;
 Vue.use(SlimCropper)
+Vue.use(Clipboard)
 Vue.config.productionTip = false
 
 axios.defaults.baseURL = '/api'
