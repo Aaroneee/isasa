@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <van-cell-group v-if="modules.业绩报表 !=null" title="业绩报表">
+  <div class="box">
+    <van-cell-group v-if="modules.业绩报表 !=null" title="业绩报表" class="gird_module">
       <van-grid :border="false" clickable :column-num="4">
         <van-grid-item v-for="value in modules.业绩报表" @click="onClickItem(value.viewLink)" :key="value.id"
                        :icon="value.viewIcon"
@@ -43,5 +43,21 @@ export default {
 </script>
 
 <style scoped>
-
+.gird_module{
+  background-color: #ffffff;
+  margin: 0px 7px 7px 8px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  padding-bottom: 7px;
+  border-color: #ffffff!important;
+}
+/deep/ .van-cell-group__title{
+  margin: 8px 7px 0px 7px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  background-color: #ffffff;
+}
+/deep/ [class*=van-hairline]::after {
+  border: none;
+}
 </style>

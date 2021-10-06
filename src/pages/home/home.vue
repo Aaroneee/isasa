@@ -4,9 +4,9 @@
       <router-view/>
     </keep-alive>
     <van-tabbar route>
-      <van-tabbar-item to="/" icon='wap-home-o'></van-tabbar-item>
-      <van-tabbar-item to="/statistic" icon='bar-chart-o'></van-tabbar-item>
-      <van-tabbar-item to="/user" icon='user-o'></van-tabbar-item>
+      <van-tabbar-item to="/" icon='wap-home-o'>工作台</van-tabbar-item>
+      <van-tabbar-item to="/statistic" icon='bar-chart-o'>报表</van-tabbar-item>
+      <van-tabbar-item to="/user" icon='user-o'>我</van-tabbar-item>
     </van-tabbar>
   </div>
 </template>
