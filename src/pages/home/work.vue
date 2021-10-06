@@ -1,5 +1,5 @@
 <template>
-  <div class="box">
+  <div>
     <van-cell-group v-if="modules.客资 !=null" title="客资" class="gird_module">
       <van-grid :border="false" clickable :column-num="4">
         <van-grid-item v-for="value in modules.客资" @click="onClickItem(value.viewLink)" :key="value.id"
@@ -109,10 +109,5 @@ export default {
 }
 /deep/ [class*=van-hairline]::after {
   border: none;
-}
-</style>
-<style>
-.box{
-  padding-top: 7px;
 }
 </style>

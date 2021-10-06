@@ -1,5 +1,5 @@
 <template>
-  <div class="box">
+  <div>
     <van-cell-group v-if="modules.业绩报表 !=null" title="业绩报表" class="gird_module">
       <van-grid :border="false" clickable :column-num="4">
         <van-grid-item v-for="value in modules.业绩报表" @click="onClickItem(value.viewLink)" :key="value.id"

@@ -28,5 +28,7 @@ export default {
 </script>
 
 <style scoped>
-
+/deep/ [class*=van-hairline]::after {
+  border-bottom: none;
+}
 </style>
