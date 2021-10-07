@@ -207,7 +207,7 @@ export default {
       const that = this
       setTimeout(function () {
         that.queryClothesList()
-      }, 2000)
+      }, 1000)
     }
     ,
     styleTypeChange: function (type) {
