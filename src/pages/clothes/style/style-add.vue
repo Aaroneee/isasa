@@ -39,6 +39,7 @@
       <van-field
         label="款式名称"
         placeholder="款式名称"
+        name="styleAlias"
         :value="styleAlias"
       />
       <van-field label="第一件婚纱">
