@@ -60,11 +60,19 @@
                 <van-col span="24">备注:{{ item.orderRemark }}</van-col>
               </van-row>
             </div>
-            <br>
-            <van-row>
-              <van-col span="8" style="text-align: center;color: #008000" @click="proceedsAdd(item)">添加收款</van-col>
-              <van-col span="8" style="text-align: center;color: #39a9ed" @click="clothesAdd(item)">添加款式</van-col>
-              <van-col span="8" style="text-align: center;color: coral" @click="imagesAdd(item)">订单图片</van-col>
+            <van-row style="margin-top: 10px">
+              <per-button round color="#07c160"
+                          :span="6" size="mini"
+                          plain per="order:add_proceeds"
+                          @click="proceedsAdd(item)">添加收款</per-button>
+              <per-button round color="#1989fa"
+                          :span="6" size="mini"
+                          plain per="order:add_clothes"
+                          @click="clothesAdd(item)">添加婚纱</per-button>
+              <per-button round color="#fd6020"
+                          :span="6" size="mini"
+                          plain per="order:add_image"
+                          @click="imagesAdd(item)">订单图片</per-button>
             </van-row>
           </van-cell>
         </van-list>
@@ -189,5 +197,7 @@ export default {
 </script>
 
 <style scoped>
-
+.col{
+  margin-left: 6.25%!important;
+}
 </style>

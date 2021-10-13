@@ -44,10 +44,10 @@
           <van-row>
             <van-col span="12">微信:{{ item.weChat }}</van-col>
             <van-col span="12" @touchstart="copyPhone(item.phone)">手机:{{ item.phone }}
-              <van-button class="copy-btn" type="default" size="mini"
+              <span v-if="item.phone !== ''" class="copy-btn"
                           @click.stop="copyPhone(item.phone)"
-                          style="top: -5px;left: 10px">复制
-              </van-button>
+                          style="top: -5px;left: 10px;color: #ffa71e">复制
+              </span>
             </van-col>
           </van-row>
           <van-row>
@@ -156,11 +156,9 @@ export default {
     },
     //复制手机号
     copyPhone: function(value){
-      let _this = this;
-      console.log("复制电话号码")
-      _this.$copyText(value).then(function (e){
+      this.$copyText(value).then(function (){
         Notify({ type:'success', message:'复制到剪贴板成功'})
-      },err => {
+      },() => {
         Notify({ type:'warning', message:'复制失败'})
       })
     },
@@ -259,5 +257,7 @@ export default {
 </script>
 
 <style scoped>
-
+.copy-btn{
+  margin-left: 5%;
+}
 </style>

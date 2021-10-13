@@ -15,9 +15,7 @@
       </van-cell-group>
     </div>
     <van-row style="padding-top: 10%">
-      <van-col span="6" offset="8">
-        <van-button @click="openProcEdit" type="warning" style="width: 100%">收款修改</van-button>
-      </van-col>
+      <per-button @click="openProcEdit" type="warning" per="proceeds:edit">收款修改</per-button>
     </van-row>
   </div>
 </template>
@@ -61,5 +59,7 @@ export default {
 </script>
 
 <style scoped>
-
+.col{
+  margin-left: 37.5%;
+}
 </style>

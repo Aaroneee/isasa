@@ -1,7 +1,9 @@
 <template>
-  <van-button :type="type" :size="size" v-if="hasPer()" @click="handleClick">
-    <slot></slot>
-  </van-button>
+  <van-col :span="span" v-if="hasPer()" class="col">
+    <van-button :type="type" :size="size" :color="color" :round="round" :plain="plain" @click="handleClick" style="width: 100%">
+      <slot></slot>
+    </van-button>
+  </van-col>
 </template>
 
 <script>
@@ -25,9 +27,20 @@ export default {
       default: ""
     },
     per: {
-      type: Number,
+      type: String,
       required: true
     },
+    span: {
+      type: Number,
+    },
+    plain: {
+      type: Boolean,
+      default: false,
+    },
+    round: {
+      type: Boolean,
+      default: false,
+    }
   },
   methods: {
     handleClick() {

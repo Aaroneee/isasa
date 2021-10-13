@@ -3,6 +3,8 @@
       :title="title"
       left-text="返回"
       left-arrow
+      :fixed="fixed"
+      :placeholder="true"
       @click-left="onClickLeft"
   />
 </template>
@@ -11,7 +13,11 @@
 export default {
   name: "base-nav-bar",
   props: {
-    title: String
+    title: String,
+    fixed: {
+      type: Boolean,
+      default: false
+    }
   },
   methods: {
     onClickLeft: function () {

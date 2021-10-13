@@ -1,6 +1,6 @@
 <template>
   <div>
-    <baseNavBar title="预约详情"/>
+    <baseNavBar title="预约详情" :fixed="true"/>
     <div v-cloak>
       <van-cell-group>
         <van-cell title="姓名:" :value="appointVo.name"/>
@@ -21,25 +21,11 @@
     </div>
     <br>
     <van-row>
-
-      <van-col span="6" offset="2">
-        <van-button @click="openAppEdit" type="warning" style="width: 100%">预约编辑</van-button>
-      </van-col>
-      <van-col span="6" offset="1">
-        <van-button @click="openArrival" type="info" style="width: 100%">预约到店</van-button>
-      </van-col>
-      <van-col span="6" offset="1">
-        <van-button @click="openOrderAdd" type="primary" style="width: 100%">添加订单</van-button>
-      </van-col>
-    </van-row>
-
-    <van-row style="padding-top: 10px">
-      <van-col span="6" offset="2">
-        <van-button @click="openAddYarnClothes" color="#2f4056" style="width: 100%">添加试纱</van-button>
-      </van-col>
-      <van-col span="6" offset="1">
-        <van-button @click="cancelApp" color="#EA3311" style="width: 100%">取消预约</van-button>
-      </van-col>
+      <per-button @click="openAppEdit" type="warning" :span="6" per="app_details:app_edit">预约编辑</per-button>
+      <per-button @click="openArrival" type="info" :span="6" per="app_details:arrival">预约到店</per-button>
+      <per-button @click="openOrderAdd" type="primary" :span="6" per="app_details:add_order">添加订单</per-button>
+      <per-button @click="openAddYarnClothes" color="#2f4056" :span="6" per="app_details:add_yarn_clothes">添加试纱</per-button>
+      <per-button @click="cancelApp" color="#EA3311" :span="6" per="app_details:cancel_app">取消预约</per-button>
     </van-row>
     <br>
   </div>
@@ -171,5 +157,19 @@ export default {
 <style scoped>
 [v-cloak] {
   display: none;
+}
+.col{
+  /*offset=1*/
+  margin-left: 4.16666667%;
+}
+.col:first-child{
+  /*offset=2*/
+  margin-left: 8.33333333%;
+}
+.col:nth-child(3n+1){
+  margin-left: 8.33333333%;
+}
+.col:nth-child(n+4){
+  margin-top: 17px;
 }
 </style>

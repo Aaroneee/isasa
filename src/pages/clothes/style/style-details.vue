@@ -29,15 +29,9 @@
     <br>
     <br>
     <br>
-    <van-col span="6" offset="2">
-      <van-button @click="addClothes" size="small" style="width: 100%" type="info">添加婚纱</van-button>
-    </van-col>
-    <van-col span="6" offset="1">
-      <van-button @click="updateStyle" size="small" type="warning" style="width: 100%">编辑</van-button>
-    </van-col>
-    <van-col span="6" offset="1">
-      <van-button @click="deleteStyle" size="small" type="danger" style="width: 100%">删除</van-button>
-    </van-col>
+    <per-button @click="addClothes" type="info" per="style_details:add_clothes" :span="6">添加婚纱</per-button>
+    <per-button @click="updateStyle" type="warning" per="style_details:edit" :span="6">编辑</per-button>
+    <per-button @click="deleteStyle" type="danger" per="style_details:delete" :span="6">删除</per-button>
   </div>
 
 </template>
@@ -116,5 +110,7 @@ export default {
 .van-image__img {
   min-height: 200px;
 }
-
+.col{
+  margin-left: 6.25%;
+}
 </style>
