@@ -100,6 +100,7 @@ export default {
 
     //搜索收款
     queryProceedsList:function (){
+      console.log(localStorage.getItem("shopIds"))
       this.$axios({
         method:"GET",
         url:"/proceeds/mProceedsList",
@@ -108,7 +109,8 @@ export default {
           searchValue:this.searchValue,
           createDate:this.createDate,
           payee:this.payee,
-          proceedsName:this.proceedsName
+          proceedsName:this.proceedsName,
+          shopIds: localStorage.getItem("shopIds"),
         }
       }).then(response=>{
         this.proceedsList=response.data.data.list;

@@ -180,6 +180,7 @@ export default {
           appointShop: this.appointShop,
           tenantCrop: this.tenantCrop,
           mobileViewId: this.mobileViewId,
+          shopIds: localStorage.getItem("shopIds"),
         }
       }).then(response => {
         this.appointList = response.data.data.list;

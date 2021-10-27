@@ -49,6 +49,23 @@
         />
       </van-popup>
       <van-field
+        readonly
+        :rules="[{required: true}]"
+        label="订单店铺"
+        v-model="shopText"
+        placeholder="订单店铺"
+        @click="shopShowPicker = true"
+        />
+      <van-popup v-model="shopShowPicker" position="bottom">
+        <van-picker
+            show-toolbar
+            getColumnValues
+            :columns="shopArray"
+            @confirm="shopConfirm"
+            @cancel="shopShowPicker = false"
+        />
+      </van-popup>
+      <van-field
         label="收款项目"
         placeholder="收款项目"
         readonly
@@ -156,6 +173,7 @@ export default {
     this.queryProceedsNameIds()
     this.queryPaymentIds()
     this.queryPayeeIds()
+    this.queryShopIds()
   },
   components: {
     baseNavBar
@@ -186,7 +204,11 @@ export default {
       payeeText: "",
       payeePicker: false,
       payeeArray: [],
-      payee:localStorage.getItem('empId')
+      payee:localStorage.getItem('empId'),
+      shopArray: [],
+      shopId: localStorage.getItem("shopIds").split(",").map(Number)[0],
+      shopShowPicker: false,
+      shopText: ""
     }
   },
   watch: {
@@ -208,6 +230,7 @@ export default {
       data.payee = this.payee;
       data.tenantCrop = localStorage.getItem("tenantCrop");
       data.orderCity = this.costumer.city;
+      data.shopId = this.shopId
       this.$dialog.confirm({
         title: '添加订单',
         message: '是否确认给 : ' + this.costumer.name + ' 添加订单?',
@@ -295,6 +318,17 @@ export default {
         this.payeeText = this.payeeArray.find(x => x.id == localStorage.getItem("empId")).text
       })
     },
+    queryShopIds: function () {
+      this.$selectUtils.queryShopIds(this.$selectUtils.Picker).then(response => {
+        this.shopArray = JSON.parse(response.data.data);
+        this.shopText = this.shopArray.filter(s => s.id === this.shopId)[0].text
+      })
+    },
+    shopConfirm(val) {
+      this.shopText = val.text
+      this.shopId = val.id
+      this.shopShowPicker = false
+    }
   }
 }
 </script>

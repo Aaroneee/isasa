@@ -39,6 +39,7 @@ export default {
   created() {
     this.queryModules()
     this.queryButton()
+    this.queryShopIdsByEmpId()
   },
   data() {
     return {
@@ -80,6 +81,17 @@ export default {
         }
       }).then(response => {
         this.$store.commit("setPermission", response.data.data)
+      })
+    },
+    queryShopIdsByEmpId() {
+      this.$axios({
+        method: "GET",
+        url: "/emp/queryEmpShopIdsByEmpId",
+        params: {
+          empId: localStorage.getItem("empId")
+        }
+      }).then(response => {
+        localStorage.setItem("shopIds", response.data.data)
       })
     }
   },

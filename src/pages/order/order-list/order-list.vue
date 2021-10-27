@@ -141,7 +141,8 @@ export default {
           createDate: this.createDate,
           orderDate: this.orderDate,
           tenantCrop: localStorage.getItem("tenantCrop"),
-          wDSort: this.sort
+          wDSort: this.sort,
+          shopIds: localStorage.getItem("shopIds"),
         }
       }).then(response => {
         this.orderList = response.data.data.list;

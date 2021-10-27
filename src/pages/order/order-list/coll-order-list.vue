@@ -171,7 +171,7 @@ export default {
           weddingDateM: this.weddingDateM,
           tenantCrop: this.tenantCrop,
           empId: this.empId,
-          wDSort: this.wDSort
+          wDSort: this.wDSort,
         }
       }).then(response => {
         this.orderList = response.data.data.list;
