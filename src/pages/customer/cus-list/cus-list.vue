@@ -159,9 +159,9 @@ export default {
       let _this = this;
       console.log("复制电话号码")
       _this.$copyText(value).then(function (e){
-        Notify({ type:'success', message:'复制到剪贴板成功'})
+        _this.$toast.success({message:'复制成功',duration:300});
       },err => {
-        Notify({ type:'warning', message:'复制失败'})
+        _this.$toast.fail({message:'复制失败',duration:300});
       })
     },
 
