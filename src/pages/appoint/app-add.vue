@@ -84,6 +84,45 @@
       </van-popup>
 
       <van-field
+          readonly
+          clickable
+          name="appointDress"
+          :value="appointDressText"
+          label="礼服师"
+          placeholder="点击选择礼服师"
+          @click="appointDressPicker = true"
+          :rules="[{ required: true }]"
+      />
+      <van-popup v-model="appointDressPicker" position="bottom">
+        <van-picker
+            getColumnValues
+            show-toolbar
+            :columns="appointDressArray"
+            @confirm="appointDressOnConfirm"
+            @cancel="appointDressPicker = false"
+        />
+      </van-popup>
+
+      <van-field
+          readonly
+          clickable
+          name="appointCosmetics"
+          :value="appointCosmeticsText"
+          label="化妆师"
+          placeholder="点击选择化妆师"
+          @click="appointCosmeticsPicker = true"
+      />
+      <van-popup v-model="appointCosmeticsPicker" position="bottom">
+        <van-picker
+            getColumnValues
+            show-toolbar
+            :columns="appointCosmeticsArray"
+            @confirm="appointCosmeticsOnConfirm"
+            @cancel="appointCosmeticsPicker = false"
+        />
+      </van-popup>
+
+      <van-field
           name="appointName"
           readonly
           :value="appointNameText"
@@ -172,6 +211,14 @@ export default {
       inviterText: "",
       inviterArray: [],
 
+      appointDress: "",
+      appointDressText: "",
+      appointDressArray: [],
+
+      appointCosmeticsText: "",
+      appointCosmetics: "",
+      appointCosmeticsArray: [],
+
       appointName: "",
       appointNameText: "",
       appointNameArray: [],
@@ -190,6 +237,8 @@ export default {
       appointTimeShowPicker: false,
       appointTimeColumns: appointTime,
       inviterShowPicker: false,
+      appointDressPicker: false,
+      appointCosmeticsPicker: false,
       appointNameShowPicker: false,
       appointShopShowPicker: false,
       tenantCrop: localStorage.getItem("tenantCrop"),
@@ -214,6 +263,8 @@ export default {
   created() {
     this.customer = this.$route.query;
     this.queryInviterIds();
+    this.queryAppointDress();
+    this.queryAppointCosmetics();
     this.ifStateType()
     this.queryShopIds();
 
@@ -240,6 +291,18 @@ export default {
       this.inviterText = value.text;
       this.inviter = value.id;
       this.inviterShowPicker = false;
+    },
+    //礼服师确认
+    appointDressOnConfirm: function (value) {
+      this.appointDress = value.id;
+      this.appointDressText = value.text;
+      this.appointDressPicker = false;
+    },
+    //化妆师
+    appointCosmeticsOnConfirm: function (value) {
+      this.appointCosmetics = value.id;
+      this.appointCosmeticsText = value.text;
+      this.appointCosmeticsPicker = false;
     },
     //客资状态
     stateArrayOnConfirm:function (value){
@@ -270,6 +333,8 @@ export default {
       values.appointShop = this.appointShop;
       values.type = "售前预约";
       values.tenantCrop = this.tenantCrop;
+      values.appointDress=this.appointDress;
+      values.appointCosmetics=this.appointCosmetics;
       if (this.stateFlag===2){
         values.type = "售后预约";
         if (this.dress!==""){
@@ -315,6 +380,22 @@ export default {
         this.stateArray = data.filter(k=>!noState.includes(k.text))
       })
     },
+    //查询礼服师
+    queryAppointDress: function () {
+      this.$selectUtils.queryDressIds(
+          this.$selectUtils.Picker
+      ).then(response => {
+        this.appointDressArray = JSON.parse(response.data.data);
+      })
+    },
+    //查询化妆师
+    queryAppointCosmetics: function () {
+      this.$selectUtils.queryCosmeticsIds(
+          this.$selectUtils.Picker
+      ).then(response => {
+        this.appointCosmeticsArray = JSON.parse(response.data.data);
+      })
+    },
     //查询预约项目
     queryProjectsIds: function () {
       this.$axios({
@@ -350,9 +431,17 @@ export default {
           cusId:this.customer.id
         }
       }).then(response=>{
-        const data = response.data.data
-        this.dress = data.dress
-        this.cosmetics = data.cosmetics
+        let data = response.data.data
+        let dressArray=this.appointDressArray.find(k=>k.id===data.dress);
+        if (dressArray!==undefined){
+          this.appointDress = dressArray.id;
+          this.appointDressText=dressArray.text;
+        }
+        let cosmeticsArray=this.appointCosmeticsArray.find(k=>k.id===data.cosmetics);
+        if (cosmeticsArray!==undefined){
+          this.appointCosmetics = cosmeticsArray.id;
+          this.appointCosmeticsText=cosmeticsArray.text;
+        }
       })
     },
     ifStateType:function (){
