@@ -139,7 +139,7 @@ export default {
     }
     , operationRecord: function () {
       this.$router.push({name: "clothesOperationRecord", query: this.clothes})
-    }
+    },
   }
 }
 </script>

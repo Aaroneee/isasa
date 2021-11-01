@@ -13,10 +13,12 @@ import roleUtils from "@/common/js/utils/role-utils";
 import stringUtils from "@/common/js/utils/string-utils";
 import projectsType from './common/js/constant/projects-type';
 import SlimCropper from 'vue-slim-cropper';
+import PerButton from "./components/button/per-button"
 import Clipboard from "vue-clipboard2";
 
 
 Vue.use(Vant)
+Vue.component("per-button",PerButton)
 
 Vue.prototype.$axios = axios;
 Vue.prototype.$dateUtils = dateUtils;

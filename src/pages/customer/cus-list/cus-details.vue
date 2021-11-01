@@ -1,6 +1,6 @@
 <template>
   <div>
-    <baseNavBar title="客资详情"/>
+    <baseNavBar title="客资详情" :fixed="true"/>
     <div v-cloak>
       <van-cell-group>
         <van-cell title="姓名:" :value="customer.name" />
@@ -20,22 +20,12 @@
     </div>
     <br>
     <van-row>
-
-      <van-col span="6" offset="2">
-        <van-button @click="openCusEdit" style="width: 100%" type="warning">客资编辑</van-button>
-      </van-col>
-      <van-col span="6"  offset="1">
-        <van-button @click="openAppAdd" type="primary" style="width: 100%">添加预约</van-button>
-      </van-col>
-      <van-col span="6" offset="1">
-        <van-button @click="onlineOrderAdd" type="info" style="width: 100%">线上订单</van-button>
-      </van-col>
-      <van-col span="6" offset="2">
-        <van-button @click="cusCommunicate" type="info" style="width: 100%;top: 20px">客资沟通</van-button>
-      </van-col>
-
+      <per-button @click="openCusEdit" type="warning" :span="6" per="cus_details:cus_edit">客资编辑</per-button>
+      <per-button @click="openAppAdd" type="primary" :span="6" per="cus_details:add_appoint">添加预约</per-button>
+      <per-button @click="onlineOrderAdd" type="info" :span="6" per="cus_details:online_order_add">线上订单</per-button>
+      <per-button @click="cusCommunicate" type="info" :span="6" per="cus_details:add_comm">客资沟通</per-button>
     </van-row>
-
+    <br>
   </div>
 </template>
 
@@ -91,5 +81,19 @@ export default {
 <style scoped>
 [v-cloak]{
   display: none;
+}
+.col{
+  /*offset=1*/
+  margin-left: 4.16666667%;
+}
+.col:first-child{
+  /*offset=2*/
+  margin-left: 8.33333333%;
+}
+.col:nth-child(3n+1){
+  margin-left: 8.33333333%;
+}
+.col:nth-child(n+4){
+  margin-top: 17px;
 }
 </style>

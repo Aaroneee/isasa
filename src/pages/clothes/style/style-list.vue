@@ -4,7 +4,7 @@
       <baseNavBar title="款式列表"/>
       <form action="javascript:return true">
       <van-search
-          @search="queryStyleList"
+          @search="search"
           v-model="styleName"
           placeholder="请输入款式名称或编号"/>
       </form>
@@ -36,6 +36,7 @@
       <van-list
           v-model="loading"
           :finished="finished"
+          @load="onLoad"
           finished-text="没有更多了">
         <van-cell style="font-size: 12px" v-for="item in styleList" :key="item.id" @click="clickItem(item)">
           <van-row>
@@ -103,6 +104,7 @@ export default {
       brandText:"",
       brand:"",
       styleBrandArray: [{text: "款式品牌", value: ""}],
+      page: 1,
     }
   }
   , created() {
@@ -116,10 +118,12 @@ export default {
   }
   , methods: {
     queryStyleList: function (value) {
+      this.loading = true
       this.$axios({
         method: "get",
         url: '/style/mStyleList',
         params: {
+          page: this.page,
           styleName: value,
           styleType: this.styleType,
           tenantCrop: this.tenantCrop,
@@ -128,10 +132,18 @@ export default {
         }
       }).then(response => {
         if (response.data.code === 200) {
-          this.styleList = response.data.data.list
-          console.log(this.styleList)
-          this.finished = true;
+          if (response.data.data.nextPage === 0) {
+            this.finished = true
+          } else {
+            this.loading = false
+            this.page = response.data.data.nextPage
+          }
+          this.styleList.push(...response.data.data.list)
+        } else {
+          this.finished = true
+          this.$toast.fail(response.data.msg);
         }
+        console.log(this.styleList)
       })
     }
     , clickItem(value) {
@@ -140,19 +152,19 @@ export default {
     , queryStyleType: function () {
       this.$selectUtils.queryStyleIds(this.$selectUtils.DropDownMenu).then((response) => {
         this.styleTypeArray.push(...JSON.parse(response.data.data));
-        console.log(response)
       })
     }, queryStyleLabelList: function () {
       this.$selectUtils.queryStyleLabels().then((response) => {
         this.styleLabelList.push(...response.data.data);
-        console.log(response)
       })
     }
     , styleTypeChange: function (value) {
       this.styleType = value
+      this.dataClear()
       this.queryStyleList();
     }, styleLabelConfirm: function () {
       this.$refs.labelRef.toggle()
+      this.dataClear()
       this.queryStyleList();
     }, pushStyleLabel: function (value) {
       if (this.styleLabels.indexOf(value) > -1) {
@@ -162,6 +174,7 @@ export default {
       }
     },
     brandChange: function () {
+      this.dataClear()
       this.queryStyleList();
     },
     queryClothesBrand: function () {
@@ -169,6 +182,17 @@ export default {
         this.styleBrandArray.push(...JSON.parse(response.data.data))
       })
     },
+    onLoad() {
+      setTimeout(this.queryStyleList, 1000)
+    },
+    search() {
+      this.dataClear()
+      this.queryStyleList()
+    },
+    dataClear() {
+      this.page = 1
+      this.styleList = []
+    }
   },
   beforeRouteLeave (to, from, next) {
     if (to.name === 'styleDetails') {

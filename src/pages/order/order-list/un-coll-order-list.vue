@@ -44,7 +44,7 @@
               <van-col span="12" style="text-align: right">婚期: {{ item.weddingDay }}</van-col>
             </van-row>
             <van-row>
-              <van-col span="24">预约人: {{ item.inviter }}</van-col>
+              <van-col span="24">礼服师: {{ item.inviter }}</van-col>
             </van-row>
             <van-row>
               <van-col span="24">备注: {{ item.appRemark }}</van-col>
@@ -129,6 +129,10 @@ export default {
     clickItem: function () {
     },
   },
+  beforeRouteLeave (to, from, next) {
+    this.$store.commit('setKeepAlive', [])
+    next()
+  }
 }
 </script>
 

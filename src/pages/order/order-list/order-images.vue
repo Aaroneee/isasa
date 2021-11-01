@@ -1,6 +1,6 @@
 <template>
   <div>
-    <baseNavBar title="订单图片"/>
+    <baseNavBar title="订单图片" :fixed="true"/>
     <van-cell-group :title="imageTitle">
       <van-collapse v-model="activeNames" style="padding:4% 4% 4% 4%">
         <van-collapse-item v-for="item in orderImageArray" :key="item.id"
@@ -8,7 +8,8 @@
                            :name="item.id">
           <van-cell-group style="text-align: center">
             <van-image radius="7"
-                       :src="'\thttps://order-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.imageUrl"/>
+                       :src="'\thttps://order-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.imageUrl"
+                        @click="clickItem('\thttps://order-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.imageUrl)"/>
             <van-icon style="margin-left: 90%" size="20" @click="deleteOrderImage(item)" name="delete-o"/>
           </van-cell-group>
         </van-collapse-item>
@@ -45,12 +46,14 @@
         </van-button>
       </van-row>
     </van-form>
+    <br>
   </div>
 
 </template>
 
 <script>
 import baseNavBar from "@/components/nav-bar/base-nav-bar"
+import {ImagePreview} from "vant";
 
 
 const getObjectURL = (file) => {
@@ -228,6 +231,9 @@ export default {
       this.hideCrop()
       const img = await this.$refs.cropper.getCroppedBlob()
       this.fileList[0].file = blobToFile(img, this.fileName)
+    },
+    clickItem: function (value) {
+      ImagePreview([value])
     }
   }
 }

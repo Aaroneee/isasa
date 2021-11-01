@@ -43,10 +43,10 @@
           <van-row>
             <van-col span="12">微信:{{ item.weChat }}</van-col>
             <van-col span="12">手机:{{ item.phone }}
-              <van-button class="copy-btn" type="default" size="mini"
-                          @click.stop="copyPhone(item.phone)"
-                          style="top: -5px;left: 10px">复制
-              </van-button>
+              <span v-if="item.phone !== ''" class="copy-btn"
+                    @click.stop="copyPhone(item.phone)"
+                    style="top: -5px;left: 10px;color: #ffa71e">复制
+              </span>
             </van-col>
           </van-row>
           <van-row>
@@ -235,5 +235,7 @@ export default {
 </script>
 
 <style scoped>
-
+.copy-btn{
+  margin-left: 5%;
+}
 </style>

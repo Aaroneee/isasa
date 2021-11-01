@@ -15,45 +15,54 @@
       <van-dropdown-item :title="positionTitle" v-model="position" @change="positionChange" :options="positionArray"/>
       </van-dropdown-menu>
     </van-sticky>
-    <van-cell style="font-size: 12px" v-for="item in clothesList" :key="item.id">
-      <van-grid :border="false" :column-num="2" :gutter="1">
-        <van-grid-item v-if="item[0] != null">
-          <div v-if="item[0].styleImage !== ''">
-            <van-image class="style-img" radius="7"
-                       :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[0].styleImage">
-            </van-image>
-          </div>
-          <div v-else>
-            <van-image class="style-img">
-              <template v-slot:error>未上传图片</template>
-            </van-image>
-          </div>
-          <span
-              v-text="item[0].styleType+'-'+item[0].styleName+'-'+item[0].clothesSize+'-'+item[0].clothesNo"></span>
-          <span v-text="item[0].positionName"></span>
-          <span v-if="item[0].positionName === ''">位置未选择</span>
-          <span style="color: red" @click="clickItem(item[0])">选择此件</span>
-        </van-grid-item>
+    <van-list
+        v-model="loading"
+        :finished="finished"
+        offset="20"
+        @load="onLoad"
+        finished-text="没有更多了"
+    >
+      <van-cell style="font-size: 12px" v-for="item in clothesList" :key="item.id">
+        <van-grid :border="false" :column-num="2" :gutter="1">
+          <van-grid-item v-if="item[0] != null">
+            <div v-if="item[0].styleImage !== ''">
+              <van-image class="style-img" radius="7"
+                         :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[0].styleImage">
+              </van-image>
+            </div>
+            <div v-else>
+              <van-image class="style-img">
+                <template v-slot:error>未上传图片</template>
+              </van-image>
+            </div>
+            <span
+                v-text="item[0].styleType+'-'+item[0].styleName+'-'+item[0].clothesSize+'-'+item[0].clothesNo"></span>
+            <span v-text="item[0].positionName"></span>
+            <span v-if="item[0].positionName === ''">位置未选择</span>
+            <span style="color: red" @click="clickItem(item[0])">选择此件</span>
+          </van-grid-item>
 
-        <van-grid-item v-if="item[1] != null">
-          <div v-if="item[1].styleImage !== ''">
-            <van-image class="style-img" radius="7"
-                       :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[1].styleImage">
-            </van-image>
-          </div>
-          <div v-else>
-            <van-image class="style-img">
-              <template v-slot:error>未上传图片</template>
-            </van-image>
-          </div>
-          <span
-              v-text="item[1].styleType+'-'+item[1].styleName+'-'+item[1].clothesSize+'-'+item[1].clothesNo"></span>
-          <span v-text="item[1].positionName"></span>
-          <span v-if="item[1].positionName === ''">位置未选择</span>
-          <span style="color: red" @click="clickItem(item[1])">选择此件</span>
-        </van-grid-item>
-      </van-grid>
-    </van-cell>
+          <van-grid-item v-if="item[1] != null">
+            <div v-if="item[1].styleImage !== ''">
+              <van-image class="style-img" radius="7"
+                         :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[1].styleImage">
+              </van-image>
+            </div>
+            <div v-else>
+              <van-image class="style-img">
+                <template v-slot:error>未上传图片</template>
+              </van-image>
+            </div>
+            <span
+                v-text="item[1].styleType+'-'+item[1].styleName+'-'+item[1].clothesSize+'-'+item[1].clothesNo"></span>
+            <span v-text="item[1].positionName"></span>
+            <span v-if="item[1].positionName === ''">位置未选择</span>
+            <span style="color: red" @click="clickItem(item[1])">选择此件</span>
+          </van-grid-item>
+        </van-grid>
+      </van-cell>
+    </van-list>
+
 
     <van-popup v-model="orderClothesPopup" round position="bottom" :style="{ height: '40%' }">
       <van-collapse v-model="activeNames" style="padding:4% 4% 4% 4%">
@@ -174,6 +183,9 @@ export default {
 
 
       rule:"",
+      loading: false,
+      finished: true,
+      page: 1,
     }
   }
   , components: {
@@ -231,11 +243,12 @@ export default {
     }
     , queryClothesList: function () {
       this.loading = true
+      this.finished = false
       this.$axios({
         method: "get",
         url: '/clothes/clothesList',
         params: {
-          page: 1,
+          page: this.page,
           limit: 100,
           styleType: this.styleType,
           clothesSize: this.clothesSize,
@@ -246,13 +259,15 @@ export default {
         }
       }).then(response => {
         if (response.data.code === 200) {
-          const data = response.data.data.list
-          if (data.length === 0) {
-            this.$toast.fail("当前未搜索到更多婚纱礼服");
+          if (response.data.data.nextPage === 0) {
+            this.finished = true
           } else {
-            this.clothesList.push(...arrTrans(2, response.data.data.list))
+            this.loading = false
+            this.page = response.data.data.nextPage
           }
+          this.clothesList.push(...arrTrans(2, response.data.data.list))
         } else {
+          this.finished = true
           this.$toast.fail(response.data.msg);
         }
       })
@@ -309,6 +324,9 @@ export default {
       }).then(response=>{
         this.rule = response.data.data.rule
       })
+    },
+    onLoad() {
+      setTimeout(this.queryClothesList, 1000)
     }
 
   }

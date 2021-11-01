@@ -141,11 +141,11 @@ export default {
           inviter: this.inviter,
           appointDress: this.appointDress,
           appointShop: this.appointShop,
-          tenantCrop: this.tenantCrop
+          tenantCrop: this.tenantCrop,
+          shopIds: localStorage.getItem("shopIds"),
         }
       }).then(response => {
         this.appointList = response.data.data.list;
-        console.log(response)
         this.finished = true;
       })
     },

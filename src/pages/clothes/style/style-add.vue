@@ -37,9 +37,10 @@
       </van-field>
 
       <van-field
+        name="styleAlias"
         label="款式名称"
         placeholder="款式名称"
-        :value="styleAlias"
+        v-model="styleAlias"
       />
       <van-field label="第一件婚纱">
         <template #input>
