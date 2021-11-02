@@ -32,11 +32,12 @@
 </template>
 
 <script>
-import StyleAdd from "../clothes/style/style-add";
 export default {
   name: "work",
-  components: {StyleAdd},
   created() {
+    if (localStorage.getItem("tenantCrop")===null){
+      window.location.reload()
+    }
     this.queryModules()
     this.queryButton()
     this.queryShopIdsByEmpId()
