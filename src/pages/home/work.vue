@@ -32,10 +32,8 @@
 </template>
 
 <script>
-import StyleAdd from "../clothes/style/style-add";
 export default {
   name: "work",
-  components: {StyleAdd},
   created() {
     this.queryModules()
     this.queryButton()

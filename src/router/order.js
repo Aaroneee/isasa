@@ -7,6 +7,7 @@ import orderEdit from "@/pages/order/order-list/order-edit"//订单图片及上�
 import collOrderList from "@/pages/order/order-list/coll-order-list"//已订单列表
 import unCollOrderList from "@/pages/order/order-list/un-coll-order-list"//未订单列表
 import onlineOrderAdd from "@/pages/order/online-order-add"//线上订单添加
+import directOrderAdd from "@/pages/order/direct-order-add"//直接添加订单
 
 export default [
     {
@@ -57,4 +58,9 @@ export default [
         name: 'onlineOrderAdd',
         component: onlineOrderAdd,
     },
+    {
+        path: '/directOrderAdd',
+        name: 'directOrderAdd',
+        component: directOrderAdd,
+    }
 ]
