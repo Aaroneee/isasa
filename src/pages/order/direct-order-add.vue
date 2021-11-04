@@ -176,7 +176,9 @@
         <van-field
             readonly
             label="精确婚期"
+            required
             placeholder="精确婚期"
+            :rules="[{required: true}]"
             @click="weddingDayPicker=true"
             :value="order.weddingDay"
         />
