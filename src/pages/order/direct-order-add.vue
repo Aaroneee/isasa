@@ -278,7 +278,7 @@
           </van-col>
         </van-row>
       </van-form>
-      <div v-show="active === 2">
+      <div v-show="active === 2" class="display">
         <van-field
             readonly
             label="客户名"
@@ -598,7 +598,7 @@ export default {
 /deep/ .van-step--horizontal .van-step__circle-container {
   background-color: #f6f7f9;
 }
-/deep/ .van-cell::after {
+/deep/ .display .van-cell::after {
   border-bottom: none;
 }
 </style>
