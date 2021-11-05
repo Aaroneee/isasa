@@ -156,10 +156,12 @@ export default {
     },
     //复制手机号
     copyPhone: function(value){
-      this.$copyText(value).then(function (){
-        Notify({ type:'success', message:'复制到剪贴板成功'})
-      },() => {
-        Notify({ type:'warning', message:'复制失败'})
+      let _this = this;
+      console.log("复制电话号码")
+      _this.$copyText(value).then(function (e){
+        _this.$toast.success({message:'复制成功',duration:300});
+      },err => {
+        _this.$toast.fail({message:'复制失败',duration:300});
       })
     },
 

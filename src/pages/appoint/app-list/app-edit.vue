@@ -56,6 +56,44 @@
 
       <van-field
           readonly
+          clickable
+          name="appointDress"
+          :value="appointDressText"
+          label="礼服师"
+          placeholder="点击选择礼服师"
+          @click="appointDressPicker = true"
+          :rules="[{ required: true }]"
+      />
+      <van-popup v-model="appointDressPicker" position="bottom">
+        <van-picker
+            getColumnValues
+            show-toolbar
+            :columns="appointDressArray"
+            @confirm="appointDressOnConfirm"
+            @cancel="appointDressPicker = false"
+        />
+      </van-popup>
+      <van-field
+          readonly
+          clickable
+          name="appointCosmetics"
+          :value="appointCosmeticsText"
+          label="化妆师"
+          placeholder="点击选择化妆师"
+          @click="appointCosmeticsPicker = true"
+      />
+      <van-popup v-model="appointCosmeticsPicker" position="bottom">
+        <van-picker
+            getColumnValues
+            show-toolbar
+            :columns="appointCosmeticsArray"
+            @confirm="appointCosmeticsOnConfirm"
+            @cancel="appointCosmeticsPicker = false"
+        />
+      </van-popup>
+
+      <van-field
+          readonly
           name="appointName"
           :value="appointNameText"
           label="预约项目"
@@ -134,21 +172,30 @@ export default {
 
   data() {
     return {
+      loading: true,
       appId: this.$route.query.id,
       appoint: {},
 
-      maxDate:this.$dateUtils.getMaxMinDate()[0],
-      minDate:this.$dateUtils.getMaxMinDate()[1],
+      maxDate: this.$dateUtils.getMaxMinDate()[0],
+      minDate: this.$dateUtils.getMaxMinDate()[1],
 
       appointDateShowPicker: false,
       appointTimeShowPicker: false,
       appointTimeColumns: appointTime,
       inviterShowPicker: false,
+      appointDressPicker: false,
+      appointCosmeticsPicker: false,
       appointNameShowPicker: false,
       appointShopShowPicker: false,
 
       inviterText: "",
       inviterArray: [],
+
+      appointDressText: "",
+      appointDressArray: [],
+
+      appointCosmeticsText: "",
+      appointCosmeticsArray: [],
 
       appointNameText: "",
       appointNameArray: [],
@@ -178,6 +225,18 @@ export default {
       this.inviterText = value.text;
       this.inviterShowPicker = false;
 
+    },
+    //礼服师确认
+    appointDressOnConfirm: function (value) {
+      this.appoint.appointDress = value.id;
+      this.appointDressText = value.text;
+      this.appointDressPicker = false;
+    },
+    //化妆师
+    appointCosmeticsOnConfirm: function (value) {
+      this.appoint.appointCosmetics = value.id;
+      this.appointCosmeticsText = value.text;
+      this.appointCosmeticsPicker = false;
     },
     //预约项目
     appointNameOnConfirm: function (value) {
@@ -231,6 +290,8 @@ export default {
         }
         this.appoint = response.data.data;
         this.queryInviterIds();
+        this.queryAppointDress();
+        this.queryAppointCosmetics();
         this.queryProjectsIds();
         this.queryShopIds();
       })
@@ -241,6 +302,32 @@ export default {
         this.inviterArray = JSON.parse(response.data.data);
         this.inviterText = this.inviterArray.find(k => k.id === this.appoint.inviter).text;
       })
+    },
+    //查询礼服师
+    queryAppointDress: function () {
+      this.$selectUtils.queryDressIds(
+          this.$selectUtils.Picker
+      ).then(response => {
+        this.appointDressArray = JSON.parse(response.data.data);
+        if (this.appoint.appointDress !== "") {
+          this.appointDressText = this.appointDressArray.find(k => k.id === this.appoint.appointDress).text;
+          this.appointDress = this.appointDressArray.find(k => k.id === this.appoint.appointDress).id;
+        }
+      })
+
+    },
+    //查询化妆师
+    queryAppointCosmetics: function () {
+      this.$selectUtils.queryCosmeticsIds(
+          this.$selectUtils.Picker
+      ).then(response => {
+        this.appointCosmeticsArray = JSON.parse(response.data.data);
+        if (this.appoint.appointCosmetics !== "") {
+          this.appointCosmeticsText = this.appointCosmeticsArray.find(k => k.id === this.appoint.appointCosmetics).text;
+          this.appointCosmetics = this.appointCosmeticsArray.find(k => k.id === this.appoint.appointCosmetics).id;
+        }
+      })
+
     },
     //查询预约项目
     queryProjectsIds: function () {

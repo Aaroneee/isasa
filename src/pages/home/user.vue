@@ -35,22 +35,16 @@ export default {
   methods: {
     //退出登录
     logout() {
-      const u = navigator.userAgent;
-      const isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
       this.$dialog.confirm({
         title: '退出',
         message: '确定要退出登录吗，将回到登陆界面',
         overlay: false,
       }).then(() => {
-        if (isiOS) {
-          //IOS
-          window.webkit.messageHandlers.logout.postMessage("已退出")
-        } else {
-          //Android
+        if(/Linux/i.test(navigator.platform)){
           androidMethod.logOut();
+          return;
         }
-
-        this.show = true
+        window.webkit.messageHandlers.logout.postMessage("已退出")
       }).catch(() => {
         // on cancel
       });

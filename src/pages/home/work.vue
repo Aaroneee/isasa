@@ -35,6 +35,9 @@
 export default {
   name: "work",
   created() {
+    if (localStorage.getItem("tenantCrop")===null){
+      window.location.reload()
+    }
     this.queryModules()
     this.queryButton()
     this.queryShopIdsByEmpId()
