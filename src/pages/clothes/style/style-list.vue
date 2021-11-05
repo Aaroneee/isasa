@@ -117,14 +117,14 @@ export default {
     baseNavBar
   }
   , methods: {
-    queryStyleList: function (value) {
+    queryStyleList: function () {
       this.loading = true
       this.$axios({
         method: "get",
         url: '/style/mStyleList',
         params: {
           page: this.page,
-          styleName: value,
+          styleName: this.styleName,
           styleType: this.styleType,
           tenantCrop: this.tenantCrop,
           styleLabels: this.styleLabels.toString(),
