@@ -4,7 +4,7 @@
     <van-popup v-model="styleImages" round position="bottom" :style="{ height: '80%' }">
       <van-collapse v-model="activeNames" style="padding:4% 4% 4% 4%">
         <van-collapse-item v-for="item in styleImageArray" :key="item.id"
-                           :title="item.imageType"
+                           :title="item.imageTypeName"
                            :name="item.id">
           <van-cell-group style="text-align: center">
             <van-image radius="7"
