@@ -125,6 +125,7 @@ export default {
   created() {
     this.queryClothesNoByStyleId(this.$route.query.id)
     this.queryShopIds()
+    this.queryClothesSize()
     this.style = this.$route.query
   },
   components: {
@@ -136,7 +137,7 @@ export default {
       tenantCrop: localStorage.getItem("tenantCrop"),
       clothesSize: "",
       sizeShowPicker: false,
-      sizeColumnsArray: ['M', 'S', 'L', 'XL', 'XXL', 'F'],
+      sizeColumnsArray: [],
       clothesNo: "",
       clothesShop: "",
       clothesShopText: "",
@@ -188,6 +189,11 @@ export default {
     queryPositionIdsByShop: function (shop) {
       this.$selectUtils.queryPositionIdsByShop(shop, this.$selectUtils.Picker).then(response => {
         this.positionColumnsArray = JSON.parse(response.data.data)
+      })
+    },
+    queryClothesSize() {
+      this.$selectUtils.queryClothesSize().then(response => {
+        this.sizeColumnsArray = JSON.parse(response.data.data).map(s => s['name'])
       })
     },
     positionOnConfirm: function (value) {

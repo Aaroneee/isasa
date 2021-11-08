@@ -269,6 +269,17 @@ export default {
                 tenantCrop: localStorage.getItem("tenantCrop"),
             }
         })
-    }
+    },
+    // 查询婚纱尺寸
+    queryClothesSize: function (type) {
+        return self.$axios({
+            method: "get",
+            url: "/select/clothesSizeIds",
+            params: {
+                type: type,
+                tenantCrop: localStorage.getItem("tenantCrop"),
+            }
+        })
+    },
 
 }
