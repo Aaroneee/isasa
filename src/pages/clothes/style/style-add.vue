@@ -216,7 +216,7 @@
           clickable
           v-if="fileName.length>0"
           name="imageType"
-          :value="imageType"
+          :value="imageTypeText"
           @click="imageTypeShowPicker = true"
           :rules="[{ required: true }]"
       />
@@ -350,6 +350,7 @@ export default {
 
       imageTypeShowPicker:false,
       imageType:"",
+      imageTypeText:"",
       imageTypeColumnsArray:[],
       checkbox: true,
       styleAlias:""
@@ -437,6 +438,7 @@ export default {
             data.tenantCrop = this.tenantCrop
             data.styleImage = this.fileName
             data.uploader = []
+            data.imageType=this.imageType;
             data.brandId = this.brandId
             data.empId = localStorage.getItem("empId")
             data.styleLabels = this.finalStyleLabels.toString()
@@ -585,7 +587,8 @@ export default {
       this.brandShowPicker = false;
     },
     imageTypeOnConfirm:function (value,index){
-      this.imageType=value.text;
+      this.imageType=value.id;
+      this.imageTypeText=value.text;
       this.imageTypeShowPicker=false;
     },
     //查询品牌列表
