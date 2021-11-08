@@ -103,6 +103,7 @@ export default {
     this.queryStyleLabelList()
     this.queryPositionIdsByShop()
     this.queryClothesBrand()
+    this.queryClothesSize()
   },
   data() {
     return {
@@ -122,14 +123,7 @@ export default {
       finished: false,
       clothesList: [],
       clothesSize: "",
-      clothesSizeArray: [{text: "尺寸", value: ''}
-        , {text: "M", value: "M"}
-        , {text: "S", value: "S"}
-        , {text: "L", value: "L"}
-        , {text: "XL", value: "XL"}
-        , {text: "XXL", value: "XXL"}
-        , {text: "F", value: "F"}
-      ],
+      clothesSizeArray: [{text: "尺寸", value: ''}],
       shop: "",
       shopArray: [{text: "店铺", value: ""}],
       positionTitle: "位置",
@@ -298,6 +292,14 @@ export default {
     queryClothesBrand: function () {
       this.$selectUtils.queryMBrandIds().then((response) => {
         this.styleBrandArray.push(...JSON.parse(response.data.data))
+      })
+    },
+    queryClothesSize() {
+      this.$selectUtils.queryClothesSize().then(response => {
+        let data = JSON.parse(response.data.data).map(s => s['name'])
+        for (let temp of data) {
+          this.clothesSizeArray.push({text: temp, value: temp})
+        }
       })
     },
   },
