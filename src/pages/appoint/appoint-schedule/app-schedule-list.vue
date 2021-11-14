@@ -33,7 +33,7 @@
           :finished="finished"
           finished-text="没有更多了"
       >
-        <van-cell style="font-size: 12px" v-for="item in appointList" :key="item.id" @click="clickItem(item.id)">
+        <van-cell style="font-size: 12px" v-for="item in appointList" :key="item.id" @click="clickItem(item.id)" v-show="item.isValid !=='3'">
           <van-row  style="padding-bottom: 5px">
             <van-col style="color: #39a9ed;font-size: 15px" span="12">预约档期:{{ item.appointTime }}</van-col>
             <van-col style="color: coral;font-size: 15px" span="12">客资状态:{{ item.stateName }}</van-col>
