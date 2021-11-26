@@ -516,7 +516,7 @@ export default {
       })
     },
     queryImageType:function(){
-      this.$selectUtils.queryStyleImageTypeIds(this.$selectUtils.Picker).then((response) => {
+      this.$selectUtils.queryStyleImageTypeIds(this.$selectUtils.Picker,0).then((response) => {
         this.imageTypeColumnsArray = JSON.parse(response.data.data);
       })
     },
