@@ -8,12 +8,20 @@
                            :name="item.id">
           <van-cell-group style="text-align: center">
             <van-image radius="7"
-                       :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage"/>
+                       :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage"
+                       @click="imageShowClick('https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage)"/>
           </van-cell-group>
         </van-collapse-item>
       </van-collapse>
     </van-popup>
-
+    <div @touchstart="touchStart" @touchend="touchEnd" @touchmove="touchMove">
+      <van-image-preview v-model="imageShow" :images="images" @close="onClose" maxZoom="1" minZoom="1"></van-image-preview>
+    </div>
+    <van-share-sheet
+        v-model="showShare"
+        :options="options"
+        @select="onSelect"
+    />
     <van-cell-group>
       <van-cell title="款式类型:" :value="style.typeName"/>
       <van-cell title="款式编号:" :value="style.styleName"/>
@@ -43,7 +51,7 @@ import switchNavBar from "@/components/nav-bar/switch-nav-bar"
 export default {
   name: "styleDetails",
   components: {
-    switchNavBar
+    switchNavBar,
   },
   created() {
     this.style = this.$route.query
@@ -54,10 +62,32 @@ export default {
       style: {},
       styleImages: false,
       tenantCrop: localStorage.getItem("tenantCrop"),
-
-
+      showShare: false,
       activeNames: ['1'],
-      styleImageArray: []
+      styleImageArray: [],
+      imageShow: false,
+      images: [],
+      options: [
+        {name: '保存图片', icon: 'poster'}
+      ],
+      isLongClick: false,
+      loop: {},
+      imageUrl: "",
+      touchStartX: '',
+      touchStartY: '',
+      moveX: '',
+      moveY: '',
+      flag: false,
+    }
+  },
+  watch: {
+    isLongClick: function (val) {
+      if (val) {
+        if (this.moveX === '' && this.moveY === '') {
+          this.showShare = true
+        }
+        this.isLongClick = false
+      }
     }
   },
   methods: {
@@ -98,13 +128,43 @@ export default {
             this.$toast.success("删除成功");
             setTimeout(()=>{
               this.$router.go(-1)
-            },1000)
+            },500)
           } else {
             this.$toast.fail(response.data.msg);
           }
         })
       })
-    }
+    },
+    imageShowClick(val) {
+      this.imageShow = true
+      this.images = [val]
+      this.imageUrl = val
+    },
+    touchStart(event) {
+      this.moveX = ''
+      this.moveY = ''
+      this.touchStartX = event.changedTouches[0].clientX // this.touchStartX按下时的横轴坐标
+      this.touchStartY = event.changedTouches[0].clientY // this.touchStartY按下时的纵轴坐标
+      clearTimeout(this.loop)
+      this.loop = setTimeout(() => {
+        this.isLongClick = true
+      }, 600)
+    },
+    touchEnd() {
+      clearTimeout(this.loop)
+    },
+    onSelect() {
+      window.webkit.messageHandlers.save.postMessage(this.imageUrl)
+      this.showShare = false
+    },
+    onClose() {
+      this.imageShow = false
+      this.isLongClick = false
+    },
+    touchMove(event) {
+      this.moveX = event.changedTouches[0].clientX
+      this.moveY = event.changedTouches[0].clientY
+    },
   }
 }
 </script>

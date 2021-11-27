@@ -74,5 +74,18 @@ export default {
     //1 返回 01
     dateIsSingle(date) {
         return date < 10 ? "0" + date : date;
-    }
+    },
+    getMonthStartEndDayStr() {
+        let nowDate = new Date();
+        let year = nowDate.getFullYear();
+        let month = this.dateIsSingle(nowDate.getMonth() + 1);
+        let lastDay = new Date(year, nowDate.getMonth()+1, 0).getDate();
+        return year + "-" + month + "-01 - " + year + "-" + month + "-" + lastDay;
+    },
+    getMonthStartEndDayByDate(val) {
+        let year = val.getFullYear();
+        let month = this.dateIsSingle(val.getMonth() + 1);
+        let lastDay = new Date(year, val.getMonth()+1, 0).getDate();
+        return year + "-" + month + "-01 - " + year + "-" + month + "-" + lastDay;
+    },
 }

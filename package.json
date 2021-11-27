@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@antv/f2": "^3.8.10-beta.1",
     "@xkeshi/vue-barcode": "^1.0.0",
     "core-js": "^3.6.5",
     "vant": "^2.12.1",
