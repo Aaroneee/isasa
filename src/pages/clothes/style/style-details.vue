@@ -32,6 +32,7 @@
     <per-button @click="addClothes" type="info" per="style_details:add_clothes" :span="6">添加婚纱</per-button>
     <per-button @click="updateStyle" type="warning" per="style_details:edit" :span="6">编辑</per-button>
     <per-button @click="deleteStyle" type="danger" per="style_details:delete" :span="6">删除</per-button>
+    <per-button @click="stylePrice" type="primary" per="style_details:price" :span="6">查看价格</per-button>
   </div>
 
 </template>
@@ -43,12 +44,12 @@ export default {
   name: "styleDetails",
   components: {
     switchNavBar
-  }
-  , created() {
+  },
+  created() {
     this.style = this.$route.query
     this.queryStyleImage(this.style.id)
-  }
-  , data() {
+  },
+  data() {
     return {
       style: {},
       styleImages: false,
@@ -61,11 +62,13 @@ export default {
   },
   methods: {
     updateStyle() {
-      console.log()
       this.$router.push({name: "styleEdit", query: this.style});
     },
     addClothes() {
       this.$router.push({name: "clothesAdd", query: this.style})
+    },
+    stylePrice() {
+      this.$router.push({name: "stylePrice", query: this.style})
     },
     queryStyleImage(styleId) {
       this.$axios({
@@ -111,6 +114,17 @@ export default {
   min-height: 200px;
 }
 .col{
-  margin-left: 6.25%;
+  /*offset=1*/
+  margin-left: 4.16666667%;
+}
+.col:first-child{
+  /*offset=2*/
+  margin-left: 8.33333333%;
+}
+.col:nth-child(3n+1){
+  margin-left: 8.33333333%;
+}
+.col:nth-child(n+4){
+  margin-top: 17px;
 }
 </style>

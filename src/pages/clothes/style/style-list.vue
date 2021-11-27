@@ -143,7 +143,6 @@ export default {
           this.finished = true
           this.$toast.fail(response.data.msg);
         }
-        console.log(this.styleList)
       })
     }
     , clickItem(value) {

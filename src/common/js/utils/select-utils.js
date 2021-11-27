@@ -282,5 +282,15 @@ export default {
             }
         })
     },
+    // 查询款式价格类型
+    queryStylePriceType(type) {
+        return self.$axios({
+            method: "GET",
+            url: "/select/stylePriceType",
+            params: {
+                type: type,
+            }
+        })
+    },
 
 }

@@ -11,6 +11,7 @@ import scheduleList from "@/pages/clothes/schedule/schedule-list"
 import clothesSchedule from "@/pages/clothes/schedule/clothes-schedule"
 import styleIntroduce from "@/pages/clothes/style/style-introduce"
 import clothesOperationRecord from "@/pages/clothes/clothes/clothes-operation-record"
+import stylePrice from "@/pages/clothes/style/style-price"
 
 export default [
     {
@@ -78,5 +79,10 @@ export default [
         path: '/clothesOperationRecord',
         name: 'clothesOperationRecord',
         component: clothesOperationRecord,
+    },
+    {
+        path: '/stylePrice',
+        name: 'stylePrice',
+        component: stylePrice,
     }
 ]
