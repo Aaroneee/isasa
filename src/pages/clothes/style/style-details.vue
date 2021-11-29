@@ -154,7 +154,10 @@ export default {
       clearTimeout(this.loop)
     },
     onSelect() {
-      window.webkit.messageHandlers.save.postMessage(this.imageUrl)
+      /Linux/i.test(navigator.platform)
+          ?androidMethod.downImage(this.imageUrl)
+          :window.webkit.messageHandlers.save.postMessage(this.imageUrl);
+
       this.showShare = false
     },
     onClose() {
