@@ -41,7 +41,7 @@
         <van-cell style="font-size: 12px">
           <van-row gutter="20">
             <van-col span="12"  v-for="item in styleList" :key="item.id" @click="toStyleDetails(item)" style="text-align: center">
-              <img style="height: 180px;width:140px;border-radius: 7px"
+              <img style="height: 200px;width:160px;border-radius: 7px"
                          :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage"/>
               <div class="styleInfo">
                 <p>{{ item.typeName + item.styleName }}</p>
@@ -191,7 +191,7 @@ export default {
 }
 p{
   font-size: 15px;
-  margin: 0;
+  margin: 0 !important;
 }
 .styleInfo{
   margin-bottom: 10px;
