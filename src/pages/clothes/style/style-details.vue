@@ -194,7 +194,7 @@ export default {
       clearInterval(this.Loop); //再次清空定时器，防止重复注册定时器
       this.Loop = setTimeout(function () {
         this.updatePriceShow = true;
-      }.bind(this), 1000);
+      }.bind(this), 2000);
     },
     clearTime() {
       // 这个方法主要是用来将每次手指移出之后将计时器清零
