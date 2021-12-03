@@ -179,7 +179,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .tag-padding {
   margin-left: 5px;
   margin-right: 5px;

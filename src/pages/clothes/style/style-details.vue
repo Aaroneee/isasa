@@ -230,7 +230,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .card {
   background: white;
   border-radius: 7px;
@@ -251,6 +251,7 @@ export default {
 }
 
 p {
+  font-size: 15px;
   margin: 2% 0;
 }
 
