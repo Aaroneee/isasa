@@ -14,8 +14,10 @@
         </van-collapse-item>
       </van-collapse>
     </van-popup>
-    <div @touchstart="touchStart" @touchend="touchEnd" @touchmove="touchMove">
-      <van-image-preview v-model="imageShow" :images="images" @close="onClose" maxZoom="1" minZoom="1"></van-image-preview>
+    <div @press="press" @touchstart="touchStart">
+      <van-image-preview @scale="scale" v-model="imageShow" :images="images" @close="onClose">
+        <template v-slot:cover><van-icon name="down" /></template>
+      </van-image-preview>
     </div>
     <van-share-sheet
         v-model="showShare"
@@ -47,7 +49,7 @@
 
 <script>
 import switchNavBar from "@/components/nav-bar/switch-nav-bar"
-
+import AnyTouch from 'any-touch'
 export default {
   name: "styleDetails",
   components: {
@@ -56,6 +58,11 @@ export default {
   created() {
     this.style = this.$route.query
     this.queryStyleImage(this.style.id)
+  },
+  mounted() {
+    // 没错, 就这2行
+    const at= new AnyTouch(this.$el,{ preventDefault: false});
+    this.$on('hook:destroyed', ()=>{at.destroy()});
   },
   data() {
     return {
@@ -78,20 +85,12 @@ export default {
       moveX: '',
       moveY: '',
       flag: false,
-    }
-  },
-  watch: {
-    isLongClick: function (val) {
-      if (val) {
-        if (this.moveX === '' && this.moveY === '') {
-          this.showShare = true
-        }
-        this.isLongClick = false
-      }
+      scaleFlag: true,
     }
   },
   methods: {
     updateStyle() {
+      console.log()
       this.$router.push({name: "styleEdit", query: this.style});
     },
     addClothes() {
@@ -140,19 +139,6 @@ export default {
       this.images = [val]
       this.imageUrl = val
     },
-    touchStart(event) {
-      this.moveX = ''
-      this.moveY = ''
-      this.touchStartX = event.changedTouches[0].clientX // this.touchStartX按下时的横轴坐标
-      this.touchStartY = event.changedTouches[0].clientY // this.touchStartY按下时的纵轴坐标
-      clearTimeout(this.loop)
-      this.loop = setTimeout(() => {
-        this.isLongClick = true
-      }, 600)
-    },
-    touchEnd() {
-      clearTimeout(this.loop)
-    },
     onSelect() {
       /Linux/i.test(navigator.platform)
           ?androidMethod.downImage(this.imageUrl)
@@ -162,12 +148,18 @@ export default {
     },
     onClose() {
       this.imageShow = false
-      this.isLongClick = false
     },
-    touchMove(event) {
-      this.moveX = event.changedTouches[0].clientX
-      this.moveY = event.changedTouches[0].clientY
+    press() {
+      if (this.scaleFlag) {
+        this.showShare = true
+      }
     },
+    scale() {
+      this.scaleFlag = false
+    },
+    touchStart() {
+      this.scaleFlag = true
+    }
   }
 }
 </script>
