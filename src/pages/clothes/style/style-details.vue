@@ -1,7 +1,7 @@
 <template>
   <div>
     <van-sticky>
-      <switchNavBar title="款式详情" switchText="操作" @flag="buttonShow=true"/>
+      <switchNavBar title="款式详情" switchText="操作" @flag="buttonShow=!buttonShow"/>
     </van-sticky>
     <!--    头部-->
     <div class="card">
