@@ -1,58 +1,89 @@
 <template>
   <div>
     <baseNavBar title="款式图片"/>
-    <div>
-      <van-swipe height="300" :autoplay="3000">
-        <van-swipe-item v-for="(image, index) in images" :key="index">
-          <div class="img-box">
-            <van-image fit="scale-down" round radius="7" width="50%" height="90%" :src="image"
-                       @click="clickItem(image)"/>
-          </div>
-        </van-swipe-item>
-      </van-swipe>
+    <van-collapse v-model="activeNames" style="padding:4% 4% 4% 4%">
+      <van-collapse-item v-for="item in styleImageArray" :key="item.id"
+                         :title="item.imageTypeName"
+                         :name="item.id">
+        <van-cell-group style="text-align: center">
+          <van-image radius="7"
+                     :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage"
+                     @click="imageShowClick('https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage)"/>
+        </van-cell-group>
+      </van-collapse-item>
+    </van-collapse>
+    <div @touchstart.prevent="touchStart()" @touchend.prevent="touchEnd()">
+      <van-image-preview v-model="imageShow" :images="images"
+      ></van-image-preview>
     </div>
+    <van-share-sheet
+        v-model="showShare"
+        :options="options"
+        @select="onSelect"
+    />
   </div>
 </template>
 
 <script>
 import baseNavBar from '@/components/nav-bar/base-nav-bar'
-import {ImagePreview} from "vant";
 
 export default {
   name: "styleImage",
   created() {
-    this.style = this.$route.query
-    this.queryStyleImage(this.style.id)
+    this.styleId = this.$route.query
+    this.queryStyleImage()
   },
   data() {
     return {
-      clothes: {},
+      styleId:"",
+      showShare: false,
+      activeNames: ['1'],
+      styleImageArray: [],
+      imageShow: false,
       images: [],
+      options: [
+        {name: '保存图片', icon: 'poster'}
+      ],
+      imageUrl: "",
     }
-  }
-  , components: {
+  },
+  components: {
     baseNavBar
-  }
-  , methods: {
-    clickItem: function (value) {
-      ImagePreview([value])
-    }
-    ,queryStyleImage(styleId){
-      console.log(styleId)
+  },
+  methods: {
+    queryStyleImage() {
       this.$axios({
-        method:"GET",
-        url:"/image/queryStyleImages",
-        params:{
-          styleId:styleId,
+        method: "GET",
+        url: "/image/queryStyleImages",
+        params: {
+          styleId: this.styleId,
         }
-      }).then(response=>{
-        const data = response.data.data;
-        for (let index in data){
-          data[index] = "https://www.ivorybai.com:443/clothes/"+data[index]
-        }
-        this.images = data
+      }).then(response => {
+        this.styleImageArray = response.data.data
       })
-    }
+    },
+    imageShowClick(val) {
+      this.imageShow = true
+      this.images = [val]
+      this.imageUrl = val
+    },
+    touchStart() {
+      console.log(111)
+      clearTimeout(this.loop)
+      this.loop = setTimeout(() => {
+        this.showShare = true
+      }, 1000)
+    },
+    touchEnd() {
+      clearTimeout(this.loop)
+    },
+    onSelect() {
+      /Linux/i.test(navigator.platform)
+          ? androidMethod.downImage(this.imageUrl)
+          : window.webkit.messageHandlers.save.postMessage(this.imageUrl);
+
+      this.showShare = false
+    },
   }
 }
 </script>

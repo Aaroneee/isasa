@@ -38,45 +38,17 @@
           :finished="finished"
           @load="onLoad"
           finished-text="没有更多了">
-        <van-cell style="font-size: 12px" v-for="item in styleList" :key="item.id" @click="clickItem(item)">
-          <van-row>
-            <van-col span="13">
-              <van-col style="color: #39a9ed;font-size: 15px">款式编号:{{ item.typeName + item.styleName }}</van-col>
-              <van-row>
-                <van-col span="24">款式名称:{{ item.styleAlias }}</van-col>
-              </van-row>
-              <van-row>
-                <van-col span="24">款式品牌:{{ item.brandName }}</van-col>
-              </van-row>
-              <van-row>
-                <van-col span="24">采购日期:{{ item.purchaseDate }}</van-col>
-              </van-row>
-              <van-row>
-                <van-col span="24">适合身形:{{ item.styleFit }}</van-col>
-              </van-row>
-              <van-row>
-                <van-col span="24">不适合身形:{{ item.styleNoFit }}</van-col>
-              </van-row>
-              <van-row>
-                <van-col span="24">标签:{{ item.labelName }}</van-col>
-              </van-row>
-              <van-row>
-                <van-col span="24">婚纱数:{{ item.clothesCount }}</van-col>
-              </van-row>
-            </van-col>
-            <van-col offset="1" span="10">
-              <van-image radius="7" @click="clickItem(item)"
-                         :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage">
-              </van-image>
+        <van-cell style="font-size: 12px">
+          <van-row gutter="20">
+            <van-col span="12"  v-for="item in styleList" :key="item.id" @click="toStyleDetails(item)" style="text-align: center">
+              <img style="height: 200px;width:160px;border-radius: 7px"
+                         :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage"/>
+              <div class="styleInfo">
+                <p>{{ item.typeName + item.styleName }}</p>
+                <p>{{ item.styleAlias }}</p>
+              </div>
             </van-col>
           </van-row>
-          <br>
-          <!--          <van-row>-->
-          <!--            <van-tag round class="tag-padding" closeable size="large"  @close="close" type="primary">标签</van-tag>-->
-          <!--            <van-tag round class="tag-padding" closeable size="large"  @close="close" type="success">标签</van-tag>-->
-          <!--            <van-tag round class="tag-padding" closeable size="large"  @close="close" type="danger">标签</van-tag>-->
-          <!--            <van-tag round class="tag-padding" closeable size="large"  @close="close" type="warning">标签</van-tag>-->
-          <!--          </van-row>-->
         </van-cell>
       </van-list>
     </div>
@@ -144,28 +116,31 @@ export default {
           this.$toast.fail(response.data.msg);
         }
       })
-    }
-    , clickItem(value) {
+    },
+    toStyleDetails(value) {
       this.$router.push({name: "styleDetails", query: value})
-    }
-    , queryStyleType: function () {
+    },
+    queryStyleType: function () {
       this.$selectUtils.queryStyleIds(this.$selectUtils.DropDownMenu).then((response) => {
         this.styleTypeArray.push(...JSON.parse(response.data.data));
       })
-    }, queryStyleLabelList: function () {
+    },
+    queryStyleLabelList: function () {
       this.$selectUtils.queryStyleLabels().then((response) => {
         this.styleLabelList.push(...response.data.data);
       })
-    }
-    , styleTypeChange: function (value) {
+    },
+    styleTypeChange: function (value) {
       this.styleType = value
       this.dataClear()
       this.queryStyleList();
-    }, styleLabelConfirm: function () {
+    },
+    styleLabelConfirm: function () {
       this.$refs.labelRef.toggle()
       this.dataClear()
       this.queryStyleList();
-    }, pushStyleLabel: function (value) {
+    },
+    pushStyleLabel: function (value) {
       if (this.styleLabels.indexOf(value) > -1) {
         this.styleLabels.splice(this.styleLabels.indexOf(value, 0), 1)
       } else {
@@ -204,7 +179,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .tag-padding {
   margin-left: 5px;
   margin-right: 5px;
@@ -214,5 +189,11 @@ export default {
   border: 1px solid #de0d0d;
   color: rgb(182, 177, 189);
 }
-
+p{
+  font-size: 15px;
+  margin: 0 !important;
+}
+.styleInfo{
+  margin-bottom: 10px;
+}
 </style>
