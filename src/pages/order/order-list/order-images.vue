@@ -2,7 +2,8 @@
   <div>
     <baseNavBar title="订单图片" :fixed="true"/>
     <van-cell-group :title="imageTitle">
-      <van-collapse v-model="activeNames" style="padding:4% 4% 4% 4%">
+      <van-empty v-if="orderImageArray.length == 0" description="暂无订单图片"/>
+      <van-collapse v-else v-model="activeNames" style="padding:4% 4% 4% 4%">
         <van-collapse-item v-for="item in orderImageArray" :key="item.id"
                            :title="item.orderName+'  '+item.createDate"
                            :name="item.id">

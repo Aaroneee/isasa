@@ -4,8 +4,8 @@
     <van-field
         readonly
         v-model="customer.name"
-        label="用户名"
-        placeholder="用户名"
+        label="客户名"
+        placeholder="客户名"
     />
     <van-field
         readonly

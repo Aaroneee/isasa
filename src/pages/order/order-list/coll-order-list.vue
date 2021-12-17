@@ -41,7 +41,7 @@
             finished-text="没有更多了"
         >
           <van-cell style="font-size: 12px" v-for="item in orderList" :key="item.id">
-            <div @click="clickItem(item.id,item.cusId)">
+            <div @click="clickItem(item.id,item.cusId, item.appId)">
               <p>姓名:{{ item.name }}</p>
               <van-row>
                 <van-col span="12">订单编号:{{ item.orderNo }}</van-col>
@@ -60,17 +60,17 @@
                 <van-col span="24">备注:{{ item.orderRemark }}</van-col>
               </van-row>
             </div>
-            <van-row style="margin-top: 10px">
-              <per-button round color="#07c160"
-                          :span="6" size="mini"
+            <van-row style="margin-top: 5px">
+              <per-button round
+                          :span="6" size="small"
                           plain per="order:add_proceeds"
                           @click="proceedsAdd(item)">添加收款</per-button>
-              <per-button round color="#1989fa"
-                          :span="6" size="mini"
+              <per-button round
+                          :span="6" size="small"
                           plain per="order:add_clothes"
                           @click="clothesAdd(item)">添加婚纱</per-button>
-              <per-button round color="#fd6020"
-                          :span="6" size="mini"
+              <per-button round
+                          :span="6" size="small"
                           plain per="order:add_image"
                           @click="imagesAdd(item)">订单图片</per-button>
             </van-row>
@@ -134,8 +134,8 @@ export default {
       this.queryOrderList();
     },
     //点击每个item
-    clickItem: function (id, cusId) {
-      this.$router.push({name: "orderDetails", query: {id: id, cusId: cusId, mobileViewId: this.mobileViewId}})
+    clickItem: function (id, cusId, appId) {
+      this.$router.push({name: "orderDetails", query: {id: id, cusId: cusId, mobileViewId: this.mobileViewId, appId: appId}})
     },
     closeItem: function (flag) {
       if (flag == 1) {
@@ -175,6 +175,7 @@ export default {
         }
       }).then(response => {
         this.orderList = response.data.data.list;
+        console.log(this.orderList)
         this.finished = true;
       })
     },

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <img alt="IVORY logo" src="../../assets/logo_black.png">
+<!--    <img alt="IVORY logo" src="../../assets/logo_black.png">-->
     <van-form @submit="onSubmit">
       <van-field
           v-model="username"

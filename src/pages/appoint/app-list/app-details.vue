@@ -1,45 +1,124 @@
 <template>
-  <div>
-    <baseNavBar title="预约详情" :fixed="true"/>
-    <div v-cloak>
-      <van-cell-group>
-        <van-cell title="姓名:" :value="appointVo.name"/>
-        <van-cell title="手机号:" :value="appointVo.phone"/>
-        <van-cell title="微信号:" :value="appointVo.weChat"/>
-        <van-cell title="预约日期:" :value="appointVo.createDate"/>
-        <van-cell title="到店日期:" v-cloak :value="appointVo.appointDate"/>
-        <van-cell title="到店时间:" v-cloak :value="appointVo.appointTime"/>
-        <van-cell title="预约项目:" :value="appointVo.appointName"/>
-        <van-cell title="预约城市:" :value="appointVo.appointCity"/>
-        <van-cell title="预约店铺:" :value="appointVo.appointShop"/>
-        <van-cell title="预约人:" :value="appointVo.inviter"/>
-        <van-cell title="礼服师:" :value="appointVo.appointDress"/>
-        <van-cell title="化妆师:" :value="appointVo.appointCosmetics"/>
-        <van-cell title="分配房间:" :value="appointVo.room"/>
-        <van-cell title="备注:" :label="appointVo.appointRemark"/>
-      </van-cell-group>
+  <div style="background-color: white"  v-cloak>
+      <baseNavBar title="预约详情" :fixed="true"/>
+<!--      <switchNavBar title="预约详情" switchText="操作" @flag="popupShow = true"/>-->
+      <div>
+        <van-cell style="font-size: 13px">
+          <van-row style="font-size: 15px">
+            <van-col span="12">{{appointVo.name}}</van-col>
+            <van-col span="12" style="color: coral;" class="right">{{appointVo.appStateName}}</van-col>
+          </van-row>
+          <van-row>
+            <van-col span="12">手机号：{{appointVo.phone}}</van-col>
+            <van-col span="12" class="right">微信号：{{appointVo.weChat}}</van-col>
+          </van-row>
+          <van-row>
+            <van-col span="12">预约店铺：{{appointVo.appointShop}}</van-col>
+            <van-col span="12" class="right">预约人：{{appointVo.inviter}}</van-col>
+          </van-row>
+          <van-row>
+            <van-col span="12">到店日期：{{appointVo.appointDate}}</van-col>
+            <van-col span="12" class="right">到店时间：{{appointVo.appointTime}}</van-col>
+          </van-row>
+          <van-row>
+            <van-col span="8">礼服师：{{appointVo.appointDress}}</van-col>
+            <van-col span="8" style="text-align: center">化妆师：{{appointVo.appointCosmetics}}</van-col>
+            <van-col span="8" class="right">分配房间：{{appointVo.room}}</van-col>
+          </van-row>
+          <van-row>
+            <van-col>备注：{{appointVo.appointRemark}}</van-col>
+          </van-row>
+        </van-cell>
+        <van-tabs color="#fdd640" swipeable animated>
+          <van-tab title="试纱记录">
+            <van-empty v-if="yarnClothesList.length == 0" description="暂无试纱记录"/>
+            <div v-else>
+              <van-grid :border="false" :column-num="2" :gutter="1" style="font-size: 14px;">
+                <van-grid-item v-for="item in yarnClothesList" :key="item.id" >
+                  <div v-if="item.styleImage !== ''">
+                    <van-image class="style-img" radius="7" @click="clickItem(item)"
+                               style="height: 218px;width: 151px;margin-top: 10px"
+                               :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage">
+                    </van-image>
+                  </div>
+                  <div v-else>
+                    <van-image class="style-img">
+                      <template v-slot:error>未上传图片</template>
+                    </van-image>
+                  </div>
+                  <span v-text="item.styleType+'-'+item.styleName+'-'+item.clothesSize+'-'+item.clothesNo"></span>
+                  <van-row>
+                    <van-popover
+                        @select="onSelect"
+                        theme="dark"
+                        v-model="item.flag"
+                        trigger="click"
+                        :actions="actions"
+                        placement="top"
+                    >
+                      <template #reference>
+                        <van-col style="color: #42aef6;" @click="chooseItem = item">更多操作</van-col>
+                      </template>
+                    </van-popover>
+                  </van-row>
+                </van-grid-item>
+              </van-grid>
+            </div>
+          </van-tab>
+          <van-tab title="所有订单">
+            <van-empty v-if="orderList.length === 0" description="暂无订单记录"/>
+            <div v-else>
+              <van-cell style="font-size: 12px" v-for="item in orderList" :key="item.appId">
+                <van-row>
+                  <van-col span="12">订单号：{{item.orderNo}}</van-col>
+                  <van-col span="12" class="right">订单日期：{{item.createDate}}</van-col>
+                </van-row>
+                <van-row>
+                  <van-col span="15">订单项目：{{item.orderName}}</van-col>
+                  <van-col span="8" class="right">收款进度：{{item.orderState}}</van-col>
+                </van-row>
+                <van-row>
+                  <van-col span="8">订单总价：{{item.orderPrice}}</van-col>
+                  <van-col span="8" class="right">收款金额：{{item.spareMoney}}</van-col>
+                  <van-col span="8" class="right">余额：{{item.orderSpare}}</van-col>
+                </van-row>
+                <van-row>
+                  <van-col span="24">备注：{{item.orderRemark}}</van-col>
+                </van-row>
+              </van-cell>
+            </div>
+          </van-tab>
+        </van-tabs>
+      </div>
+    <van-popup
+        v-model="popupShow"
+        closeable
+        round
+        close-icon-position="bottom-left"
+        position="bottom"
+        :style="{ height: '20%' }"
+    >
+      <van-row style="padding-top: 30px">
+        <per-button @click="openAppEdit" type="warning" :span="6" per="app_details:app_edit">预约编辑</per-button>
+<!--        <per-button @click="openArrival" type="info" :span="6" per="app_details:arrival">预约到店</per-button>-->
+        <per-button @click="openOrderAdd" type="primary" :span="6" per="app_details:add_order">添加订单</per-button>
+        <per-button @click="openAddYarnClothes" color="#2f4056" :span="6" per="app_details:add_yarn_clothes">添加试纱</per-button>
+<!--        <per-button @click="cancelApp" color="#EA3311" :span="6" per="app_details:cancel_app">取消预约</per-button>-->
+      </van-row>
+    </van-popup>
+    <br>
+      <br>
     </div>
-    <br>
-    <van-row>
-      <per-button @click="openAppEdit" type="warning" :span="6" per="app_details:app_edit">预约编辑</per-button>
-      <per-button @click="openArrival" type="info" :span="6" per="app_details:arrival">预约到店</per-button>
-      <per-button @click="openOrderAdd" type="primary" :span="6" per="app_details:add_order">添加订单</per-button>
-      <per-button @click="openAddYarnClothes" color="#2f4056" :span="6" per="app_details:add_yarn_clothes">添加试纱</per-button>
-      <per-button @click="cancelApp" color="#EA3311" :span="6" per="app_details:cancel_app">取消预约</per-button>
-    </van-row>
-    <br>
-  </div>
-
-
 </template>
 
 <script>
 import baseNavBar from "@/components/nav-bar/base-nav-bar"
+import {ImagePreview} from "vant";
 
 export default {
   name: "app-details",
   components: {
-    baseNavBar
+    baseNavBar,
   },
   data() {
     return {
@@ -48,6 +127,12 @@ export default {
       pageSource: this.$route.query.pageSource,
       mobileViewId: this.$route.query.mobileViewId,
       isHide:"",
+      yarnClothesList: "",
+      popupShow: false,
+      showPopover: false,
+      actions: [{ text: '试纱图片' }, { text: '移除'}],
+      orderList: [],
+      chooseItem: {},
     }
   },
   created() {
@@ -55,6 +140,8 @@ export default {
       this.isHide = response.data.data
     })
     this.queryAppointVo();
+    this.queryYarnClothesList()
+    this.queryOrderListByAppId()
   },
   methods: {
     queryAppointVo: function () {
@@ -150,6 +237,69 @@ export default {
         })
       })
     },
+    queryYarnClothesList() {
+      this.$axios({
+        method: "get",
+        url: '/clothesYarn/queryYarnClothesList',
+        params: {
+          appId: this.appId
+        }
+      }).then(response => {
+        response.data.data.forEach(s => s['flag'] = false)
+        this.yarnClothesList = response.data.data
+      })
+    },
+    clickItem: function (value) {
+      ImagePreview(['\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+value.styleImage])
+    },
+    queryOrderListByAppId() {
+      this.$axios({
+        method: "get",
+        url: "/order/queryOrderListByAppId",
+        params: {
+          appId: this.appId
+        }
+      }).then(response => {
+        this.orderList = response.data.data
+      })
+    },
+    onSelect(val) {
+      switch (val.text) {
+        case "试纱图片":
+          this.$router.push({name: "yarnClothesImages", query: {appointVo: this.appointVo, item: this.chooseItem}})
+          break
+        case "移除":
+          this.deleteClothesYarnConfirm(this.chooseItem)
+          break
+      }
+    },
+    deleteClothesYarnConfirm: function (item) {
+      console.log(item)
+      this.$dialog.confirm({
+        message: "确认移除 "+item.styleType+'-'+item.styleName+'-'+item.clothesSize+'-'+item.clothesNo+" 的试纱记录？",
+        theme: 'round-button',
+      }).then(() => {
+        this.deleteClothesYarn(item);
+      },() =>{})
+    },
+    deleteClothesYarn: function (item) {
+      this.$axios({
+        method: "get",
+        url: "/clothesYarn/deleteClothesYarn",
+        params: {
+          id: item.yarnId,
+        },
+      }).then(response => {
+        const data = response.data;
+        if (data.code === 200) {
+          this.$toast.success(data.msg)
+        } else {
+          this.$toast.fail(data.msg);
+        }
+        this.yarnClothesList = [];
+        this.queryYarnClothesList();
+      })
+    },
   }
 }
 </script>
@@ -171,5 +321,17 @@ export default {
 }
 .col:nth-child(n+4){
   margin-top: 17px;
+}
+.right{
+  text-align: right;
+}
+/deep/ .van-popup__close-icon--bottom-left{
+  left: 47%
+}
+/deep/ .van-popup__close-icon{
+  color: black;
+}
+/deep/ .van-cell {
+  line-height: normal;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="background-color: white">
     <van-sticky>
       <switchNavBar title="订单详情" switchText="编辑" @flag="editFlag=!editFlag"/>
       <van-cell style="font-size: 12px">
@@ -31,59 +31,108 @@
       </van-cell>
     </van-sticky>
     <van-row>
-      <van-cell-group title="订单款式">
-        <van-cell style="font-size: 12px" v-for="item in clothesScheduleList" :key="item.id">
-          <van-grid :border="false" :column-num="2" :gutter="1">
-            <van-grid-item v-if="item[0] != null">
-              <div v-if="item[0].styleImage !== ''">
-                <van-image class="style-img" radius="7"
-                           :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[0].styleImage">
-                </van-image>
-              </div>
-              <div v-else>
-                <van-image class="style-img">
-                  <template v-slot:error>未上传图片</template>
-                </van-image>
-              </div>
-              <span
-                  v-text="item[0].styleType+'-'+item[0].styleName+'-'+item[0].clothesSize+'-'+item[0].clothesNo"></span>
-              <van-row>
+      <van-tabs color="#fdd640" swipeable animated>
+        <van-tab title="已定婚纱">
+          <van-empty v-if="clothesScheduleList.length == 0" description="暂未选定婚纱"/>
+          <van-cell-group>
+            <van-cell style="font-size: 12px" v-for="item in clothesScheduleList" :key="item.id">
+              <van-grid :border="false" :column-num="2" :gutter="1">
+                <van-grid-item v-if="item[0] != null">
+                  <div v-if="item[0].styleImage !== ''">
+                    <van-image class="style-img" radius="7"
+                               :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[0].styleImage">
+                    </van-image>
+                  </div>
+                  <div v-else>
+                    <van-image class="style-img">
+                      <template v-slot:error>未上传图片</template>
+                    </van-image>
+                  </div>
+                  <span
+                      v-text="item[0].styleType+'-'+item[0].styleName+'-'+item[0].clothesSize+'-'+item[0].clothesNo"></span>
+                  <van-row>
                    <span
                        :class="{'color-red':item[0].scheduleState==='撞挡','color-blue':item[0].scheduleState==='可用'}">{{
                        '档期状态:' + item[0].scheduleState
                      }}</span>
-                <van-icon style="margin-left: 30px" size="15" @click="deleteSchedule(item[0])" name="delete-o"/>
-              </van-row>
+                    <van-icon style="margin-left: 30px" size="15" @click="deleteSchedule(item[0])" name="delete-o"/>
+                  </van-row>
 
-              <span>{{ item[0].scheduleDate }}</span>
+                  <span>{{ item[0].scheduleDate }}</span>
 
-            </van-grid-item>
+                </van-grid-item>
 
-            <van-grid-item v-if="item[1] != null">
-              <div v-if="item[1].styleImage !== ''">
-                <van-image class="style-img" radius="7"
-                           :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[1].styleImage">
-                </van-image>
-              </div>
-              <div v-else>
-                <van-image class="style-img">
-                  <template v-slot:error>未上传图片</template>
-                </van-image>
-              </div>
-              <span
-                  v-text="item[1].styleType+'-'+item[1].styleName+'-'+item[1].clothesSize+'-'+item[1].clothesNo"></span>
-              <van-row>
+                <van-grid-item v-if="item[1] != null">
+                  <div v-if="item[1].styleImage !== ''">
+                    <van-image class="style-img" radius="7"
+                               :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[1].styleImage">
+                    </van-image>
+                  </div>
+                  <div v-else>
+                    <van-image class="style-img">
+                      <template v-slot:error>未上传图片</template>
+                    </van-image>
+                  </div>
+                  <span
+                      v-text="item[1].styleType+'-'+item[1].styleName+'-'+item[1].clothesSize+'-'+item[1].clothesNo"></span>
+                  <van-row>
                    <span
                        :class="{'color-red':item[1].scheduleState==='撞挡','color-blue':item[1].scheduleState==='可用'}">{{
                        '档期状态:' + item[1].scheduleState
                      }}</span>
-                <van-icon style="margin-left: 30px" size="15" @click="deleteSchedule(item[1])" name="delete-o"/>
+                    <van-icon style="margin-left: 30px" size="15" @click="deleteSchedule(item[1])" name="delete-o"/>
+                  </van-row>
+                  <span>{{ item[1].scheduleDate }}</span>
+                </van-grid-item>
+              </van-grid>
+            </van-cell>
+          </van-cell-group>
+        </van-tab>
+        <van-tab title="试纱记录">
+          <van-empty v-if="yarnClothesList.length == 0" description="暂无试纱记录"/>
+          <div v-else>
+            <van-grid :border="false" :column-num="2" :gutter="1" style="font-size: 14px;">
+              <van-grid-item v-for="item in yarnClothesList" :key="item.id" >
+                <div v-if="item.styleImage !== ''">
+                  <van-image class="style-img" radius="7" @click="clickItem(item)"
+                             style="height: 218px;width: 151px;margin-top: 10px"
+                             :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage">
+                  </van-image>
+                </div>
+                <div v-else>
+                  <van-image class="style-img">
+                    <template v-slot:error>未上传图片</template>
+                  </van-image>
+                </div>
+                <span v-text="item.styleType+'-'+item.styleName+'-'+item.clothesSize+'-'+item.clothesNo"></span>
+              </van-grid-item>
+            </van-grid>
+          </div>
+        </van-tab>
+        <van-tab title="所有订单">
+          <van-empty v-if="orderList.length === 0" description="暂无订单记录"/>
+          <div v-else>
+            <van-cell style="font-size: 12px" v-for="item in orderList" :key="item.appId">
+              <van-row>
+                <van-col span="12">订单号：{{item.orderNo}}</van-col>
+                <van-col span="12" class="right">订单日期：{{item.createDate}}</van-col>
               </van-row>
-              <span>{{ item[1].scheduleDate }}</span>
-            </van-grid-item>
-          </van-grid>
-        </van-cell>
-      </van-cell-group>
+              <van-row>
+                <van-col span="15">订单项目：{{item.orderName}}</van-col>
+                <van-col span="8" class="right">收款进度：{{item.orderState}}</van-col>
+              </van-row>
+              <van-row>
+                <van-col span="8">订单总价：{{item.orderPrice}}</van-col>
+                <van-col span="8" class="right">收款金额：{{item.spareMoney}}</van-col>
+                <van-col span="8" class="right">余额：{{item.orderSpare}}</van-col>
+              </van-row>
+              <van-row>
+                <van-col span="24">备注：{{item.orderRemark}}</van-col>
+              </van-row>
+            </van-cell>
+          </div>
+        </van-tab>
+      </van-tabs>
 
     </van-row>
   </div>
@@ -91,7 +140,7 @@
 
 <script>
 import switchNavBar from "@/components/nav-bar/switch-nav-bar"
-
+import {ImagePreview} from "vant";
 export default {
   name: "order-details",
   inject: ['reload'],
@@ -105,11 +154,14 @@ export default {
 
       id: this.$route.query.id,
       cusId: this.$route.query.cusId,
+      appId: this.$route.query.appId,
       mobileViewId: this.$route.query.mobileViewId,
       orderVo: {},
       tenantCrop: localStorage.getItem("tenantCrop"),
       clothesScheduleList: [],
       isHide: "",
+      yarnClothesList: [],
+      orderList: [],
     }
   },
   created() {
@@ -118,6 +170,8 @@ export default {
     })
     this.queryOrderVo();
     this.queryCusSchedules(this.cusId)
+    this.queryYarnClothesList()
+    this.queryOrderListByAppId()
   },
   methods: {
     queryOrderVo: function () {
@@ -142,7 +196,6 @@ export default {
         },
         url: '/schedule/clothesAndScheduleByOrderId',
       }).then(response => {
-        console.log(response)
         if (response.data.code === 200) {
           this.clothesScheduleList.push(...arrTrans(2, response.data.data))
         }
@@ -170,7 +223,33 @@ export default {
           }
         })
       })
-    }
+    },
+    queryYarnClothesList() {
+      this.$axios({
+        method: "get",
+        url: '/clothesYarn/queryYarnClothesList',
+        params: {
+          appId: this.appId
+        }
+      }).then(response => {
+        response.data.data.forEach(s => s['flag'] = false)
+        this.yarnClothesList = response.data.data
+      })
+    },
+    queryOrderListByAppId() {
+      this.$axios({
+        method: "get",
+        url: "/order/queryOrderListByAppId",
+        params: {
+          appId: this.appId
+        }
+      }).then(response => {
+        this.orderList = response.data.data
+      })
+    },
+    clickItem: function (value) {
+      ImagePreview(['\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+value.styleImage])
+    },
   }, watch: {
     editFlag: function (value) {
       if (value) {
@@ -201,5 +280,8 @@ function arrTrans(num, arr) {
 
 .color-blue {
   color: blue;
+}
+.right{
+  text-align: right;
 }
 </style>
