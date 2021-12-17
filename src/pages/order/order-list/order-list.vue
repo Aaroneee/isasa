@@ -31,8 +31,11 @@
             finished-text="没有更多了"
         >
           <van-cell style="font-size: 12px" v-for="item in orderList" :key="item.id">
-            <div @click="clickItem(item.id,item.cusId)">
-              <p>姓名:{{ item.name }}</p>
+            <div @click="clickItem(item.id, item.cusId, item.appId)">
+              <van-row style="">
+                <van-col span="12">客户名:{{ item.name }}</van-col>
+                <van-col span="12" style="text-align: right">{{item.state}}</van-col>
+              </van-row>
               <van-row>
                 <van-col span="12">订单编号:{{ item.orderNo }}</van-col>
                 <van-col span="12" style="text-align: right">订单项目:{{ item.orderName }}</van-col>
@@ -50,17 +53,21 @@
                 <van-col span="24">备注:{{ item.orderRemark }}</van-col>
               </van-row>
             </div>
-            <van-row style="margin-top: 10px">
-              <per-button round color="#07c160"
-                          :span="6" size="mini"
+            <van-row style="margin-top: 5px" type="flex" justify="center">
+              <per-button round
+                          :span="5" size="small"
+                          plain per="order:after_sale_app_add"
+                          @click="afterSaleAppAdd(item)">售后预约</per-button>
+              <per-button round
+                          :span="5" size="small"
                           plain per="order:add_proceeds"
                           @click="proceedsAdd(item)">添加收款</per-button>
-              <per-button round color="#1989fa"
-                          plain :span="6" size="mini"
+              <per-button round
+                          plain :span="5" size="small"
                           per="order:add_clothes"
                           @click="clothesAdd(item)">添加婚纱</per-button>
-              <per-button round color="#fd6020"
-                          plain :span="6" size="mini"
+              <per-button round
+                          plain :span="5" size="small"
                           per="order:add_image"
                           @click="imagesAdd(item)">订单图片</per-button>
             </van-row>
@@ -113,8 +120,8 @@ export default {
       this.orderDateShow = false;
     },
     //点击每个item
-    clickItem: function (id, cusId) {
-      this.$router.push({name: "orderDetails", query: {id: id, cusId: cusId}})
+    clickItem: function (id, cusId, appId) {
+      this.$router.push({name: "orderDetails", query: {id: id, cusId: cusId, appId: appId}})
     },
     //点击增加收款
     proceedsAdd: function (item) {
@@ -161,8 +168,8 @@ export default {
     onClickLeft: function () {
       this.$router.back();
     },
-    test: function (value) {
-      console.log(value)
+    afterSaleAppAdd(val) {
+      this.$router.push({name: "afterSaleAppAdd", query: val})
     }
   },
   beforeRouteLeave (to, from, next) {
@@ -182,6 +189,6 @@ export default {
 
 <style scoped>
 .col{
-  margin-left: 6.25%!important;
+  margin-left: 3%!important;
 }
 </style>

@@ -29,31 +29,30 @@
           :finished="finished"
           finished-text="没有更多了"
       >
-        <van-cell style="font-size: 12px" v-for="item in appointList" :key="item.id" @click="clickItem(item.id)">
-          <van-row style="padding-bottom: 10px">
-            <van-col span="12">姓名:{{ item.name }}</van-col>
-            <van-col v-if="item.isValid === '1'" style="color: coral">状态 : 预约</van-col>
-            <van-col v-if="item.isValid === '2'" style="color: #39a9ed">状态 : 到店</van-col>
-            <van-col v-if="item.isValid ==='3'" style="color: red">状态 : 取消</van-col>
-          </van-row>
-          <van-row>
-            <van-col span="12">预约日期:{{ item.createDate }}</van-col>
-            <van-col span="12">到店日期:{{ item.appointDate }}</van-col>
-          </van-row>
-          <van-row>
-            <van-col span="12">到店时间:{{ item.appointTime }}</van-col>
-            <van-col span="12">店铺:{{ item.appointShop }}</van-col>
-          </van-row>
-          <van-row>
-            <van-col span="12">预约项目:{{ item.appointName }}</van-col>
-            <van-col span="12">城市:{{ item.appointCity }}</van-col>
-          </van-row>
-          <van-row>
-            <van-col span="12">预约人:{{ item.inviter }}</van-col>
-            <van-col span="12">化妆师:{{ item.appointCosmetics }}</van-col>
-          </van-row>
-          <van-row>
-            <van-col span="24">备注:{{ item.appointRemark }}</van-col>
+        <van-cell style="font-size: 12px" v-for="item in appointList" :key="item.id">
+          <div @click="clickItem(item.id)">
+            <van-row style="font-size: 15px">
+              <van-col span="12">{{ item.name }}</van-col>
+              <van-col span="12" class="right" style="color: coral">{{ item.appStateName }}</van-col>
+            </van-row>
+            <van-row>
+              <van-col span="12">预约日期:{{ item.createDate }}</van-col>
+              <van-col span="12" class="right">到店日期:{{ item.appointDate }}</van-col>
+            </van-row>
+            <van-row>
+              <van-col span="12">到店时间:{{ item.appointTime }}</van-col>
+              <van-col span="12" class="right">预约项目:{{ item.appointName }}</van-col>
+            </van-row>
+            <van-row>
+              <van-col span="12">预约人:{{ item.inviter }}</van-col>
+              <van-col span="12" class="right">化妆师:{{ item.appointCosmetics }}</van-col>
+            </van-row>
+            <van-row>
+              <van-col span="24">备注:{{ item.appointRemark }}</van-col>
+            </van-row>
+          </div>
+          <van-row style="margin-top: 5px;" type="flex" justify="end">
+            <per-button @click="openAppEdit(item.id)" size="small" round per="app_details:app_edit">预约编辑</per-button>
           </van-row>
         </van-cell>
       </van-list>
@@ -134,6 +133,9 @@ export default {
     clickItem: function (id) {
       this.$router.push({name: "appDetails", query: {id: id,pageSource:'mScheduleList',mobileViewId:this.mobileViewId}})
     },
+    openAppEdit: function (id) {
+      this.$router.push({name: "appEdit", query: {id: id}})
+    },
   },
   beforeRouteLeave (to, from, next) {
     if (to.name === 'appDetails') {
@@ -147,5 +149,7 @@ export default {
 </script>
 
 <style scoped>
-
+.right{
+  text-align: right;
+}
 </style>

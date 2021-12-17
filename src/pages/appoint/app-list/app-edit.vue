@@ -130,14 +130,14 @@
         />
       </van-popup>
 
-      <van-field
-          readonly
-          name="appointCity"
-          :value="appoint.appointCity"
-          label="预约城市"
-          placeholder="点击选择预约店铺"
-          :rules="[{ required: true }]"
-      />
+<!--      <van-field-->
+<!--          readonly-->
+<!--          name="appointCity"-->
+<!--          :value="appoint.appointCity"-->
+<!--          label="预约城市"-->
+<!--          placeholder="点击选择预约店铺"-->
+<!--          :rules="[{ required: true }]"-->
+<!--      />-->
       <van-field
           class="msg"
           name="appointRemark"
@@ -289,6 +289,7 @@ export default {
           return;
         }
         this.appoint = response.data.data;
+        console.log(this.appoint)
         this.queryInviterIds();
         this.queryAppointDress();
         this.queryAppointCosmetics();
@@ -299,6 +300,7 @@ export default {
     //查询预约人
     queryInviterIds: function () {
       this.$selectUtils.queryEmpIds(this.$selectUtils.Picker).then(response => {
+        console.log(JSON.parse(response.data.data))
         this.inviterArray = JSON.parse(response.data.data);
         this.inviterText = this.inviterArray.find(k => k.id === this.appoint.inviter).text;
       })

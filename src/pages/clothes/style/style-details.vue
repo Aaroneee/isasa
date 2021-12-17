@@ -164,8 +164,8 @@ export default {
 }
 </script>
 
-<style >
-.van-image__img {
+<style scoped>
+/deep/ .van-image__img {
   min-height: 200px;
 }
 .col{

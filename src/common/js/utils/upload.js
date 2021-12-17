@@ -7,6 +7,7 @@ export default {
     clothesImage: "clothes",
     orderImage: "order",
     commImage:"comm",
+    yarnClothesImage: "yarnClothesImage",
 
 
     clothesImageUpload: function (file) {
@@ -31,5 +32,15 @@ export default {
             data: data,
         })
     },
+    yarnClothesImageUpload(file) {
+        const data = new FormData();
+        data.append("file", file)
+        data.append("imageType", this.yarnClothesImage)
+        return self.$axios({
+            method: "post",
+            url: "/upload/uploadImage",
+            data: data
+        })
+    }
 
 }
