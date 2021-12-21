@@ -9,6 +9,9 @@
       </van-search>
       <van-dropdown-menu style="font-size: 10px">
         <van-dropdown-item v-model="isOrder" @change="isOrderChange" :options="isOrderArray"/>
+        <van-dropdown-item v-model="styleType" @change="styleTypeChange" :options="styleTypeArray"/>
+        <van-dropdown-item @change="brandChange" v-model="brand" :options="styleBrandArray"/>
+        <van-dropdown-item v-model="clothesSize" @change="clothesSizeChange" :options="clothesSizeArray"/>
       </van-dropdown-menu>
       <van-form>
         <van-field
@@ -56,7 +59,7 @@
         </div>
       </van-form>
     </van-sticky>
-    <van-tabs color="#d6d6d6" animated swipeable>
+    <van-tabs color="#fdd640" animated swipeable>
       <van-tab title="婚纱列表">
         <div>
           <van-list
@@ -109,7 +112,8 @@
         </div>
       </van-tab>
       <van-tab title="已选试纱">
-        <van-grid :border="false" :column-num="2" :gutter="1" style="font-size: 14px;">
+        <van-empty v-if="yarnClothesList.length == 0" style="background-color: white" description="暂未添加试纱"/>
+        <van-grid v-else :border="false" :column-num="2" :gutter="1" style="font-size: 14px;">
           <van-grid-item v-for="item in yarnClothesList" :key="item.id" >
             <div v-if="item.styleImage !== ''">
               <van-image class="style-img" radius="7" @click="clickItem(item)"
@@ -147,6 +151,9 @@ export default {
     this.weddingDayProcess();
     this.queryClothesList();
     this.queryYarnClothesList();
+    this.queryStyleType()
+    this.queryClothesBrand()
+    this.queryClothesSize()
   },
   data() {
     return {
@@ -173,6 +180,14 @@ export default {
       useDateValue:"",
       userDate:[],
       useDateShowPicker: false,
+      // 搜索框
+      styleType: "",
+      styleTypeArray: [{text: "款式类型", value: ""}],
+      brandText:"",
+      brand:"",
+      styleBrandArray: [{text: "款式品牌", value: ""}],
+      clothesSize: "",
+      clothesSizeArray: [{text: "婚纱尺寸", value: ''}],
     }
   },
   methods: {
@@ -201,6 +216,9 @@ export default {
           scheduleDate:this.useDateValue,
           tenantCrop: this.tenantCrop,
           isOrder:this.isOrder,
+          styleType: this.styleType,
+          brandId: this.brand,
+          clothesSize: this.clothesSize,
         }
       }).then(response => {
         if (response.data.code === 200) {
@@ -313,8 +331,9 @@ export default {
     },
     weddingDayProcess: function () {
       const temp = this.appointVo.weddingDay;
-      const pattern1 = /\d{4}-\d{2}-\d{2}/;
-      const pattern2 = /\d{2}\.\d{1,2}\.\d{1,2}/;
+      const pattern1 = /^\d{4}-\d{1,2}-\d{1,2}$/;
+      const pattern2 = /^\d{2}\.\d{1,2}\.\d{1,2}$/;
+      const pattern3 = /^\d{4}\.\d{1,2}\.\d{1,2}$/;
       if (pattern1.test(temp)) {
         this.useDateValue =
             this.$dateUtils.vantDateToYMD(new Date(temp.replaceAll("-","/")))
@@ -332,7 +351,51 @@ export default {
         this.userDate = [new Date("20"+temp.replaceAll(".","/"))
           ,new Date("20"+temp.replaceAll(".","/"))];
       }
+      if (pattern3.test(temp)) {
+        this.useDateValue =
+            this.$dateUtils.vantDateToYMD(new Date(temp.replaceAll(".","/")))
+            +' - '+
+            this.$dateUtils.vantDateToYMD(new Date(temp.replaceAll(".","/")));
+
+        this.userDate = [new Date(temp.replaceAll(".","/"))
+          ,new Date(temp.replaceAll(".","/"))];
+      }
     },
+    queryStyleType: function () {
+      this.$selectUtils.queryStyleIds(this.$selectUtils.DropDownMenu).then((response) => {
+        this.styleTypeArray.push(...JSON.parse(response.data.data));
+      })
+    },
+    styleTypeChange: function () {
+      this.clothesList = []
+      this.page = 1
+      this.queryClothesList()
+    },
+    brandChange() {
+      this.clothesList = []
+      this.page = 1
+      this.queryClothesList()
+    },
+    queryClothesBrand: function () {
+      this.$selectUtils.queryBrandIds(this.$selectUtils.DropDownMenu).then((response) => {
+        this.styleBrandArray.push(...JSON.parse(response.data.data))
+        console.log(this.styleBrandArray)
+      })
+    },
+    queryClothesSize() {
+      this.$selectUtils.queryClothesSize().then(response => {
+        let data = JSON.parse(response.data.data).map(s => s['name'])
+        for (let temp of data) {
+          this.clothesSizeArray.push({text: temp, value: temp})
+        }
+      })
+      console.log(this.clothesSizeArray)
+    },
+    clothesSizeChange() {
+      this.clothesList = []
+      this.page = 1
+      this.queryClothesList()
+    }
   },
   beforeRouteLeave (to, from, next) {
     if (to.name === 'clothesSchedule') {
