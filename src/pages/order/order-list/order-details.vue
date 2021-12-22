@@ -232,16 +232,18 @@ export default {
           appId: this.appId
         }
       }).then(response => {
-        response.data.data.forEach(s => s['flag'] = false)
+        if (response.data.data != "") {
+          response.data.data.forEach(s => s['flag'] = false)
+        }
         this.yarnClothesList = response.data.data
       })
     },
     queryOrderListByAppId() {
       this.$axios({
         method: "get",
-        url: "/order/queryOrderListByAppId",
+        url: "/order/queryOrderListByCusId",
         params: {
-          appId: this.appId
+          cusId: this.cusId
         }
       }).then(response => {
         this.orderList = response.data.data
