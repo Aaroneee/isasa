@@ -7,27 +7,21 @@
     <div class="card">
       <van-row><p class="cardTitle">款式信息</p></van-row>
       <van-row>
-        <van-col :span="8">
+        <van-col :span="10">
           <div style="display: flex;justify-content: space-around;height: 100%">
             <img
                 alt="styleImage"
-                style="  height: 130px;width: 90px;border-radius: 7px"
+                style="  height: 150px;width: 110px;border-radius: 7px"
                 :src="'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+this.style.styleImage"/>
           </div>
         </van-col>
-        <van-col :span="16">
-          <van-row>
-            <van-col :span="12">
-              <p>款式类型 : {{ style.typeName }}</p>
-            </van-col>
-            <van-col :span="12" style="float: right;text-align: right">
-              <p>款式编号 : {{ style.styleName }}</p>
-            </van-col>
-          </van-row>
+        <van-col :span="14">
+          <p>款式类型 : {{ style.typeName }}</p>
+          <p>款式编号 : {{ style.styleName }}</p>
           <p>款式名称 : {{ style.styleAlias }}</p>
           <p>款式品牌 : {{ style.brandName }}</p>
           <p>采购日期 : {{ style.purchaseDate }}</p>
-          <p>同款件数 : {{ style.clothesCount }}</p>
+          <p>衣服件数 : {{ style.clothesCount }}</p>
         </van-col>
       </van-row>
     </div>
@@ -137,7 +131,7 @@ export default {
       this.$router.push({name: "clothesAdd", query: this.style})
     },
     toStylePrice() {
-      this.$router.push({name: "stylePrice", query: this.style})
+      this.$router.push({name: "stylePrice", query: this.style.id})
     },
     toStyleImage() {
       this.$router.push({name: "styleImage", query: this.style.id})
