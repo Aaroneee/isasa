@@ -39,9 +39,6 @@ export default {
 </script>
 
 <style>
-html,body,#app{
-  height: 100%;
-}
 body{
   background-color: #f6f7f9;
 }

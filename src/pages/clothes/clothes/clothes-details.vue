@@ -1,7 +1,8 @@
 <template>
   <div id="parent">
-    <baseNavBar title="婚纱详情"/>
-
+    <van-sticky>
+      <baseNavBar title="婚纱详情"/>
+    </van-sticky>
     <div class="card">
       <p class="PTitle">{{clothes.styleType + '-' + clothes.styleName + '-' + clothes.clothesSize + '-' + clothes.clothesNo}}</p>
       <div style="padding-top: 5px">
@@ -31,7 +32,7 @@
         </van-row>
       </van-cell>
     </div>
-    <div class="card">
+    <div class="card" @touchstart.prevent="touchPrice(stylePrice)" @touchend.prevent="clearTime(stylePrice)">
         <van-row><p class="PTitle">款式价格</p></van-row>
         <van-row v-if="stylePrice.length>0">
           <van-col :span="8" v-for="(item,index) in stylePrice" :key="index">
@@ -43,7 +44,7 @@
           <p style="text-align: center; margin: 3% 0">无</p>
         </van-row>
     </div>
-    <div style="height: 130px"></div>
+    <div style="height: 120px"></div>
     <div id="operationDiv">
       <div id="operationCon">
         <p class="PTitle">操作菜单</p>
@@ -80,7 +81,14 @@
       </div>
     </div>
 
-
+    <!--    修改临时价格-->
+    <van-dialog v-model="updatePriceShow" title="修改临时价格" show-cancel-button show-confirm-button
+                @confirm="updatePrice()">
+      <p style="text-align: center;color: red">此操作是修改临时价格并不会修改原价<br>临时价格只有自己可见并在此显示12个小时<br>到期自动恢复为原价</p>
+      <van-field v-model="selfPrice.leasePrice" type="number" label="租赁价格"/>
+      <van-field v-model="selfPrice.depositPrice" type="number" label="押金价格"/>
+      <van-field v-model="selfPrice.cusPrice" type="number" label="定制价格"/>
+    </van-dialog>
   </div>
 </template>
 
@@ -105,7 +113,17 @@ export default {
       clothesScheduleList: [],
       styleLabelList: [],
       stylePrice: [],
+      updatePriceShow: false,
       empId: localStorage.getItem("empId"),
+
+      selfPrice: {
+        //租赁价格
+        leasePrice: "",
+        //押金价格
+        depositPrice: "",
+        //定制价格
+        cusPrice: "",
+      },
     }
   },
   components: {
@@ -169,6 +187,42 @@ export default {
         this.stylePrice = response.data.data;
       })
     },
+    touchPrice() {
+      clearInterval(this.Loop); //再次清空定时器，防止重复注册定时器
+      this.Loop = setTimeout(function () {
+        this.updatePriceShow = true;
+      }.bind(this), 2000);
+    },
+    clearTime() {
+      // 这个方法主要是用来将每次手指移出之后将计时器清零
+      clearInterval(this.Loop);
+    },
+    updatePrice() {
+      if (this.selfPrice.leasePrice===""||this.selfPrice.depositPrice===""||this.selfPrice.cusPrice===""){
+        this.$toast.fail('请将价格输入完整');
+        return false;
+      }
+      this.$dialog.confirm({
+        title: '确认修改?',
+      }).then(() => {
+        this.$axios({
+          method:"POST",
+          url:"/stylePrice/setSelfPrice",
+          params:{
+            leasePrice:this.selfPrice.leasePrice,
+            depositPrice:this.selfPrice.depositPrice,
+            cusPrice:this.selfPrice.cusPrice,
+            styleId: this.clothes.styleId,
+            empId: this.empId
+          }
+        }).then(response => {
+          response.data.code===200?this.$toast.success('成功'):this.$toast.fail(response.data.msg);
+          this.queryPrice();
+        })
+      }).catch(() => {
+        // on cancel
+      });
+    },
     //出样陈列
     clothesOperation: function () {
       this.$router.push({name: "clothesOperation", query: this.clothes})
@@ -215,7 +269,7 @@ p{
 
 #operationDiv {
   position: fixed;
-  bottom: 20px;
+  bottom: 10px;
   width: 100%;
 }
 
