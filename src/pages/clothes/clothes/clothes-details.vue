@@ -40,7 +40,7 @@
           </van-col>
         </van-row>
         <van-row v-else>
-          <p style="text-align: center;">无</p>
+          <p style="text-align: center; margin: 3% 0">无</p>
         </van-row>
     </div>
     <div style="height: 130px"></div>
@@ -223,7 +223,7 @@ p{
   border-radius: 10px;
   margin: 0 auto;
   background: white;
-  height: 100px;
+  height: 110px;
   width: 95%;
 }
 
