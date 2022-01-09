@@ -319,7 +319,7 @@ export default {
       firstSwitch: true,
       clothesSize: "",
       clothesSizeShowPicker: false,
-      clothesSizeColumnsArray: clothesSizeColumnsArray,
+      clothesSizeColumnsArray: [],
 
       clothesShop: "",
       clothesShopText: "",
@@ -362,6 +362,7 @@ export default {
     this.queryStyleLabelList();
     this.queryBrands();
     this.queryImageType();
+    this.queryClothesSize();
 
   },
   components: {
@@ -492,7 +493,7 @@ export default {
 
     },
     clothesSizeOnConfirm: function (value) {
-      this.clothesSize = value.id;
+      this.clothesSize = value;
       this.clothesSizeShowPicker = false;
     },
     shopOnConfirm: function (value) {
@@ -518,6 +519,11 @@ export default {
     queryImageType:function(){
       this.$selectUtils.queryStyleImageTypeIds(this.$selectUtils.Picker,0).then((response) => {
         this.imageTypeColumnsArray = JSON.parse(response.data.data);
+      })
+    },
+    queryClothesSize() {
+      this.$selectUtils.queryClothesSize().then(response => {
+        this.clothesSizeColumnsArray = JSON.parse(response.data.data).map(s => s['name'])
       })
     },
     positionOnConfirm: function (value) {
@@ -607,15 +613,6 @@ export default {
   },
 
 }
-const clothesSizeColumnsArray = [
-  {id: "XS", text: "XS"},
-  {id: "S", text: "S"},
-  {id: "M", text: "M"},
-  {id: "L", text: "L"},
-  {id: "XL", text: "XL"},
-  {id: "XXL", text: "XXL"},
-  {id: "XXXL", text: "XXXL"},
-]
 </script>
 
 <style scoped>
