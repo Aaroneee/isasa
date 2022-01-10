@@ -93,7 +93,7 @@ export default {
   data(){
     return{
       activeNames:[],
-      style: {},
+      styleId: "",
 
       price:"",
       shopId:"",
@@ -114,7 +114,7 @@ export default {
     }
   },
   created() {
-    this.style = this.$route.query
+    this.styleId = this.$route.query
     this.queryPriceByStyleId();
     this.queryShopIds();
     this.queryStylePriceType();
@@ -129,7 +129,7 @@ export default {
         method: "GET",
         url: "/stylePrice/queryByStyleId",
         params: {
-          styleId: this.style.id,
+          styleId: this.styleId,
         }
       }).then(response => {
         response = response.data.data;
@@ -199,7 +199,7 @@ export default {
           url: "/stylePrice/addStylePrice",
           params: {
             shopId: this.shopId,
-            styleId: this.style.id,
+            styleId: this.styleId,
             priceType:this.priceType,
             price:this.price,
             tenantCrop:this.tenantCrop

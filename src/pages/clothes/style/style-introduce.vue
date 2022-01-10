@@ -5,9 +5,16 @@
         :title="clothes.styleType + '-' + clothes.styleName + '-' + clothes.clothesSize + '-' + clothes.clothesNo">
       <van-cell style="font-size: 12px">
         <van-row>
-          <van-col span="24">款式介绍: {{style.styleInfo}}</van-col>
-          <van-col span="24">适合情况: {{style.styleFit}}</van-col>
-          <van-col span="24">不适合情况: {{style.styleNoFit}}</van-col>
+          <van-col span="7" ><p class="PTitle">款式介绍: </p></van-col>
+          <van-col span="17" ><p class="PContent">{{style.styleInfo}}</p></van-col>
+        </van-row>
+        <van-row>
+          <van-col span="7" ><p class="PTitle">适合情况: </p></van-col>
+          <van-col span="17" ><p class="PContent">{{style.styleFit}}</p></van-col>
+        </van-row>
+        <van-row>
+          <van-col span="7" ><p class="PTitle">不适合情况: </p></van-col>
+          <van-col span="17" ><p class="PContent">{{style.styleNoFit}}</p></van-col>
         </van-row>
       </van-cell>
     </van-cell-group>
@@ -50,6 +57,12 @@ export default {
 </script>
 
 <style scoped>
-
+.PTitle{
+  font-weight: bold;
+  font-size: 15px;
+}
+.PContent{
+  font-size: 15px;
+}
 
 </style>
