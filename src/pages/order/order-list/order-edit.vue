@@ -32,17 +32,17 @@
       <van-calendar v-model="createDatePicker" :min-date="minDate" :max-date="maxDate" :default-date="new Date(createDate)"
                     @confirm="createDateConfirm"/>
 
-      <van-field
-          readonly
-          name="weddingDay"
-          :value="weddingDay"
-          label="精确婚期"
-          placeholder="精确婚期"
-          :rules="[{ required: true }]"
-          @click="weddingDayPicker=true"
-      />
-      <van-calendar v-model="weddingDayPicker" :min-date="minDate" :max-date="maxDate" :default-date="new Date(weddingDay)"
-                    @confirm="weddingDayConfirm"/>
+<!--      <van-field-->
+<!--          readonly-->
+<!--          name="weddingDay"-->
+<!--          :value="weddingDay"-->
+<!--          label="精确婚期"-->
+<!--          placeholder="精确婚期"-->
+<!--          :rules="[{ required: true }]"-->
+<!--          @click="weddingDayPicker=true"-->
+<!--      />-->
+<!--      <van-calendar v-model="weddingDayPicker" :min-date="minDate" :max-date="maxDate" :default-date="new Date(weddingDay)"-->
+<!--                    @confirm="weddingDayConfirm"/>-->
 
       <van-field
           readonly

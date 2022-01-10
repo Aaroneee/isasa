@@ -64,11 +64,11 @@
     </van-list>
 
 
-    <van-popup v-model="orderClothesPopup" round position="bottom" :style="{ height: '40%' }">
+    <van-popup v-model="orderClothesPopup" round position="bottom" :style="{ height: '43%' }">
       <van-collapse v-model="activeNames" style="padding:4% 4% 4% 4%">
         <van-cell style="font-size: 14px">
           <van-col style="color: #39a9ed" span="12">客户名:{{ order.name }}</van-col>
-          <van-col style="color: #39a9ed" span="12">婚期:{{ order.weddingDay }}</van-col>
+<!--          <van-col style="color: #39a9ed" span="12">婚期:{{ order.weddingDay }}</van-col>-->
         </van-cell>
         <van-form @submit="addSchedule">
           <van-field
@@ -102,24 +102,34 @@
               style="display: none"
           />
 
-
+          <van-field label="精确婚期" placeholder="请选择婚期"  readonly v-model="weddingDay" @click="weddingDaySelectShowPicker = true"/>
+          <van-popup v-model="weddingDaySelectShowPicker" round position="bottom">
+            <van-picker
+                title="选择婚期"
+                show-toolbar
+                :columns="weddingDayArray"
+                @confirm="weddingDayConfirm"
+                @cancel="weddingDayCancel"
+                @change="weddingDayChange"
+            />
+          </van-popup>
           <van-field
               name="dateAmong"
               v-model="dateAmong"
               label="选择档期"
               placeholder="选择档期"
               readonly
-              @click="dateSectionShow=true"
+              @click="dateAmongClick"
               :rules="[{ required: true }]"
           />
-          <van-calendar ref="dateRef" safe-area-inset-bottom v-model="dateSectionShow"
+          <van-calendar ref="dateRef" safe-area-inset-bottom v-model="dateSectionShow" allow-same-day
                         :min-date="minDate" :max-date="maxDate" :default-date="defaultDate" type="range"
                         @confirm="dateSectionConfirm"/>
           <br>
           <br>
           <br>
-          <van-row>
-            <van-col span="14" offset="5">
+          <van-row style="margin-bottom: 20px">
+            <van-col span="22" offset="1">
               <van-button round block type="primary" native-type="submit">提交</van-button>
             </van-col>
           </van-row>
@@ -138,7 +148,6 @@ import baseNavBar from "@/components/nav-bar/base-nav-bar"
 export default {
   name: "orderClothes"
   , created() {
-    this.order = this.$route.query
     this.queryStyleType()
     this.queryShopIds()
     this.queryScheduleRule()
@@ -146,7 +155,7 @@ export default {
   , data() {
     return {
       tenantCrop: localStorage.getItem("tenantCrop"),
-      order: {},
+      order: this.$route.query,
       orderClothesPopup: false,
       activeNames: ['1'],
       styleName: "",
@@ -186,6 +195,10 @@ export default {
       loading: false,
       finished: true,
       page: 1,
+      weddingDayArray: [],
+      weddingDaySelectShowPicker: false,
+      weddingDay: "",
+      weddingDayId: "",
     }
   }
   , components: {
@@ -197,16 +210,6 @@ export default {
       this.clothesId = value.clothesId
       this.cusId = this.order.cusId
       this.orderClothesPopup = true
-      if (this.order.weddingDay === "")
-        return
-      if (this.rule === 1){
-        this.dateAmong = get_before_date(this.order.weddingDay, 0, 0)
-      }else if(this.rule === 3){
-        this.dateAmong = get_before_date(this.order.weddingDay, 1, 0)
-      }else {
-        this.dateAmong = get_before_date(this.order.weddingDay, 2, 2)
-      }
-      this.defaultDate = this.$dateUtils.dateSectionStrToDateArray(this.dateAmong)
     }
     , dateSectionConfirm: function (value) {
       this.dateAmong = this.$dateUtils.rangeVantDateToYMD(value)
@@ -222,6 +225,7 @@ export default {
         title: '添加订单档期款式',
         message: '确定要添加该档期吗？',
       }).then(() => {
+        data.weddingDayId = this.weddingDayId
         this.$axios({
           method: "post",
           url: '/schedule/addSchedule',
@@ -314,21 +318,76 @@ export default {
       this.$selectUtils.queryPositionIdsByShop(shop, this.$selectUtils.DropDownMenu).then(response => {
         this.positionArray.push(...JSON.parse(response.data.data))
       })
-    },queryScheduleRule:function (){
-      this.$axios({
+    },
+    async queryScheduleRule(){
+      const rule = await this.$axios({
         method:"get",
         url:"schedule/queryScheduleRule",
         params:{
           tenantCrop:this.tenantCrop
         }
-      }).then(response=>{
-        this.rule = response.data.data.rule
       })
+      this.rule = rule.data.data.rule
+      const orderRule = await this.$axios({
+        method: "get",
+        url: "/order/queryOrderVoById",
+        params: {
+          id: this.order.id
+        }
+      })
+      if (orderRule.data.data.scheduleRule !== "") {
+        this.rule = orderRule.data.data.scheduleRule
+      }
+      this.queryWeddingDayByOrderId()
     },
     onLoad() {
       setTimeout(this.queryClothesList, 1000)
-    }
+    },
+    // 查询婚期
+    queryWeddingDayByOrderId() {
+      this.$axios({
+        method: "get",
+        url: "/weddingDate/queryWeddingDayByOrderId",
+        params: {
+          orderId: this.order.id
+        }
+      }).then(response => {
+        response.data.data.forEach(s => {
+          this.weddingDayArray.push({text: s.weddingDay, value: s.id})
+        })
+        if (response.data.data.length == 1) {
+          this.weddingDay = response.data.data[0].weddingDay
+          this.weddingDayId = response.data.data[0].id
+          this.defaultWeddingDay()
+        }
+      })
+    },
+    weddingDayConfirm(val) {
+      this.weddingDay = val.text
+      this.weddingDayId = val.id
+      this.weddingDayCancel()
+      this.defaultWeddingDay()
+    },
+    weddingDayCancel() {
+      this.weddingDaySelectShowPicker = false
+    },
+    weddingDayChange() {
 
+    },
+    dateAmongClick() {
+      if (this.weddingDay === "") {
+        this.$toast.fail("请先选择婚期")
+        return
+      }
+      this.dateSectionShow=true
+    },
+    defaultWeddingDay() {
+      this.dateAmong = get_before_date(this.weddingDay, this.rule, 0)
+      const dateArray = this.$dateUtils.getAroundDate(this.weddingDay,this.rule)
+      this.minDate = dateArray[0]
+      this.maxDate = dateArray[1]
+      this.defaultDate = this.$dateUtils.dateSectionStrToDateArray(this.dateAmong)
+    }
   }
 }
 

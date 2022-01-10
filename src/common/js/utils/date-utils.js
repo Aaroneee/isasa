@@ -62,11 +62,12 @@ export default {
             " - "+this.vantDateToYMD(new Date(nowDate.getTime() + 24*60*60*1000));
         return dateArray;
     },
-    getAroundDate: function (date) {
+    //获取时间前后 day 天的日期
+    getAroundDate: function (date, day) {
         const dateArray = new Array(2);
         const nowDate = new Date(date);
-        dateArray[0] = new Date(nowDate.getTime() - 24*60*60*1000);
-        dateArray[1] = new Date(nowDate.getTime() + 24*60*60*1000);
+        dateArray[0] = new Date(nowDate.getTime() - 24 * 60 * 60 * 1000 * day);
+        dateArray[1] = new Date(nowDate.getTime() + 24 * 60 * 60 * 1000 * day);
         return dateArray;
     },
 
@@ -87,5 +88,9 @@ export default {
         let month = this.dateIsSingle(val.getMonth() + 1);
         let lastDay = new Date(year, val.getMonth()+1, 0).getDate();
         return year + "-" + month + "-01 - " + year + "-" + month + "-" + lastDay;
+    },
+    convertDateFromString(dateString) {
+        var date = new Date(dateString.replace(/-/,"/"))
+        return date;
     },
 }

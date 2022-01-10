@@ -132,8 +132,42 @@
             </van-cell>
           </div>
         </van-tab>
+        <van-tab title="精确婚期">
+          <van-cell v-for="item in weddingDayArray" :key="item.id">
+            <template #title>
+              {{item.weddingDay}}
+            </template>
+            <template #right-icon>
+              <van-button size="mini" type="primary" @click="weddingDayEdit(item)">编辑</van-button>
+              <van-button size="mini" type="danger" @click="weddingDayRemove(item.id)">删除</van-button>
+            </template>
+          </van-cell>
+          <van-row style="margin-top: 5vh;margin-bottom: 2vh">
+            <van-col span="20" :offset="2">
+              <van-button style="width: 100%" icon="plus" @click="addWeddingDay" round color="linear-gradient(to right, #ff6034, #ee0a24)">
+                添加婚期
+              </van-button>
+            </van-col>
+          </van-row>
+<!--          <van-swipe-cell v-for="item in weddingDayArray" :keu="item.id">-->
+<!--            <van-cell :border="false" :value="item.weddingDay"/>-->
+<!--            <template #right>-->
+<!--              <van-button square type="primary" text="编辑" />-->
+<!--              <van-button square type="danger" text="删除" />-->
+<!--            </template>-->
+<!--          </van-swipe-cell>-->
+        </van-tab>
       </van-tabs>
-
+      <van-calendar :default-date="null"
+                    v-model="weddingDayChooseShow"
+                    confirm-disabled-text="请选择婚期"
+                    confirm-text="确认添加"
+                    @confirm="weddingDayChooseOnConfirm"/>
+      <van-calendar :default-date="weddingDay"
+                    v-model="editWeddingDayShow"
+                    confirm-disabled-text="请选择婚期"
+                    confirm-text="确认修改"
+                    @confirm="weddingDayUpdateOnConfirm"/>
     </van-row>
   </div>
 </template>
@@ -162,6 +196,11 @@ export default {
       isHide: "",
       yarnClothesList: [],
       orderList: [],
+      weddingDayArray: [],
+      weddingDayChooseShow: false,
+      editWeddingDayShow: false,
+      weddingDay: null,
+      editWeddingDay: {},
     }
   },
   created() {
@@ -172,6 +211,7 @@ export default {
     this.queryCusSchedules(this.cusId)
     this.queryYarnClothesList()
     this.queryOrderListByAppId()
+    this.queryWeddingDayByOrderId()
   },
   methods: {
     queryOrderVo: function () {
@@ -252,6 +292,88 @@ export default {
     clickItem: function (value) {
       ImagePreview(['\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+value.styleImage])
     },
+    queryWeddingDayByOrderId() {
+      this.weddingDayArray = []
+      this.$axios({
+        method: "get",
+        url: "/weddingDate/queryWeddingDayByOrderId",
+        params: {
+          orderId: this.id
+        }
+      }).then(response => {
+        this.weddingDayArray.push(...response.data.data)
+        console.log(this.weddingDayArray)
+      })
+    },
+    weddingDayChooseOnConfirm(val) {
+      this.$axios.post('/weddingDate/addWeddingDay', {
+        weddingDay: this.$dateUtils.vantDateToYMD(val),
+        createDate: new Date(),
+        orderId: this.id
+      }).then(response => {
+        let flag = response.data.code === 200
+        if (flag) {
+          this.$toast.success("添加成功")
+          setTimeout(() => {
+            this.weddingDayChooseShow = false
+          }, 500)
+          this.queryWeddingDayByOrderId()
+        }
+        if (!flag) {
+          this.$toast.fail(response.data.msg)
+        }
+      })
+    },
+    addWeddingDay() {
+      this.weddingDayChooseShow = true
+    },
+    weddingDayEdit(val) {
+      this.editWeddingDay = val
+      this.weddingDay = this.$dateUtils.convertDateFromString(val.weddingDay)
+      this.editWeddingDayShow = true
+    },
+    weddingDayRemove(val) {
+      this.$axios({
+        method: "delete",
+        url: "/weddingDate/removeWeddingDayById",
+        params: {
+          id: val
+        }
+      }).then(response => {
+        let flag = response.data.code === 200
+        if (flag) {
+          this.$toast.success("删除成功")
+          this.queryWeddingDayByOrderId()
+        }
+        if (!flag) {
+          this.$toast.fail(response.data.msg)
+        }
+      })
+    },
+    weddingDayUpdateOnConfirm(val) {
+      console.log(val)
+      this.$axios({
+        method: "post",
+        url: "/weddingDate/updateWeddingDayById",
+        data: {
+          id: this.editWeddingDay.id,
+          weddingDay: this.$dateUtils.vantDateToYMD(val),
+          createDate: new Date(),
+        }
+      }).then(response => {
+        let flag = response.data.code === 200
+        if (flag) {
+          this.$toast.success("修改成功！")
+          this.queryWeddingDayByOrderId()
+          setTimeout(()=> {
+            this.editWeddingDayShow = false
+          }, 500)
+        }
+        if (!flag) {
+          this.$toast.fail(response.data.msg)
+        }
+      })
+    }
   }, watch: {
     editFlag: function (value) {
       if (value) {

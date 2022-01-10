@@ -61,11 +61,6 @@ export default [
         component: yarnClothesImages
     },
     {
-        path: '/appAdd',
-        name: 'appAdd',
-        component: appAdd,
-    },
-    {
         path: '/afterSaleAppAdd',
         name: 'afterSaleAppAdd',
         component: afterSaleAppAdd,

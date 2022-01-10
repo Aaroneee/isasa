@@ -111,7 +111,7 @@ export default {
   margin: 0px 8px 8px 8px;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
-  padding-bottom: 7px;
+  padding-bottom: 8px;
   border-color: #ffffff!important;
 }
 /deep/ .van-cell-group__title{
