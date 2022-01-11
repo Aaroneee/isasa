@@ -122,9 +122,6 @@
               @click="dateAmongClick"
               :rules="[{ required: true }]"
           />
-          <van-calendar ref="dateRef" safe-area-inset-bottom v-model="dateSectionShow" allow-same-day
-                        :min-date="minDate" :max-date="maxDate" :default-date="defaultDate" type="range"
-                        @confirm="dateSectionConfirm"/>
           <br>
           <br>
           <br>
@@ -137,7 +134,9 @@
         </van-form>
       </van-collapse>
     </van-popup>
-
+    <van-calendar ref="dateRef" safe-area-inset-bottom v-model="dateSectionShow" allow-same-day
+                  :min-date="minDate" :max-date="maxDate" :default-date="defaultDate" type="range"
+                  @confirm="dateSectionConfirm"/>
 
   </div>
 </template>
