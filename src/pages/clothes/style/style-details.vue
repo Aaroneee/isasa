@@ -6,12 +6,12 @@
     <!--    头部-->
     <div class="card">
       <van-row><p class="cardTitle">款式信息</p></van-row>
-      <van-row>
+      <van-row :gutter="20">
         <van-col :span="10">
           <div style="display: flex;justify-content: space-around;height: 100%">
             <img
-                alt="styleImage"
-                style="  height: 150px;width: 110px;border-radius: 7px"
+                alt="图片已损坏，请重新上传图片"
+                style="height: 150px;width: 120px;border-radius: 7px"
                 :src="'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+this.style.styleImage"/>
           </div>
         </van-col>

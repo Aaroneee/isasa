@@ -41,8 +41,8 @@
         <van-cell style="font-size: 12px">
           <van-row gutter="20">
             <van-col span="12"  v-for="item in styleList" :key="item.id" @click="toStyleDetails(item)" style="text-align: center">
-              <img style="height: 200px;width:160px;border-radius: 7px"
-                         :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage"/>
+              <van-image class="style-img" radius="7"
+                         :src="'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage"/>
               <div class="styleInfo">
                 <p>{{ item.typeName + item.styleName }}</p>
                 <p>{{ item.styleAlias }}</p>
@@ -96,6 +96,7 @@ export default {
         url: '/style/mStyleList',
         params: {
           page: this.page,
+          limit:20,
           styleName: this.styleName,
           styleType: this.styleType,
           tenantCrop: this.tenantCrop,
@@ -195,5 +196,12 @@ p{
 }
 .styleInfo{
   margin-bottom: 10px;
+}
+.van-image {
+  height: 240px;
+}
+
+.style-img {
+  width: 100%;
 }
 </style>
