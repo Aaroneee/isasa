@@ -1,7 +1,7 @@
 <template>
   <div>
     <van-sticky>
-      <switchNavBar title="款式详情" switchText="操作" @flag="buttonShow=!buttonShow"/>
+      <baseNavBar title="款式详情"/>
     </van-sticky>
     <!--    头部-->
     <div class="card">
@@ -61,13 +61,33 @@
         </van-col>
       </van-row>
     </div>
-
-    <div style="padding-bottom: 5%;" v-show="buttonShow">
-      <per-button @click="addClothes" type="info" per="style_details:add_clothes" :span="6">添加婚纱</per-button>
-      <per-button @click="updateStyle" type="warning" per="style_details:edit" :span="6">编辑</per-button>
-      <per-button @click="toStyleImage" type="info" per="style_details:image" :span="6">查看图片</per-button>
-      <per-button @click="toStylePrice" type="primary" per="style_details:price" :span="6">查看价格</per-button>
-      <per-button @click="deleteStyle" type="danger" per="style_details:delete" :span="6">删除</per-button>
+    <div style="height: 50px"></div>
+    <div id="operationDiv">
+      <div id="operationCon">
+        <p class="cardTitle" style="padding-top: 10px">操作菜单</p>
+        <div id="operationParent">
+          <div class="operationBlock" @click="addClothes" v-if="this.$per('style_details:add_clothes')">
+            <van-icon name="add-o" size="30"/>
+            <p>添加婚纱</p>
+          </div>
+          <div class="operationBlock" @click="updateStyle" v-if="this.$per('style_details:edit')">
+            <van-icon name="edit" size="30"/>
+            <p>编辑</p>
+          </div>
+          <div class="operationBlock" @click="toStyleImage" v-if="this.$per('style_details:image')">
+            <van-icon name="photo-o" size="30"/>
+            <p>查看图片</p>
+          </div>
+          <div class="operationBlock" @click="toStylePrice" v-if="this.$per('style_details:price')">
+            <van-icon name="balance-o" size="30"/>
+            <p>查看价格</p>
+          </div>
+          <div class="operationBlock" @click="deleteStyle" v-if="this.$per('style_details:delete')">
+            <van-icon name="delete-o" size="30"/>
+            <p>删除款式</p>
+          </div>
+        </div>
+      </div>
     </div>
     <br><br><br><br><br><br>
     <p/>
@@ -85,12 +105,12 @@
 </template>
 
 <script>
-import switchNavBar from "@/components/nav-bar/switch-nav-bar"
+import baseNavBar from "@/components/nav-bar/base-nav-bar"
 
 export default {
   name: "styleDetails",
   components: {
-    switchNavBar,
+    baseNavBar,
   },
   created() {
     this.style = this.$route.query
@@ -100,7 +120,6 @@ export default {
   data() {
     return {
       style: {},
-      buttonShow: false,
       tenantCrop: localStorage.getItem("tenantCrop"),
       empId: localStorage.getItem("empId"),
 
@@ -220,6 +239,7 @@ export default {
         // on cancel
       });
     },
+
   }
 }
 </script>
@@ -243,7 +263,43 @@ export default {
   display: inline-block;
   /*align-items: center;*/
 }
+#operationDiv {
+  position: fixed;
+  bottom: 10px;
+  width: 100%;
+}
 
+#operationCon {
+  border-radius: 10px;
+  margin: 0 auto;
+  background: white;
+  height: 110px;
+  width: 95%;
+}
+.PTitle {
+  font-size: 17px;
+  font-weight: bold;
+  text-align: center;
+  padding-top: 3%;
+}
+
+#operationParent {
+  padding: 10px 0;
+  white-space: nowrap;
+  /*文本不会换行，文本会在在同一行上继续*/
+  overflow-y: auto;
+}
+
+#operationParent::-webkit-scrollbar {
+  display: none; /* Chrome Safari */
+}
+
+.operationBlock {
+  height: 50px;
+  text-align: center;
+  display: inline-block;
+  margin: 0 4%
+}
 p {
   font-size: 15px;
   margin: 2% 0;
