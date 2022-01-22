@@ -158,12 +158,14 @@
 <!--          </van-swipe-cell>-->
         </van-tab>
       </van-tabs>
-      <van-calendar :default-date="null"
+      <van-calendar :default-date="new Date()"
+                    :min-date="minDate" :max-date="maxDate"
                     v-model="weddingDayChooseShow"
                     confirm-disabled-text="请选择婚期"
                     confirm-text="确认添加"
                     @confirm="weddingDayChooseOnConfirm"/>
       <van-calendar :default-date="weddingDay"
+                    :min-date="editMinDate" :max-date="editMaxDate"
                     v-model="editWeddingDayShow"
                     confirm-disabled-text="请选择婚期"
                     confirm-text="确认修改"
@@ -196,8 +198,12 @@ export default {
       isHide: "",
       yarnClothesList: [],
       orderList: [],
+      maxDate:this.$dateUtils.getMaxMinDate()[0],
+      minDate:this.$dateUtils.getMaxMinDate()[1],
       weddingDayArray: [],
       weddingDayChooseShow: false,
+      editMaxDate:this.$dateUtils.getMaxMinDate()[0],
+      editMinDate:this.$dateUtils.getMaxMinDate()[1],
       editWeddingDayShow: false,
       weddingDay: null,
       editWeddingDay: {},
