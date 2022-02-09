@@ -44,8 +44,14 @@
               <van-image class="style-img" radius="7"
                          :src="'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage"/>
               <div class="styleInfo">
-                <p>{{ item.typeName + item.styleName }}</p>
-                <p>{{ item.styleAlias }}</p>
+                <van-row>
+                  <van-col span="10">
+                    <p>{{ item.typeName + item.styleName }}</p>
+                  </van-col>
+                  <van-col span="14">
+                    <p>{{ item.styleAlias }}</p>
+                  </van-col>
+                </van-row>
               </div>
             </van-col>
           </van-row>
@@ -191,14 +197,19 @@ export default {
   color: rgb(182, 177, 189);
 }
 p{
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   font-size: 15px;
   margin: 0 !important;
 }
 .styleInfo{
-  margin-bottom: 10px;
+  margin-top: 3px;
+  margin-bottom: 5px;
 }
 .van-image {
   height: 240px;
+  display: block;
 }
 
 .style-img {
