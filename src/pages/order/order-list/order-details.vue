@@ -251,6 +251,7 @@ export default {
           params: {
             clothesId: value.clothesId,
             orderId: this.id,
+            weddingDayId: value.weddingDayId
           },
           url: '/schedule/removeClothesSchedule',
         }).then(response => {
