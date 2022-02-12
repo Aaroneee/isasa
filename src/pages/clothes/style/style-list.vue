@@ -39,13 +39,21 @@
           @load="onLoad"
           finished-text="没有更多了">
         <van-cell style="font-size: 12px">
-          <van-row gutter="20">
+          <van-row gutter="5">
             <van-col span="12"  v-for="item in styleList" :key="item.id" @click="toStyleDetails(item)" style="text-align: center">
-              <img style="height: 200px;width:160px;border-radius: 7px"
-                         :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage"/>
-              <div class="styleInfo">
-                <p>{{ item.typeName + item.styleName }}</p>
-                <p>{{ item.styleAlias }}</p>
+              <div class="card">
+                <van-image class="style-img" radius="7"
+                           :src="'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage+'?imageMogr2/rquality/60'"/>
+                <div class="styleInfo">
+                  <van-row>
+                    <van-col span="10">
+                      <p class="pFont" style="text-align: left">{{ item.typeName + item.styleName }}</p>
+                    </van-col>
+                    <van-col span="14">
+                      <p class="pFont" style="text-align: right">{{ item.styleAlias }}</p>
+                    </van-col>
+                  </van-row>
+                </div>
               </div>
             </van-col>
           </van-row>
@@ -96,6 +104,7 @@ export default {
         url: '/style/mStyleList',
         params: {
           page: this.page,
+          limit:20,
           styleName: this.styleName,
           styleType: this.styleType,
           tenantCrop: this.tenantCrop,
@@ -190,10 +199,37 @@ export default {
   color: rgb(182, 177, 189);
 }
 p{
-  font-size: 15px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   margin: 0 !important;
 }
 .styleInfo{
-  margin-bottom: 10px;
+  margin-top: 3px;
+  margin-bottom: 5px;
+}
+.van-image {
+  height: 220px;
+  display: block;
+}
+
+.style-img {
+  margin: 0 auto;
+  width: 100%;
+}
+.card{
+  padding: 5px 10px 0 10px ;
+  background-color: white;
+  border-radius: 10px;
+  margin-bottom: 3%
+}
+.pFont{
+  padding: 0 3px;
+  font-size: 13px;
+}
+.van-cell{
+  padding: 10px 5px;
+  background-color:#f7f8fa;
+  /*background-color: #1a2a4c;*/
 }
 </style>

@@ -15,6 +15,7 @@ import projectsType from './common/js/constant/projects-type';
 import SlimCropper from 'vue-slim-cropper';
 import PerButton from "./components/button/per-button"
 import Clipboard from "vue-clipboard2";
+import hasPermission from "./permission/index";
 
 
 Vue.use(Vant)
@@ -27,6 +28,7 @@ Vue.prototype.$roleUtils = roleUtils;
 Vue.prototype.$upload = upload
 Vue.prototype.$projectsType = projectsType;
 Vue.prototype.$stringUtils = stringUtils;
+Vue.prototype.$per = hasPermission;
 Vue.use(SlimCropper)
 Vue.use(Clipboard)
 Vue.config.productionTip = false

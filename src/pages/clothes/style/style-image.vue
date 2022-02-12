@@ -1,15 +1,15 @@
 <template>
   <div>
-    <baseNavBar title="款式图片"/>
+    <van-sticky><baseNavBar title="款式图片"/></van-sticky>
     <van-collapse v-model="activeNames" style="padding:4% 4% 4% 4%">
       <van-collapse-item v-for="item in styleImageArray" :key="item.id"
-                         :title="item.imageTypeName"
-                         :name="item.id">
-        <van-cell-group style="text-align: center">
+                         :title="item.typeName"
+                         :name="item.typeName">
+        <div v-for="chil in item.image" :key="chil.id" style="width: 90%;height: 90%;margin: 0 auto">
           <van-image radius="7"
-                     :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage"
-                     @click="imageShowClick('https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage)"/>
-        </van-cell-group>
+                     :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+chil.styleImage"
+                     @click="imageShowClick('https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+chil.styleImage)"/>
+        </div>
       </van-collapse-item>
     </van-collapse>
     <div @touchstart.prevent="touchStart()" @touchend.prevent="touchEnd()">
@@ -59,7 +59,7 @@ export default {
           styleId: this.styleId,
         }
       }).then(response => {
-        this.styleImageArray = response.data.data
+        this.styleImageArray=this.arrGroupBy(response.data.data);
       })
     },
     imageShowClick(val) {
@@ -84,6 +84,28 @@ export default {
 
       this.showShare = false
     },
+    arrGroupBy(array){
+      if (array===undefined||array===null||array===[]||array.length===0) return [];
+      //获取去重后的图片类型
+      let typeName=[];
+      array.map(k=>{return k.imageTypeName}).forEach(k=>{
+        if (!typeName.includes(k)){
+          typeName.push(k)
+        }
+      })
+
+      let newArr=[];
+      typeName.forEach(k=>{
+        let arrItem={typeName:k,image:[]}
+        array.forEach(v=>{
+          if(k===v.imageTypeName){
+            arrItem.image.push(v)
+          }
+        })
+        newArr.push(arrItem)
+      })
+      return newArr;
+    }
   }
 }
 </script>
