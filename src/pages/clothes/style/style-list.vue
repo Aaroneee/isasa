@@ -39,19 +39,21 @@
           @load="onLoad"
           finished-text="没有更多了">
         <van-cell style="font-size: 12px">
-          <van-row gutter="20">
+          <van-row gutter="5">
             <van-col span="12"  v-for="item in styleList" :key="item.id" @click="toStyleDetails(item)" style="text-align: center">
-              <van-image class="style-img" radius="7"
-                         :src="'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage"/>
-              <div class="styleInfo">
-                <van-row>
-                  <van-col span="10">
-                    <p>{{ item.typeName + item.styleName }}</p>
-                  </van-col>
-                  <van-col span="14">
-                    <p>{{ item.styleAlias }}</p>
-                  </van-col>
-                </van-row>
+              <div class="card">
+                <van-image class="style-img" radius="7"
+                           :src="'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage+'?imageMogr2/rquality/60'"/>
+                <div class="styleInfo">
+                  <van-row>
+                    <van-col span="10">
+                      <p class="pFont" style="text-align: left">{{ item.typeName + item.styleName }}</p>
+                    </van-col>
+                    <van-col span="14">
+                      <p class="pFont" style="text-align: right">{{ item.styleAlias }}</p>
+                    </van-col>
+                  </van-row>
+                </div>
               </div>
             </van-col>
           </van-row>
@@ -200,7 +202,6 @@ p{
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  font-size: 15px;
   margin: 0 !important;
 }
 .styleInfo{
@@ -208,11 +209,27 @@ p{
   margin-bottom: 5px;
 }
 .van-image {
-  height: 240px;
+  height: 220px;
   display: block;
 }
 
 .style-img {
+  margin: 0 auto;
   width: 100%;
+}
+.card{
+  padding: 5px 10px 0 10px ;
+  background-color: white;
+  border-radius: 10px;
+  margin-bottom: 3%
+}
+.pFont{
+  padding: 0 3px;
+  font-size: 13px;
+}
+.van-cell{
+  padding: 10px 5px;
+  background-color:#f7f8fa;
+  /*background-color: #1a2a4c;*/
 }
 </style>
