@@ -90,7 +90,7 @@ export default {
         return year + "-" + month + "-01 - " + year + "-" + month + "-" + lastDay;
     },
     convertDateFromString(dateString) {
-        var date = new Date(dateString.replace(/-/,"/"))
+        var date = new Date(dateString.replaceAll("-","/"))
         return date;
     },
 }
