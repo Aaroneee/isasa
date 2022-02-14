@@ -44,12 +44,12 @@
               <div class="card">
                 <div class="imgFont">
                   <van-badge :content="item.brandName===''?'暂无':item.brandName" color="#7ab4ee">
-                    <van-image v-if="item.styleImage===''" alt="主图加载异常,请重新选择主图">
-                      <template v-slot:error>主图加载异常,请重新选择主图</template>
-                    </van-image>
-                    <van-image v-else class="style-img" radius="7"
+                    <van-image class="style-img" radius="7"
                                fit="contain"
-                               :src="'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage+'?imageMogr2/rquality/60'"/>
+                               :src="item.styleImage===''?'null'
+                               :'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage+'?imageMogr2/rquality/60'">
+                      <template v-slot:error>加载失败,请更换主图</template>-->
+                    </van-image>
                   </van-badge>
                   <div class="styleInfo">
                     <van-row>
@@ -210,12 +210,7 @@ export default {
   border: 1px solid #de0d0d;
   color: rgb(182, 177, 189);
 }
-p{
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  margin: 0 !important;
-}
+
 .styleInfo{
   margin-bottom: 5px;
 }
@@ -247,6 +242,11 @@ p{
   max-width: 165px;
 }
 .pFont{
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin: 0 !important;
+
   font-weight: bold;
   padding: 0 3px;
   font-size: 12px;
