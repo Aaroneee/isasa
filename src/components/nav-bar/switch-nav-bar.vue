@@ -32,6 +32,9 @@ export default {
     onClickRight: function () {
       this.$emit("flag", true);
     },
+  },
+  mounted() {
+    window.onClickLeft = this.onClickLeft
   }
 }
 </script>

@@ -10,7 +10,7 @@
         <van-col :span="10">
           <div style="display: flex;justify-content: space-around;height: 100%">
             <img
-                alt="图片已损坏，请重新上传图片"
+                alt="图片已损坏，请重新选择主图"
                 style="height: 150px;width: 120px;border-radius: 7px"
                 :src="'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+this.style.styleImage"/>
           </div>

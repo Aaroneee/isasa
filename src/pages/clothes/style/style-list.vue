@@ -42,18 +42,27 @@
           <van-row gutter="5">
             <van-col span="12"  v-for="item in styleList" :key="item.id" @click="toStyleDetails(item)" style="text-align: center">
               <div class="card">
-                <van-image class="style-img" radius="7"
-                           :src="'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage+'?imageMogr2/rquality/60'"/>
-                <div class="styleInfo">
-                  <van-row>
-                    <van-col span="10">
-                      <p class="pFont" style="text-align: left">{{ item.typeName + item.styleName }}</p>
-                    </van-col>
-                    <van-col span="14">
-                      <p class="pFont" style="text-align: right">{{ item.styleAlias }}</p>
-                    </van-col>
-                  </van-row>
+                <div class="imgFont">
+                  <van-badge :content="item.brandName===''?'暂无':item.brandName" color="#7ab4ee">
+                    <van-image class="style-img" radius="7"
+                               fit="contain"
+                               :src="item.styleImage===''?'null'
+                               :'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage+'?imageMogr2/rquality/60'">
+                      <template v-slot:error>加载失败,请更换主图</template>-->
+                    </van-image>
+                  </van-badge>
+                  <div class="styleInfo">
+                    <van-row>
+                      <van-col span="10">
+                        <p class="pFont" style="text-align: left">{{ item.typeName + item.styleName }}</p>
+                      </van-col>
+                      <van-col span="14">
+                        <p class="pFont" style="text-align: right">{{ item.styleAlias }}</p>
+                      </van-col>
+                    </van-row>
+                  </div>
                 </div>
+
               </div>
             </van-col>
           </van-row>
@@ -189,6 +198,9 @@ export default {
 </script>
 
 <style scoped>
+.van-dropdown-menu >>> .van-dropdown-menu__title {
+  font-size: 12px;
+}
 .tag-padding {
   margin-left: 5px;
   margin-right: 5px;
@@ -198,18 +210,15 @@ export default {
   border: 1px solid #de0d0d;
   color: rgb(182, 177, 189);
 }
-p{
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  margin: 0 !important;
-}
+
 .styleInfo{
-  margin-top: 3px;
   margin-bottom: 5px;
 }
 .van-image {
-  height: 220px;
+  min-height: 220px;
+  max-height: 220px;
+
+  max-width: 165px;
   display: block;
 }
 
@@ -218,18 +227,39 @@ p{
   width: 100%;
 }
 .card{
+  min-height: 250px;
+  max-height: 250px;
+  min-width: 160px;
   padding: 5px 10px 0 10px ;
   background-color: white;
   border-radius: 10px;
-  margin-bottom: 3%
+  margin: 0 auto 3% auto;
+}
+.imgFont{
+  margin: 0 auto;
+  width: 100%;
+  min-width: 165px;
+  max-width: 165px;
 }
 .pFont{
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin: 0 !important;
+
+  font-weight: bold;
   padding: 0 3px;
-  font-size: 13px;
+  font-size: 12px;
 }
-.van-cell{
+.van-list >>> .van-cell{
   padding: 10px 5px;
   background-color:#f7f8fa;
+  line-height:17px;
   /*background-color: #1a2a4c;*/
+}
+.card >>> .van-badge--fixed{
+  left: 0;
+  right: auto;
+  -webkit-transform: none;
 }
 </style>

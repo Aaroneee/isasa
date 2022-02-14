@@ -23,6 +23,9 @@ export default {
     onClickLeft: function () {
       this.$router.back()
     }
+  },
+  mounted() {
+    window.onClickLeft = this.onClickLeft
   }
 }
 </script>
