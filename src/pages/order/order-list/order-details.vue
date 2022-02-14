@@ -303,9 +303,9 @@ export default {
       this.weddingDayArray = []
       this.$axios({
         method: "get",
-        url: "/weddingDate/queryWeddingDayByOrderId",
+        url: "/weddingDate/queryWeddingDayByCusId",
         params: {
-          orderId: this.id
+          cusId: this.cusId
         }
       }).then(response => {
         this.weddingDayArray.push(...response.data.data)
@@ -316,7 +316,8 @@ export default {
       this.$axios.post('/weddingDate/addWeddingDay', {
         weddingDay: this.$dateUtils.vantDateToYMD(val),
         createDate: new Date(),
-        orderId: this.id
+        orderId: this.id,
+        cusId: this.cusId
       }).then(response => {
         let flag = response.data.code === 200
         if (flag) {

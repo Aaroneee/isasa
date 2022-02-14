@@ -346,9 +346,9 @@ export default {
     queryWeddingDayByOrderId() {
       this.$axios({
         method: "get",
-        url: "/weddingDate/queryWeddingDayByOrderId",
+        url: "/weddingDate/queryWeddingDayByCusId",
         params: {
-          orderId: this.order.id
+          cusId: this.order.cusId
         }
       }).then(response => {
         response.data.data.forEach(s => {
@@ -363,7 +363,7 @@ export default {
     },
     weddingDayConfirm(val) {
       this.weddingDay = val.text
-      this.weddingDayId = val.id
+      this.weddingDayId = val.value
       this.weddingDayCancel()
       this.defaultWeddingDay()
     },
