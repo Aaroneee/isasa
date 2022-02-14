@@ -49,42 +49,43 @@
           @load="onLoad"
           finished-text="没有更多了"
       >
-        <van-cell style="font-size: 12px" v-for="item in clothesList" :key="item.id">
-          <van-grid :border="false" :column-num="2" :gutter="1">
-            <van-grid-item v-if="item[0] != null">
-              <div v-if="item[0].styleImage !== ''">
-                <van-image class="style-img" radius="7" @click="clickItem(item[0])"
-                           :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[0].styleImage">
-                </van-image>
-              </div>
-              <div v-else>
-                <van-image class="style-img">
-                  <template v-slot:error>未上传图片</template>
-                </van-image>
-              </div>
-              <span
-                  v-text="item[0].styleType+'-'+item[0].styleName+'-'+item[0].clothesSize+'-'+item[0].clothesNo"></span>
-<!--              <span v-text="item[0].shopName"></span><span v-text="item[0].positionName"></span>-->
-<!--              <span v-if="item[0].shopName === ''">店铺未选择</span> <span v-if="item[0].positionName === ''">位置未选择</span>-->
-            </van-grid-item>
+        <van-cell style="font-size: 12px">
+          <van-row gutter="5">
+            <van-col span="12"  v-for="item in clothesList" :key="item.id" @click="clickItem(item)" style="text-align: center">
+              <div class="card">
+                <div class="imgFont">
 
-            <van-grid-item v-if="item[1] != null">
-              <div v-if="item[1].styleImage !== ''">
-                <van-image class="style-img" radius="7" @click="clickItem(item[1])"
-                           :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[1].styleImage">
-                </van-image>
+                  <van-image v-if="item.styleImage===''" src="https://img01.yzcdn.cn/vant/cat.jpeg">
+
+                  </van-image>
+                    <van-image class="style-img" radius="7"
+                               fit="contain"
+                               :src="'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage+'?imageMogr2/rquality/60'">
+                    </van-image>
+                  <div class="styleInfo">
+
+                    <van-row>
+                      <van-col span="14">
+                        <p class="pFont" style="text-align: left">{{item.styleType+'-'+item.styleName+'-'+item.clothesSize+'-'+item.clothesNo}}</p>
+                      </van-col>
+                      <van-col span="10">
+                        <p class="pFont" style="text-align: right">{{ item.styleAlias }}</p>
+                      </van-col>
+                    </van-row>
+                    <van-row>
+                      <van-col span="14">
+                        <p class="pFont" style="text-align: left">{{item.brand===''?'暂无':item.brand}}</p>
+                      </van-col>
+                      <van-col span="10">
+                        <p class="pFont" style="text-align: right">{{ item.positionName }}</p>
+                      </van-col>
+                    </van-row>
+                  </div>
+                </div>
+
               </div>
-              <div v-else>
-                <van-image class="style-img">
-                  <template v-slot:error>未上传图片</template>
-                </van-image>
-              </div>
-              <span
-                  v-text="item[1].styleType+'-'+item[1].styleName+'-'+item[1].clothesSize+'-'+item[1].clothesNo"></span>
-<!--              <span v-text="item[1].shopName"></span><span v-text="item[1].positionName"></span>-->
-<!--              <span v-if="item[1].shopName === ''">店铺未选择</span> <span v-if="item[1].positionName === ''">位置未选择</span>-->
-            </van-grid-item>
-          </van-grid>
+            </van-col>
+          </van-row>
         </van-cell>
       </van-list>
     </div>
@@ -190,7 +191,8 @@ export default {
             this.loading = false
             this.page = response.data.data.nextPage
           }
-          this.clothesList.push(...arrTrans(2, response.data.data.list))
+          this.clothesList.push(...response.data.data.list)
+          console.log(this.clothesList)
         } else {
           this.finished = true
           this.$toast.fail(response.data.msg);
@@ -309,47 +311,75 @@ export default {
     next()
   },
 }
-
-function arrTrans(num, arr) {
-  const iconsArr = [];
-  if (arr!==""){
-    arr.forEach((item, index) => {
-      const page = Math.floor(index / num);
-      if (!iconsArr[page]) {
-        iconsArr[page] = [];
-      }
-      iconsArr[page].push(item);
-    });
-  }
-  return iconsArr;
-}
 </script>
 
 
-<style>
-* {
-  -webkit-overflow-scrolling: touch;
+<style scoped>
+.van-dropdown-menu >>> .van-dropdown-menu__title {
+  font-size: 12px;
 }
 
-body {
-  overflow-x: hidden
-}
+/*.van-image__img {*/
+/*  min-height: 200px;*/
+/*}*/
 
-.auto {
-  overflow-y: auto;
-  position: relative;
-  z-index: 1;
-}
+/*.style-img {*/
+/*  width: 100%;*/
+/*}*/
 
-.van-dropdown-menu__title {
-  font-size: 10px;
-}
+.van-image {
+  min-height: 220px;
+  max-height: 220px;
 
-.van-image__img {
-  min-height: 200px;
+  max-width: 165px;
+  display: block;
 }
-
+/*p{*/
+/*  overflow: hidden;*/
+/*  white-space: nowrap;*/
+/*  text-overflow: ellipsis;*/
+/*  margin: 0 !important;*/
+/*}*/
 .style-img {
+  margin: 0 auto;
   width: 100%;
+}
+.card{
+  min-height: 270px;
+  max-height: 270px;
+  min-width: 160px;
+  padding: 5px 10px 0 10px ;
+  background-color: white;
+  border-radius: 10px;
+  margin: 0 auto 3% auto;
+}
+.imgFont{
+  margin: 0 auto;
+  width: 100%;
+  min-width: 165px;
+  max-width: 165px;
+}
+.pFont{
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin: 0 !important;
+
+  font-weight: bold;
+  padding: 0 3px;
+  font-size: 11px;
+  margin-block-start: 5px;
+  margin-block-end: 5px;
+}
+.van-list >>> .van-cell{
+  padding: 10px 5px;
+  background-color:#f7f8fa;
+  /*line-height:17px;*/
+  /*background-color: #1a2a4c;*/
+}
+.card >>> .van-badge--fixed{
+  left: 0;
+  right: auto;
+  -webkit-transform: none;
 }
 </style>

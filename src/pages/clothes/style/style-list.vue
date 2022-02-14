@@ -43,8 +43,11 @@
             <van-col span="12"  v-for="item in styleList" :key="item.id" @click="toStyleDetails(item)" style="text-align: center">
               <div class="card">
                 <div class="imgFont">
-                  <van-badge :content="item.brandName" color="#7ab4ee">
-                    <van-image class="style-img" radius="7"
+                  <van-badge :content="item.brandName===''?'暂无':item.brandName" color="#7ab4ee">
+                    <van-image v-if="item.styleImage===''" alt="主图加载异常,请重新选择主图">
+                      <template v-slot:error>主图加载异常,请重新选择主图</template>
+                    </van-image>
+                    <van-image v-else class="style-img" radius="7"
                                fit="contain"
                                :src="'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage+'?imageMogr2/rquality/60'"/>
                   </van-badge>
@@ -195,6 +198,9 @@ export default {
 </script>
 
 <style scoped>
+.van-dropdown-menu >>> .van-dropdown-menu__title {
+  font-size: 12px;
+}
 .tag-padding {
   margin-left: 5px;
   margin-right: 5px;
@@ -241,8 +247,9 @@ p{
   max-width: 165px;
 }
 .pFont{
+  font-weight: bold;
   padding: 0 3px;
-  font-size: 13px;
+  font-size: 12px;
 }
 .van-list >>> .van-cell{
   padding: 10px 5px;
