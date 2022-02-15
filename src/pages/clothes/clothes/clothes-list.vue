@@ -58,7 +58,7 @@
                              fit="contain"
                              :src="item.styleImage===''?'null'
                              :'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage+'?imageMogr2/rquality/60'">
-                    <template v-slot:error>加载失败,请更换主图</template>-->
+                    <template v-slot:error>加载失败,请更换主图</template>
                   </van-image>
                   <div class="styleInfo">
 
@@ -343,8 +343,8 @@ export default {
   width: 100%;
 }
 .card{
-  min-height: 270px;
-  max-height: 270px;
+  min-height: 265px;
+  max-height: 265px;
   min-width: 160px;
   padding: 5px 10px 0 10px ;
   background-color: white;
@@ -357,22 +357,24 @@ export default {
   min-width: 165px;
   max-width: 165px;
 }
+.styleInfo{
+  margin-top: 5px;
+}
 .pFont{
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  margin: 0 !important;
+  margin: 0;
 
   font-weight: bold;
-  padding: 0 3px;
   font-size: 11px;
-  margin-block-start: 5px;
-  margin-block-end: 5px;
+  /*margin-block-start: 5px;*/
+  /*margin-block-end: 5px;*/
 }
 .van-list >>> .van-cell{
   padding: 10px 5px;
   background-color:#f7f8fa;
-  /*line-height:17px;*/
+  line-height:17px;
   /*background-color: #1a2a4c;*/
 }
 .card >>> .van-badge--fixed{

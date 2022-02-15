@@ -48,7 +48,7 @@
                                fit="contain"
                                :src="item.styleImage===''?'null'
                                :'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage+'?imageMogr2/rquality/60'">
-                      <template v-slot:error>加载失败,请更换主图</template>-->
+                      <template v-slot:error>加载失败,请更换主图</template>
                     </van-image>
                   </van-badge>
                   <div class="styleInfo">
