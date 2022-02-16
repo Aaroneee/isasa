@@ -72,7 +72,7 @@
                     </van-row>
                     <van-row>
                       <van-col span="14">
-                        <p class="pFont" style="text-align: left">{{item.brand===''?'暂无':item.brand}}</p>
+                        <p class="pFont" style="text-align: left">{{item.brand===''?'暂无品牌':item.brand}}</p>
                       </van-col>
                       <van-col span="10">
                         <p class="pFont" style="text-align: right">{{ item.positionName }}</p>
