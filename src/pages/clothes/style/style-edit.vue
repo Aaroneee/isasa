@@ -32,17 +32,27 @@
           name="styleName"
           v-model = "style.styleName"
           readonly
-          label="款式编号"
-          placeholder="查询款式名称"
+          label="店铺款式编号"
+          placeholder="店铺款式编号"
+          right-icon="question-o"
+          @click-right-icon="$toast('店铺内部编号')"
           :rules="[{ required: true }]">
       </van-field>
 
       <van-field
           name="styleAlias"
           v-model = "style.styleAlias"
-          readonly
           label="款式名称"
           placeholder="款式名称">
+      </van-field>
+
+      <van-field
+          name="factoryName"
+          v-model = "style.factoryName"
+          label="品牌款式编号"
+          right-icon="question-o"
+          @click-right-icon="$toast('品牌官方编号')"
+          placeholder="品牌款式编号">
       </van-field>
 
       <van-field
@@ -181,6 +191,7 @@ export default {
   },
   created() {
     this.style = this.$route.query
+    console.log(this.style)
     this.brand = this.style.brandName
     this.styleType = this.$route.query.styleType
     this.queryStyleIds()
@@ -239,12 +250,12 @@ export default {
         }
       }
       data.styleLabels = this.finalStyleLabels.toString()
-      console.log(data)
       this.$dialog.confirm({
         title: '修改款式',
         message: '确定要修改该款式吗？',
       }).then(() => {
         data.tenantCrop = this.tenantCrop
+        console.log(data)
         this.$axios({
           method: "PUT",
           url: "/style/editStyle",

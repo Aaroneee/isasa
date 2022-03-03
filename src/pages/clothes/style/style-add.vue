@@ -28,8 +28,8 @@
           v-model="styleNameText"
           :readonly="checkbox"
           center
-          label="款式编号"
-          placeholder="查询款式编号"
+          label="店铺款式编号"
+          placeholder="店铺款式编号"
           :rules="[{ required: true }]">
         <template #button>
           <van-checkbox v-model="checkbox" @click="autoStyleAlias">自动编号</van-checkbox>
@@ -41,6 +41,15 @@
         label="款式名称"
         placeholder="款式名称"
         v-model="styleAlias"
+      />
+      <van-field
+          name="factoryName"
+          v-model="factoryName"
+          rows="1"
+          label="品牌款式编号"
+          placeholder="品牌款式编号"
+          right-icon="question-o"
+          @click-right-icon="$toast('品牌官方编号')"
       />
       <van-field label="第一件婚纱">
         <template #input>
@@ -113,14 +122,6 @@
         />
       </van-popup>
       <!-- 所在位置 end-->
-<!--      <van-field-->
-<!--          v-if="firstSwitch"-->
-<!--          name="factoryName"-->
-<!--          v-model="factoryName"-->
-<!--          rows="1"-->
-<!--          label="采购来源"-->
-<!--          placeholder="请输入采购来源"-->
-<!--      />-->
       <van-field
           readonly
           clickable
