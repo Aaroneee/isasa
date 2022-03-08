@@ -230,7 +230,7 @@
             label="订单总价"
             placeholder="订单总价"
             v-if="orderSum"
-            v-model.number="process.orderPrice"
+            v-model.number="order.orderPrice"
             type="digit"
             name="orderPrice"
         />
@@ -310,7 +310,7 @@
           readonly
           v-if="orderSum"
           label="订单总价"
-          v-model="process.orderPrice"
+          v-model="order.orderPrice"
         />
         <van-field
           readonly
@@ -373,11 +373,11 @@ export default {
     this.pageInit()
   },
   watch: {
-    'process.orderPrice'(valOne) {
+    'order.orderPrice'(valOne) {
       this.process.orderSpare = valOne - this.process.spareMoney;
     },
     'process.spareMoney'(valOne) {
-      this.process.orderSpare = this.process.orderPrice - valOne;
+      this.process.orderSpare = this.order.orderPrice - valOne;
     },
   },
   data() {
@@ -413,6 +413,7 @@ export default {
         weddingDay: "",
         orderRemark: "",
         tenantCrop: localStorage.getItem("tenantCrop"),
+        orderPrice: "",
       },
       shopText: "",
       orderCreateDateShowPicker: false,
@@ -425,7 +426,6 @@ export default {
       process: {
         proceedsName: "",
         payment: "",
-        orderPrice: "",
         spareMoney: "",
         orderSpare: "",
         payee: "",
