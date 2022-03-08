@@ -20,6 +20,7 @@
                       type="range" @confirm="createDateOnConfirm" allow-same-day/>
         <van-dropdown-menu>
           <van-dropdown-item v-model="sort" @change="sortChange" :options="sortArrays"/>
+          <van-dropdown-item v-model="dress" @change="dressChange" :options="dressArray"/>
         </van-dropdown-menu>
       </van-sticky>
     </div>
@@ -28,6 +29,7 @@
         <van-list
             v-model="loading"
             :finished="finished"
+            @load="onLoad"
             finished-text="没有更多了"
         >
           <van-cell style="font-size: 12px" v-for="item in orderList" :key="item.id">
@@ -43,6 +45,11 @@
               <van-row>
                 <van-col span="12">下单时间:{{ item.createDate }}</van-col>
                 <van-col span="12" style="text-align: right">婚期:{{ item.weddingDay }}</van-col>
+              </van-row>
+              <van-row>
+                <van-col>
+                  礼服师:{{ item.dress }}
+                </van-col>
               </van-row>
               <van-row>
                 <van-col span="8">总价:{{ item.orderPrice }}</van-col>
@@ -98,10 +105,14 @@ export default {
       finished: false,
       sort:"desc",
       sortArrays: [{text: "按订单降序", value: "desc"},{text: "按婚期升序",value: "asc"}],
+      dressArray: [{text: "礼服师", value: null},],
+      dress: null,
+      page: 1,
     }
   },
   created() {
     this.queryOrderList();
+    this.queryDressArray()
   },
   methods: {
     //时间确认
@@ -109,6 +120,7 @@ export default {
       this.orderDate = "";
       this.createDate = this.$dateUtils.rangeVantDateToYMD(time);
       this.sort = "asc"
+      this.pageInit()
       this.queryOrderList();
       this.createDateShow = false;
     },
@@ -116,6 +128,7 @@ export default {
       this.createDate = "";
       this.orderDate = this.$dateUtils.rangeVantDateToYMD(time);
       this.sort = "desc"
+      this.pageInit()
       this.queryOrderList();
       this.orderDateShow = false;
     },
@@ -135,25 +148,35 @@ export default {
         }
       })
     },
-
-
     //查询订单列表
     queryOrderList: function () {
-      console.log("刷新")
+      this.loading = true
       this.$axios({
         method: "GET",
         url: "/order/mOrderList",
         params: {
+          page: this.page,
           searchValue: this.searchValue,
           createDate: this.createDate,
           orderDate: this.orderDate,
           tenantCrop: localStorage.getItem("tenantCrop"),
           wDSort: this.sort,
           shopIds: localStorage.getItem("shopIds"),
+          dress: this.dress
         }
       }).then(response => {
-        this.orderList = response.data.data.list;
-        this.finished = true;
+        if (response.data.code === 200) {
+          if (response.data.data.nextPage === 0) {
+            this.finished = true
+          } else {
+            this.loading = false
+            this.page = response.data.data.nextPage
+          }
+          this.orderList.push(...response.data.data.list)
+        } else {
+          this.finished = true;
+          this.$toast.fail(response.data.msg);
+        }
       })
     },
     clothesAdd: function (value) {
@@ -170,6 +193,23 @@ export default {
     },
     afterSaleAppAdd(val) {
       this.$router.push({name: "afterSaleAppAdd", query: val})
+    },
+    queryDressArray() {
+      this.$selectUtils.queryDressIds(this.$selectUtils.DropDownMenu).then(response => {
+        this.dressArray.push(...JSON.parse(response.data.data))
+      })
+    },
+    dressChange() {
+      this.pageInit()
+      this.queryOrderList()
+    },
+    onLoad() {
+      this.queryOrderList()
+    },
+    pageInit() {
+      this.orderList = []
+      this.page = 1
+      this.finished = false
     }
   },
   beforeRouteLeave (to, from, next) {
@@ -180,10 +220,6 @@ export default {
     }
     next()
   },
-  activated() {
-    console.log("回来了")
-    this.queryOrderList()
-  }
 }
 </script>
 
