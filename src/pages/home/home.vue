@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="margin-bottom: 14%">
+    <div style="padding-bottom: 10vh">
       <keep-alive>
         <router-view/>
       </keep-alive>

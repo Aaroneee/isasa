@@ -73,7 +73,6 @@ export default {
       }).then(response => {
         this.imageList = []
         this.imageList.push(...response.data.data)
-        console.log(this.imageList)
       })
     },
     addYarnClothesImage(data) {

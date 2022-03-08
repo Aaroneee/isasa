@@ -8,7 +8,7 @@ import order from "@/router/order"//订单
 import proceeds from "@/router/proceeds"//收款
 import clothes from "@/router/clothes"
 import statement from "@/router/statement"
-
+import afterSale from "@/router/afterSale";
 
 // import login from '../pages/login/login'//首页
 
@@ -25,6 +25,7 @@ const router = new Router({
         ...proceeds,
         ...clothes,
         ...statement,
+        ...afterSale
     ],
     scrollBehavior(to, from, savedPosition) {
         if (savedPosition) {

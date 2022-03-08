@@ -292,5 +292,17 @@ export default {
             }
         })
     },
+    // 查询收押收款方式
+    queryDepositPayment(type) {
+        return self.$axios({
+            method: "GET",
+            url: "/select/queryDepositPayment",
+            params: {
+                type: type,
+                tenantCrop: localStorage.getItem("tenantCrop"),
+            }
+        })
+    }
+
 
 }
