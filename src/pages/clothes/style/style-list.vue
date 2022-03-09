@@ -43,12 +43,12 @@
             <van-col span="12"  v-for="item in styleList" :key="item.id" @click="toStyleDetails(item)" style="text-align: center">
               <div class="card">
                 <div class="imgFont">
-                  <van-badge :content="item.brandName===''?'暂无':item.brandName" color="#7ab4ee">
+                  <van-badge :content="item.brandName===''?'':item.brandName" color="#7ab4ee">
                     <van-image class="style-img" radius="7"
                                fit="contain"
                                :src="item.styleImage===''?'null'
                                :'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage+'?imageMogr2/rquality/60'">
-                      <template v-slot:error>加载失败,请更换主图</template>-->
+                      <template v-slot:error>加载失败,请更换主图</template>
                     </van-image>
                   </van-badge>
                   <div class="styleInfo">
