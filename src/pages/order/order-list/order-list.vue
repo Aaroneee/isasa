@@ -10,7 +10,7 @@
         </van-nav-bar>
         <form action="javascript:return true">
           <van-search
-              @search="queryOrderList"
+              @search="search"
               v-model="searchValue"
               placeholder="请输入搜索关键词"/>
         </form>
@@ -210,6 +210,10 @@ export default {
       this.orderList = []
       this.page = 1
       this.finished = false
+    },
+    search() {
+      this.pageInit()
+      this.queryOrderList()
     }
   },
   beforeRouteLeave (to, from, next) {
