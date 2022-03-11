@@ -47,11 +47,20 @@
       </van-field>
 
       <van-field
-          name="factoryName"
-          v-model = "style.factoryName"
+          name="factoryNumber"
+          v-model = "style.factoryNumber"
           label="品牌款式编号"
           right-icon="question-o"
-          @click-right-icon="$toast('品牌官方编号')"
+          @click-right-icon="$toast('品牌官方款式编号')"
+          placeholder="品牌款式编号">
+      </van-field>
+
+      <van-field
+          name="factoryName"
+          v-model = "style.factoryName"
+          label="品牌款式名称"
+          right-icon="question-o"
+          @click-right-icon="$toast('品牌官方款式名称')"
           placeholder="品牌款式编号">
       </van-field>
 
@@ -191,7 +200,6 @@ export default {
   },
   created() {
     this.style = this.$route.query
-    console.log(this.style)
     this.brand = this.style.brandName
     this.styleType = this.$route.query.styleType
     this.queryStyleIds()
@@ -255,7 +263,6 @@ export default {
         message: '确定要修改该款式吗？',
       }).then(() => {
         data.tenantCrop = this.tenantCrop
-        console.log(data)
         this.$axios({
           method: "PUT",
           url: "/style/editStyle",
