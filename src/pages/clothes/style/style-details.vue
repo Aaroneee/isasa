@@ -11,7 +11,7 @@
           <div style="display: flex;justify-content: space-around;height: 100%">
             <img
                 alt="图片已损坏，请重新选择主图"
-                style="height: 150px;width: 120px;border-radius: 7px"
+                style="height: 170px;width: 120px;border-radius: 7px"
                 :src="'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+this.style.styleImage"/>
           </div>
         </van-col>
@@ -20,6 +20,8 @@
           <p>款式编号 : {{ style.styleName }}</p>
           <p>款式名称 : {{ style.styleAlias }}</p>
           <p>款式品牌 : {{ style.brandName }}</p>
+          <p>官方名称 : {{ style.factoryName }}</p>
+          <p>官方编号 : {{ style.factoryNumber }}</p>
           <p>采购日期 : {{ style.purchaseDate }}</p>
           <p>衣服件数 : {{ style.clothesCount }}</p>
         </van-col>
@@ -163,7 +165,9 @@ export default {
           styleId: this.style.id,
         }
       }).then(response => {
+
         this.style=response.data.data
+        console.log( this.style)
       })
     },
     //删除款式
