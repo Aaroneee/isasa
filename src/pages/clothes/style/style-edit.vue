@@ -201,6 +201,7 @@ export default {
   created() {
     this.style = this.$route.query
     this.brand = this.style.brandName
+    this.brandId=this.style.brandId;
     this.styleType = this.$route.query.styleType
     this.queryStyleIds()
     this.queryBrands()
@@ -300,6 +301,7 @@ export default {
       })
     },
     brandConfirm: function (value,index) {
+      console.log(value)
       this.brand = value.text;
       this.brandId = value.id;
       this.showPicker = false;
