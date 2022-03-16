@@ -175,7 +175,7 @@ export default {
       })
     },
     onLoad() {
-      setTimeout(this.queryStyleList, 1000)
+      this.queryStyleList()
     },
     search() {
       this.dataClear()
