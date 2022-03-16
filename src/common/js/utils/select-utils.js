@@ -302,6 +302,17 @@ export default {
                 tenantCrop: localStorage.getItem("tenantCrop"),
             }
         })
+    },
+    queryDressIdsByShop(type, shopId) {
+        return self.$axios({
+            method: "GET",
+            url: "/select/queryDressIdsByShop",
+            params: {
+                type: type,
+                shop: shopId,
+                tenantCrop: localStorage.getItem("tenantCrop")
+            }
+        })
     }
 
 

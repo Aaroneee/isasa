@@ -20,6 +20,7 @@
                       type="range" @confirm="createDateOnConfirm" allow-same-day/>
         <van-dropdown-menu>
           <van-dropdown-item v-model="sort" @change="sortChange" :options="sortArrays"/>
+          <van-dropdown-item v-model="shop" @change="shopChange" :options="shopArray"/>
           <van-dropdown-item v-model="dress" @change="dressChange" :options="dressArray"/>
         </van-dropdown-menu>
       </van-sticky>
@@ -108,11 +109,16 @@ export default {
       dressArray: [{text: "礼服师", value: null},],
       dress: null,
       page: 1,
+      shopArray: [{text: "店铺", value: null}],
+      shop: null,
+      localShopArray: localStorage.getItem("shopIds").split(",").map(Number),
+      shopIds: localStorage.getItem("shopIds"),
     }
   },
   created() {
     this.queryOrderList();
     this.queryDressArray()
+    this.queryShopArray()
   },
   methods: {
     //时间确认
@@ -161,7 +167,7 @@ export default {
           orderDate: this.orderDate,
           tenantCrop: localStorage.getItem("tenantCrop"),
           wDSort: this.sort,
-          shopIds: localStorage.getItem("shopIds"),
+          shopIds: this.shopIds,
           dress: this.dress
         }
       }).then(response => {
@@ -195,7 +201,8 @@ export default {
       this.$router.push({name: "afterSaleAppAdd", query: val})
     },
     queryDressArray() {
-      this.$selectUtils.queryDressIds(this.$selectUtils.DropDownMenu).then(response => {
+      this.dressArray = [{text: "礼服师", value: null}]
+      this.$selectUtils.queryDressIdsByShop(this.$selectUtils.DropDownMenu, this.shop).then(response => {
         this.dressArray.push(...JSON.parse(response.data.data))
       })
     },
@@ -214,7 +221,24 @@ export default {
     search() {
       this.pageInit()
       this.queryOrderList()
-    }
+    },
+    queryShopArray() {
+      this.$selectUtils.queryShopIds(this.$selectUtils.DropDownMenu).then(response => {
+        this.shopArray.push(...JSON.parse(response.data.data).filter(s => {
+          return this.localShopArray.includes(s.value)
+        }))
+      })
+    },
+    shopChange(val) {
+      if (val === null) {
+        this.shopIds = localStorage.getItem("shopIds")
+      } else {
+        this.shopIds = val
+      }
+      this.queryDressArray()
+      this.pageInit()
+      this.queryOrderList()
+    },
   },
   beforeRouteLeave (to, from, next) {
     if (to.name !== 'work') {
