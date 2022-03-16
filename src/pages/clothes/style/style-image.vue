@@ -15,7 +15,7 @@
           <van-image
               lazy-load
               style="width: 100%;height: 100%"
-              :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+chil.styleImage"
+              :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+chil.styleImage+'?imageMogr2/rquality/60'"
               @click="imageShowClick(item, index)">
             <template v-slot:loading>
               <van-loading type="spinner" size="20" />
