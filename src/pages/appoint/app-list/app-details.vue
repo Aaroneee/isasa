@@ -2,7 +2,7 @@
   <div style="background-color: white"  v-cloak>
       <baseNavBar title="预约详情" :fixed="true"/>
 <!--      <switchNavBar title="预约详情" switchText="操作" @flag="popupShow = true"/>-->
-      <div>
+    <div>
         <van-cell style="font-size: 13px">
           <van-row style="font-size: 15px">
             <van-col span="12">{{appointVo.name}}</van-col>
@@ -30,6 +30,62 @@
           </van-row>
         </van-cell>
         <van-tabs color="#fdd640" swipeable animated>
+          <van-tab title="已定婚纱" v-if="afterSaleFlag">
+            <van-empty v-if="clothesScheduleList.length == 0" description="暂未选定婚纱"/>
+            <van-cell-group>
+              <van-cell style="font-size: 12px" v-for="item in clothesScheduleList" :key="item.id">
+                <van-grid :border="false" :column-num="2" :gutter="1">
+                  <van-grid-item v-if="item[0] != null">
+                    <div v-if="item[0].styleImage !== ''">
+                      <van-image class="style-img" radius="7"
+                                 :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[0].styleImage">
+                      </van-image>
+                    </div>
+                    <div v-else>
+                      <van-image class="style-img">
+                        <template v-slot:error>未上传图片</template>
+                      </van-image>
+                    </div>
+                    <span
+                        v-text="item[0].styleType+'-'+item[0].styleName+'-'+item[0].clothesSize+'-'+item[0].clothesNo"></span>
+                    <van-row>
+                   <span
+                       :class="{'color-red':item[0].scheduleState==='撞挡','color-blue':item[0].scheduleState==='可用'}">{{
+                       '档期状态:' + item[0].scheduleState
+                     }}</span>
+                      <van-icon style="margin-left: 30px" size="15" @click="deleteSchedule(item[0])" name="delete-o"/>
+                    </van-row>
+
+                    <span>{{ item[0].scheduleDate }}</span>
+
+                  </van-grid-item>
+
+                  <van-grid-item v-if="item[1] != null">
+                    <div v-if="item[1].styleImage !== ''">
+                      <van-image class="style-img" radius="7"
+                                 :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[1].styleImage">
+                      </van-image>
+                    </div>
+                    <div v-else>
+                      <van-image class="style-img">
+                        <template v-slot:error>未上传图片</template>
+                      </van-image>
+                    </div>
+                    <span
+                        v-text="item[1].styleType+'-'+item[1].styleName+'-'+item[1].clothesSize+'-'+item[1].clothesNo"></span>
+                    <van-row>
+                   <span
+                       :class="{'color-red':item[1].scheduleState==='撞挡','color-blue':item[1].scheduleState==='可用'}">{{
+                       '档期状态:' + item[1].scheduleState
+                     }}</span>
+                      <van-icon style="margin-left: 30px" size="15" @click="deleteSchedule(item[1])" name="delete-o"/>
+                    </van-row>
+                    <span>{{ item[1].scheduleDate }}</span>
+                  </van-grid-item>
+                </van-grid>
+              </van-cell>
+            </van-cell-group>
+          </van-tab>
           <van-tab title="试纱记录">
             <van-empty v-if="yarnClothesList.length == 0" description="暂无试纱记录"/>
             <div v-else>
@@ -89,7 +145,7 @@
             </div>
           </van-tab>
         </van-tabs>
-      </div>
+    </div>
     <van-popup
         v-model="popupShow"
         closeable
@@ -133,6 +189,9 @@ export default {
       actions: [{ text: '试纱图片' }, { text: '移除'}],
       orderList: [],
       chooseItem: {},
+      clothesScheduleList: [],
+      afterSaleFlag: false,
+      loading: true,
     }
   },
   created() {
@@ -145,6 +204,7 @@ export default {
   },
   methods: {
     queryAppointVo: function () {
+      this.loading = true
       this.$axios({
         method: "GET",
         url: "/appoint/queryAppointVoById",
@@ -157,9 +217,22 @@ export default {
           return;
         }
         this.appointVo = response.data.data;
+        this.loading = false
         if (this.isHide === 1) {
           this.appointVo.phone = this.$stringUtils.phoneIsHide(this.appointVo.phone);
         }
+        this.judgeSaleByCusId(this.appointVo.cusId)
+        this.$axios({
+          method: "GET",
+          url: "/schedule/clothesAndScheduleByCusId",
+          params: {
+            cusId: this.appointVo.cusId,
+          }
+        }).then(response => {
+          if (response.data.code === 200) {
+            this.clothesScheduleList.push(...arrTrans(2, response.data.data))
+          }
+        })
       })
     },
     openAppEdit: function () {
@@ -300,7 +373,31 @@ export default {
         this.queryYarnClothesList();
       })
     },
+    judgeSaleByCusId(val) {
+      this.$axios({
+        method: "GET",
+        url: "/customer/judgeSaleByCusId",
+        params: {
+          cusId: val
+        }
+      }).then(response => {
+        if (response.data.code === 200) {
+          this.afterSaleFlag = !response.data.data
+        }
+      })
+    }
   }
+}
+function arrTrans(num, arr) {
+  const iconsArr = [];
+  arr.forEach((item, index) => {
+    const page = Math.floor(index / num);
+    if (!iconsArr[page]) {
+      iconsArr[page] = [];
+    }
+    iconsArr[page].push(item);
+  });
+  return iconsArr;
 }
 </script>
 
