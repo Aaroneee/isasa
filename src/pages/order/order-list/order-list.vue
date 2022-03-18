@@ -248,6 +248,9 @@ export default {
     }
     next()
   },
+  activated() {
+    this.queryOrderList()
+  }
 }
 </script>
 

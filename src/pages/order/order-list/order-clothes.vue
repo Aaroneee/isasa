@@ -232,10 +232,7 @@ export default {
         }).then(response => {
           if (response.data.code === 200) {
             this.$toast.success("添加档期成功")
-            const that = this
-            setTimeout(function () {
-              that.$router.back()
-            }, 1000)
+            this.weddingDaySelectShowPicker = false
           } else {
             this.$toast.fail(response.data.msg);
             this.overlayShow = false
