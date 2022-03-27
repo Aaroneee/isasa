@@ -25,8 +25,8 @@
         <van-dropdown-item title="标签" ref="labelRef">
           <van-row type="flex" style="padding: 10px">
             <van-col style="margin: 5px" v-for="item in styleLabelList" :key="item.value">
-              <van-tag color="#B6B1BD" :class="{'bgcolor':styleLabels.indexOf(item.value)>-1}"
-                       round plain size="large"
+              <van-tag type="danger" :class="styleLabels.indexOf(item.value)>-1?'':'van-tag--plain'"
+                       size="large"
                        @click="pushStyleLabel(item.value)">{{ item.name }}
               </van-tag>
             </van-col>
@@ -208,8 +208,8 @@ export default {
       this.flushClothesListArray()
       this.styleType = type
       this.queryClothesList()
-    }
-    , shopChange: function (shop) {
+    },
+    shopChange: function (shop) {
       this.flushClothesListArray()
       this.shop = shop
       this.queryClothesList()
@@ -219,53 +219,57 @@ export default {
       this.position = position
       this.positionTitle = this.positionArray.filter(item => item.value === this.position)[0].text
       this.queryClothesList()
-    }
-    , clothesSizeChange: function (size) {
+    },
+    clothesSizeChange: function (size) {
       this.flushClothesListArray()
 
       this.clothesSize = size
       this.queryClothesList()
-    }
-    , queryStyleType: function () {
+    },
+    queryStyleType: function () {
       this.$selectUtils.queryStyleIds(this.$selectUtils.DropDownMenu).then((response) => {
         this.styleTypeArray.push(...JSON.parse(response.data.data));
       })
-    }
-    , queryShopIds: function () {
+    },
+    queryShopIds: function () {
       this.$selectUtils.queryShopIds(this.$selectUtils.DropDownMenu).then(response => {
         this.shopArray.push(...JSON.parse(response.data.data))
       })
-    }
-    , queryPositionIdsByShop() {
+    },
+    queryPositionIdsByShop() {
       this.$selectUtils.queryPositionIdsByShop("", this.$selectUtils.DropDownMenu).then(response => {
         this.positionArray.push(...JSON.parse(response.data.data))
       })
-    }
-    , flushClothesListArray: function () {
+    },
+    flushClothesListArray: function () {
       this.clothesList = []
       this.page = 1
       this.finished = false
-    }
-    , toScan: function () {
+    },
+    toScan: function () {
       // TODO
       // 消息通知到 原生 原生隐藏vue页面   拉起扫码  扫码结束传递 值
-    }, queryStyleLabelList: function () {
+    },
+    queryStyleLabelList: function () {
       this.$selectUtils.queryStyleLabels().then((response) => {
         this.styleLabelList.push(...response.data.data);
         console.log(response)
       })
-    }, styleLabelConfirm: function () {
+    },
+    styleLabelConfirm: function () {
       this.flushClothesListArray()
       this.$refs.labelRef.toggle()
       this.queryClothesList();
-    }, pushStyleLabel: function (value) {
+    },
+    pushStyleLabel: function (value) {
+      console.log(value)
       if (this.styleLabels.indexOf(value) > -1) {
         this.styleLabels.splice(this.styleLabels.indexOf(value, 0), 1)
       } else {
         this.styleLabels.push(value)
       }
-    }
-    ,dateOnConfirm:function (value){
+    },
+    dateOnConfirm:function (value){
       this.isOrder = "notOrder";
       const s = this.$dateUtils.rangeVantDateToYMD(value);
       this.scheduleDate = s
