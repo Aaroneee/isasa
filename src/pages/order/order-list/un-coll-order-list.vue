@@ -30,7 +30,7 @@
           finished-text="没有更多了"
       >
         <van-cell style="font-size: 12px" v-for="item in orderList" :key="item.id">
-          <div @click="clickItem(item.name,item.cusId,item.state,item.inviter)">
+          <div @click="clickItem(item)">
             <van-row>
               <van-col span="12" >客户名: {{ item.name}}</van-col>
               <van-col span="12" style="color: #FFC633;text-align: right">{{ item.state }}</van-col>
@@ -50,7 +50,6 @@
               <van-col span="24">备注: {{ item.appRemark }}</van-col>
             </van-row>
           </div>
-          <br>
         </van-cell>
       </van-list>
     </div>
@@ -115,7 +114,6 @@ export default {
           })
         }
         this.finished = true;
-
       })
     },
     appointDateOnConfirm: function (time) {
@@ -126,7 +124,8 @@ export default {
     closeItem: function () {
       this.$refs.item.toggle();
     },
-    clickItem: function () {
+    clickItem: function (val) {
+      this.$router.push({name: "appDetails", query: {id: val.id,pageSource:'unCollOrderList'}})
     },
   },
   beforeRouteLeave (to, from, next) {

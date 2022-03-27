@@ -16,6 +16,9 @@ import SlimCropper from 'vue-slim-cropper';
 import PerButton from "./components/button/per-button"
 import Clipboard from "vue-clipboard2";
 import hasPermission from "./permission/index";
+import { Lazyload } from 'vant';
+
+Vue.use(Lazyload);
 
 
 Vue.use(Vant)
