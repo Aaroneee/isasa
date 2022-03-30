@@ -25,7 +25,8 @@
         <van-dropdown-item title="标签" ref="labelRef">
           <van-row type="flex" style="padding: 10px">
             <van-col style="margin: 5px" v-for="item in styleLabelList" :key="item.value">
-              <van-tag type="danger" :class="styleLabels.indexOf(item.value)>-1?'':'van-tag--plain'"
+              <van-tag color="#B6B1BD" type="danger" :class="{'bgcolor':styleLabels.indexOf(item.value)>-1}"
+                       round plain
                        size="large"
                        @click="pushStyleLabel(item.value)">{{ item.name }}
               </van-tag>
@@ -385,5 +386,9 @@ export default {
   left: 0;
   right: auto;
   -webkit-transform: none;
+}
+.bgcolor {
+  border: 1px solid #de0d0d;
+  color: rgb(182, 177, 189);
 }
 </style>
