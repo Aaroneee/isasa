@@ -1,5 +1,6 @@
 import clothesAdd from "@/pages/clothes/clothes/clothes-add"
 import clothesList from "@/pages/clothes/clothes/clothes-list"
+import clothesListPad from "@/pages/clothes/clothes/clothes-list-pad"
 import clothesDetails from "@/pages/clothes/clothes/clothes-details"
 import clothesOperation from "@/pages/clothes/clothes/clothes-operation"
 import styleList from "@/pages/clothes/style/style-list"
@@ -84,5 +85,10 @@ export default [
         path: '/stylePrice',
         name: 'stylePrice',
         component: stylePrice,
-    }
+    },
+    {
+        path: '/clothesListPad',
+        name: 'clothesListPad',
+        component: clothesListPad,
+    },
 ]
