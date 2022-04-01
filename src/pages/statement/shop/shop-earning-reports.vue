@@ -26,11 +26,12 @@
             <van-grid-item>总业绩<br>{{earning}}</van-grid-item>
             <van-grid-item>售前业绩<br>{{saleEarning}}</van-grid-item>
             <van-grid-item>售后业绩<br>{{afterSaleEarning}}</van-grid-item>
+            <van-grid-item>总营收<br>{{proceedsSum}}</van-grid-item>
           </van-grid>
         </van-collapse-item>
         <van-collapse-item title="营收报告" name="2">
           <van-grid :border="false" style="text-align: center" :column-num="4">
-            <van-grid-item v-for="value in proceedsAnalysis" :key="value.projectName">
+            <van-grid-item v-for="value in proceedsAnalysis" :key="value.projectName" v-if="value.sumMoney!= 0">
               {{value.projectName}}<br>{{value.sumMoney}}
             </van-grid-item>
           </van-grid>
@@ -176,7 +177,6 @@ export default {
     },
     processData: function (data) {
       const VO = data[0];
-      console.log(data)
       this.saleEarning =Number(VO.saleEarning);
       this.afterSaleEarning = Number(VO.afterSaleEarning);
       this.earning = Number(VO.earning);
