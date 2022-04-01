@@ -53,7 +53,7 @@ export default {
           clothesId: this.clothes.clothesId,
         }
       }).then(response => {
-        this.clothesOperations = response.data.data.list
+        this.clothesOperations = response.data.data.list.reverse();
       })
     },
   }

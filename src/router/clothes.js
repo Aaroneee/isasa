@@ -2,6 +2,7 @@ import clothesAdd from "@/pages/clothes/clothes/clothes-add"
 import clothesList from "@/pages/clothes/clothes/clothes-list"
 import clothesListPad from "@/pages/clothes/clothes/clothes-list-pad"
 import clothesDetails from "@/pages/clothes/clothes/clothes-details"
+import clothesDetailsPad from "@/pages/clothes/clothes/clothes-details-pad"
 import clothesOperation from "@/pages/clothes/clothes/clothes-operation"
 import styleList from "@/pages/clothes/style/style-list"
 import styleImage from "@/pages/clothes/style/style-image"
@@ -26,6 +27,11 @@ export default [
         component: clothesList,
     },
     {
+        path: '/clothesListPad',
+        name: 'clothesListPad',
+        component: clothesListPad,
+    },
+    {
         path: '/styleAdd',
         name: 'styleAdd',
         component: styleAdd,
@@ -44,6 +50,11 @@ export default [
         path: '/clothesDetails',
         name: 'clothesDetails',
         component: clothesDetails,
+    },
+    {
+        path: '/clothesDetailsPad',
+        name: 'clothesDetailsPad',
+        component: clothesDetailsPad,
     },
     {
         path: '/styleImage',
@@ -85,10 +96,5 @@ export default [
         path: '/stylePrice',
         name: 'stylePrice',
         component: stylePrice,
-    },
-    {
-        path: '/clothesListPad',
-        name: 'clothesListPad',
-        component: clothesListPad,
     },
 ]
