@@ -235,6 +235,7 @@ export default {
       })
     },
     queryCusSchedules: function () {
+      this.clothesScheduleList = []
       this.$axios({
         method: 'GET',
         params: {
@@ -359,7 +360,6 @@ export default {
       })
     },
     weddingDayUpdateOnConfirm(val) {
-      console.log(val)
       this.$axios({
         method: "post",
         url: "/weddingDate/updateWeddingDayById",
@@ -373,6 +373,8 @@ export default {
         if (flag) {
           this.$toast.success("修改成功！")
           this.queryWeddingDayByOrderId()
+          this.queryCusSchedules()
+          this.queryOrderVo()
           setTimeout(()=> {
             this.editWeddingDayShow = false
           }, 500)
