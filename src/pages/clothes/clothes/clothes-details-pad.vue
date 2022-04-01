@@ -20,11 +20,11 @@
         <van-row>
           <van-col span="24"><p class="pValue">品牌：{{ clothes.brand === "" ? "暂无品牌" : clothes.brand }}</p></van-col>
         </van-row>
-        <van-row>
+        <van-row style="padding-top: 5px">
           <van-col span="24"><p class="pValue">位置：{{ clothes.positionName === "" ? "暂无位置" : clothes.positionName }}</p></van-col>
         </van-row>
-        <van-row style="padding-top: 5px">
-          <van-col>标签：{{ styleLabelList.length == 0 ? "暂无标签" : "" }}
+        <van-row >
+          <van-col><span class="pValue">标签：{{ styleLabelList.length == 0 ? "暂无标签" : "" }}</span>
             <van-tag v-for="item in styleLabelList" :key="item.id" type="danger"
                      size="large" style="margin: 5px">
               {{ item.labelName }}
@@ -45,7 +45,7 @@
         <p style="text-align: center; margin: 3% 0">无</p>
       </van-row>
     </div>
-    <div class="card" @touchstart.prevent="touchPrice(stylePrice)" @touchend.prevent="clearTime(stylePrice)">
+    <div class="card">
       <van-row><p class="PTitle">历史位置</p></van-row>
       <van-steps direction="vertical" :active="0" active-color="#000000" inactive-color="#000000" style="margin-left: 15%;">
         <van-step v-for="item in clothesOperations.slice(0, 3)" :key="item.id">
