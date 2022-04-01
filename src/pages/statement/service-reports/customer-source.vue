@@ -2,6 +2,9 @@
   <div>
     <van-sticky>
       <switchNavBar title="渠道分析表" switchText="日期" @flag="createDateShow=true"/>
+      <van-dropdown-menu>
+        <van-dropdown-item v-model="serviceId" @change="serviceChange" :options="serviceArray" />
+      </van-dropdown-menu>
     </van-sticky>
     <van-popup v-model="createDateShow" position="bottom">
       <van-datetime-picker
@@ -207,10 +210,13 @@ export default {
       orderTableHeader: "订单数",
       moneyTableHeader: "金额",
       tenantCrop: localStorage.getItem("tenantCrop"),
+      serviceArray: [{text: "选择客服", value: ""}],
+      serviceId: ""
     }
   },
   created() {
     this.pageInit()
+    this.queryServiceIds()
   },
   mounted() {
     var v = this;
@@ -228,6 +234,15 @@ export default {
       this.querySourceReportsOrder()
       this.querySourceReportsMoney()
     },
+    queryServiceIds: function () {
+      this.$selectUtils.queryServiceIds(this.$selectUtils.DropDownMenu).then(response => {
+        if (response.data.code === 200) {
+          this.serviceArray.push(...JSON.parse(response.data.data));
+        } else {
+          self.$toast.fail(response.data.msg);
+        }
+      })
+    },
     // 渠道客资
     querySourceReportsCus() {
       this.sourceCusViewData = []
@@ -236,7 +251,8 @@ export default {
         url: '/serviceReports/customerSourceReportsCus',
         params: {
           date: this.date,
-          tenantCrop: this.tenantCrop
+          tenantCrop: this.tenantCrop,
+          serviceId: this.serviceId
         },
       }).then(response => {
         this.sourceCusData = response.data.data;
@@ -303,7 +319,8 @@ export default {
         url: '/serviceReports/customerSourceReportsYesApp',
         params: {
           date: this.date,
-          tenantCrop: this.tenantCrop
+          tenantCrop: this.tenantCrop,
+          serviceId: this.serviceId
         },
       }).then(response => {
         this.sourceCusArrivalData = response.data.data;
@@ -370,7 +387,8 @@ export default {
         url: '/serviceReports/customerSourceReportsOrder',
         params: {
           date: this.date,
-          tenantCrop: this.tenantCrop
+          tenantCrop: this.tenantCrop,
+          serviceId: this.serviceId
         },
       }).then(response => {
         this.sourceCusOrderData = response.data.data
@@ -437,7 +455,8 @@ export default {
         url: '/serviceReports/customerSourceReportsMoney',
         params: {
           date: this.date,
-          tenantCrop: this.tenantCrop
+          tenantCrop: this.tenantCrop,
+          serviceId: this.serviceId
         },
       }).then(response => {
         this.sourceCusMoneyData = response.data.data;
@@ -539,6 +558,12 @@ export default {
       }
       return {count: count, data: cusXXXData}
     },
+    serviceChange() {
+      this.querySourceReportsCus()
+      this.querySourceReportsArrival()
+      this.querySourceReportsOrder()
+      this.querySourceReportsMoney()
+    }
   },
 }
 </script>
