@@ -1,7 +1,7 @@
 <template>
   <div>
     <van-sticky>
-      <switchNavBar title="订单档期查询" :switchText="dateText" @flag="dateShow=true"/>
+      <baseNavBar title="订单档期查询"/>
       <form action="javascript:return true">
         <van-search
             show-action
@@ -16,7 +16,9 @@
       <van-calendar safe-area-inset-bottom v-model="dateShow" type="range" allow-same-day
                     :min-date="minDate" :max-date="maxDate" @confirm="dateOnConfirm"/>
       <van-dropdown-menu style="font-size: 10px">
-        <van-dropdown-item v-model="isOrder" @change="isOrderChange" :options="isOrderArray"/>
+        <van-dropdown-item v-model="isOrder" @change="isOrderChange" :options="isOrderArray">
+          <van-cell center :title="dateText" @click="dateShow=true"/>
+        </van-dropdown-item>
         <van-dropdown-item v-model="styleType" @change="styleTypeChange" :options="styleTypeArray"/>
         <van-dropdown-item v-model="clothesSize" @change="clothesSizeChange" :options="clothesSizeArray"/>
         <van-dropdown-item title="标签" ref="labelRef">
@@ -96,6 +98,7 @@
 
 <script>
 import switchNavBar from "@/components/nav-bar/switch-nav-bar"
+import baseNavBar from "@/components/nav-bar/base-nav-bar"
 
 export default {
   name: "clothesList",
@@ -145,7 +148,7 @@ export default {
     }
   },
   components: {
-    switchNavBar
+    switchNavBar,baseNavBar
   },
   watch: {
     codeScanShow: function (newVal) {
@@ -288,7 +291,13 @@ export default {
       }
       this.flushClothesListArray()
       this.queryClothesList()
-    },isOrderChange:function (){
+    },
+    isOrderChange:function (val){
+      //如果选择的全部 则删除档期时间
+      if (val===''){
+        this.scheduleDate="";
+        this.dateText="选择档期";
+      }
       if (this.scheduleDate === ""){
         this.$toast.fail("选择档期后该选项生效")
         return
