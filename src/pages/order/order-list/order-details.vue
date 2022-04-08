@@ -94,9 +94,9 @@
             <van-grid :border="false" :column-num="2" :gutter="1" style="font-size: 14px;">
               <van-grid-item v-for="item in yarnClothesList" :key="item.id" >
                 <div v-if="item.styleImage !== ''">
-                  <van-image class="style-img" radius="7" @click="clickItem(item)"
+                  <van-image class="style-img" radius="7" @click="clickItem2(item)"
                              style="height: 218px;width: 151px;margin-top: 10px"
-                             :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage">
+                             :src="item.styleImage">
                   </van-image>
                 </div>
                 <div v-else>
@@ -275,9 +275,9 @@ export default {
     queryYarnClothesList() {
       this.$axios({
         method: "get",
-        url: '/clothesYarn/queryYarnClothesList',
+        url: '/clothesYarn/queryYarnClothesListByCusId',
         params: {
-          appId: this.appId
+          cusId: this.cusId
         }
       }).then(response => {
         if (response.data.data != "") {
@@ -299,6 +299,9 @@ export default {
     },
     clickItem: function (value) {
       ImagePreview(['\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+value.styleImage])
+    },
+    clickItem2: function (value) {
+      ImagePreview([value.styleImage])
     },
     queryWeddingDayByOrderId() {
       this.weddingDayArray = []

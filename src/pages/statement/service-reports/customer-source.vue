@@ -3,7 +3,8 @@
     <van-sticky>
       <switchNavBar title="渠道分析表" switchText="日期" @flag="createDateShow=true"/>
       <van-dropdown-menu>
-        <van-dropdown-item v-model="serviceId" @change="serviceChange" :options="serviceArray" />
+        <van-dropdown-item v-model="serviceId" @change="serviceChange" :options="serviceArray"/>
+        <van-dropdown-item v-model="dress" @change="dressChange" :options="dressArray"/>
       </van-dropdown-menu>
     </van-sticky>
     <van-popup v-model="createDateShow" position="bottom">
@@ -211,12 +212,15 @@ export default {
       moneyTableHeader: "金额",
       tenantCrop: localStorage.getItem("tenantCrop"),
       serviceArray: [{text: "选择客服", value: ""}],
-      serviceId: ""
+      serviceId: "",
+      dressArray: [{text: "选择礼服师", value: ""},],
+      dress: "",
     }
   },
   created() {
     this.pageInit()
     this.queryServiceIds()
+    this.queryDressArray()
   },
   mounted() {
     var v = this;
@@ -241,6 +245,11 @@ export default {
         } else {
           self.$toast.fail(response.data.msg);
         }
+      })
+    },
+    queryDressArray() {
+      this.$selectUtils.queryDressIdsByShop(this.$selectUtils.DropDownMenu, this.shop).then(response => {
+        this.dressArray.push(...JSON.parse(response.data.data))
       })
     },
     // 渠道客资
@@ -563,6 +572,9 @@ export default {
       this.querySourceReportsArrival()
       this.querySourceReportsOrder()
       this.querySourceReportsMoney()
+    },
+    dressChange() {
+
     }
   },
 }
