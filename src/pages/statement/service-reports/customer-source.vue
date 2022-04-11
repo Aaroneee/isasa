@@ -4,7 +4,7 @@
       <switchNavBar title="渠道分析表" switchText="日期" @flag="createDateShow=true"/>
       <van-dropdown-menu>
         <van-dropdown-item v-model="serviceId" @change="serviceChange" :options="serviceArray"/>
-        <van-dropdown-item v-model="dress" @change="dressChange" :options="dressArray"/>
+        <van-dropdown-item v-model="dressId" @change="dressChange" :options="dressArray"/>
       </van-dropdown-menu>
     </van-sticky>
     <van-popup v-model="createDateShow" position="bottom">
@@ -19,7 +19,7 @@
       />
     </van-popup>
     <van-tabs v-model="active" animated swipeable :lazy-render="false" color="#409eff">
-      <van-tab title="渠道客资">
+      <van-tab title="渠道客资" :disabled="!isService" class="test1">
         <van-row>
           <van-col span="24">
             <div v-show="sourceCusViewData.length !== 0" style="background-color: white;margin-bottom: 20px;width: 100%">
@@ -55,7 +55,7 @@
           </van-col>
         </van-row>
       </van-tab>
-      <van-tab title="渠道到店">
+      <van-tab title="渠道到店" class="test1">
         <van-row>
           <van-col span="24">
             <div v-show="sourceCusArrivalViewData.length !== 0" style="background-color: white;margin-bottom: 20px;width: 100%">
@@ -64,24 +64,24 @@
               <div class="van_table_show">
                 <div class="test" style="color: #606266;background-color: #f5f7fa">
                   <van-row>
-                    <van-col span="8">渠道</van-col>
-                    <van-col span="8">到店数</van-col>
-                    <van-col span="8">客资到店转化率</van-col>
+                    <van-col :span="span">渠道</van-col>
+                    <van-col :span="span">到店数</van-col>
+                    <van-col span="8" v-if="isService">客资到店转化率</van-col>
                   </van-row>
                 </div>
                 <div v-for="value in sourceCusArrivalViewData" :key="value.id" class="test">
                   <van-row>
-                    <van-col span="8">{{value.sourceName}}</van-col>
-                    <van-col span="8">{{value.sourceCount}}</van-col>
-                    <van-col span="8" v-if="value.proportion == null">-</van-col>
-                    <van-col span="8" v-else>{{(value.proportion * 100).toFixed(1)}}%</van-col>
+                    <van-col :span="span">{{value.sourceName}}</van-col>
+                    <van-col :span="span">{{value.sourceCount}}</van-col>
+                    <van-col span="8" v-if="value.proportion == null && isService">-</van-col>
+                    <van-col span="8" v-if="value.proportion != null && isService">{{(value.proportion * 100).toFixed(1)}}%</van-col>
                   </van-row>
                 </div>
                 <div class="test" style="color: #606266;font-weight:bold">
                   <van-row>
-                    <van-col span="8">合计</van-col>
-                    <van-col span="8">{{cusArrivalCount}}</van-col>
-                    <van-col span="8">-</van-col>
+                    <van-col :span="span">合计</van-col>
+                    <van-col :span="span">{{cusArrivalCount}}</van-col>
+                    <van-col span="8" v-if="isService">-</van-col>
                   </van-row>
                 </div>
               </div>
@@ -92,7 +92,7 @@
           </van-col>
         </van-row>
       </van-tab>
-      <van-tab title="渠道订单">
+      <van-tab title="渠道订单" class="test1">
         <van-row>
           <van-col span="24">
             <div v-show="sourceCusOrderViewData.length !== 0" style="background-color: white;margin-bottom: 20px;width: 100%" >
@@ -129,7 +129,7 @@
           </van-col>
         </van-row>
       </van-tab>
-      <van-tab title="渠道收款">
+      <van-tab title="渠道收款" class="test1">
         <van-row>
           <van-col span="24">
             <div v-show="sourceCusMoneyViewData.length !== 0" style="background-color: white;margin-bottom: 20px;width: 100%">
@@ -213,8 +213,10 @@ export default {
       tenantCrop: localStorage.getItem("tenantCrop"),
       serviceArray: [{text: "选择客服", value: ""}],
       serviceId: "",
-      dressArray: [{text: "选择礼服师", value: ""},],
-      dress: "",
+      dressArray: [{text: "选择礼服师", value: ""}],
+      dressId: "",
+      isService: true,
+      selectPopup: false
     }
   },
   created() {
@@ -230,6 +232,14 @@ export default {
       v.initSourceCusOrderView()
       v.initSourceCusMoneyView()
     });
+  },
+  computed: {
+    span: function () {
+      if (this.isService) {
+        return 8
+      }
+      return 12
+    }
   },
   methods: {
     pageInit() {
@@ -329,7 +339,8 @@ export default {
         params: {
           date: this.date,
           tenantCrop: this.tenantCrop,
-          serviceId: this.serviceId
+          serviceId: this.serviceId,
+          dressId: this.dressId
         },
       }).then(response => {
         this.sourceCusArrivalData = response.data.data;
@@ -397,7 +408,8 @@ export default {
         params: {
           date: this.date,
           tenantCrop: this.tenantCrop,
-          serviceId: this.serviceId
+          serviceId: this.serviceId,
+          dressId: this.dressId
         },
       }).then(response => {
         this.sourceCusOrderData = response.data.data
@@ -465,7 +477,8 @@ export default {
         params: {
           date: this.date,
           tenantCrop: this.tenantCrop,
-          serviceId: this.serviceId
+          serviceId: this.serviceId,
+          dressId: this.dressId
         },
       }).then(response => {
         this.sourceCusMoneyData = response.data.data;
@@ -568,13 +581,26 @@ export default {
       return {count: count, data: cusXXXData}
     },
     serviceChange() {
+      this.isService = true
+      this.dressId = ""
       this.querySourceReportsCus()
       this.querySourceReportsArrival()
       this.querySourceReportsOrder()
       this.querySourceReportsMoney()
     },
     dressChange() {
-
+      this.isService = false
+      this.serviceId = ""
+      if (this.dressId == "") {
+        this.isService = true
+        this.querySourceReportsCus()
+      }
+      if (this.active == 0) {
+        this.active = 1
+      }
+      this.querySourceReportsArrival()
+      this.querySourceReportsOrder()
+      this.querySourceReportsMoney()
     }
   },
 }
@@ -608,5 +634,9 @@ export default {
   border-bottom: 1px solid #ebedf0;
   -webkit-transform: scaleY(.5);
   transform: scaleY(.5);
+}
+.test1 {
+  max-height: 83vh;
+  overflow: auto;
 }
 </style>
