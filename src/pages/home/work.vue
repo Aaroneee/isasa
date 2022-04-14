@@ -35,6 +35,14 @@
                          :text="value.viewName"/>
         </van-grid>
       </van-cell-group>
+    </van-cell-group>
+    <van-cell-group v-if="modules.商城 !=null" title="商城" class="gird_module">
+      <van-grid :border="false" clickable :column-num="4">
+        <van-grid-item v-for="value in modules.商城" @click="onClickItem(value.viewLink)" :key="value.id"
+                       :icon="value.viewIcon"
+                       :text="value.viewName"/>
+      </van-grid>
+    </van-cell-group>
   </div>
 </template>
 
