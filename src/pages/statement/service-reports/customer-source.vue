@@ -2,11 +2,11 @@
   <div>
     <van-sticky>
       <switchNavBar title="渠道分析表" switchText="日期" @flag="createDateShow=true"/>
-      <van-dropdown-menu>
-        <van-dropdown-item v-model="serviceId" @change="serviceChange" :options="serviceArray"/>
-        <van-dropdown-item v-model="dressId" @change="dressChange" :options="dressArray"/>
-      </van-dropdown-menu>
     </van-sticky>
+    <van-dropdown-menu>
+      <van-dropdown-item v-model="serviceId" @change="serviceChange" :options="serviceArray"/>
+      <van-dropdown-item v-model="dressId" @change="dressChange" :options="dressArray"/>
+    </van-dropdown-menu>
     <van-popup v-model="createDateShow" position="bottom">
       <van-datetime-picker
           v-model="chooseDate"
@@ -19,7 +19,7 @@
       />
     </van-popup>
     <van-tabs v-model="active" animated swipeable :lazy-render="false" color="#409eff">
-      <van-tab title="渠道客资" :disabled="!isService" class="test1">
+      <van-tab title="渠道客资" :disabled="!isService">
         <van-row>
           <van-col span="24">
             <div v-show="sourceCusViewData.length !== 0" style="background-color: white;margin-bottom: 20px;width: 100%">
@@ -55,7 +55,7 @@
           </van-col>
         </van-row>
       </van-tab>
-      <van-tab title="渠道到店" class="test1">
+      <van-tab title="渠道到店">
         <van-row>
           <van-col span="24">
             <div v-show="sourceCusArrivalViewData.length !== 0" style="background-color: white;margin-bottom: 20px;width: 100%">
@@ -92,7 +92,7 @@
           </van-col>
         </van-row>
       </van-tab>
-      <van-tab title="渠道订单" class="test1">
+      <van-tab title="渠道订单">
         <van-row>
           <van-col span="24">
             <div v-show="sourceCusOrderViewData.length !== 0" style="background-color: white;margin-bottom: 20px;width: 100%" >
@@ -129,7 +129,7 @@
           </van-col>
         </van-row>
       </van-tab>
-      <van-tab title="渠道收款" class="test1">
+      <van-tab title="渠道收款">
         <van-row>
           <van-col span="24">
             <div v-show="sourceCusMoneyViewData.length !== 0" style="background-color: white;margin-bottom: 20px;width: 100%">
@@ -634,9 +634,5 @@ export default {
   border-bottom: 1px solid #ebedf0;
   -webkit-transform: scaleY(.5);
   transform: scaleY(.5);
-}
-.test1 {
-  max-height: 83vh;
-  overflow: auto;
 }
 </style>
