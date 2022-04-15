@@ -5,7 +5,7 @@
       <form action="javascript:return true">
         <van-search
             @search="search"
-            v-model="styleName"
+            v-model="searchValue"
             placeholder="请输入款式品牌或系列"/>
       </form>
       <van-dropdown-menu>
@@ -25,7 +25,7 @@
             </van-button>
           </div>
         </van-dropdown-item>
-        <van-dropdown-item :title="brandText" v-model="brand" @change="brandChange"  :options="styleBrandArray"/>
+<!--        <van-dropdown-item :title="brandText" v-model="brand" @change="brandChange"  :options="styleBrandArray"/>-->
       </van-dropdown-menu>
     </van-sticky>
     <div>
@@ -76,8 +76,7 @@ export default {
   data() {
     return {
       styleList: [],
-
-      styleName: "",
+      searchValue:"",
       styleType: "",
       styleTypeText: "",
       brand:"",
@@ -114,6 +113,7 @@ export default {
         method:"GET",
         url:"/libraryStyle/libStyleList",
         params:{
+          searchValue:this.searchValue,
           libTypeId:this.styleType,
           libBrandId:this.brand,
           libLabelIds: this.styleLabels.toString(),
