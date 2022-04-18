@@ -24,6 +24,8 @@
           <p>官方编号 : {{ style.factoryNumber }}</p>
           <p>采购日期 : {{ style.purchaseDate }}</p>
           <p>衣服件数 : {{ style.clothesCount }}</p>
+          <p>试纱次数 : {{ count.yarnCount }}</p>
+          <p>出件次数 : {{ count.outCount }}</p>
         </van-col>
       </van-row>
     </div>
@@ -118,6 +120,7 @@ export default {
     this.style = this.$route.query
     this.queryStyleDetails()
     this.queryPrice()
+    this.queryCount()
   },
   data() {
     return {
@@ -137,6 +140,10 @@ export default {
       },
       updatePriceShow: false,
       labelColor: ["#A52A2A", "#FF8C00", "#696969", "#FFA500", "#2F4F4F", "#6495ED", "#FF4500", "#40E0D0"],
+      count: {
+        yarnCount: 0,
+        outCount: 0,
+      }
     }
   },
   watch: {
@@ -243,7 +250,18 @@ export default {
         // on cancel
       });
     },
-
+    queryCount() {
+      this.$axios({
+        method: "get",
+        url: "/style/queryYarnCountAndOutCountByStyleId",
+        params: {
+          styleId: this.style.id,
+          tenantCrop: localStorage.getItem("tenantCrop"),
+        }
+      }).then(response => {
+        this.count = response.data.data
+      })
+    }
   }
 }
 </script>
