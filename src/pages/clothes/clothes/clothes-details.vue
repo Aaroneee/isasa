@@ -30,6 +30,12 @@
             </van-tag>
           </van-col>
         </van-row>
+        <van-row>
+          <van-col span="24">试纱次数：{{ count.yarnCount }}</van-col>
+        </van-row>
+        <van-row>
+          <van-col span="24">出件次数：{{ count.outCount }}</van-col>
+        </van-row>
       </van-cell>
     </div>
     <div class="card" @touchstart.prevent="touchPrice(stylePrice)" @touchend.prevent="clearTime(stylePrice)">
@@ -100,11 +106,11 @@ export default {
   name: "clothesDetails",
   created() {
     this.clothes = this.$route.query
-    console.log(this.clothes)
     this.queryStyleLabelList()
     this.queryStyleImageByClothesId(this.clothes.clothesId)
     this.queryClothesSchedules(this.clothes.clothesId)
     this.queryPrice()
+    this.queryCount()
   },
   data() {
     return {
@@ -124,6 +130,10 @@ export default {
         //定制价格
         cusPrice: "",
       },
+      count: {
+        yarnCount: 0,
+        outCount: 0,
+      }
     }
   },
   components: {
@@ -245,6 +255,18 @@ export default {
     operationRecord: function () {
       this.$router.push({name: "clothesOperationRecord", query: this.clothes})
     },
+    queryCount() {
+      this.$axios({
+        method: "get",
+        url: "/clothes/queryYarnCountAndOutCountByClothesId",
+        params: {
+          clothesId: this.clothes.clothesId,
+          tenantCrop: localStorage.getItem("tenantCrop"),
+        }
+      }).then(response => {
+        this.count = response.data.data
+      })
+    }
   }
 }
 </script>
