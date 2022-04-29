@@ -49,11 +49,19 @@
                   </van-badge>
                   <div class="styleInfo">
                     <van-row>
-                      <van-col span="10">
+                      <van-col span="12">
                         <p class="pFont" style="text-align: left">{{ item.libTypeName }}</p>
                       </van-col>
-                      <van-col span="14">
-                        <p class="pFont" style="text-align: right">{{ item.libSeriesName }}</p>
+                      <van-col span="12">
+                        <p class="pFont" style="text-align: right">￥{{ item.salePrice===''?0:item.salePrice }}</p>
+                      </van-col>
+                    </van-row>
+                    <van-row>
+                      <van-col span="12">
+                        <p class="pFont" style="text-align: left">{{ item.libSeriesName===''?'无系列':item.libSeriesName }}</p>
+                      </van-col>
+                      <van-col span="12">
+                        <p class="pFont" style="text-align: right">{{ item.libSeriesNumberName===''?"无系列编号":item.libSeriesNumberName }}</p>
                       </van-col>
                     </van-row>
                   </div>
@@ -236,8 +244,8 @@ export default {
   width: 100%;
 }
 .card{
-  min-height: 250px;
-  max-height: 250px;
+  min-height: 270px;
+  max-height: 270px;
   min-width: 160px;
   padding: 5px 10px 0 10px ;
   background-color: white;
