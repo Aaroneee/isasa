@@ -37,7 +37,7 @@
         <van-cell style="font-size: 12px">
           <van-row gutter="5">
             <van-col span="12"  v-for="item in styleList" :key="item.id" style="text-align: center">
-              <div class="card">
+              <div class="card"  @click="toStyleDetails(item)">
                 <div class="imgFont">
                   <van-badge :content="item.libBrandName===''?'':item.libBrandName" color="#7ab4ee">
                     <van-image class="style-img" radius="7"
@@ -189,6 +189,9 @@ export default {
       } else {
         this.styleLabels.push(value)
       }
+    },
+    toStyleDetails(value) {
+      this.$router.push({name: "styleStoreDetails", query: value})
     },
     onLoad() {
       this.loading=true;
