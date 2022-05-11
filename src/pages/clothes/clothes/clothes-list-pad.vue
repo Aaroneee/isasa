@@ -1,7 +1,7 @@
 <template>
   <div>
     <van-sticky>
-      <switchNavBar title="订单档期查询" :switchText="'常用条件'" @flag="recordsShow=true"/>
+      <switchNavBar title="婚纱列表(Pad)" :switchText="'常用条件'" @flag="recordsShow=true"/>
       <form action="javascript:return true">
         <van-search
             show-action

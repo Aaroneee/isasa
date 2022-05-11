@@ -1,17 +1,24 @@
 <template>
   <div id="parent">
     <van-sticky>
-      <baseNavBar title="婚纱详情"/>
+      <baseNavBar title="婚纱详情(Pad)"/>
     </van-sticky>
     <div class="card">
       <p class="PTitle">{{clothes.styleType + '-' + clothes.styleName + '-' + clothes.clothesSize + '-' + clothes.clothesNo}}</p>
       <van-row>
-          <div style="padding-top: 5px;height: 600px ;white-space: nowrap;overflow-y: auto;width: 100%">
-                <div v-for="(image, index) in images" :key="index" style="display: inline;margin-right: 2%">
-                  <img :src="image" style="height: 500px"
-                             @click="clickItem(image)" alt=""/>
-                </div>
-          </div>
+        <van-swipe :loop="false" :width="400" ref="swiper" @change="imageChange">
+          <van-swipe-item v-for="(image, index) in images" :key="index">
+            <img :src="`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image.styleImage}?imageMogr2/rquality/60`"
+                 style="height: 500px;width: 350px" @click="clickItem(index)" alt=""/>
+<!--            <p style="text-align: center;font-size: 20px;font-weight: bold">{{ image.imageTypeName }}</p>-->
+          </van-swipe-item>
+        </van-swipe>
+        <br><br><br><br>
+        <van-radio-group v-model="imagePosition" direction="horizontal" >
+          <van-radio v-for="(typeName , index) in imageTypes" :name="typeName" :key="index"
+                     icon-size="35px" checked-color="#8DE091" @click="imageTypeSelect">{{ typeName }}</van-radio>
+        </van-radio-group>
+        <br><br><br><br>
       </van-row>
     </div>
     <div class="card">
@@ -137,7 +144,6 @@ export default {
   name: "clothesDetails",
   created() {
     this.clothes = this.$route.query
-    console.log(this.clothes)
     this.queryStyleLabelList()
     this.queryStyleImageByClothesId(this.clothes.clothesId)
     this.queryPrice()
@@ -147,6 +153,10 @@ export default {
     return {
       clothes: {},
       images: [],
+      imageNames: [],
+      imageTypes:[],
+      //radio 的值
+      imagePosition:"",
       styleLabelList: [],
       clothesOperations: [],
       stylePrice: [],
@@ -166,23 +176,30 @@ export default {
   components: {
     baseNavBar
   },
+  watch:{
+  },
   methods: {
     clickItem: function (value) {
-      ImagePreview([value])
+      ImagePreview(this.imageNames,value)
     },
-    queryStyleImageByClothesId(clothesId) {
+
+    queryStyleImageByClothesId() {
       this.$axios({
         method: "GET",
-        url: "/styleImage/queryStyleImageByClothesId",
+        url: "/styleImage/queryStyleImageList",
         params: {
-          clothesId: clothesId,
+          styleId: this.clothes.styleId,
         }
       }).then(response => {
-        const data = response.data.data;
-        for (let index in data) {
-          data[index] = "https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/" + data[index]
+        this.images=response.data.data;
+
+        for (let image of response.data.data) {
+          this.imageNames.push( "https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/" + image.styleImage)
+          this.imageTypes.push(image.imageTypeName);
         }
-        this.images = data
+        this.imageTypes=Array.from(new Set(this.imageTypes))
+        //默认类型
+        this.imagePosition=this.imageTypes[0];
       })
     },
     //查询礼服标签
@@ -195,7 +212,6 @@ export default {
         }
       }).then(response => {
         this.styleLabelList = response.data.data
-        console.log(this.styleLabelList)
       })
     },
     //查询价格
@@ -208,8 +224,6 @@ export default {
           empId: this.empId
         }
       }).then(response => {
-        console.log("价格")
-        console.log(response)
         this.stylePrice = response.data.data;
       })
     },
@@ -260,6 +274,21 @@ export default {
       }).then(response => {
         this.clothesOperations = response.data.data.list.reverse();
       })
+    },
+    //图片滑动时改变radio的值
+    imageChange:function (val){
+      this.imagePosition=this.images[val].imageTypeName;
+    },
+    //radio 点击后 图片跳转
+    imageTypeSelect(val){
+      for(let i = 0;i < this.images.length; i++){
+        if (this.images[i].imageTypeName===this.imagePosition){
+          // //因为要把选择的图片展示正中间 所以要-1在0位展示上一张 这么1位就展示的是选中类型的图
+          // this.$refs.swiper.swipeTo(i-1);
+          this.$refs.swiper.swipeTo(i);
+          return;
+        }
+      }
     },
     //出样陈列
     clothesOperation: function () {
@@ -340,11 +369,15 @@ p{
   margin: 0 4%
 }
 
-.my-swipe .van-swipe-item {
-  color: #fff;
-  font-size: 20px;
-  line-height: 150px;
+.van-swipe>>>.van-swipe__indicators{
+  display: none;
+}
+.van-radio-group{
   text-align: center;
-  background-color: #39a9ed;
+  justify-content: center
+}
+.van-radio >>> .van-radio__label{
+  font-size: 25px;
+  font-weight: bold;
 }
 </style>
