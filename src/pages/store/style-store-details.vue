@@ -93,8 +93,6 @@ export default {
   data() {
     return {
       style: {},
-      tenantCrop: localStorage.getItem("tenantCrop"),
-      empId: localStorage.getItem("empId"),
 
       labelNames:[],
       labelColor: ["#A52A2A", "#FF8C00", "#696969", "#FFA500", "#2F4F4F", "#6495ED", "#FF4500", "#40E0D0"],
@@ -140,7 +138,7 @@ export default {
 
     },
     clickBuyButton:function (){
-
+        this.$router.push({name: "styleStoreAddOrder", query: this.style})
     },
     clickImageItem: function (index) {
       ImagePreview(this.images,index)
