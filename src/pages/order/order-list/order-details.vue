@@ -91,11 +91,12 @@
         <van-tab title="试纱记录">
           <van-empty v-if="yarnClothesList.length == 0" description="暂无试纱记录"/>
           <div v-else>
-            <van-grid :border="false" :column-num="2" :gutter="1" style="font-size: 12px;">
+            <van-grid :border="false" :column-num="2" :gutter="1" style="font-size: 14px;">
               <van-grid-item v-for="item in yarnClothesList" :key="item.id" >
                 <div v-if="item.styleImage !== ''">
-                  <van-image class="style-img" radius="7" @click="clickItem(item)"
-                             :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage">
+                  <van-image class="style-img" radius="7" @click="clickItem2(item)"
+                             style="height: 218px;width: 151px;margin-top: 10px"
+                             :src="item.styleImage">
                   </van-image>
                 </div>
                 <div v-else>
@@ -103,16 +104,7 @@
                     <template v-slot:error>未上传图片</template>
                   </van-image>
                 </div>
-                <van-row justify="space-between" style="width: 100%;margin-top: 5px">
-                  <van-col span="13">
-                    <span v-text="item.styleType+'-'+item.styleName+'-'+item.clothesSize+'-'+item.clothesNo"></span>
-                  </van-col>
-                  <van-col span="11" style="text-align: right;color: #fdd640">
-                    <span @click="addClothesSchedule(item)">
-                     添加婚纱档期
-                    </span>
-                  </van-col>
-                </van-row>
+                <span v-text="item.styleType+'-'+item.styleName+'-'+item.clothesSize+'-'+item.clothesNo"></span>
               </van-grid-item>
             </van-grid>
           </div>
@@ -178,54 +170,6 @@
                     confirm-disabled-text="请选择婚期"
                     confirm-text="确认修改"
                     @confirm="weddingDayUpdateOnConfirm"/>
-
-      <van-dialog v-model="dialogShow"
-                  title="添加婚纱档期"
-                  show-cancel-button
-                  :before-close="beforeClose"
-                  theme="round-button">
-       <van-form ref="form" style="margin-top: 10px">
-         <van-field
-             label="婚纱编号"
-             name="clothesNo"
-             v-model="clothesNo"
-             readonly
-             required
-             :rules="[{ required: true }]"
-         />
-         <van-field
-             label="精确婚期"
-             v-model="weddingDayText"
-             placeholder="请选择婚期"
-             readonly
-             name="weddingDay"
-             @click="weddingDaySelectShowPicker = true"
-             required
-             :rules="[{ required: true }]"
-         />
-         <van-field
-             label="使用档期"
-             v-model="dateAmong"
-             placeholder="请选择档期"
-             readonly
-             required
-             @click="dateSectionShow = true"
-             :rules="[{ required: true }]"
-         />
-       </van-form>
-      </van-dialog>
-      <van-popup v-model="weddingDaySelectShowPicker" round position="bottom">
-        <van-picker
-            title="选择婚期"
-            show-toolbar
-            :columns="weddingDayPickerArray"
-            @confirm="weddingDayConfirm"
-            @cancel="weddingDayCancel"
-        />
-      </van-popup>
-      <van-calendar ref="dateRef" safe-area-inset-bottom v-model="dateSectionShow" allow-same-day
-                    :min-date="limitMinDate" :max-date="limitMaxDate" :default-date="chooseDate" type="range"
-                    @confirm="dateSectionConfirm"/>
     </van-row>
   </div>
 </template>
@@ -263,19 +207,6 @@ export default {
       editWeddingDayShow: false,
       weddingDay: null,
       editWeddingDay: {},
-      dialogShow: false,
-      clothesNo: "",
-      weddingDayText: "",
-      clothesId: null,
-      weddingDayId: null,
-      dateAmong: "",
-      rule: null,
-      limitMinDate: this.$dateUtils.getMaxMinDate()[0],
-      limitMaxDate: this.$dateUtils.getMaxMinDate()[1],
-      chooseDate: [],
-      weddingDaySelectShowPicker: false,
-      dateSectionShow: false,
-      weddingDayPickerArray: [],
     }
   },
   created() {
@@ -304,6 +235,7 @@ export default {
       })
     },
     queryCusSchedules: function () {
+      this.clothesScheduleList = []
       this.$axios({
         method: 'GET',
         params: {
@@ -312,7 +244,7 @@ export default {
         url: '/schedule/clothesAndScheduleByOrderId',
       }).then(response => {
         if (response.data.code === 200) {
-          this.clothesScheduleList = arrTrans(2, response.data.data)
+          this.clothesScheduleList.push(...arrTrans(2, response.data.data))
         }
       })
     },
@@ -343,9 +275,9 @@ export default {
     queryYarnClothesList() {
       this.$axios({
         method: "get",
-        url: '/clothesYarn/queryYarnClothesList',
+        url: '/clothesYarn/queryYarnClothesListByCusId',
         params: {
-          appId: this.appId
+          cusId: this.cusId
         }
       }).then(response => {
         if (response.data.data != "") {
@@ -368,9 +300,11 @@ export default {
     clickItem: function (value) {
       ImagePreview(['\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+value.styleImage])
     },
-    async queryWeddingDayByOrderId() {
+    clickItem2: function (value) {
+      ImagePreview([value.styleImage])
+    },
+    queryWeddingDayByOrderId() {
       this.weddingDayArray = []
-      this.weddingDayPickerArray = []
       this.$axios({
         method: "get",
         url: "/weddingDate/queryWeddingDayByCusId",
@@ -379,26 +313,7 @@ export default {
         }
       }).then(response => {
         this.weddingDayArray.push(...response.data.data)
-        response.data.data.forEach(s => {
-          this.weddingDayPickerArray.push({text: s.weddingDay, value: s.id})
-        })
-        this.$axios({
-          method:"get",
-          url:"schedule/queryScheduleRule",
-          params:{
-            tenantCrop:this.tenantCrop
-          }
-        }).then(response => {
-          this.rule = response.data.data.rule
-          if (this.weddingDayArray.length == 1) {
-            this.weddingDayText = this.weddingDayArray[0].weddingDay
-            this.weddingDayId = this.weddingDayArray[0].id
-            this.defaultSchedule()
-          } else {
-            this.weddingDayText = ""
-            this.weddingDayId = null
-          }
-        })
+        console.log(this.weddingDayArray)
       })
     },
     weddingDayChooseOnConfirm(val) {
@@ -461,6 +376,7 @@ export default {
         if (flag) {
           this.$toast.success("修改成功！")
           this.queryWeddingDayByOrderId()
+          this.queryCusSchedules()
           this.queryOrderVo()
           setTimeout(()=> {
             this.editWeddingDayShow = false
@@ -470,69 +386,8 @@ export default {
           this.$toast.fail(response.data.msg)
         }
       })
-    },
-    addClothesSchedule(item) {
-      this.dialogShow = true
-      this.clothesNo = item.styleType+'-'+item.styleName+'-'+item.clothesSize+'-'+item.clothesNo
-      this.clothesId = item.clothesId
-    },
-    addSchedule() {
-
-    },
-    beforeClose(action, done) {
-      if (action === 'confirm') {
-        this.$refs.form.validate().then(val => {
-          this.$axios({
-            method: "post",
-            url: "/schedule/addSchedule",
-            params: {
-              clothesId: this.clothesId,
-              orderId: this.id,
-              cusId: this.cusId,
-              tenantCrop: localStorage.getItem("tenantCrop"),
-              weddingDayId: this.weddingDayId,
-              dateAmong: this.dateAmong
-            }
-          }).then(response => {
-            if (response.data.code === 200) {
-              this.$toast.success("添加档期成功")
-              done()
-              this.queryCusSchedules()
-            } else {
-              this.$toast.fail(response.data.msg);
-              done(false)
-            }
-          })
-        }).catch(() =>{
-          done(false)
-        })
-      } else {
-        this.$refs.form.resetValidation()
-        done();
-      }
-    },
-    defaultSchedule() {
-      this.dateAmong = get_before_date(this.weddingDayText, this.rule, 0)
-      const dateArray = this.$dateUtils.getAroundDate(this.weddingDayText,this.rule)
-      this.limitMinDate = dateArray[0]
-      this.limitMaxDate = dateArray[1]
-      this.chooseDate = this.$dateUtils.dateSectionStrToDateArray(this.dateAmong)
-    },
-    dateSectionConfirm(value) {
-      this.dateAmong = this.$dateUtils.rangeVantDateToYMD(value)
-      this.dateSectionShow = false
-    },
-    weddingDayConfirm(val) {
-      this.weddingDayText = val.text
-      this.weddingDayId = val.value
-      this.defaultSchedule()
-      this.weddingDayCancel()
-    },
-    weddingDayCancel() {
-      this.weddingDaySelectShowPicker = false
     }
-  },
-  watch: {
+  }, watch: {
     editFlag: function (value) {
       if (value) {
         this.$router.push({name: "orderEdit", query: this.orderVo})
@@ -540,20 +395,6 @@ export default {
     }
   }
 
-}
-function get_before_date(date, day, after) {
-  let date1 = new Date(date);
-  let time1 = date1.getFullYear() + "-" + (dateIsSingle(date1.getMonth() + 1)) + "-" + dateIsSingle(date1.getDate());//time1表示当前时间
-  let date2 = new Date(date);
-  date2.setDate(date1.getDate() - day);
-  let time2 = date2.getFullYear() + "-" + (dateIsSingle(date2.getMonth() + 1)) + "-" + dateIsSingle(date2.getDate());
-  let date3 = new Date(date);
-  date3.setDate(date3.getDate() + (day + after));
-  let time3 = date3.getFullYear() + "-" + (dateIsSingle(date3.getMonth() + 1)) + "-" + dateIsSingle(date3.getDate());
-  return time2 + ' - ' + time3;
-}
-function dateIsSingle(date) {
-  return date < 9 ? "0" + date : date;
 }
 
 function arrTrans(num, arr) {
@@ -579,8 +420,5 @@ function arrTrans(num, arr) {
 }
 .right{
   text-align: right;
-}
-/deep/ .van-dialog__header {
-  padding-top: 10px;
 }
 </style>

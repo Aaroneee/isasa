@@ -17,7 +17,14 @@ import PerButton from "./components/button/per-button"
 import Clipboard from "vue-clipboard2";
 import hasPermission from "./permission/index";
 import { Lazyload } from 'vant';
+import { create, all } from 'mathjs'
 
+const mathjs = create(all)
+
+mathjs.config({
+    number: 'BigNumber',
+    precision: 64
+})
 Vue.use(Lazyload);
 
 
@@ -32,6 +39,7 @@ Vue.prototype.$upload = upload
 Vue.prototype.$projectsType = projectsType;
 Vue.prototype.$stringUtils = stringUtils;
 Vue.prototype.$per = hasPermission;
+Vue.prototype.$math = mathjs
 Vue.use(SlimCropper)
 Vue.use(Clipboard)
 Vue.config.productionTip = false

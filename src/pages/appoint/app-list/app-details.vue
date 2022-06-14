@@ -94,7 +94,7 @@
                   <div v-if="item.styleImage !== ''">
                     <van-image class="style-img" radius="7" @click="clickItem(item)"
                                style="height: 218px;width: 151px;margin-top: 10px"
-                               :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage">
+                               :src="item.styleImage">
                     </van-image>
                   </div>
                   <div v-else>
@@ -323,7 +323,7 @@ export default {
       })
     },
     clickItem: function (value) {
-      ImagePreview(['\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+value.styleImage])
+      ImagePreview([value.styleImage])
     },
     queryOrderListByAppId() {
       this.$axios({

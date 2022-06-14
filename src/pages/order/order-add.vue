@@ -469,6 +469,7 @@ export default {
 
     //提交订单
     addAppointSubmit: function (data) {
+      data.shopId = this.appointVo.shopId;
       data.cusId = this.appointVo.cusId;
       data.appId = this.appointVo.id;
       data.orderName = this.orderName;

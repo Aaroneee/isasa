@@ -172,14 +172,14 @@ export default {
       this.sizeShowPicker = false
     },
     shopOnConfirm: function (value) {
-      //查询店铺下所有位置
-      this.queryPositionIdsByShop(value.id)
       //先清空店铺下的所有位置
       this.clothesPosition = ""
       this.clothesPositionText = ""
       this.clothesShopText = value.text
       this.clothesShop = value.id
       this.shopShowPicker = false
+      //查询店铺下所有位置
+      this.queryPositionIdsByShop(value.id)
     },
     queryShopIds: function () {
       this.$selectUtils.queryShopIds(this.$selectUtils.Picker).then(response => {
@@ -189,6 +189,23 @@ export default {
     queryPositionIdsByShop: function (shop) {
       this.$selectUtils.queryPositionIdsByShop(shop, this.$selectUtils.Picker).then(response => {
         this.positionColumnsArray = JSON.parse(response.data.data)
+        if (localStorage.getItem("tenantCrop") == '2a31c23a-c178-441614928053489') {
+          if (this.clothesShopText == "上海华鑫店") {
+            this.positionColumnsArray.forEach(s => {
+              if (s.text.indexOf("新款入库区域") != -1) {
+                this.clothesPosition = s.id
+                this.clothesPositionText = s.text
+              }
+            })
+          } else {
+            this.positionColumnsArray.forEach(s => {
+              if (s.text.indexOf("收件待定") != -1) {
+                this.clothesPosition = s.id
+                this.clothesPositionText = s.text
+              }
+            })
+          }
+        }
       })
     },
     queryClothesSize() {

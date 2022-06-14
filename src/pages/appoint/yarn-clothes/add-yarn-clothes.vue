@@ -116,9 +116,9 @@
         <van-grid v-else :border="false" :column-num="2" :gutter="1" style="font-size: 14px;">
           <van-grid-item v-for="item in yarnClothesList" :key="item.id" >
             <div v-if="item.styleImage !== ''">
-              <van-image class="style-img" radius="7" @click="clickItem(item)"
+              <van-image class="style-img" radius="7" @click="clickItem2(item)"
                          style="height: 218px;width: 151px;margin-top: 10px"
-                         :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage">
+                         :src="item.styleImage">
               </van-image>
             </div>
             <div v-else>
@@ -193,6 +193,9 @@ export default {
   methods: {
     clickItem: function (value) {
       ImagePreview(['\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+value.styleImage])
+    },
+    clickItem2(value) {
+      ImagePreview([value.styleImage])
     },
     searchStyleName: function (){
       this.page = 1

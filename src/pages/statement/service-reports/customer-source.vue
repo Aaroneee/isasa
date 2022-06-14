@@ -3,6 +3,10 @@
     <van-sticky>
       <switchNavBar title="渠道分析表" switchText="日期" @flag="createDateShow=true"/>
     </van-sticky>
+    <van-dropdown-menu>
+      <van-dropdown-item v-model="serviceId" @change="serviceChange" :options="serviceArray"/>
+      <van-dropdown-item v-model="dressId" @change="dressChange" :options="dressArray"/>
+    </van-dropdown-menu>
     <van-popup v-model="createDateShow" position="bottom">
       <van-datetime-picker
           v-model="chooseDate"
@@ -15,7 +19,7 @@
       />
     </van-popup>
     <van-tabs v-model="active" animated swipeable :lazy-render="false" color="#409eff">
-      <van-tab title="渠道客资">
+      <van-tab title="渠道客资" :disabled="!isService">
         <van-row>
           <van-col span="24">
             <div v-show="sourceCusViewData.length !== 0" style="background-color: white;margin-bottom: 20px;width: 100%">
@@ -60,24 +64,24 @@
               <div class="van_table_show">
                 <div class="test" style="color: #606266;background-color: #f5f7fa">
                   <van-row>
-                    <van-col span="8">渠道</van-col>
-                    <van-col span="8">到店数</van-col>
-                    <van-col span="8">客资到店转化率</van-col>
+                    <van-col :span="span">渠道</van-col>
+                    <van-col :span="span">到店数</van-col>
+                    <van-col span="8" v-if="isService">客资到店转化率</van-col>
                   </van-row>
                 </div>
                 <div v-for="value in sourceCusArrivalViewData" :key="value.id" class="test">
                   <van-row>
-                    <van-col span="8">{{value.sourceName}}</van-col>
-                    <van-col span="8">{{value.sourceCount}}</van-col>
-                    <van-col span="8" v-if="value.proportion == null">-</van-col>
-                    <van-col span="8" v-else>{{(value.proportion * 100).toFixed(1)}}%</van-col>
+                    <van-col :span="span">{{value.sourceName}}</van-col>
+                    <van-col :span="span">{{value.sourceCount}}</van-col>
+                    <van-col span="8" v-if="value.proportion == null && isService">-</van-col>
+                    <van-col span="8" v-if="value.proportion != null && isService">{{(value.proportion * 100).toFixed(1)}}%</van-col>
                   </van-row>
                 </div>
                 <div class="test" style="color: #606266;font-weight:bold">
                   <van-row>
-                    <van-col span="8">合计</van-col>
-                    <van-col span="8">{{cusArrivalCount}}</van-col>
-                    <van-col span="8">-</van-col>
+                    <van-col :span="span">合计</van-col>
+                    <van-col :span="span">{{cusArrivalCount}}</van-col>
+                    <van-col span="8" v-if="isService">-</van-col>
                   </van-row>
                 </div>
               </div>
@@ -207,10 +211,18 @@ export default {
       orderTableHeader: "订单数",
       moneyTableHeader: "金额",
       tenantCrop: localStorage.getItem("tenantCrop"),
+      serviceArray: [{text: "选择客服", value: ""}],
+      serviceId: "",
+      dressArray: [{text: "选择礼服师", value: ""}],
+      dressId: "",
+      isService: true,
+      selectPopup: false
     }
   },
   created() {
     this.pageInit()
+    this.queryServiceIds()
+    this.queryDressArray()
   },
   mounted() {
     var v = this;
@@ -221,12 +233,34 @@ export default {
       v.initSourceCusMoneyView()
     });
   },
+  computed: {
+    span: function () {
+      if (this.isService) {
+        return 8
+      }
+      return 12
+    }
+  },
   methods: {
     pageInit() {
       this.querySourceReportsCus()
       this.querySourceReportsArrival()
       this.querySourceReportsOrder()
       this.querySourceReportsMoney()
+    },
+    queryServiceIds: function () {
+      this.$selectUtils.queryServiceIds(this.$selectUtils.DropDownMenu).then(response => {
+        if (response.data.code === 200) {
+          this.serviceArray.push(...JSON.parse(response.data.data));
+        } else {
+          self.$toast.fail(response.data.msg);
+        }
+      })
+    },
+    queryDressArray() {
+      this.$selectUtils.queryDressIdsByShop(this.$selectUtils.DropDownMenu, this.shop).then(response => {
+        this.dressArray.push(...JSON.parse(response.data.data))
+      })
     },
     // 渠道客资
     querySourceReportsCus() {
@@ -236,7 +270,8 @@ export default {
         url: '/serviceReports/customerSourceReportsCus',
         params: {
           date: this.date,
-          tenantCrop: this.tenantCrop
+          tenantCrop: this.tenantCrop,
+          serviceId: this.serviceId
         },
       }).then(response => {
         this.sourceCusData = response.data.data;
@@ -303,7 +338,9 @@ export default {
         url: '/serviceReports/customerSourceReportsYesApp',
         params: {
           date: this.date,
-          tenantCrop: this.tenantCrop
+          tenantCrop: this.tenantCrop,
+          serviceId: this.serviceId,
+          dressId: this.dressId
         },
       }).then(response => {
         this.sourceCusArrivalData = response.data.data;
@@ -370,7 +407,9 @@ export default {
         url: '/serviceReports/customerSourceReportsOrder',
         params: {
           date: this.date,
-          tenantCrop: this.tenantCrop
+          tenantCrop: this.tenantCrop,
+          serviceId: this.serviceId,
+          dressId: this.dressId
         },
       }).then(response => {
         this.sourceCusOrderData = response.data.data
@@ -437,7 +476,9 @@ export default {
         url: '/serviceReports/customerSourceReportsMoney',
         params: {
           date: this.date,
-          tenantCrop: this.tenantCrop
+          tenantCrop: this.tenantCrop,
+          serviceId: this.serviceId,
+          dressId: this.dressId
         },
       }).then(response => {
         this.sourceCusMoneyData = response.data.data;
@@ -539,6 +580,28 @@ export default {
       }
       return {count: count, data: cusXXXData}
     },
+    serviceChange() {
+      this.isService = true
+      this.dressId = ""
+      this.querySourceReportsCus()
+      this.querySourceReportsArrival()
+      this.querySourceReportsOrder()
+      this.querySourceReportsMoney()
+    },
+    dressChange() {
+      this.isService = false
+      this.serviceId = ""
+      if (this.dressId == "") {
+        this.isService = true
+        this.querySourceReportsCus()
+      }
+      if (this.active == 0) {
+        this.active = 1
+      }
+      this.querySourceReportsArrival()
+      this.querySourceReportsOrder()
+      this.querySourceReportsMoney()
+    }
   },
 }
 </script>

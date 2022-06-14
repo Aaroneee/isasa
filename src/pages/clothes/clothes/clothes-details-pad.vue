@@ -1,87 +1,125 @@
 <template>
   <div id="parent">
     <van-sticky>
-      <baseNavBar title="婚纱详情"/>
+      <baseNavBar title="婚纱详情(Pad)"/>
     </van-sticky>
     <div class="card">
       <p class="PTitle">{{clothes.styleType + '-' + clothes.styleName + '-' + clothes.clothesSize + '-' + clothes.clothesNo}}</p>
-      <div style="padding-top: 5px">
-        <van-swipe height="300" :autoplay="3000">
+      <van-row>
+        <van-swipe :loop="false" :width="400" ref="swiper" @change="imageChange">
           <van-swipe-item v-for="(image, index) in images" :key="index">
-            <div class="img-box">
-              <van-image fit="scale-down" round radius="7" width="60%" height="100%" :src="image"
-                         @click="clickItem(image)"/>
-            </div>
+            <img :src="`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image.styleImage}?imageMogr2/rquality/60`"
+                 style="height: 500px;width: 350px" @click="clickItem(index)" alt=""/>
+<!--            <p style="text-align: center;font-size: 20px;font-weight: bold">{{ image.imageTypeName }}</p>-->
           </van-swipe-item>
         </van-swipe>
-      </div>
+        <br><br><br><br>
+        <van-radio-group v-model="imagePosition" direction="horizontal" >
+          <van-radio v-for="(typeName , index) in imageTypes" :name="typeName" :key="index"
+                     icon-size="35px" checked-color="#8DE091" @click="imageTypeSelect">{{ typeName }}</van-radio>
+        </van-radio-group>
+        <br><br><br><br>
+      </van-row>
+    </div>
+    <div class="card">
+      <van-row><p class="PTitle">婚纱详情</p></van-row>
       <van-cell>
         <van-row>
-          <van-col span="24">品牌：{{ clothes.brand === "" ? "暂无品牌" : clothes.brand }}</van-col>
-        </van-row>
-        <van-row>
-          <van-col span="24">位置：{{ clothes.positionName === "" ? "暂无位置" : clothes.positionName }}</van-col>
+          <van-col span="24"><p class="pValue">品牌：{{ clothes.brand === "" ? "暂无品牌" : clothes.brand }}</p></van-col>
         </van-row>
         <van-row style="padding-top: 5px">
-          <van-col>标签：{{ styleLabelList.length == 0 ? "暂无标签" : "" }}
+          <van-col span="24"><p class="pValue">位置：{{ clothes.positionName === "" ? "暂无位置" : clothes.positionName }}</p></van-col>
+        </van-row>
+        <van-row >
+          <van-col><span class="pValue">标签：{{ styleLabelList.length == 0 ? "暂无标签" : "" }}</span>
             <van-tag v-for="item in styleLabelList" :key="item.id" type="danger"
                      size="large" style="margin: 5px">
               {{ item.labelName }}
             </van-tag>
           </van-col>
         </van-row>
-        <van-row>
-          <van-col span="24">试纱次数：{{ count.yarnCount }}</van-col>
-        </van-row>
-        <van-row>
-          <van-col span="24">出件次数：{{ count.outCount }}</van-col>
-        </van-row>
       </van-cell>
     </div>
     <div class="card" @touchstart.prevent="touchPrice(stylePrice)" @touchend.prevent="clearTime(stylePrice)">
-        <van-row><p class="PTitle">款式价格</p></van-row>
-        <van-row v-if="stylePrice.length>0">
-          <van-col :span="8" v-for="(item,index) in stylePrice" :key="index">
-            <p style="text-align: center;margin: 10px 0">{{ item.priceType }}</p>
-            <p style="text-align: center;margin: 10px 0">{{ item.price }}</p>
-          </van-col>
-        </van-row>
-        <van-row v-else>
-          <p style="text-align: center; margin: 3% 0">无</p>
-        </van-row>
+      <van-row><p class="PTitle">款式价格</p></van-row>
+      <van-row v-if="stylePrice.length>0">
+        <van-col :span="8" v-for="(item,index) in stylePrice" :key="index">
+          <p class="pValue" style="text-align: center;margin: 10px 0;">{{ item.priceType }}</p>
+          <p class="pValue" style="text-align: center;margin: 10px 0;">{{ item.price }}</p>
+        </van-col>
+      </van-row>
+      <van-row v-else>
+        <p style="text-align: center; margin: 3% 0">无</p>
+      </van-row>
     </div>
-    <div style="height: 120px"></div>
+    <div class="card">
+      <van-row><p class="PTitle">历史位置</p></van-row>
+      <van-steps direction="vertical" :active="0" active-color="#000000" inactive-color="#000000" style="margin-left: 15%;">
+        <van-step v-for="item in clothesOperations.slice(0, 3)" :key="item.id">
+          <van-row >
+            <van-col span="12">
+              <p class="pValue">经办人：{{ item.empName }}</p>
+            </van-col>
+            <van-col span="12">
+              <p class="pValue">行为：{{ item.operationName }}</p>
+            </van-col>
+          </van-row>
+          <van-row>
+            <van-col span="12">
+              <p class="pValue">目标店铺：{{ item.shopName }}</p>
+            </van-col>
+            <van-col span="12">
+              <p class="pValue">原店铺：{{ item.localShopName===''?'暂无':item.localShopName }}</p>
+            </van-col>
+          </van-row>
+          <van-row>
+            <van-col span="12">
+              <p class="pValue">目标位置：{{ item.positionName }}</p>
+            </van-col>
+            <van-col span="12">
+              <p class="pValue">原位置：{{ item.localPositionName===''?'暂无':item.localPositionName }}</p>
+            </van-col>
+          </van-row>
+          <van-row>
+            <van-col span="12">
+              <p class="pValue">操作日期：{{ item.createDate }}</p>
+            </van-col>
+          </van-row>
+        </van-step>
+      </van-steps>
+    </div>
+    <div style="height: 140px"></div>
     <div id="operationDiv">
       <div id="operationCon">
         <p class="PTitle">操作菜单</p>
         <div id="operationParent">
           <div class="operationBlock" @click="clothesOperation">
-            <van-icon name="back-top" size="30"/>
-            <p>出样陈列</p>
+            <van-icon name="back-top" size="40"/>
+            <p class="pValue">出样陈列</p>
           </div>
           <div class="operationBlock" @click="clothesSchedules">
-            <van-icon name="chart-trending-o" size="30"/>
-            <p>档期查看</p>
+            <van-icon name="chart-trending-o" size="40"/>
+            <p class="pValue">档期查看</p>
           </div>
           <div class="operationBlock" @click="styleInfoView">
-            <van-icon name="newspaper-o" size="30"/>
-            <p>款式介绍</p>
+            <van-icon name="newspaper-o" size="40"/>
+            <p class="pValue">款式介绍</p>
           </div>
           <div class="operationBlock" @click="addClothesYarn">
-            <van-icon name="add-o" size="30"/>
-            <p>添加试纱</p>
+            <van-icon name="add-o" size="40"/>
+            <p class="pValue">添加试纱</p>
           </div>
           <div class="operationBlock" @click="toStyleImage">
-            <van-icon name="photo-o" size="30"/>
-            <p>查看图片</p>
+            <van-icon name="photo-o" size="40"/>
+            <p class="pValue">查看图片</p>
           </div>
           <div class="operationBlock" @click="toStylePrice">
-            <van-icon name="balance-o" size="30"/>
-            <p>查看价格</p>
+            <van-icon name="balance-o" size="40"/>
+            <p class="pValue">查看价格</p>
           </div>
           <div class="operationBlock" @click="operationRecord">
-            <van-icon name="todo-list-o" size="30"/>
-            <p>历史操作</p>
+            <van-icon name="todo-list-o" size="40"/>
+            <p class="pValue">历史操作</p>
           </div>
         </div>
       </div>
@@ -108,20 +146,23 @@ export default {
     this.clothes = this.$route.query
     this.queryStyleLabelList()
     this.queryStyleImageByClothesId(this.clothes.clothesId)
-    this.queryClothesSchedules(this.clothes.clothesId)
     this.queryPrice()
-    this.queryCount()
+    this.queryClothesOperations()
   },
   data() {
     return {
       clothes: {},
       images: [],
-      clothesScheduleList: [],
+      imageNames: [],
+      imageTypes:[],
+      //radio 的值
+      imagePosition:"",
       styleLabelList: [],
+      clothesOperations: [],
       stylePrice: [],
       updatePriceShow: false,
       empId: localStorage.getItem("empId"),
-
+      tenantCrop: localStorage.getItem("tenantCrop"),
       selfPrice: {
         //租赁价格
         leasePrice: "",
@@ -130,43 +171,35 @@ export default {
         //定制价格
         cusPrice: "",
       },
-      count: {
-        yarnCount: 0,
-        outCount: 0,
-      }
     }
   },
   components: {
     baseNavBar
   },
+  watch:{
+  },
   methods: {
     clickItem: function (value) {
-      ImagePreview([value])
+      ImagePreview(this.imageNames,value)
     },
-    queryStyleImageByClothesId(clothesId) {
+
+    queryStyleImageByClothesId() {
       this.$axios({
         method: "GET",
-        url: "/styleImage/queryStyleImageByClothesId",
+        url: "/styleImage/queryStyleImageList",
         params: {
-          clothesId: clothesId,
+          styleId: this.clothes.styleId,
         }
       }).then(response => {
-        const data = response.data.data;
-        for (let index in data) {
-          data[index] = "https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/" + data[index]
+        this.images=response.data.data;
+
+        for (let image of response.data.data) {
+          this.imageNames.push( "https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/" + image.styleImage)
+          this.imageTypes.push(image.imageTypeName);
         }
-        this.images = data
-      })
-    },
-    queryClothesSchedules: function (clothesId) {
-      this.$axios({
-        method: "GET",
-        url: "/schedule/clothesSchedules",
-        params: {
-          clothesId: clothesId,
-        }
-      }).then(response => {
-        this.clothesScheduleList = response.data.data
+        this.imageTypes=Array.from(new Set(this.imageTypes))
+        //默认类型
+        this.imagePosition=this.imageTypes[0];
       })
     },
     //查询礼服标签
@@ -179,7 +212,6 @@ export default {
         }
       }).then(response => {
         this.styleLabelList = response.data.data
-        console.log(this.styleLabelList)
       })
     },
     //查询价格
@@ -192,8 +224,6 @@ export default {
           empId: this.empId
         }
       }).then(response => {
-        console.log("价格")
-        console.log(response)
         this.stylePrice = response.data.data;
       })
     },
@@ -233,6 +263,33 @@ export default {
         // on cancel
       });
     },
+    queryClothesOperations: function () {
+      this.$axios({
+        method: "GET",
+        url: "/clothesOperation/clothesOperationList",
+        params: {
+          tenantCrop: this.tenantCrop,
+          clothesId: this.clothes.clothesId,
+        }
+      }).then(response => {
+        this.clothesOperations = response.data.data.list.reverse();
+      })
+    },
+    //图片滑动时改变radio的值
+    imageChange:function (val){
+      this.imagePosition=this.images[val].imageTypeName;
+    },
+    //radio 点击后 图片跳转
+    imageTypeSelect(val){
+      for(let i = 0;i < this.images.length; i++){
+        if (this.images[i].imageTypeName===this.imagePosition){
+          // //因为要把选择的图片展示正中间 所以要-1在0位展示上一张 这么1位就展示的是选中类型的图
+          // this.$refs.swiper.swipeTo(i-1);
+          this.$refs.swiper.swipeTo(i);
+          return;
+        }
+      }
+    },
     //出样陈列
     clothesOperation: function () {
       this.$router.push({name: "clothesOperation", query: this.clothes})
@@ -255,18 +312,6 @@ export default {
     operationRecord: function () {
       this.$router.push({name: "clothesOperationRecord", query: this.clothes})
     },
-    queryCount() {
-      this.$axios({
-        method: "get",
-        url: "/clothes/queryYarnCountAndOutCountByClothesId",
-        params: {
-          clothesId: this.clothes.clothesId,
-          tenantCrop: localStorage.getItem("tenantCrop"),
-        }
-      }).then(response => {
-        this.count = response.data.data
-      })
-    }
   }
 }
 </script>
@@ -277,10 +322,13 @@ p{
   margin-block-end: 0;
 }
 .PTitle {
-  font-size: 17px;
+  font-size: 23px;
   font-weight: bold;
   text-align: center;
-  padding-top: 3%;
+  padding-top: 1%;
+}
+.pValue{
+  font-size: 17px;
 }
 .card {
   background: white;
@@ -299,7 +347,7 @@ p{
   border-radius: 10px;
   margin: 0 auto;
   background: white;
-  height: 110px;
+  height: 130px;
   width: 95%;
 }
 
@@ -321,18 +369,15 @@ p{
   margin: 0 4%
 }
 
-.my-swipe .van-swipe-item {
-  color: #fff;
-  font-size: 20px;
-  line-height: 150px;
-  text-align: center;
-  background-color: #39a9ed;
+.van-swipe>>>.van-swipe__indicators{
+  display: none;
 }
-
-.img-box {
-  width: 100%;
-  height: 100%;
-  background: white;
-  text-align: center
+.van-radio-group{
+  text-align: center;
+  justify-content: center
+}
+.van-radio >>> .van-radio__label{
+  font-size: 25px;
+  font-weight: bold;
 }
 </style>
