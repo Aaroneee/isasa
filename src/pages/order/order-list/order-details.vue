@@ -165,6 +165,39 @@
 <!--            </template>-->
 <!--          </van-swipe-cell>-->
         </van-tab>
+        <van-tab title="款式报价">
+          <van-empty v-if="orderOfferArray.length === 0" description="暂无款式报价"/>
+          <div v-else>
+            <van-cell style="font-size: 13px" v-for="item in orderOfferArray" :key="item.orderOffer.id">
+              <van-row v-if="item.orderDetail != ''" style="color: red">
+                已匹配到订单：{{item.orderDetail}}
+              </van-row>
+              <van-row>
+                <van-col span="12">报价日期：{{item.orderOffer.createDate}}</van-col>
+                <van-col span="12" class="right">{{item.orderOffer.offerType === 0 ? "套餐报价" : "单件报价"}}</van-col>
+              </van-row>
+              <van-row>
+                <van-col span="12">原价：{{item.orderOffer.originalPrice}}</van-col>
+                <van-col span="12" class="right">最终价格：{{item.orderOffer.orderPrice}}</van-col>
+              </van-row>
+              <van-steps direction="vertical" :active="item.mathList.length + 1" active-color="#969799">
+                <van-step v-for="math in item.mathList" :key="math.id">
+                  <h5>{{math.stagePrice+ ' ' + math.sign+ ' ' + math.math + ' = ' + math.mathResult}}</h5>
+                  <p>{{math.mathDescribe}}</p>
+                </van-step>
+              </van-steps>
+              <!--                <div style="margin-top: 7px;margin-bottom: 7px">-->
+              <!--                  <van-row v-for="math in item.mathList" :key="math.id" style="margin-bottom: 3px">-->
+              <!--                    <van-col span="24">计算公式：{{math.stagePrice+ ' ' + math.sign+ ' ' + math.math + ' = ' + math.mathResult}}</van-col>-->
+              <!--                    <van-col span="24">描述：{{math.mathDescribe}}</van-col>-->
+              <!--                  </van-row>-->
+              <!--                </div>-->
+              <van-row type="flex" justify="end" v-if="item.orderDetail == ''">
+                <van-button  type="info" size="mini" round @click="matchOffer(item)">匹配报价</van-button>
+              </van-row>
+            </van-cell>
+          </div>
+        </van-tab>
       </van-tabs>
       <van-calendar :default-date="new Date()"
                     :min-date="minDate" :max-date="maxDate"
@@ -276,6 +309,7 @@ export default {
       weddingDaySelectShowPicker: false,
       dateSectionShow: false,
       weddingDayPickerArray: [],
+      orderOfferArray: [],
     }
   },
   created() {
@@ -287,8 +321,22 @@ export default {
     this.queryYarnClothesList()
     this.queryOrderListByAppId()
     this.queryWeddingDayByOrderId()
+    this.queryOrderOffer()
   },
   methods: {
+    queryOrderOffer() {
+      this.$axios({
+        method: "GET",
+        url: "/orderOffer/queryOrderOfferByCusId",
+        params: {
+          cusId: this.cusId
+        }
+      }).then(response => {
+        if (response.data.code === 200) {
+          this.orderOfferArray = response.data.data
+        }
+      })
+    },
     queryOrderVo: function () {
       this.$axios({
         method: "GET",
@@ -530,6 +578,28 @@ export default {
     },
     weddingDayCancel() {
       this.weddingDaySelectShowPicker = false
+    },
+    matchOffer(val) {
+      console.log(val)
+      if (val.orderOffer.orderPrice != this.orderVo.orderPrice) {
+        this.$toast.fail("该报价最终价格与订单总价不一致，无法匹配")
+        return
+      }
+      this.$axios({
+        method: "post",
+        url: "/orderOffer/matchOrderOffer",
+        data: {
+          id: val.orderOffer.id,
+          orderId: this.orderVo.id
+        }
+      }).then(response => {
+        if (response.data.code === 200) {
+          this.$toast.success("报价匹配成功")
+          this.queryOrderOffer()
+        } else {
+          this.$toast.fail(response.data.msg);
+        }
+      })
     }
   },
   watch: {
@@ -582,5 +652,14 @@ function arrTrans(num, arr) {
 }
 /deep/ .van-dialog__header {
   padding-top: 10px;
+}
+/deep/ .van-step__title h5 {
+  margin: 0;
+}
+/deep/ .van-step__title p {
+  margin: 0;
+}
+/deep/ .van-steps--vertical {
+  padding: 0 0 0 20px
 }
 </style>

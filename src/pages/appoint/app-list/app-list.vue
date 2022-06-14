@@ -26,7 +26,7 @@
           :finished="finished"
           finished-text="没有更多了"
       >
-        <van-cell v-for="item in appointList" :key="item.id" @click="clickItem(item.id)">
+        <van-cell v-for="item in appointList" :key="item.id" @click="clickItem(item)">
           <van-row style="padding-bottom: 10px">
             <van-col span="12">姓名:{{ item.name }}</van-col>
             <van-col v-if="item.isValid === '1'" style="color: coral">{{ item.appStateName }}</van-col>
@@ -125,8 +125,8 @@ export default {
       this.appointShop = value;
       this.queryAppList();
     },
-    clickItem: function (id) {
-      this.$router.push({name: "appDetails", query: {id: id,pageSource:'appList'}})
+    clickItem: function (val) {
+      this.$router.push({name: "appDetails", query: {id: val.id,pageSource:'appList',cusId: val.cusId}})
     },
 
 

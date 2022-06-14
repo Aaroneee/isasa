@@ -144,6 +144,33 @@
               </van-cell>
             </div>
           </van-tab>
+          <van-tab title="款式报价">
+            <van-empty v-if="orderOfferArray.length === 0" description="暂无款式报价"/>
+            <div v-else>
+              <van-cell style="font-size: 13px" v-for="item in orderOfferArray" :key="item.orderOffer.id">
+                <van-row>
+                  <van-col span="12">报价日期：{{item.orderOffer.createDate}}</van-col>
+                  <van-col span="12" class="right">{{item.orderOffer.offerType === 0 ? "套餐报价" : "单件报价"}}</van-col>
+                </van-row>
+                <van-row>
+                  <van-col span="12">原价：{{item.orderOffer.originalPrice}}</van-col>
+                  <van-col span="12" class="right">最终价格：{{item.orderOffer.orderPrice}}</van-col>
+                </van-row>
+                <van-steps direction="vertical" :active="item.mathList.length + 1" active-color="#969799">
+                  <van-step v-for="math in item.mathList" :key="math.id">
+                    <h5>{{math.stagePrice+ ' ' + math.sign+ ' ' + math.math + ' = ' + math.mathResult}}</h5>
+                    <p>{{math.mathDescribe}}</p>
+                  </van-step>
+                </van-steps>
+<!--                <div style="margin-top: 7px;margin-bottom: 7px">-->
+<!--                  <van-row v-for="math in item.mathList" :key="math.id" style="margin-bottom: 3px">-->
+<!--                    <van-col span="24">计算公式：{{math.stagePrice+ ' ' + math.sign+ ' ' + math.math + ' = ' + math.mathResult}}</van-col>-->
+<!--                    <van-col span="24">描述：{{math.mathDescribe}}</van-col>-->
+<!--                  </van-row>-->
+<!--                </div>-->
+              </van-cell>
+            </div>
+          </van-tab>
         </van-tabs>
     </div>
     <van-popup
@@ -179,6 +206,7 @@ export default {
   data() {
     return {
       appId: this.$route.query.id,
+      cusId: this.$route.query.cusId,
       appointVo: {},
       pageSource: this.$route.query.pageSource,
       mobileViewId: this.$route.query.mobileViewId,
@@ -192,6 +220,7 @@ export default {
       clothesScheduleList: [],
       afterSaleFlag: false,
       loading: true,
+      orderOfferArray: [],
     }
   },
   created() {
@@ -201,8 +230,22 @@ export default {
     this.queryAppointVo();
     this.queryYarnClothesList()
     this.queryOrderListByAppId()
+    this.queryOrderOffer()
   },
   methods: {
+    queryOrderOffer() {
+      this.$axios({
+        method: "GET",
+        url: "/orderOffer/queryOrderOfferByCusId",
+        params: {
+          cusId: this.cusId
+        }
+      }).then(response => {
+        if (response.data.code === 200) {
+          this.orderOfferArray = response.data.data
+        }
+      })
+    },
     queryAppointVo: function () {
       this.loading = true
       this.$axios({
@@ -430,5 +473,14 @@ function arrTrans(num, arr) {
 }
 /deep/ .van-cell {
   line-height: normal;
+}
+/deep/ .van-step__title h5 {
+  margin: 0;
+}
+/deep/ .van-step__title p {
+  margin: 0;
+}
+/deep/ .van-steps--vertical {
+  padding: 0 0 0 20px
 }
 </style>

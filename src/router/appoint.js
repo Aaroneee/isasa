@@ -9,6 +9,8 @@ import addYarnClothes from "@/pages/appoint/yarn-clothes/add-yarn-clothes" //添
 import dailyAppList from "@/pages/appoint/yarn-clothes/daily-app-list"  //试纱 每日预约
 import yarnClothesImages from "@/pages/appoint/yarn-clothes/yarn_clothes_images" // 试纱图片
 import afterSaleAppAdd from "@/pages/appoint/after-sale-app-add"
+import addOffer from "@/pages/appoint/appoint-schedule/add-offer"
+
 export default [
     {
         path: '/appAdd',
@@ -64,5 +66,10 @@ export default [
         path: '/afterSaleAppAdd',
         name: 'afterSaleAppAdd',
         component: afterSaleAppAdd,
+    },
+    {
+        path: '/addOffer',
+        name: 'addOffer',
+        component: addOffer
     }
 ];

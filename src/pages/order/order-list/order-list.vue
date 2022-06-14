@@ -192,6 +192,7 @@ export default {
       this.$router.push({name: "orderImages", query: value})
     },
     sortChange: function () {
+      this.pageInit()
       this.queryOrderList();
     },
     onClickLeft: function () {

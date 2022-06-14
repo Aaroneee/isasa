@@ -30,7 +30,7 @@
           finished-text="没有更多了"
       >
         <van-cell style="font-size: 12px" v-for="item in appointList" :key="item.id">
-          <div @click="clickItem(item.id)">
+          <div @click="clickItem(item)">
             <van-row style="font-size: 15px">
               <van-col span="12">{{ item.name }}</van-col>
               <van-col span="12" class="right" style="color: coral">{{ item.appStateName }}</van-col>
@@ -130,8 +130,8 @@ export default {
         this.appointNameArray.push(...JSON.parse(response.data.data));
       })
     },
-    clickItem: function (id) {
-      this.$router.push({name: "appDetails", query: {id: id,pageSource:'mScheduleList',mobileViewId:this.mobileViewId}})
+    clickItem: function (val) {
+      this.$router.push({name: "appDetails", query: {id: val.id,pageSource:'mScheduleList',mobileViewId:this.mobileViewId, cusId: val.cusId}})
     },
     openAppEdit: function (id) {
       this.$router.push({name: "appEdit", query: {id: id}})

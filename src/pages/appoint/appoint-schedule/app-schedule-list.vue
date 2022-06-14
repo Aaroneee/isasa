@@ -35,7 +35,7 @@
             style="margin-bottom: 40px"
         >
           <van-cell style="font-size: 12px" v-for="item in appointList" :key="item.id" v-show="item.isValid !=='3'">
-            <div @click="clickItem(item.id)">
+            <div @click="clickItem(item)">
               <van-row  style="padding-bottom: 5px">
                 <van-col style="color: #39a9ed;font-size: 15px" span="12">预约档期:{{ item.appointTime }}</van-col>
                 <van-col style="color: coral;font-size: 15px;" span="12">{{ item.appStateName }}</van-col>
@@ -142,6 +142,8 @@ export default {
           this.actions.push({text: '预约编辑'})
         } else if (this.$store.state.permission[i] === 'app_details:cancel_app') {
           this.actions.push({ text: '取消预约'})
+        } else if (this.$store.state.permission[i] === 'app_details:add_offer') {
+          this.actions.push({ text: '添加报价'})
         }
       }
     },
@@ -168,8 +170,8 @@ export default {
       this.appointShop = value;
       this.queryAppList();
     },
-    clickItem: function (id) {
-      this.$router.push({name: "appDetails", query: {id: id,pageSource:'appScheduleList',mobileViewId:this.mobileViewId}})
+    clickItem: function (val) {
+      this.$router.push({name: "appDetails", query: {id: val.id, cusId: val.cusId,pageSource:'appScheduleList',mobileViewId:this.mobileViewId}})
     },
     //前一天
     dayBefore:function (){
@@ -297,6 +299,9 @@ export default {
         case "取消预约":
           this.cancelApp(this.moreActions)
           break
+        case "添加报价":
+          this.addOffer(this.moreActions)
+          break
       }
     },
     openOrderAdd(val) {
@@ -333,6 +338,10 @@ export default {
       }
       this.$router.push({name:"addYarnClothes", query: {appointVo: val, pageSource: 'appScheduleList'}})
     },
+    // 添加报价
+    addOffer(val) {
+      this.$router.push({name: "addOffer", params: {appId: val.id, cusId: val.cusId, cusName: val.name}})
+    }
   },
   beforeRouteLeave (to, from, next) {
     if (to.name === 'work') {
