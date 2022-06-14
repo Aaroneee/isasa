@@ -313,7 +313,34 @@ export default {
                 tenantCrop: localStorage.getItem("tenantCrop")
             }
         })
-    }
+    },
 
+    //查询标签库
+    queryLibLabelIds: function () {
+        return self.$axios({
+            method: "GET",
+            url: "/select/libLabelIds",
+        })
+    },
+    //查询款式类型库
+    queryLibStyleTypeIds: function (type) {
+        return self.$axios({
+            method: "GET",
+            url: "/select/libStyleTypeIds",
+            params: {
+                type: type,
+            }
+        })
+    },
+    //查询款式品牌库
+    queryLibBrandIds: function (type) {
+        return self.$axios({
+            method: "GET",
+            url: "/select/libBrandIds",
+            params: {
+                type: type,
+            }
+        })
+    },
 
 }

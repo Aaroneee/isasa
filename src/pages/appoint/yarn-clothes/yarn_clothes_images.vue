@@ -18,14 +18,15 @@
       </div>
     </van-cell-group>
     <van-form @submit="addYarnClothesImage">
-      <van-field name="uploader" label="订单图片">
+      <van-field name="uploader" label="试纱图片">
         <template #input>
-          <van-uploader v-model="fileList" multiple :max-count="1"/>
+          <van-uploader v-model="fileList" multiple :max-count="4"/>
         </template>
       </van-field>
       <van-row style="margin-top: 20px">
         <van-col span="22" offset="1">
           <van-button
+              :loading="loading"
               color="linear-gradient(to right, #50E64D, #03B300)"
               class="bottom-button"
               round block
@@ -59,6 +60,8 @@ export default {
       fileList: [],
       activeNames: ['1'],
       fileName: "",
+      loading: false,
+      imageCount: 0,
     }
   },
   methods: {
@@ -84,31 +87,74 @@ export default {
         title: '添加试纱图片',
         message: '确认添加图片吗？'
       }).then(() => {
-        this.uploadImage().then(value => {
-          if (!value) {
-            this.$toast.fail("图片上传发生错误,请检查后进行上传")
+        this.imageCount = this.fileList.length
+        for (let i = 0; i < this.fileList.length; i++) {
+          this.$set(this.fileList, i, {
+            content: this.fileList[i].content,
+            file: this.fileList[i].file,
+            message: "上传中...",
+            status: 'uploading',
+          })
+          this.imageUpload(i)
+        }
+      })
+    },
+    imageUpload(index) {
+      this.$upload.yarnClothesImageUpload(this.fileList[index].file).then(response => {
+        let flag = response.data.code === 200
+        if (!flag) {
+          this.$set(this.fileList, index, {
+            content: this.fileList[index].content,
+            file: this.fileList[index].file,
+            message: "上传失败",
+            status: 'failed',
+            flag: 0
+          })
+          this.judgeImageAllUpload()
+          return
+        }
+        this.$axios({
+          method: "post",
+          url: "/image/savaYarnClothesImage",
+          params: {
+            appId: this.appointVo.id,
+            yarnImage: response.data.data,
+            clothesId: this.yarnClothes.clothesId,
+          }
+        }).then(response => {
+          if (response.data.code === 200) {
+            this.$set(this.fileList, index, {
+              content: this.fileList[index].content,
+              file: this.fileList[index].file,
+              deletable: false,
+              flag: 1
+            })
           } else {
-            data.yarnImage = this.fileName
-            data.appId = this.appointVo.id
-            data.clothesId = this.yarnClothes.clothesId
-            data.uploader = []
-            this.$axios({
-              method: 'post',
-              url: "/image/savaYarnClothesImage",
-              params: data,
-            }).then(response => {
-              if (response.data.code === 200) {
-                this.$toast.success("试纱图片添加成功!")
-                this.queryImageList()
-                this.fileList = []
-                this.fileName = ""
-              } else {
-                this.$toast.fail(response.data.msg)
-              }
+            this.$toast.fail(response.data.msg);
+            this.$set(this.fileList, index, {
+              content: this.fileList[index].content,
+              file: this.fileList[index].file,
+              message: "上传失败",
+              status: 'failed',
+              flag: 0
             })
           }
+          this.judgeImageAllUpload()
         })
       })
+    },
+    judgeImageAllUpload() {
+      this.imageCount--
+      if (this.imageCount == 0) {
+        this.loading = false
+        this.fileList = this.fileList.filter(s => {
+          s.flag === 1
+        })
+        if (this.fileList.length == 0) {
+          this.$toast.success("图片添加成功")
+          this.queryImageList()
+        }
+      }
     },
     uploadImage: function () {
       return new Promise((resolve, reject) => {
