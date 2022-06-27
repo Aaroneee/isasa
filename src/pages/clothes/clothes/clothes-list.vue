@@ -1,7 +1,7 @@
 <template>
   <div>
     <van-sticky>
-      <switchNavBar title="订单档期查询" :switchText="dateText" @flag="dateShow=true"/>
+      <switchNavBar title="婚紗档期查询" :switchText="dateText" @flag="dateShow=true"/>
       <form action="javascript:return true">
           <van-search
               show-action
@@ -331,10 +331,10 @@ export default {
 /*}*/
 
 .van-image {
-  min-height: 220px;
-  max-height: 220px;
+  min-height: 235px;
+  max-height: 235px;
 
-  max-width: 165px;
+  max-width: 175px;
   display: block;
 }
 /*p{*/
@@ -348,10 +348,10 @@ export default {
   width: 100%;
 }
 .card{
-  min-height: 265px;
-  max-height: 265px;
+  min-height: 280px;
+  max-height: 280px;
   min-width: 160px;
-  padding: 5px 10px 0 10px ;
+  padding: 5px 5px 0 5px ;
   background-color: white;
   border-radius: 10px;
   margin: 0 auto 3% auto;
@@ -359,8 +359,8 @@ export default {
 .imgFont{
   margin: 0 auto;
   width: 100%;
-  min-width: 165px;
-  max-width: 165px;
+  min-width: 175px;
+  max-width: 175px;
 }
 .styleInfo{
   margin-top: 5px;
