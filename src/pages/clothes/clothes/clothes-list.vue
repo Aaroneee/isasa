@@ -1,7 +1,7 @@
 <template>
   <div>
     <van-sticky>
-      <switchNavBar title="婚紗档期查询" :switchText="dateText" @flag="dateShow=true"/>
+      <switchNavBar title="婚纱档期查询" :switchText="dateText" @flag="dateShow=true"/>
       <form action="javascript:return true">
           <van-search
               show-action
@@ -55,12 +55,10 @@
             <van-col span="12"  v-for="item in clothesList" :key="item.id" @click="clickItem(item)" style="text-align: center">
               <div class="card">
                 <div class="imgFont">
-                  <van-image  class="style-img" radius="7"
-                             fit="contain"
+                  <img
                              :src="item.styleImage===''?'null'
-                             :'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage+'?imageMogr2/rquality/60'">
-                    <template v-slot:error>加载失败,请更换主图</template>
-                  </van-image>
+                             :'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage+'?imageMogr2/rquality/60'"
+                  alt="主图显示失败,请重新设置主图"/>
                   <div class="styleInfo">
 
                     <van-row>
@@ -325,31 +323,15 @@ export default {
 /*.van-image__img {*/
 /*  min-height: 200px;*/
 /*}*/
-
-/*.style-img {*/
-/*  width: 100%;*/
-/*}*/
-
-.van-image {
-  min-height: 235px;
-  max-height: 235px;
-
-  max-width: 175px;
-  display: block;
-}
-/*p{*/
-/*  overflow: hidden;*/
-/*  white-space: nowrap;*/
-/*  text-overflow: ellipsis;*/
-/*  margin: 0 !important;*/
-/*}*/
-.style-img {
-  margin: 0 auto;
+img{
+  height: 245px;
+  min-height: 245px;
   width: 100%;
+  border-radius: 7px;
 }
 .card{
-  min-height: 280px;
-  max-height: 280px;
+  min-height: 290px;
+  max-height: 290px;
   min-width: 160px;
   padding: 5px 5px 0 5px ;
   background-color: white;
@@ -359,8 +341,8 @@ export default {
 .imgFont{
   margin: 0 auto;
   width: 100%;
-  min-width: 175px;
-  max-width: 175px;
+  min-width: 45vw;
+  max-width: 45vw;
 }
 .styleInfo{
   margin-top: 5px;
