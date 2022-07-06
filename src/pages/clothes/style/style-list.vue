@@ -44,12 +44,10 @@
               <div class="card">
                 <div class="imgFont">
                   <van-badge :content="item.brandName===''?'':item.brandName" color="#7ab4ee">
-                    <van-image class="style-img" radius="7"
-                               fit="contain"
-                               :src="item.styleImage===''?'null'
-                               :'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage+'?imageMogr2/rquality/60'">
-                      <template v-slot:error>加载失败,请更换主图</template>
-                    </van-image>
+                    <img
+                        :src="item.styleImage===''?'null'
+                             :'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage+'?imageMogr2/rquality/60'"
+                        alt="主图显示失败,请重新设置主图"/>
                   </van-badge>
                   <div class="styleInfo">
                     <van-row>
@@ -214,23 +212,17 @@ export default {
 .styleInfo{
   margin-bottom: 5px;
 }
-.van-image {
-  min-height: 220px;
-  max-height: 220px;
-
-  max-width: 165px;
-  display: block;
-}
-
-.style-img {
-  margin: 0 auto;
+img{
+  height: 245px;
+  min-height: 245px;
   width: 100%;
+  border-radius: 7px;
 }
 .card{
-  min-height: 250px;
-  max-height: 250px;
+  min-height: 270px;
+  max-height: 270px;
   min-width: 160px;
-  padding: 5px 10px 0 10px ;
+  padding: 5px 5px 3px 5px ;
   background-color: white;
   border-radius: 10px;
   margin: 0 auto 3% auto;
@@ -238,8 +230,8 @@ export default {
 .imgFont{
   margin: 0 auto;
   width: 100%;
-  min-width: 165px;
-  max-width: 165px;
+  min-width: 45vw;
+  max-width: 45vw;
 }
 .pFont{
   overflow: hidden;

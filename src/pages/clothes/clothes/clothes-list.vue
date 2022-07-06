@@ -18,8 +18,8 @@
       <van-dropdown-menu style="font-size: 10px">
         <van-dropdown-item v-model="isOrder" @change="isOrderChange" :options="isOrderArray"/>
         <van-dropdown-item v-model="styleType" @change="styleTypeChange" :options="styleTypeArray"/>
-        <van-dropdown-item v-model="clothesSize" @change="clothesSizeChange" :options="clothesSizeArray"/>
-        <!--        <van-dropdown-item v-model="shop" @change="shopChange" :options="shopArray"/>-->
+<!--        <van-dropdown-item v-model="clothesSize" @change="clothesSizeChange" :options="clothesSizeArray"/>-->
+        <van-dropdown-item v-model="shop" @change="shopChange" :options="shopArray"/>
         <van-dropdown-item :title="positionTitle" v-model="position" @change="positionChange" :options="positionArray"/>
 
         <van-dropdown-item title="标签" ref="labelRef">
@@ -99,7 +99,7 @@ export default {
     this.queryStyleType()
     this.queryShopIds()
     this.queryStyleLabelList()
-    this.queryPositionIdsByShop()
+    // this.queryPositionIdsByShop()
     this.queryClothesBrand()
     this.queryClothesSize()
   },
@@ -211,6 +211,9 @@ export default {
     shopChange: function (shop) {
       this.flushClothesListArray()
       this.shop = shop
+      this.position="";
+      this.positionTitle="位置";
+      this.queryPositionIdsByShop(shop);
       this.queryClothesList()
     },
     positionChange: function (position) {
@@ -235,9 +238,10 @@ export default {
         this.shopArray.push(...JSON.parse(response.data.data))
       })
     },
-    queryPositionIdsByShop() {
-      this.$selectUtils.queryPositionIdsByShop("", this.$selectUtils.DropDownMenu).then(response => {
-        this.positionArray.push(...JSON.parse(response.data.data))
+    queryPositionIdsByShop(shopId) {
+      this.$selectUtils.queryPositionIdsByShop(shopId, this.$selectUtils.DropDownMenu).then(response => {
+        console.log(response)
+        this.positionArray=JSON.parse(response.data.data)
       })
     },
     flushClothesListArray: function () {
