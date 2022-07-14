@@ -377,7 +377,10 @@ export default {
         }
       }).then(response => {
         this.recordsList = response.data.data;
-        console.log(response)
+        if (this.recordsList.length>0){
+          this.useRecord(this.recordsList[0])
+          this.$toast.success("已匹配常用条件")
+        }
       })
     },
     //保存当前搜索条件
@@ -395,7 +398,7 @@ export default {
       let shopName = this.shop === ""?"":this.shopArray.filter(v => v.value === this.shop)[0].text;
 
       //查找位置String
-      let positionName = this.position === ''?"":positionName = this.positionArray.filter(v => v.value === this.position)[0].text;;
+      let positionName = this.position === ''?"":this.positionArray.filter(v => v.value === this.position)[0].text;
 
       this.$axios({
         method: "POST",
