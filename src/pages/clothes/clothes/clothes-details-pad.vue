@@ -145,7 +145,7 @@ export default {
   created() {
     this.clothes = this.$route.query
     this.queryStyleLabelList()
-    this.queryStyleImageByClothesId(this.clothes.clothesId)
+    this.queryStyleImageByStyleId()
     this.queryPrice()
     this.queryClothesOperations()
   },
@@ -183,7 +183,8 @@ export default {
       ImagePreview(this.imageNames,value)
     },
 
-    queryStyleImageByClothesId() {
+    //根据款式ID查询图片(不显示仓库图)
+    queryStyleImageByStyleId() {
       this.$axios({
         method: "GET",
         url: "/styleImage/queryStyleImageList",
@@ -191,13 +192,12 @@ export default {
           styleId: this.clothes.styleId,
         }
       }).then(response => {
-        this.images=response.data.data;
-
+        this.images=response.data.data.filter(k=>k.imageTypeName!=='仓库图');
         for (let image of response.data.data) {
           this.imageNames.push( "https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/" + image.styleImage)
           this.imageTypes.push(image.imageTypeName);
         }
-        this.imageTypes=Array.from(new Set(this.imageTypes))
+        this.imageTypes=Array.from(new Set(this.imageTypes)).filter(k=>k!=='仓库图');
         //默认类型
         this.imagePosition=this.imageTypes[0];
       })
