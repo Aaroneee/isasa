@@ -192,12 +192,16 @@ export default {
           styleId: this.clothes.styleId,
         }
       }).then(response => {
-        this.images=response.data.data.filter(k=>k.imageTypeName!=='仓库图');
-        for (let image of response.data.data) {
+        //获取可以再Ipad展示的图片类型
+        let clothesPadType=response.data.data.filter(k=>k.isClothesPad===1).map(k=>k.imageTypeName);
+        //去除不显示的图片
+        this.images=response.data.data.filter(k=>clothesPadType.includes(k.imageTypeName));
+
+        for (let image of this.images) {
           this.imageNames.push( "https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/" + image.styleImage)
           this.imageTypes.push(image.imageTypeName);
         }
-        this.imageTypes=Array.from(new Set(this.imageTypes)).filter(k=>k!=='仓库图');
+        this.imageTypes=Array.from(new Set(this.imageTypes));
         //默认类型
         this.imagePosition=this.imageTypes[0];
       })
