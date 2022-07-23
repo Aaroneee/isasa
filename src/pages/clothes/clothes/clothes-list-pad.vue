@@ -22,7 +22,7 @@
           <van-cell center :title="dateText" @click="dateShow=true"/>
         </van-dropdown-item>
         <van-dropdown-item v-model="styleType" @change="styleTypeChange" :options="styleTypeArray"/>
-        <van-dropdown-item v-model="clothesSize" @change="clothesSizeChange" :options="clothesSizeArray"/>
+<!--        <van-dropdown-item v-model="clothesSize" @change="clothesSizeChange" :options="clothesSizeArray"/>-->
         <van-dropdown-item title="标签" ref="labelRef">
           <van-row type="flex" style="padding: 10px">
             <van-col style="margin: 5px" v-for="item in styleLabelList" :key="item.value">
