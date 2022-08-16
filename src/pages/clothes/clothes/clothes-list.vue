@@ -1,7 +1,7 @@
 <template>
   <div>
     <van-sticky>
-      <switchNavBar title="订单档期查询" :switchText="dateText" @flag="dateShow=true"/>
+      <switchNavBar title="婚纱档期查询" :switchText="dateText" @flag="dateShow=true"/>
       <form action="javascript:return true">
           <van-search
               show-action
@@ -18,8 +18,8 @@
       <van-dropdown-menu style="font-size: 10px">
         <van-dropdown-item v-model="isOrder" @change="isOrderChange" :options="isOrderArray"/>
         <van-dropdown-item v-model="styleType" @change="styleTypeChange" :options="styleTypeArray"/>
-        <van-dropdown-item v-model="clothesSize" @change="clothesSizeChange" :options="clothesSizeArray"/>
-        <!--        <van-dropdown-item v-model="shop" @change="shopChange" :options="shopArray"/>-->
+<!--        <van-dropdown-item v-model="clothesSize" @change="clothesSizeChange" :options="clothesSizeArray"/>-->
+        <van-dropdown-item v-model="shop" @change="shopChange" :options="shopArray"/>
         <van-dropdown-item :title="positionTitle" v-model="position" @change="positionChange" :options="positionArray"/>
 
         <van-dropdown-item title="标签" ref="labelRef">
@@ -55,12 +55,10 @@
             <van-col span="12"  v-for="item in clothesList" :key="item.id" @click="clickItem(item)" style="text-align: center">
               <div class="card">
                 <div class="imgFont">
-                  <van-image  class="style-img" radius="7"
-                             fit="contain"
+                  <img
                              :src="item.styleImage===''?'null'
-                             :'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage+'?imageMogr2/rquality/60'">
-                    <template v-slot:error>加载失败,请更换主图</template>
-                  </van-image>
+                             :'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage+'?imageMogr2/rquality/60'"
+                  alt="主图显示失败,请重新设置主图"/>
                   <div class="styleInfo">
 
                     <van-row>
@@ -101,7 +99,7 @@ export default {
     this.queryStyleType()
     this.queryShopIds()
     this.queryStyleLabelList()
-    this.queryPositionIdsByShop()
+    // this.queryPositionIdsByShop()
     this.queryClothesBrand()
     this.queryClothesSize()
   },
@@ -213,6 +211,9 @@ export default {
     shopChange: function (shop) {
       this.flushClothesListArray()
       this.shop = shop
+      this.position="";
+      this.positionTitle="位置";
+      this.queryPositionIdsByShop(shop);
       this.queryClothesList()
     },
     positionChange: function (position) {
@@ -237,9 +238,10 @@ export default {
         this.shopArray.push(...JSON.parse(response.data.data))
       })
     },
-    queryPositionIdsByShop() {
-      this.$selectUtils.queryPositionIdsByShop("", this.$selectUtils.DropDownMenu).then(response => {
-        this.positionArray.push(...JSON.parse(response.data.data))
+    queryPositionIdsByShop(shopId) {
+      this.$selectUtils.queryPositionIdsByShop(shopId, this.$selectUtils.DropDownMenu).then(response => {
+        console.log(response)
+        this.positionArray=JSON.parse(response.data.data)
       })
     },
     flushClothesListArray: function () {
@@ -325,33 +327,17 @@ export default {
 /*.van-image__img {*/
 /*  min-height: 200px;*/
 /*}*/
-
-/*.style-img {*/
-/*  width: 100%;*/
-/*}*/
-
-.van-image {
-  min-height: 220px;
-  max-height: 220px;
-
-  max-width: 165px;
-  display: block;
-}
-/*p{*/
-/*  overflow: hidden;*/
-/*  white-space: nowrap;*/
-/*  text-overflow: ellipsis;*/
-/*  margin: 0 !important;*/
-/*}*/
-.style-img {
-  margin: 0 auto;
+img{
+  height: 245px;
+  min-height: 245px;
   width: 100%;
+  border-radius: 7px;
 }
 .card{
-  min-height: 265px;
-  max-height: 265px;
+  min-height: 290px;
+  max-height: 290px;
   min-width: 160px;
-  padding: 5px 10px 0 10px ;
+  padding: 5px 5px 0 5px ;
   background-color: white;
   border-radius: 10px;
   margin: 0 auto 3% auto;
@@ -359,8 +345,8 @@ export default {
 .imgFont{
   margin: 0 auto;
   width: 100%;
-  min-width: 165px;
-  max-width: 165px;
+  min-width: 45vw;
+  max-width: 45vw;
 }
 .styleInfo{
   margin-top: 5px;

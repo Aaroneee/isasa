@@ -22,7 +22,7 @@
           <van-cell center :title="dateText" @click="dateShow=true"/>
         </van-dropdown-item>
         <van-dropdown-item v-model="styleType" @change="styleTypeChange" :options="styleTypeArray"/>
-        <van-dropdown-item v-model="clothesSize" @change="clothesSizeChange" :options="clothesSizeArray"/>
+<!--        <van-dropdown-item v-model="clothesSize" @change="clothesSizeChange" :options="clothesSizeArray"/>-->
         <van-dropdown-item title="标签" ref="labelRef">
           <van-row type="flex" style="padding: 10px">
             <van-col style="margin: 5px" v-for="item in styleLabelList" :key="item.value">
@@ -377,7 +377,9 @@ export default {
         }
       }).then(response => {
         this.recordsList = response.data.data;
-        console.log(response)
+        if (this.recordsList.length>0){
+          this.useRecord(this.recordsList[0])
+        }
       })
     },
     //保存当前搜索条件
@@ -395,7 +397,7 @@ export default {
       let shopName = this.shop === ""?"":this.shopArray.filter(v => v.value === this.shop)[0].text;
 
       //查找位置String
-      let positionName = this.position === ''?"":positionName = this.positionArray.filter(v => v.value === this.position)[0].text;;
+      let positionName = this.position === ''?"":this.positionArray.filter(v => v.value === this.position)[0].text;
 
       this.$axios({
         method: "POST",
