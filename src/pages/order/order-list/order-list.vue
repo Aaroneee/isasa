@@ -116,7 +116,7 @@ export default {
     }
   },
   created() {
-    this.queryOrderList();
+    this.queryOrderList()
     this.queryDressArray()
     this.queryShopArray()
   },
@@ -188,7 +188,7 @@ export default {
     clothesAdd: function (value) {
       this.$router.push({name: "orderClothes", query: value})
     }
-    , imagesAdd: function (value) {
+    ,imagesAdd: function (value) {
       this.$router.push({name: "orderImages", query: value})
     },
     sortChange: function () {
@@ -250,6 +250,7 @@ export default {
     next()
   },
   activated() {
+    this.pageInit()
     this.queryOrderList()
   }
 }
