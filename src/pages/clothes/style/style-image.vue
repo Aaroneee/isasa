@@ -24,6 +24,24 @@
           </van-image>
         </div>
       </van-collapse-item>
+      <van-collapse-item :title="`款式视频`" :name="`款式视频`">
+        <van-row gutter="20">
+          <van-col span="12" style="margin: 1% 0;height: 22vh" v-for="item in uploadVideo.videoList" :key="item.id">
+            <video
+
+                controls
+                preload="none"
+                playsinline="true"
+                ref="videoRef"
+                controlsList="nodownload disablePictureInPicture noplaybackrate "
+                style="width: 100%;height: 100%;"
+                muted
+                :src="`https://style-video-1304365928.cos.ap-shanghai.myqcloud.com/${item.styleVideo}`"
+                :poster="`https://style-video-1304365928.cos.ap-shanghai.myqcloud.com/${item.styleVideo}?ci-process=snapshot&time=1`"/>
+          </van-col>
+        </van-row>
+
+      </van-collapse-item>
     </van-collapse>
     <van-icon v-if="imageShow" name="ellipsis" class="more" :style="{'z-index':zIndex}" @click="imageClick"/>
     <div  class="test" @press="onPress" >
@@ -108,6 +126,7 @@ export default {
   created() {
     this.styleId = this.$route.query
     this.queryStyleImage()
+    this.queryStyleVideo()
     this.queryImageType()
   },
   mounted() {
@@ -154,6 +173,9 @@ export default {
       imageCount: 0,
       delImageId: null,
       primaryImageUrl: "",
+      uploadVideo: {
+        videoList:[],
+      },
     }
   },
   methods: {
@@ -166,6 +188,21 @@ export default {
         }
       }).then(response => {
         this.styleImageArray=this.arrGroupBy(response.data.data);
+      })
+    },
+    //查询款式视频
+    queryStyleVideo() {
+      this.$axios({
+        method: "GET",
+        url: "/styleVideo/queryStyleVideoList",
+        params: {
+          styleId: this.styleId,
+          tenantCrop:localStorage.getItem("tenantCrop"),
+        }
+      }).then(response => {
+
+        this.uploadVideo.videoList=response.data.data;
+        console.log(this.uploadVideo.videoList)
       })
     },
     queryImageType() {
