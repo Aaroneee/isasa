@@ -38,7 +38,7 @@
             <van-cell style="font-size: 12px" v-for="item in clothesScheduleList" :key="item.id">
               <van-grid :border="false" :column-num="2" :gutter="1">
                 <van-grid-item v-if="item[0] != null">
-                  <div v-if="item[0].styleImage !== ''">
+                  <div v-if="item[0].styleImage !== ''" @click="orderClothesImageClick(item[0])">
                     <van-image class="style-img" radius="7"
                                :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[0].styleImage">
                     </van-image>
@@ -63,7 +63,7 @@
                 </van-grid-item>
 
                 <van-grid-item v-if="item[1] != null">
-                  <div v-if="item[1].styleImage !== ''">
+                  <div v-if="item[1].styleImage !== ''" @click="orderClothesImageClick(item[1])">
                     <van-image class="style-img" radius="7"
                                :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[1].styleImage">
                     </van-image>
@@ -203,6 +203,9 @@
                     confirm-disabled-text="请选择婚期"
                     confirm-text="确认修改"
                     @confirm="weddingDayUpdateOnConfirm"/>
+      <van-action-sheet cancel-text="取消"
+          v-model="orderClothesImage.orderClothesImageShow" :actions="orderClothesImage.orderClothesImageActions"
+                        @select="orderClothesImageSelect" />
     </van-row>
   </div>
 </template>
@@ -254,6 +257,12 @@ export default {
       dateSectionShow: false,
       weddingDayPickerArray: [],
       orderOfferArray: [],
+      //订单婚纱图片点击
+      orderClothesImage:{
+        orderClothesImageShow:false,
+        orderClothesImageActions:[{ name: '查看大图',index:0 }, { name: '查看档期',index:1 }],
+        clothesScheduleVO:{},
+      }
     }
   },
   created() {
@@ -508,7 +517,6 @@ export default {
       this.weddingDaySelectShowPicker = false
     },
     matchOffer(val) {
-      console.log(val)
       if (val.orderOffer.orderPrice != this.orderVo.orderPrice) {
         this.$toast.fail("该报价最终价格与订单总价不一致，无法匹配")
         return
@@ -528,8 +536,25 @@ export default {
           this.$toast.fail(response.data.msg);
         }
       })
-    }
-  }, watch: {
+    },
+    //已定婚纱图片点击
+    orderClothesImageClick(item){
+      this.orderClothesImage.clothesScheduleVO.clothesId=item.clothesId;
+      this.orderClothesImage.clothesScheduleVO.styleImage=item.styleImage;
+      this.orderClothesImage.orderClothesImageShow=true;
+    },
+    //已定婚纱图片点击后选择框
+    orderClothesImageSelect(data){
+      this.orderClothesImage.orderClothesImageShow=false;
+      if (data.index===0){
+        ImagePreview([`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${this.orderClothesImage.clothesScheduleVO.styleImage}`])
+        return;
+      }
+      this.$router.push({name:"clothesSchedule",query:this.orderClothesImage.clothesScheduleVO})
+
+    },
+  },
+  watch: {
     editFlag: function (value) {
       if (value) {
         this.$router.push({name: "orderEdit", query: this.orderVo})
