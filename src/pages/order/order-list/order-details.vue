@@ -39,9 +39,10 @@
               <van-grid :border="false" :column-num="2" :gutter="1">
                 <van-grid-item v-if="item[0] != null">
                   <div v-if="item[0].styleImage !== ''" @click="orderClothesImageClick(item[0])">
-                    <van-image class="style-img" radius="7"
-                               :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[0].styleImage">
-                    </van-image>
+                    <div style="width: 40vw;height: 58vw">
+                    <img style="width: 100%; height: 100%;cursor:zoom-in;border-radius: 5px"
+                               :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[0].styleImage"/>
+                    </div>
                   </div>
                   <div v-else>
                     <van-image class="style-img">
@@ -64,9 +65,10 @@
 
                 <van-grid-item v-if="item[1] != null">
                   <div v-if="item[1].styleImage !== ''" @click="orderClothesImageClick(item[1])">
-                    <van-image class="style-img" radius="7"
-                               :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[1].styleImage">
-                    </van-image>
+                    <div style="width: 40vw;height: 58vw">
+                    <img style="width: 100%; height: 100%;cursor:zoom-in;border-radius: 5px"
+                         :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[1].styleImage"/>
+                    </div>
                   </div>
                   <div v-else>
                     <van-image class="style-img">
@@ -94,10 +96,10 @@
             <van-grid :border="false" :column-num="2" :gutter="1" style="font-size: 14px;">
               <van-grid-item v-for="item in yarnClothesList" :key="item.id" >
                 <div v-if="item.styleImage !== ''">
-                  <van-image class="style-img" radius="7" @click="clickItem2(item)"
-                             style="height: 218px;width: 151px;margin-top: 10px"
-                             :src="item.styleImage">
-                  </van-image>
+                  <div style="width: 40vw;height: 58vw"  @click="clickItem2(item)">
+                    <img style="width: 100%; height: 100%;cursor:zoom-in;border-radius: 5px"
+                         :src="item.styleImage"/>
+                  </div>
                 </div>
                 <div v-else>
                   <van-image class="style-img">
