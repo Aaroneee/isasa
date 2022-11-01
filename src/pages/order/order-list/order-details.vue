@@ -90,26 +90,64 @@
             </van-cell>
           </van-cell-group>
         </van-tab>
-        <van-tab title="试纱记录">
+        <van-tab title="试纱记录" style="font-size: 12px">
           <van-empty v-if="yarnClothesList.length == 0" description="暂无试纱记录"/>
-          <div v-else>
-            <van-grid :border="false" :column-num="2" :gutter="1" style="font-size: 14px;">
-              <van-grid-item v-for="item in yarnClothesList" :key="item.id" >
-                <div v-if="item.styleImage !== ''">
-                  <div style="width: 40vw;height: 58vw"  @click="clickItem2(item)">
-                    <img style="width: 100%; height: 100%;cursor:zoom-in;border-radius: 5px"
-                         :src="item.styleImage"/>
+          <div>
+            <van-cell style="font-size: 12px">
+              <van-row gutter="5">
+                <van-col span="12"  v-for="item in yarnClothesList" :key="item.id" style="text-align: center">
+                  <div class="card">
+                    <div class="imgFont">
+                      <div @click="clickItem2(item)">
+                        <img
+                            :src="item.styleImage==='' ? 'null' : item.styleImage"
+                            alt="主图显示失败,请重新设置主图" style="width: 95%; border-radius: 10px"/>
+                      </div>
+                      <div class="styleInfo">
+                        <van-row type="flex" justify="space-between">
+                          <van-col span="50%" offset="1">
+                            <b class="pFont">{{ item.styleType+'-'+item.styleName+'-'+item.clothesSize+'-'+item.clothesNo }}</b>
+                          </van-col>
+                          <van-col span="10">
+                            <b class="pFont">礼服师：{{ item.empName === '' ? '暂无' : item.empName }}</b>
+                          </van-col>
+                        </van-row>
+                        <van-row type="flex" justify="space-between">
+                          <van-col span="100%" offset="1">
+                            <b class="pFont">试纱日期：{{ item.arriveDate }}</b>
+                          </van-col>
+                        </van-row>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <div v-else>
-                  <van-image class="style-img">
-                    <template v-slot:error>未上传图片</template>
-                  </van-image>
-                </div>
-                <span v-text="item.styleType+'-'+item.styleName+'-'+item.clothesSize+'-'+item.clothesNo"></span>
-              </van-grid-item>
-            </van-grid>
+                </van-col>
+              </van-row>
+            </van-cell>
           </div>
+<!--          <van-empty v-if="yarnClothesList.length == 0" description="暂无试纱记录"/>-->
+<!--          <div v-else>-->
+<!--            <van-grid :border="false" :column-num="2" :gutter="1" style="font-size: 14px;">-->
+<!--              <van-grid-item v-for="item in yarnClothesList" :key="item.id" >-->
+<!--                <div v-if="item.styleImage !== ''">-->
+<!--                  <div style="width: 40vw;height: 58vw"  @click="clickItem2(item)">-->
+<!--                    <img style="width: 100%; height: 100%;cursor:zoom-in;border-radius: 5px"-->
+<!--                         :src="item.styleImage"/>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                <div v-else>-->
+<!--                  <van-image class="style-img">-->
+<!--                    <template v-slot:error>未上传图片</template>-->
+<!--                  </van-image>-->
+<!--                </div>-->
+<!--                <div>-->
+<!--                  <span v-text="item.styleType+'-'+item.styleName+'-'+item.clothesSize+'-'+item.clothesNo"></span><br>-->
+<!--                  <span v-text="item.arriveDate">试纱日期：</span><br>-->
+<!--                  <span v-text="item.empName"></span><br>-->
+<!--                  <span v-text="item.styleType+'-'+item.styleName+'-'+item.clothesSize+'-'+item.clothesNo"></span><br>-->
+<!--                </div>-->
+<!--              </van-grid-item>-->
+<!--            </van-grid>-->
+<!--          </div>-->
         </van-tab>
         <van-tab title="所有订单">
           <van-empty v-if="orderList.length === 0" description="暂无订单记录"/>
