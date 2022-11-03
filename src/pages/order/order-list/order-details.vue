@@ -98,26 +98,50 @@
                 <van-col span="12"  v-for="item in yarnClothesList" :key="item.id" style="text-align: center">
                   <div class="card">
                     <div class="imgFont">
-                      <div style="width: 95%;height: 350px" @click="clickItem2(item)">
+                      <div style="width: 98%;height: 290px" @click="clickItem2(item)">
                         <img
                             :src="item.styleImage==='' ? 'null' : item.styleImage"
                             alt="主图显示失败,请重新设置主图" style="width: 95%; height: 100%; border-radius: 10px"/>
                       </div>
+
+
+<!--                      <div class="styleInfo">-->
+<!--                        <van-row type="flex" justify="space-between">-->
+<!--                          <van-col span="50%" offset="1">-->
+<!--                            <b class="pFont">礼服名称：{{ item.styleType+'-'+item.styleName+'-'+item.clothesSize+'-'+item.clothesNo }}</b>-->
+<!--                          </van-col>-->
+<!--                        </van-row>-->
+
+<!--                        <van-row  type="flex" justify="space-between">-->
+<!--                          <van-col span="50%" offset="1">-->
+<!--                            <b class="pFont">礼服师：{{ item.empName === '' ? '暂无' : item.empName}}</b>-->
+<!--                          </van-col>-->
+<!--                        </van-row>-->
+
+<!--                        <van-row type="flex" justify="space-between">-->
+<!--                          <van-col span="100%" offset="1">-->
+<!--                            <b class="pFont">试纱日期：{{ item.arriveDate }}</b>-->
+<!--                          </van-col>-->
+<!--                        </van-row>-->
+<!--                      </div>-->
+
                       <div class="styleInfo">
-                        <van-row type="flex" justify="space-between">
-                          <van-col span="50%" offset="1">
-                            <b class="pFont">{{ item.styleType+'-'+item.styleName+'-'+item.clothesSize+'-'+item.clothesNo }}</b>
-                          </van-col>
-                          <van-col span="10">
-                            <b class="pFont">礼服师：{{ item.empName === '' ? '暂无' : item.empName }}</b>
-                          </van-col>
-                        </van-row>
-                        <van-row type="flex" justify="space-between">
-                          <van-col span="100%" offset="1">
-                            <b class="pFont">试纱日期：{{ item.arriveDate }}</b>
-                          </van-col>
-                        </van-row>
+                        <table>
+                          <tr>
+                            <td style="text-align-last:justify"><b class="pFont">礼服名称：</b></td>
+                            <td style="text-align: left"><b class="pFont">{{ item.styleType+'-'+item.styleName+'-'+item.clothesSize+'-'+item.clothesNo }}</b></td>
+                          </tr>
+                          <tr>
+                            <td style="text-align-last:justify"><b class="pFont">礼服师：</b></td>
+                            <td style="text-align: left"><b class="pFont">{{ item.empName === '' ? '暂无' : item.empName}}</b></td>
+                          </tr>
+                          <tr>
+                            <td style="text-align-last:justify"><b class="pFont">试纱日期：</b></td>
+                            <td style="text-align: left"><b class="pFont">{{ item.arriveDate }}</b></td>
+                          </tr>
+                        </table>
                       </div>
+
                     </div>
                   </div>
                 </van-col>
