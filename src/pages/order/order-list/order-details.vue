@@ -98,10 +98,10 @@
                 <van-col span="12"  v-for="item in yarnClothesList" :key="item.id" style="text-align: center">
                   <div class="card">
                     <div class="imgFont">
-                      <div @click="clickItem2(item)">
+                      <div style="width: 95%;height: 350px" @click="clickItem2(item)">
                         <img
                             :src="item.styleImage==='' ? 'null' : item.styleImage"
-                            alt="主图显示失败,请重新设置主图" style="width: 95%; border-radius: 10px"/>
+                            alt="主图显示失败,请重新设置主图" style="width: 95%; height: 100%; border-radius: 10px"/>
                       </div>
                       <div class="styleInfo">
                         <van-row type="flex" justify="space-between">
