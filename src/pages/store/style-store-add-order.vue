@@ -106,12 +106,33 @@ export default {
         ImagePreview([`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image}`])
     },
     addOrder(){
-      console.log("单价")
-      console.log(this.style.salePrice)
-      console.log("总价")
-      console.log(this.priceCount)
-      console.log("数量")
-      console.log(this.styleNumber)
+      this.$axios({
+        method: "PUT",
+        url: "/libOrder/addLibOrder",
+        data: {
+          empId:this.empId,
+          libStyleId: this.style.id,
+          styleNum:this.styleNumber,
+          unitPrice:this.style.salePrice,
+          amount:this.priceCount,
+          tenantCrop: this.tenantCrop,
+        }
+      }).then(response => {
+        //如果支付成功 则调用支付宝
+        if (response.data.code===200) {
+          if(/Linux/i.test(navigator.platform)){
+            androidMethod.getAliPayInfo(response.data.data.id);
+            return;
+          }
+          window.webkit.messageHandlers.logout.postMessage("已退出")
+        }
+      })
+    //   console.log("单价")
+    //   console.log(this.style.salePrice)
+    //   console.log("总价")
+    //   console.log(this.priceCount)
+    //   console.log("数量")
+    //   console.log(this.styleNumber)
     },
   },
 }
