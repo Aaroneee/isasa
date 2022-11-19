@@ -62,10 +62,10 @@
     <br><br><br><br><br><br>
     <p/>
     <van-goods-action>
-
       <van-goods-action-icon  />
-      <van-goods-action-icon icon="chat-o" text="客服" @click="clickService" />
-      <van-goods-action-icon />
+      <van-goods-action-icon icon="cart-o" text="购物车" :badge="shopCartNum" />
+      <van-goods-action-icon  />
+      <van-goods-action-button type="warning" text="加入购物车" @click="clickShopCartButton"/>
       <van-goods-action-button
           type="danger"
           text="立即购买"
@@ -89,6 +89,7 @@ export default {
     this.style = this.$route.query
     this.queryStyleDetails()
     this.queryLibStyleImage()
+    this.queryShoppingCart()
   },
   data() {
     return {
@@ -98,6 +99,7 @@ export default {
       labelColor: ["#A52A2A", "#FF8C00", "#696969", "#FFA500", "#2F4F4F", "#6495ED", "#FF4500", "#40E0D0"],
 
       images:[],
+      shopCartNum:0,
     }
   },
   watch: {
@@ -137,8 +139,44 @@ export default {
     clickService:function (){
 
     },
+    //点击购买按钮
     clickBuyButton:function (){
         this.$router.push({name: "styleStoreAddOrder", query: this.style})
+    },
+    //点击添加到购物车按钮
+    clickShopCartButton:function (){
+      this.$axios({
+        method: "PUT",
+        url: "/libraryStyle/addShoppingCart",
+        data: {
+          id: this.style.id,
+          tenantCrop: this.style.tenantCrop,
+        }
+      }).then(response => {
+        if (response.data.code!==200){
+          this.$toast.fail('添加失败,请返回重试!');
+          return false;
+        }
+        this.$toast.success('成功文案');
+        //todo
+        this.queryShoppingCart();
+        console.log(response)
+      })
+    },
+    //查询购物车列表
+    queryShoppingCart(){
+      this.$axios({
+        method: "GET",
+        url: "/libraryStyle/queryShoppingCart",
+        params: {
+          tenantCrop: this.style.tenantCrop,
+        }
+      }).then(response => {
+        console.log(response)
+        if (response.data.code!==200) return false;
+        let res=response.data.data;
+        this.shopCartNum=res.length===0?0:res.length;
+      })
     },
     clickImageItem: function (index) {
       ImagePreview(this.images,index)
