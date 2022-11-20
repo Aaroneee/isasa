@@ -63,14 +63,14 @@
     <p/>
     <van-goods-action>
       <van-goods-action-icon  />
-      <van-goods-action-icon icon="cart-o" text="购物车" :badge="shopCartNum" />
+      <van-goods-action-icon icon="cart-o" text="购物车" :badge="shopCartNum" @click="toShopCartList"/>
       <van-goods-action-icon  />
       <van-goods-action-button type="warning" text="加入购物车" @click="clickShopCartButton"/>
-      <van-goods-action-button
-          type="danger"
-          text="立即购买"
-          @click="clickBuyButton"
-      />
+<!--      <van-goods-action-button-->
+<!--          type="danger"-->
+<!--          text="立即购买"-->
+<!--          @click="clickBuyButton"-->
+<!--      />-->
     </van-goods-action>
   </div>
 
@@ -117,7 +117,6 @@ export default {
         }
       }).then(response => {
         this.style=response.data.data
-        console.log( this.style)
       })
     },
     queryLibStyleImage() {
@@ -141,7 +140,7 @@ export default {
     },
     //点击购买按钮
     clickBuyButton:function (){
-        this.$router.push({name: "styleStoreAddOrder", query: this.style})
+        this.$router.push({name: "styleStoreAddOrder", query: [this.style]})
     },
     //点击添加到购物车按钮
     clickShopCartButton:function (){
@@ -157,10 +156,9 @@ export default {
           this.$toast.fail('添加失败,请返回重试!');
           return false;
         }
-        this.$toast.success('成功文案');
+        this.$toast.success('添加成功');
         //todo
         this.queryShoppingCart();
-        console.log(response)
       })
     },
     //查询购物车列表
@@ -180,6 +178,9 @@ export default {
     },
     clickImageItem: function (index) {
       ImagePreview(this.images,index)
+    },
+    toShopCartList(){
+      this.$router.push({name: "styleStoreShopCart"})
     },
   },
 }
