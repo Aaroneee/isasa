@@ -3,29 +3,28 @@
     <van-sticky>
       <baseNavBar title="确认订单"/>
     </van-sticky>
-    <div class="card">
-      <van-row class="cardTitle"><span>信息</span></van-row>
-      <br>
+    <div class="card" v-for="(item,index) in styleList" :key="index">
+<!--      <van-row class="cardTitle"><span>{{item.libTypeName+'-'+item.libSeriesNumberName}}</span></van-row>-->
       <van-row>
         <van-col :span="10">
           <div>
-            <img :src="`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${style.mainImage}?imageMogr2/rquality/60`" style="height: 150px;border-radius: 10px"
-                 @click="clickImageItem(style.mainImage)" alt="图片已损坏"/>
+            <img :src="`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${item.mainImage}?imageMogr2/rquality/60`" style="height: 150px;border-radius: 10px"
+                 @click="clickImageItem(item.mainImage)" alt="图片已损坏"/>
           </div>
         </van-col>
         <van-col :span="14">
-          <van-row><p>品牌 : {{style.libBrandName}}</p></van-row>
-          <van-row><p>类型 : {{style.libTypeName}}</p></van-row>
-          <van-row><p>系列 : {{style.libSeriesName}}</p></van-row>
-          <van-row><p>编号 : {{style.libSeriesNumberName}}</p></van-row>
-          <van-row><p>价格 : {{style.salePrice}}</p></van-row>
+          <van-row><p>品牌 : {{item.libBrandName}}</p></van-row>
+          <van-row><p>类型 : {{item.libTypeName}}</p></van-row>
+          <van-row><p>系列 : {{item.libSeriesName}}</p></van-row>
+          <van-row><p>系列编号 : {{item.libSeriesNumberName}}</p></van-row>
+          <van-row><p>价格 : {{item.salePrice}}</p></van-row>
           <van-row>
-            <van-col v-for="(item,index) in labelNames" :key="index" style="margin: 1% 1%">
-              <van-tag size="large" v-once :color="labelColor[Math.floor(Math.random() * labelColor.length)]">{{ item }}</van-tag>
+            <van-col v-for="(childItem,index) in getLabel(item.labelNames)" :key="index" style="margin: 1% 1%">
+              <van-tag size="large" v-once :color="labelColor[Math.floor(Math.random() * labelColor.length)]">{{ childItem }}</van-tag>
             </van-col>
           </van-row>
           <van-row style="text-align: right">
-            <van-stepper min="1" v-model="styleNumber" />
+            <van-stepper min="1" v-model="item.styleNumber" @change="getCountPrice"/>
           </van-row>
         </van-col>
       </van-row>
@@ -33,17 +32,15 @@
     <div class="card">
       <van-row class="cardTitle"><span>价格明细</span></van-row>
       <br>
-      <van-row>
-        <van-col :span="24">
-          <van-row>
-            <van-col :span="12">
-              <span style="font-size: 15px;font-weight: bold">商品总价 </span>
-              <span style="font-size: 15px;"> 共{{styleNumber}}件</span>
-            </van-col>
-            <van-col :span="12">
-              <p style="width: 100%;font-size: 15px;font-weight: bold;text-align: right">￥{{priceCount}}</p>
-            </van-col>
-          </van-row>
+      <van-row v-for="(item,index) in styleList" :key="index" style="margin-bottom: 10px">
+        <van-col :span="12">
+          <span style="font-size: 15px;font-weight: bold">{{item.libTypeName+'-'+item.libSeriesNumberName}} </span>
+          <span style="font-size: 15px;">  共<span style="font-weight: bold">{{item.styleNumber}}</span>件</span>
+        </van-col>
+        <van-col :span="12">
+          <p style="width: 100%;font-size: 15px;font-weight: bold;text-align: right">
+            ￥{{getSingleCountPrice(item.styleNumber===undefined?1:item.styleNumber,item.salePrice)}}
+          </p>
         </van-col>
       </van-row>
     </div>
@@ -60,59 +57,103 @@ export default {
     baseNavBar,
   },
   created() {
-    this.style = this.$route.query
-    this.queryStyleDetails()
+    this.styleList = this.$route.query
+    this.getCountPrice();
   },
   data() {
     return {
-      style: {},
+      styleList: [],
       styleNumber:1,
       tenantCrop: localStorage.getItem("tenantCrop"),
       empId: localStorage.getItem("empId"),
       priceCount:0,
-      labelNames:[],
       labelColor: ["#A52A2A", "#FF8C00", "#696969", "#FFA500", "#2F4F4F", "#6495ED", "#FF4500", "#40E0D0"],
 
       images:[],
     }
   },
-  watch: {
-    'style.labelNames':function (val){
-      this.labelNames=val!==""?val.split(","):[];
-    },
-    styleNumber:function (val){
-      this.priceCount=this.$math.evaluate(this.styleNumber*this.style.salePrice)
-      this.priceCount=Number(this.$math.format(
-          this.$math.chain(this.$math.bignumber(this.styleNumber))
-          .multiply(this.$math.bignumber(this.style.salePrice)).done()
-      ))
-    }
-  },
   methods: {
-    queryStyleDetails(){
-      this.$axios({
-        method: "GET",
-        url: "/libraryStyle/queryById",
-        params: {
-          id: this.style.id,
-        }
-      }).then(response => {
-        this.style=response.data.data
-        this.priceCount=this.style.salePrice;
-        console.log( this.style)
-      })
-    },
     clickImageItem(image){
         ImagePreview([`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image}`])
     },
     addOrder(){
-      console.log("单价")
-      console.log(this.style.salePrice)
-      console.log("总价")
-      console.log(this.priceCount)
-      console.log("数量")
-      console.log(this.styleNumber)
+      this.$axios({
+        method: "PUT",
+        url: "/libOrder/addLibOrder",
+        data: this.structureData()
+      }).then(response => {
+
+        //如果提交订单成功 则调用支付宝 并清空购物车
+        if (response.data.code===200) {
+          this.delAllShoppingCart();
+          if(/Linux/i.test(navigator.platform)){
+            androidMethod.getAliPayInfo(response.data.data.id);
+            return;
+          }
+          //todo 调用苹果原生
+          //window.webkit.messageHandlers.logout.postMessage("已退出")
+        }else {
+          this.$toast.fail('提交订单失败,请返回重试');
+        }
+      })
     },
+    //获得标签
+    getLabel(val){
+      return val!==""?val.split(","):[];
+    },
+    //获得一个款式的总价
+    getSingleCountPrice(num,price){
+      return Number(this.$math.format(
+          this.$math.chain(this.$math.bignumber(num))
+              .multiply(this.$math.bignumber(price)).done()
+      ))
+    },
+    //获得总价
+    getCountPrice(){
+      let mathJsChain = this.$math.chain(this.$math.bignumber(0));
+      this.styleList.forEach(k=>{
+        let styleNumber=this.$math.bignumber(k.styleNumber===undefined?1:k.styleNumber);
+        let salePrice=this.$math.bignumber(k.salePrice);
+
+        let bigNumber = this.$math.format(
+            this.$math.chain(styleNumber)
+                .multiply(salePrice).done());
+        mathJsChain=mathJsChain.add(this.$math.bignumber(bigNumber));
+      })
+      this.priceCount=Number(this.$math.format(mathJsChain.done()))
+    },
+    //清空购物车
+    delAllShoppingCart(){
+      this.$axios({
+        method: "POST",
+        url: "/libraryStyle/delAllShoppingCart",
+        data: {
+          tenantCrop: this.tenantCrop,
+        }
+      }).then(response => {
+
+      })
+    },
+    //构建提交参数
+    structureData(){
+      let libraryOrderStyleS=[];
+      this.styleList.forEach(k=>{
+        libraryOrderStyleS.push({
+          libStyleId:k.id,
+          styleNum:k.styleNumber,
+          unitPrice:k.salePrice,
+          amount:this.getSingleCountPrice(k.styleNumber,k.salePrice),
+          tenantCrop:this.tenantCrop,
+        })
+      })
+      return {
+        empId:this.empId,
+        totalAmount:this.priceCount,
+        payState:0,
+        tenantCrop:this.tenantCrop,
+        libraryOrderStyleS:libraryOrderStyleS,
+      }
+    }
   },
 }
 </script>
@@ -129,7 +170,8 @@ export default {
 .cardTitle{
   text-align: center;
   font-weight: bold;
-  font-size: 20px;
+  font-size: 17px;
+  margin-bottom: 10px;
 }
 .card .imgParent {
   padding-left: 2%;
@@ -150,7 +192,7 @@ export default {
 }
 
 p {
-  font-size: 15px;
+  font-size: 14px;
   margin: 0 0 2% 0;
 }
 
