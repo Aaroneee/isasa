@@ -24,26 +24,7 @@
         <van-field v-model="weChat" label="微信号:" placeholder="请输入微信号"></van-field>
       </van-cell-group>
 
-      <van-cell-group>
-        <van-field
-            readonly
-            label="意向程度:"
-            placeholder="请选择意向程度"
-            :value="cusInShopWay.name"
-            :rules="shopWayRule"
-            @click="showPickerShopWay = true">
-        </van-field>
-        <van-popup v-model="showPickerShopWay" round position="bottom">
-          <van-picker
-            title="意向程度"
-            show-toolbar
-            value-key="name"
-            :columns="cusInShopWayArray"
-            @cancel="showPickerShopWay = false"
-            @confirm="chooseShopWay"
-          />
-        </van-popup>
-      </van-cell-group>
+
 
       <van-cell-group>
         <van-field
@@ -78,12 +59,34 @@
       </van-cell-group>
 
       <van-cell-group>
+        <van-field
+            readonly
+            label="意向程度:"
+            placeholder="请选择意向程度"
+            :value="cusInShopWay.name"
+            :rules="shopWayRule">
+<!--            @click="showPickerShopWay = true">-->
+        </van-field>
+<!--        <van-popup v-model="showPickerShopWay" round position="bottom">-->
+<!--          <van-picker-->
+<!--              title="意向程度"-->
+<!--              show-toolbar-->
+<!--              value-key="name"-->
+<!--              :columns="cusInShopWayArray"-->
+<!--              @cancel="showPickerShopWay = false"-->
+<!--              @confirm="chooseShopWay"-->
+<!--          />-->
+<!--        </van-popup>-->
+      </van-cell-group>
+
+      <van-cell-group>
         <van-field v-model="cusWeddingPlace" label="婚礼地点:" placeholder="请输入婚礼地点"></van-field>
       </van-cell-group>
 
       <van-cell-group>
         <van-field v-model="cusReception" label="录入人:" placeholder="请输入录入人"></van-field>
       </van-cell-group>
+
 
       <van-cell-group>
         <van-field
@@ -220,7 +223,7 @@ export default {
       city:'',
       phone:'',
       weChat:'',
-      cusInShopWay:'',
+      cusInShopWay: '',
       cusChannel:{},
       cusWedding:'',
       cusReception:'',
@@ -248,7 +251,7 @@ export default {
       showPickerShop:false,
       showPickerInviter:false,
       showPickerAppointName:false,
-      cusInShopWayArray:[],
+      // cusInShopWayArray:[],
       cusChannelArray:[],
       appointNameArray:[],
       arriveTimeArray:['09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00',
@@ -297,11 +300,12 @@ export default {
   },
   created() {
     this.querySource();
-    this.queryDegree();
+    // this.queryDegree();
     this.queryEmp();
     this.queryShop();
     this.queryInviter();
     this.queryAppointNameArray();
+    this.queryDirectGrade();
   },
   methods:{
     addDirectSales(data){
@@ -346,10 +350,10 @@ export default {
         })
       })
     },
-    chooseShopWay(value){
-      this.cusInShopWay = value;
-      this.showPickerShopWay = false;
-    },
+    // chooseShopWay(value){
+    //   this.cusInShopWay = value;
+    //   this.showPickerShopWay = false;
+    // },
     chooseChannel(value){
       this.cusChannel = value;
       this.showPickerChannel = false;
@@ -410,19 +414,33 @@ export default {
         }
       })
     },
-    queryDegree(){
+    // queryDegree(){
+    //   this.$axios({
+    //     method: "GET",
+    //     url:"/grade/gradeList",
+    //     params:{
+    //       tenantCrop: this.tenantCrop,
+    //     }
+    //   }).then(response => {
+    //     for (let i = 0; i < response.data.data.list.length; i++) {
+    //       this.cusInShopWayArray[i] = {
+    //         name : response.data.data.list[i].gradeName,
+    //         value: response.data.data.list[i].id,
+    //       }
+    //     }
+    //   })
+    // },
+    queryDirectGrade(){
       this.$axios({
         method: "GET",
-        url:"/grade/gradeList",
+        url: "/grade/directGrade",
         params:{
           tenantCrop: this.tenantCrop,
         }
       }).then(response => {
-        for (let i = 0; i < response.data.data.list.length; i++) {
-          this.cusInShopWayArray[i] = {
-            name : response.data.data.list[i].gradeName,
-            value: response.data.data.list[i].id,
-          }
+        this.cusInShopWay = {
+          name : response.data.data.gradeName,
+          value: response.data.data.id,
         }
       })
     },
