@@ -71,7 +71,6 @@ export default {
         this.loading = false
         if (response.data.code!==200) return false;
         this.shopCartList=response.data.data;
-        console.log(this.shopCartList)
       })
     },
     //跳转到款式详情

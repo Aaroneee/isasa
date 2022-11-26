@@ -76,11 +76,9 @@ export default {
           tenantCrop: this.tenantCrop,
         }
       }).then(response => {
-        console.log(response)
         this.loading = false
         if (response.data.code!==200) return false;
         this.orderList=response.data.data;
-        console.log(this.orderList)
       })
     },
     //跳转到款式详情

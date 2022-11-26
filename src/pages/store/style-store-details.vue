@@ -100,6 +100,8 @@ export default {
 
       images:[],
       shopCartNum:0,
+
+      tenantCrop: localStorage.getItem("tenantCrop"),
     }
   },
   watch: {
@@ -149,7 +151,7 @@ export default {
         url: "/libraryStyle/addShoppingCart",
         data: {
           id: this.style.id,
-          tenantCrop: this.style.tenantCrop,
+          tenantCrop: this.tenantCrop,
         }
       }).then(response => {
         if (response.data.code!==200){
@@ -167,7 +169,7 @@ export default {
         method: "GET",
         url: "/libraryStyle/queryShoppingCart",
         params: {
-          tenantCrop: this.style.tenantCrop,
+          tenantCrop: this.tenantCrop,
         }
       }).then(response => {
         console.log(response)
