@@ -95,56 +95,65 @@
           <div>
             <van-cell style="font-size: 12px">
               <van-row gutter="5">
-                <van-col span="12"  v-for="item in yarnClothesList" :key="item.id" style="text-align: center">
+                <van-grid :column-num="2" :border="false">
+                  <van-grid-item v-for="item in yarnClothesList" :key="item.id">
+                    <van-image :src="item.styleImage==='' ? 'null' : item.styleImage" @click="clickItem2(item)"
+                              alt="主图显示失败,请重新设置主图" radius="10px" height="58vw" width="40vw"/>
+                    <span>{{ item.styleType+'-'+item.styleName+'-'+item.clothesSize+'-'+item.clothesNo }}</span>
+                    <span>{{ item.empName === '' ? '暂无' : item.empName}}</span>
+                    <span>{{ item.arriveDate }}</span>
+                  </van-grid-item>
+                </van-grid>
+<!--                <van-col span="12"  v-for="item in yarnClothesList" :key="item.id" style="text-align: center">
                   <div class="card">
                     <div class="imgFont">
-                      <div style="width: 98%;height: 290px" @click="clickItem2(item)">
+                      <div style="width: 40vw;height: 58vw" @click="clickItem2(item)">
                         <img
                             :src="item.styleImage==='' ? 'null' : item.styleImage"
-                            alt="主图显示失败,请重新设置主图" style="width: 95%; height: 100%; border-radius: 10px"/>
+                            alt="主图显示失败,请重新设置主图" style="width: 100%; height: 100%; border-radius: 10px;"/>
                       </div>
 
 
-<!--                      <div class="styleInfo">-->
-<!--                        <van-row type="flex" justify="space-between">-->
-<!--                          <van-col span="50%" offset="1">-->
-<!--                            <b class="pFont">礼服名称：{{ item.styleType+'-'+item.styleName+'-'+item.clothesSize+'-'+item.clothesNo }}</b>-->
-<!--                          </van-col>-->
-<!--                        </van-row>-->
+&lt;!&ndash;                      <div class="styleInfo">&ndash;&gt;
+&lt;!&ndash;                        <van-row type="flex" justify="space-between">&ndash;&gt;
+&lt;!&ndash;                          <van-col span="50%" offset="1">&ndash;&gt;
+&lt;!&ndash;                            <b class="pFont">礼服名称：{{ item.styleType+'-'+item.styleName+'-'+item.clothesSize+'-'+item.clothesNo }}</b>&ndash;&gt;
+&lt;!&ndash;                          </van-col>&ndash;&gt;
+&lt;!&ndash;                        </van-row>&ndash;&gt;
 
-<!--                        <van-row  type="flex" justify="space-between">-->
-<!--                          <van-col span="50%" offset="1">-->
-<!--                            <b class="pFont">礼服师：{{ item.empName === '' ? '暂无' : item.empName}}</b>-->
-<!--                          </van-col>-->
-<!--                        </van-row>-->
+&lt;!&ndash;                        <van-row  type="flex" justify="space-between">&ndash;&gt;
+&lt;!&ndash;                          <van-col span="50%" offset="1">&ndash;&gt;
+&lt;!&ndash;                            <b class="pFont">礼服师：{{ item.empName === '' ? '暂无' : item.empName}}</b>&ndash;&gt;
+&lt;!&ndash;                          </van-col>&ndash;&gt;
+&lt;!&ndash;                        </van-row>&ndash;&gt;
 
-<!--                        <van-row type="flex" justify="space-between">-->
-<!--                          <van-col span="100%" offset="1">-->
-<!--                            <b class="pFont">试纱日期：{{ item.arriveDate }}</b>-->
-<!--                          </van-col>-->
-<!--                        </van-row>-->
-<!--                      </div>-->
+&lt;!&ndash;                        <van-row type="flex" justify="space-between">&ndash;&gt;
+&lt;!&ndash;                          <van-col span="100%" offset="1">&ndash;&gt;
+&lt;!&ndash;                            <b class="pFont">试纱日期：{{ item.arriveDate }}</b>&ndash;&gt;
+&lt;!&ndash;                          </van-col>&ndash;&gt;
+&lt;!&ndash;                        </van-row>&ndash;&gt;
+&lt;!&ndash;                      </div>&ndash;&gt;
 
                       <div class="styleInfo">
                         <table>
                           <tr>
-                            <td style="text-align-last:justify"><b class="pFont">礼服名称：</b></td>
-                            <td style="text-align: left"><b class="pFont">{{ item.styleType+'-'+item.styleName+'-'+item.clothesSize+'-'+item.clothesNo }}</b></td>
+&lt;!&ndash;                            <td style="text-align-last:justify"><b class="pFont">礼服名称：</b></td>&ndash;&gt;
+                            <td style="text-align: center">{{ item.styleType+'-'+item.styleName+'-'+item.clothesSize+'-'+item.clothesNo }}</td>
                           </tr>
                           <tr>
-                            <td style="text-align-last:justify"><b class="pFont">礼服师：</b></td>
-                            <td style="text-align: left"><b class="pFont">{{ item.empName === '' ? '暂无' : item.empName}}</b></td>
+&lt;!&ndash;                            <td style="text-align-last:justify"><b class="pFont">礼服师：</b></td>&ndash;&gt;
+                            <td style="text-align: center"><b class="pFont">{{ item.empName === '' ? '暂无' : item.empName}}</b></td>
                           </tr>
                           <tr>
-                            <td style="text-align-last:justify"><b class="pFont">试纱日期：</b></td>
-                            <td style="text-align: left"><b class="pFont">{{ item.arriveDate }}</b></td>
+&lt;!&ndash;                            <td style="text-align-last:justify"><b class="pFont">试纱日期：</b></td>&ndash;&gt;
+                            <td style="text-align: center"><b class="pFont">{{ item.arriveDate }}</b></td>
                           </tr>
                         </table>
                       </div>
 
                     </div>
                   </div>
-                </van-col>
+                </van-col>-->
               </van-row>
             </van-cell>
           </div>
@@ -344,9 +353,10 @@ export default {
     queryOrderOffer() {
       this.$axios({
         method: "GET",
-        url: "/orderOffer/queryOrderOfferByCusId",
+        url: "/orderOffer/queryYarnClothesListByCusIdAndTenantCrop",
         params: {
-          cusId: this.cusId
+          cusId: this.cusId,
+          tenantCrop: this.tenantCrop,
         }
       }).then(response => {
         if (response.data.code === 200) {
