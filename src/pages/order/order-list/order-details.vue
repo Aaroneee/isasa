@@ -353,10 +353,9 @@ export default {
     queryOrderOffer() {
       this.$axios({
         method: "GET",
-        url: "/orderOffer/queryYarnClothesListByCusIdAndTenantCrop",
+        url: "/orderOffer/queryOrderOfferByCusId",
         params: {
           cusId: this.cusId,
-          tenantCrop: this.tenantCrop,
         }
       }).then(response => {
         if (response.data.code === 200) {
@@ -419,9 +418,10 @@ export default {
     queryYarnClothesList() {
       this.$axios({
         method: "get",
-        url: '/clothesYarn/queryYarnClothesListByCusId',
+        url: '/clothesYarn/queryYarnClothesListByCusIdAndTenantCrop',
         params: {
-          cusId: this.cusId
+          cusId: this.cusId,
+          tenantCrop: this.tenantCrop
         }
       }).then(response => {
         if (response.data.data != "") {
