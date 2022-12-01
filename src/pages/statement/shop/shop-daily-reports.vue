@@ -22,7 +22,7 @@
           readonly
           clickable
           label="礼服师："
-          :value="dressId"
+          :value="dress"
           placeholder="选择礼服师"
           @click="showDress = true"
       />
@@ -114,13 +114,44 @@
     </van-collapse>
 
 
-    <van-dialog v-model="test" title="标题" show-cancel-button>
-      <van-collapse v-model="activeNames">
+    <van-popup
+        v-model="test"
+        closeable
+        position="bottom"
+        close-icon-position="top-right"
+        style="height: 60%"
+        round>
+      <br/><br/>
+      <van-collapse v-model="activeNames" :border="false">
+        <van-collapse-item title="标题1" name="1">内容</van-collapse-item>
+        <van-collapse-item title="标题2" name="2">内容</van-collapse-item>
+        <van-collapse-item title="标题3" name="3">内容</van-collapse-item>
+        <van-collapse-item title="标题1" name="1">内容</van-collapse-item>
+        <van-collapse-item title="标题2" name="2">内容</van-collapse-item>
+        <van-collapse-item title="标题3" name="3">内容</van-collapse-item>
+        <van-collapse-item title="标题1" name="1">内容</van-collapse-item>
+        <van-collapse-item title="标题2" name="2">内容</van-collapse-item>
+        <van-collapse-item title="标题3" name="3">内容</van-collapse-item>
+        <van-collapse-item title="标题1" name="1">内容</van-collapse-item>
+        <van-collapse-item title="标题2" name="2">内容</van-collapse-item>
+        <van-collapse-item title="标题3" name="3">内容</van-collapse-item>
+        <van-collapse-item title="标题1" name="1">内容</van-collapse-item>
+        <van-collapse-item title="标题2" name="2">内容</van-collapse-item>
+        <van-collapse-item title="标题3" name="3">内容</van-collapse-item>
+        <van-collapse-item title="标题1" name="1">内容</van-collapse-item>
+        <van-collapse-item title="标题2" name="2">内容</van-collapse-item>
+        <van-collapse-item title="标题3" name="3">内容</van-collapse-item>
+        <van-collapse-item title="标题1" name="1">内容</van-collapse-item>
+        <van-collapse-item title="标题2" name="2">内容</van-collapse-item>
+        <van-collapse-item title="标题3" name="3">内容</van-collapse-item>
+        <van-collapse-item title="标题1" name="1">内容</van-collapse-item>
+        <van-collapse-item title="标题2" name="2">内容</van-collapse-item>
+        <van-collapse-item title="标题3" name="3">内容</van-collapse-item>
         <van-collapse-item title="标题1" name="1">内容</van-collapse-item>
         <van-collapse-item title="标题2" name="2">内容</van-collapse-item>
         <van-collapse-item title="标题3" name="3">内容</van-collapse-item>
       </van-collapse>
-    </van-dialog>
+    </van-popup>
   </div>
 </template>
 
@@ -155,7 +186,7 @@ export default {
       // 是否显示礼服师下拉列表
       showDress: false,
       // 选择的礼服师
-      dressId: '',
+      dress: '',
       // 礼服师列表
       dressList: ['测试1', '宁波', '温州', '绍兴', '湖州', '嘉兴', '金华', '衢州'],
       // 是否正在加载礼服师
@@ -180,7 +211,6 @@ export default {
       return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
     },
     onConfirm1(date) {
-      console.log(date);
       const [start, end] = date;
       this.show = false;
       this.startDate = this.formatDate(start);
