@@ -70,12 +70,19 @@
       </van-collapse-item>
       <van-collapse-item title="营收报告" name="2" icon="shop-o">
         <van-grid :border="false" style="text-align: center" :column-num="4">
-          <van-grid-item v-for="value in proceedsAnalysis" :key="value.projectName" v-if="value.sumMoney!= 0" @click="showProjectsDetails(value.projectName)">
+          <van-grid-item v-for="value in revenueReports" :key="value.projectName" v-if="value.sumMoney!= 0" @click="showProjectsDetails(value.projectName)">
             {{value.projectName}}<br>{{value.sumMoney}}
           </van-grid-item>
         </van-grid>
       </van-collapse-item>
-      <van-collapse-item title="售前情况" name="3" icon="shop-o">
+      <van-collapse-item title="押金报告" name="3" icon="shop-o">
+        <van-grid :border="false" style="text-align: center" :column-num="4">
+          <van-grid-item v-for="value in depositReports" :key="value.projectName" v-if="value.sumMoney!= 0" @click="showProjectsDetails(value.projectName)">
+            {{value.projectName}}<br>{{value.sumMoney}}
+          </van-grid-item>
+        </van-grid>
+      </van-collapse-item>
+      <van-collapse-item title="售前情况" name="4" icon="shop-o">
         <van-grid :border="false" style="text-align: center" :column-num="3">
           <van-grid-item>售前接待数<br>{{saleReception}}</van-grid-item>
           <van-grid-item>一次订单数<br>{{onceTheOrder}}</van-grid-item>
@@ -85,7 +92,7 @@
           <van-grid-item>综合转换率<br>{{comprehensiveProportion}}</van-grid-item>
         </van-grid>
       </van-collapse-item>
-      <van-collapse-item title="售后情况" name="4" icon="shop-o">
+      <van-collapse-item title="售后情况" name="5" icon="shop-o">
         <van-grid :border="false" style="text-align: center" :column-num="3">
           <van-grid-item>售后接待数<br>{{afterSaleReception}}</van-grid-item>
           <van-grid-item>售后升级接待数<br>{{afterSaleUpGradeReception}}</van-grid-item>
@@ -93,7 +100,7 @@
           <van-grid-item>售后转换率<br>{{afterSaleProportion}}</van-grid-item>
         </van-grid>
       </van-collapse-item>
-      <van-collapse-item title="客资来源分析" name="5" icon="shop-o">
+      <van-collapse-item title="客资来源分析" name="6" icon="shop-o">
         <van-grid :border="false" style="text-align: center" :column-num="4">
           <van-grid-item v-for="value in cusSource" :key="value.sourceName">
             {{value.sourceName}}<br>{{value.sourceCount}}
@@ -245,7 +252,7 @@ export default {
       shopLoading: false,
       // 店铺列表
       shopArray: [{text: "", id: ""}],
-      activeNames: ['1','2','3','4','5'],
+      activeNames: ['1','2','3','4','5', '6'],
       activeEarningDetail: [],
 
       //售前业绩
@@ -430,6 +437,18 @@ export default {
         }
       }).then(response => {
         this.projectsDetail = response.data.data;
+      })
+    }
+  },
+  computed: {
+    revenueReports: function () {
+      return this.proceedsAnalysis.filter((item) => {
+        return item.projectName !== '押金'
+      })
+    },
+    depositReports: function () {
+      return this.proceedsAnalysis.filter((item) => {
+        return item.projectName === '押金'
       })
     }
   }
