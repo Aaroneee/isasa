@@ -62,15 +62,15 @@
     <van-collapse v-model="activeNames" v-else>
       <van-collapse-item title="店铺业绩" name="1" icon="shop-o">
         <van-grid :border="false" style="text-align: center">
-            <van-grid-item @click="test1()">总业绩<br/>{{earning}}</van-grid-item>
-            <van-grid-item>售前业绩<br>{{saleEarning}}</van-grid-item>
-            <van-grid-item>售后业绩<br>{{afterSaleEarning}}</van-grid-item>
+            <van-grid-item @click="showSaleDetail('总业绩')">总业绩<br/>{{earning}}</van-grid-item>
+            <van-grid-item @click="showSaleDetail('售前业绩')">售前业绩<br>{{saleEarning}}</van-grid-item>
+            <van-grid-item @click="showSaleDetail('售后业绩')">售后业绩<br>{{afterSaleEarning}}</van-grid-item>
             <van-grid-item>总营收<br>{{proceedsSum}}</van-grid-item>
         </van-grid>
       </van-collapse-item>
       <van-collapse-item title="营收报告" name="2" icon="shop-o">
         <van-grid :border="false" style="text-align: center" :column-num="4">
-          <van-grid-item v-for="value in proceedsAnalysis" :key="value.projectName" v-if="value.sumMoney!= 0">
+          <van-grid-item v-for="value in proceedsAnalysis" :key="value.projectName" v-if="value.sumMoney!= 0" @click="showProjectsDetails(value.projectName)">
             {{value.projectName}}<br>{{value.sumMoney}}
           </van-grid-item>
         </van-grid>
@@ -102,124 +102,98 @@
       </van-collapse-item>
     </van-collapse>
 
+    <van-popup
+        v-model="showDetail"
+        closeable
+        position="bottom"
+        close-icon-position="top-right"
+        style="height: 60%; background-color: rgba(255,255,255,0.9) "
+        round>
+          <van-row type="flex" justify="space-around" align="center" style="background-color: rgb(255,255,255); height: 50px">
+            {{ detailName }}详情
+          </van-row>
+          <van-row type="flex" justify="center">
+            <van-collapse v-model="activeEarningDetail" :border="false" style="width: 90%">
+              <van-collapse-item v-for="(item,index) in saleDetail" :name="index" :key="index">
+                <template #title>
+                  <van-grid :border="false" style="text-align: left; font-size: 12px" :column-num="2" :center="false">
+                    <van-grid-item>
+                      客户名：{{ item.name }}<br>
+                      业绩店铺：{{ item.city }}
+                    </van-grid-item>
+                    <van-grid-item>
+                      业绩所属人：{{ item.orderDress }}<br>
+                      <b>{{ item.type === "售前预约" ? "售前业绩" : "售后业绩" }}：{{ item.achievement }}</b>
+                    </van-grid-item>
+                  </van-grid>
+                </template>
+                <van-grid :border="false" style="text-align: left; font-size: 12px" :column-num="2" :center="false">
+                  <van-grid-item>
+                    收款金额：{{ item.spareMoney }}<br>
+                    业绩日期：{{ item.createDate }}<br>
+                    订单总价：{{ item.orderPrice }}<br>
+                    订单店铺：{{ item.city }}<br>
+                    收款日期：{{ item.createDate }}<br>
+                  </van-grid-item>
+                  <van-grid-item>
+                    收款人：{{ item.payee }}<br>
+                    订单编号：{{ item.orderNo }}<br>
+                    订单余款：{{ item.orderSpare }}<br>
+                    收款项目：{{ item.proceedsName }}<br>
+                    收款方式：{{ item.payment }}<br>
+                  </van-grid-item>
+                </van-grid>
+              </van-collapse-item>
+            </van-collapse>
+          </van-row>
+    </van-popup>
 
     <van-popup
-        v-model="test"
+        v-model="showProjectsDetail"
         closeable
         position="bottom"
         close-icon-position="top-right"
         style="height: 60%; background-color: rgba(255,255,255,0.9) "
         round>
       <van-row type="flex" justify="space-around" align="center" style="background-color: rgb(255,255,255); height: 12%">
-        售前业绩详情
+        {{ projectsDetailName }}详情
       </van-row>
       <br>
       <van-row type="flex" justify="center">
-        <van-collapse v-model="activeEarningDetail" :border="false" style="width: 90%">
-
-          <van-collapse-item name="1">
+        <van-collapse v-model="activeProjectsDetail" :border="false" style="width: 90%">
+          <van-collapse-item v-for="(item,index) in projectsDetail" :name="index" :key="index">
             <template #title>
-              <van-grid :border="false" style="text-align: left" :column-num="2" :center="false">
+              <van-grid :border="false" style="text-align: left; font-size: 12px" :column-num="2" :center="false">
                 <van-grid-item>
-                  客户名：{{ 胡艺玲 }}<br>
-                  业绩店铺：{{ 杭州 }}
+                  客户名:{{ item.name }}<br>
+                  所属店铺:{{ item.city }}
                 </van-grid-item>
                 <van-grid-item>
-                  业绩所属人：ANNY<br>
-                  <b>售前业绩：6300</b>
+                  礼服师:{{ item.orderDress }}<br>
+                  <b>收款金额：{{ item.spareMoney }}</b>
                 </van-grid-item>
               </van-grid>
             </template>
             <van-grid :border="false" style="text-align: left; font-size: 12px" :column-num="2" :center="false">
               <van-grid-item>
-                收款金额：6300<br>
-                业绩日期：2022-12-01<br>
-                订单总价：6800<br>
-                订单店铺：杭州<br>
-                收款日期：2022-12-01<br>
-                收款方式：支付宝<br>
+                订单总价：{{ item.orderPrice }}<br>
+                订单编号：{{ item.orderNo }}<br>
+                订单余款：{{ item.orderSpare }}<br>
+                订单店铺：{{ item.city }}<br>
               </van-grid-item>
               <van-grid-item>
-                收款人：小芸<br>
-                <br>
-                余款：500<br>
-                订单编号：0166451<br>
-                收款项目：补足<br>
-                到账账户：<br>
+                收款人：{{ item.payee }}<br>
+                收款日期：{{ item.createDate }}<br>
+                收款项目：{{ item.proceedsName }}<br>
+                收款方式：{{ item.payment }}<br>
               </van-grid-item>
             </van-grid>
           </van-collapse-item>
-
-          <van-collapse-item name="2">
-            <template #title>
-              <van-grid :border="false" style="text-align: left" :column-num="2" :center="false">
-                <van-grid-item>
-                  客户名：胡艺玲<br>
-                  业绩店铺：杭州
-                </van-grid-item>
-                <van-grid-item>
-                  业绩所属人：ANNY<br>
-                  <b>售前业绩：6300</b>
-                </van-grid-item>
-              </van-grid>
-            </template>
-            <van-grid :border="false" style="text-align: left; font-size: 12px" :column-num="2" :center="false">
-              <van-grid-item>
-                收款金额：6300<br>
-                业绩日期：2022-12-01<br>
-                订单总价：6800<br>
-                订单店铺：杭州<br>
-                收款日期：2022-12-01<br>
-                收款方式：支付宝<br>
-              </van-grid-item>
-              <van-grid-item>
-                收款人：小芸<br>
-                <br>
-                余款：500<br>
-                订单编号：0166451<br>
-                收款项目：补足<br>
-                到账账户：<br>
-              </van-grid-item>
-            </van-grid>
-          </van-collapse-item>
-
-          <van-collapse-item name="3">
-            <template #title>
-              <van-grid :border="false" style="text-align: left" :column-num="2" :center="false">
-                <van-grid-item>
-                  客户名：胡艺玲<br>
-                  业绩店铺：杭州
-                </van-grid-item>
-                <van-grid-item>
-                  业绩所属人：ANNY<br>
-                  <b>售前业绩：6300</b>
-                </van-grid-item>
-              </van-grid>
-            </template>
-            <van-grid :border="false" style="text-align: left; font-size: 12px" :column-num="2" :center="false">
-              <van-grid-item>
-                收款金额：6300<br>
-                业绩日期：2022-12-01<br>
-                订单总价：6800<br>
-                订单店铺：杭州<br>
-                收款日期：2022-12-01<br>
-                收款方式：支付宝<br>
-              </van-grid-item>
-              <van-grid-item>
-                收款人：小芸<br>
-                <br>
-                余款：500<br>
-                订单编号：0166451<br>
-                收款项目：补足<br>
-                到账账户：<br>
-              </van-grid-item>
-            </van-grid>
-          </van-collapse-item>
-
         </van-collapse>
       </van-row>
-
     </van-popup>
+
+
   </div>
 </template>
 
@@ -238,15 +212,15 @@ export default {
   },
   data() {
     return {
-      test: false,
+      showDetail: false,
       titleText: "店铺每日业绩",
       loadingList: true,
       tenantCrop: localStorage.getItem("tenantCrop"),
-      // 起始日期(默认今天)
-      startDate: this.formatDate(new Date()),
+      // 起始日期(默认昨天)
+      startDate: this.formatDate(new Date(new Date().getTime() - 24 * 60 * 60 * 1000)),
       // 结束日期(默认今天)
       endDate: this.formatDate(new Date()),
-      date: '',
+      date: this.formatDate(new Date(new Date().getTime() - 24 * 60 * 60 * 1000)) + ' - ' + this.formatDate(new Date()),
       // 是否显示日期弹窗
       show: false,
       // 是否显示日历副标题
@@ -310,11 +284,42 @@ export default {
       comprehensiveProportion: "0",
       //售后升级接待数
       afterSaleUpGradeReception: "0",
+
+      // 店铺业绩详情
+      saleDetail: {},
+      // 详情名称
+      detailName: '',
+      // 是否显示营收详情
+      showProjectsDetail: false,
+      // 营收详情项目名
+      projectsDetailName: '',
+      // 是否展开单个详情
+      activeProjectsDetail: [],
+      // 营收详情
+      projectsDetail: {},
+
     }
   },
   methods: {
-    test1() {
-      this.test = true;
+    showProjectsDetails(projectName) {
+      this.projectsDetail = {}
+      this.queryProjectsDetails(projectName);
+      this.projectsDetailName = projectName;
+      this.activeProjectsDetail = [];
+      this.showProjectsDetail = true;
+    },
+    showSaleDetail(type) {
+      this.saleDetail = {}
+      if (type === "总业绩") {
+        this.querySaleDetails(null);
+      } else if (type === "售前业绩") {
+        this.querySaleDetails("售前预约");
+      } else if (type === "售后业绩") {
+        this.querySaleDetails("售后预约");
+      }
+      this.detailName = type
+      this.activeEarningDetail = [];
+      this.showDetail = true;
     },
     formatDate(date) {
       return `${date.getFullYear()}-${this.$dateUtils.dateIsSingle(date.getMonth() + 1)}-${this.$dateUtils.dateIsSingle(date.getDate())}`;
@@ -394,6 +399,38 @@ export default {
       this.proceedsAnalysis = [];
       this.cusSource.push(...data[1]);
       this.proceedsAnalysis.push(...data[2]);
+    },
+    querySaleDetails(type) {
+      this.$axios({
+        methods: 'GET',
+        url: "/shopReports/querySaleDetails",
+        params: {
+          startDate: this.startDate,
+          endDate: this.endDate,
+          tenantCrop: this.tenantCrop,
+          shopId: this.shopId,
+          dressId: this.dressId,
+          type: type,
+        }
+      }).then(response => {
+        this.saleDetail = response.data.data;
+      })
+    },
+    queryProjectsDetails(projectName) {
+      this.$axios({
+        method: "GET",
+        url: "/shopReports/queryProjectsDetails",
+        params: {
+          startDate: this.startDate,
+          endDate: this.endDate,
+          tenantCrop: this.tenantCrop,
+          shopId: this.shopId,
+          dressId: this.dressId,
+          projectName: projectName
+        }
+      }).then(response => {
+        this.projectsDetail = response.data.data;
+      })
     }
   }
 
