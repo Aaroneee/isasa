@@ -65,7 +65,7 @@
             <van-grid-item @click="showSaleDetail('总业绩')">总业绩<br/>{{earning}}</van-grid-item>
             <van-grid-item @click="showSaleDetail('售前业绩')">售前业绩<br>{{saleEarning}}</van-grid-item>
             <van-grid-item @click="showSaleDetail('售后业绩')">售后业绩<br>{{afterSaleEarning}}</van-grid-item>
-            <van-grid-item>总营收<br>{{proceedsSum}}</van-grid-item>
+            <van-grid-item @click="showTotalEarningDetail()">总营收<br>{{proceedsSum}}</van-grid-item>
         </van-grid>
       </van-collapse-item>
       <van-collapse-item title="营收报告" name="2" icon="shop-o">
@@ -86,7 +86,7 @@
         <van-grid :border="false" style="text-align: center" :column-num="3">
           <van-grid-item @click="showAppointSaleDetails('售前接待')">售前接待数<br>{{saleReception}}</van-grid-item>
           <van-grid-item @click="showOrderDetails('一次订单')">一次订单数<br>{{onceTheOrder}}</van-grid-item>
-          <van-grid-item @click="showAppointDetails('一次未订单')">一次未订单数<br>{{onceNotOrder}}</van-grid-item>
+          <van-grid-item @click="showOnceNotOrderDetails('一次未订单')">一次未订单数<br>{{onceNotOrder}}</van-grid-item>
           <van-grid-item @click="showOrderDetails('二次订单')">二次订单数<br>{{twiceTheOrder}}</van-grid-item>
           <van-grid-item>一次转换率<br>{{onceProportion}}</van-grid-item>
           <van-grid-item>综合转换率<br>{{comprehensiveProportion}}</van-grid-item>
@@ -293,8 +293,88 @@
     </van-popup>
 
     <!-- 一次未订单弹窗 -->
+    <van-popup
+        v-model="showOnceNotOrderDetail"
+        closeable
+        position="bottom"
+        close-icon-position="top-right"
+        style="height: 60%; background-color: rgba(255,255,255,0.9) "
+        round>
+      <van-row type="flex" justify="space-around" align="center" style="background-color: rgb(255,255,255); height: 50px">
+        一次未订单详情
+      </van-row>
+      <van-row type="flex" justify="center">
+        <van-collapse v-model="activeOnceNotOrderDetail" :border="false" style="width: 90%">
+          <van-collapse-item v-for="(item,index) in onceNotOrderDetail" :name="index" :key="index">
+            <template #title>
+              <van-grid :border="false" style="text-align: left; font-size: 12px" :column-num="2" :center="false">
+                <van-grid-item>
+                  客户名：{{ item.cusName }}<br>
+                  预约店铺：{{ item.shopName }}
+                </van-grid-item>
+                <van-grid-item>
+                  预约人：{{ item.inviterName }}<br>
+                  预约状态：{{ item.appState }}
+                </van-grid-item>
+              </van-grid>
+            </template>
+            <van-grid :border="false" style="text-align: left; font-size: 12px" :column-num="2" :center="false">
+              <van-grid-item>
+                预约项目：{{ item.appointName }}<br>
+                预约类型：{{ item.type }}
+              </van-grid-item>
+              <van-grid-item>
+                礼服师：{{ item.appointDress }}<br>
+                预约日期：{{ item.appointDate }}<br>
+                是否到店: {{ item.isValid  }}
+              </van-grid-item>
+            </van-grid>
+          </van-collapse-item>
+        </van-collapse>
+      </van-row>
+    </van-popup>
 
     <!-- 营收弹窗 -->
+    <van-popup
+        v-model="showTotalEarning"
+        closeable
+        position="bottom"
+        close-icon-position="top-right"
+        style="height: 60%; background-color: rgba(255,255,255,0.9) "
+        round>
+      <van-row type="flex" justify="space-around" align="center" style="background-color: rgb(255,255,255); height: 50px">
+        总营收详情
+      </van-row>
+      <van-row type="flex" justify="center">
+        <van-collapse v-model="activeTotalEarningDetail" :border="false" style="width: 90%">
+          <van-collapse-item v-for="(item,index) in totalEarningDetail" :name="index" :key="index">
+            <template #title>
+              <van-grid :border="false" style="text-align: left; font-size: 12px" :column-num="2" :center="false">
+                <van-grid-item>
+                  收款项目：{{ item.projectsName }}<br>
+                  收款金额：{{ item.spareMoney }}
+                </van-grid-item>
+                <van-grid-item>
+                  收款方式：{{ item.paymentName }}<br>
+                  所属店铺：{{ item.shopName }}
+                </van-grid-item>
+              </van-grid>
+            </template>
+            <van-grid :border="false" style="text-align: left; font-size: 12px" :column-num="2" :center="false">
+              <van-grid-item>
+                订单编号：{{ item.orderNo }}<br>
+                订单总价: {{ item.orderPrice }}<br>
+                余款：{{ item.orderSpare }}
+              </van-grid-item>
+              <van-grid-item>
+                礼服师：{{ item.orderDress }}<br>
+                收款人：{{ item.payee }}
+              </van-grid-item>
+            </van-grid>
+          </van-collapse-item>
+        </van-collapse>
+      </van-row>
+    </van-popup>
 
   </div>
 </template>
@@ -314,6 +394,7 @@ export default {
   },
   data() {
     return {
+      showTotalEarning: false,
       showOnceNotOrderDetail: false,
       showAppointSaleDetailsPopup: false,
       showDetail: false,
@@ -418,9 +499,23 @@ export default {
       activeOnceNotOrderDetail: [],
       // 一次未订单详情
       onceNotOrderDetail: [],
+      // 是否展开单个营收
+      activeTotalEarningDetail: [],
+      // 营收详情
+      totalEarningDetail: [],
     }
   },
   methods: {
+    showTotalEarningDetail() {
+      this.queryTotalEarningDetails();
+      this.activeTotalEarningDetail = [];
+      this.showTotalEarning = true;
+    },
+    showOnceNotOrderDetails() {
+      this.queryOnceNotOrderDetails();
+      this.activeOnceNotOrderDetail = [];
+      this.showOnceNotOrderDetail = true;
+    },
     showOrderDetails(orderType) {
       if (orderType === "一次订单") {
         this.queryOrderDetails("售前预约",6)
@@ -609,6 +704,36 @@ export default {
         this.orderDetail = response.data.data;
       })
     },
+    queryOnceNotOrderDetails() {
+      this.$axios({
+        method: 'GET',
+        url: '/shopReports/queryOnceNotOrderDetails',
+        params: {
+          startDate: this.startDate,
+          endDate: this.endDate,
+          tenantCrop: this.tenantCrop,
+          shopId: this.shopId,
+          dressId: this.dressId
+        }
+      }).then(response => {
+        this.onceNotOrderDetail = response.data.data
+      })
+    },
+    queryTotalEarningDetails() {
+      this.$axios({
+        method: 'GET',
+        url: '/shopReports/queryTotalEarningDetails',
+        params: {
+          startDate: this.startDate,
+          endDate: this.endDate,
+          tenantCrop: this.tenantCrop,
+          shopId: this.shopId,
+          dressId: this.dressId
+        }
+      }).then(response => {
+        this.totalEarningDetail = response.data.data
+      })
+    }
   },
   computed: {
     // revenueReports: function () {
