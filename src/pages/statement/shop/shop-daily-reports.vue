@@ -89,7 +89,14 @@
           </van-grid-item>
         </van-grid>
       </van-collapse-item>-->
-      <van-collapse-item title="售前情况" name="4" icon="shop-o">
+      <van-collapse-item title="客资来源分析" name="4" icon="shop-o">
+        <van-grid :border="false" style="text-align: center" :column-num="4">
+          <van-grid-item v-for="value in cusSource" :key="value.sourceName">
+            {{value.sourceName}}<br>{{value.sourceCount}}
+          </van-grid-item>
+        </van-grid>
+      </van-collapse-item>
+      <van-collapse-item title="售前情况" name="5" icon="shop-o">
         <van-grid :border="false" style="text-align: center" :column-num="3">
           <van-grid-item @click="showAppointSaleDetails('售前接待')">售前接待数<br>{{saleReception}}</van-grid-item>
           <van-grid-item @click="showOrderDetails('一次订单')">一次订单数<br>{{onceTheOrder}}</van-grid-item>
@@ -99,19 +106,12 @@
           <van-grid-item>综合转换率<br>{{comprehensiveProportion}}</van-grid-item>
         </van-grid>
       </van-collapse-item>
-      <van-collapse-item title="售后情况" name="5" icon="shop-o">
+      <van-collapse-item title="售后情况" name="6" icon="shop-o">
         <van-grid :border="false" style="text-align: center" :column-num="3">
           <van-grid-item @click="showAppointSaleDetails('售后接待')">售后接待数<br>{{afterSaleReception}}</van-grid-item>
           <van-grid-item @click="showAppointSaleDetails('售后升级接待')">售后升级接待数<br>{{afterSaleUpGradeReception}}</van-grid-item>
           <van-grid-item @click="showOrderDetails('售后订单')">售后订单数<br>{{afterSaleOrderNum}}</van-grid-item>
           <van-grid-item>售后转换率<br>{{afterSaleProportion}}</van-grid-item>
-        </van-grid>
-      </van-collapse-item>
-      <van-collapse-item title="客资来源分析" name="6" icon="shop-o">
-        <van-grid :border="false" style="text-align: center" :column-num="4">
-          <van-grid-item v-for="value in cusSource" :key="value.sourceName">
-            {{value.sourceName}}<br>{{value.sourceCount}}
-          </van-grid-item>
         </van-grid>
       </van-collapse-item>
     </van-collapse>
