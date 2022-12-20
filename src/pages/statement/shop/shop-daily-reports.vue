@@ -75,6 +75,13 @@
           </van-grid-item>
         </van-grid>
       </van-collapse-item>
+      <van-collapse-item title="营收来源分析" name="3" icon="shop-o">
+        <van-grid :border="false" style="text-align: center" :column-num="4">
+          <van-grid-item v-for="item in earningSource" :key="item.sourceName">
+            {{item.sourceName}}<br>{{item.sourceCount}}
+          </van-grid-item>
+        </van-grid>
+      </van-collapse-item>
 <!--      <van-collapse-item title="押金报告" name="3" icon="shop-o">
         <van-grid :border="false" style="text-align: center" :column-num="4">
           <van-grid-item v-for="value in depositReports" :key="value.projectName" v-if="value.sumMoney!= 0" @click="showProjectsDetails(value.projectName)">
@@ -391,6 +398,7 @@ export default {
     this.queryShop();
     this.queryDress();
     this.queryShopEarningReports();
+    this.queryEarningSource();
   },
   data() {
     return {
@@ -399,7 +407,7 @@ export default {
       showAppointSaleDetailsPopup: false,
       showDetail: false,
       showOrderDetail: false,
-      titleText: "店铺每日业绩",
+      titleText: "每日业绩分析",
       loadingList: true,
       tenantCrop: localStorage.getItem("tenantCrop"),
       // 起始日期(默认昨天)
@@ -503,6 +511,8 @@ export default {
       activeTotalEarningDetail: [],
       // 营收详情
       totalEarningDetail: [],
+      // 营收来源分析
+      earningSource: [],
     }
   },
   methods: {
@@ -571,6 +581,7 @@ export default {
       this.endDate = this.formatDate(end);
       this.date = this.startDate + ' - ' + this.endDate;
       this.queryShopEarningReports();
+      this.queryEarningSource();
     },
     dressOnConfirm(dress) {
       this.loadingList = false;
@@ -578,6 +589,7 @@ export default {
       this.dressId = dress.id;
       this.showDress = false;
       this.queryShopEarningReports();
+      this.queryEarningSource();
     },
     shopOnConfirm(shop) {
       this.loadingList = false;
@@ -585,6 +597,7 @@ export default {
       this.shopId = shop.id;
       this.showShop = false;
       this.queryShopEarningReports();
+      this.queryEarningSource();
     },
     queryShop: function () {
       this.$selectUtils.queryShopIds(this.$selectUtils.Picker).then(response => {
@@ -733,6 +746,22 @@ export default {
       }).then(response => {
         this.totalEarningDetail = response.data.data
       })
+    },
+    queryEarningSource() {
+      this.$axios({
+        method: 'GET',
+        url: '/shopReports/queryEarningSource',
+        params: {
+          startDate: this.startDate,
+          endDate: this.endDate,
+          tenantCrop: this.tenantCrop,
+          shopId: this.shopId,
+          dressId: this.dressId
+        }
+      }).then(response => {
+        console.log(response.data.data)
+        this.earningSource = response.data.data
+      })
     }
   },
   computed: {
@@ -746,8 +775,7 @@ export default {
     //     return item.projectName === '押金'
     //   })
     // }
-  }
-
+  },
 }
 </script>
 
