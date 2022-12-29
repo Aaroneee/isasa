@@ -19,7 +19,7 @@
       <van-row><p class="cardTitle">款式信息</p></van-row>
       <van-row>
         <van-col :span="12">
-          <p>款式类型 : {{ style.libTypeName }}</p>
+          <p>款式类型 : {{ style.storeTypeName }}</p>
         </van-col>
         <van-col :span="12">
           <p>款式售价 : {{ style.salePrice }}元</p>
@@ -27,10 +27,10 @@
       </van-row>
       <van-row>
         <van-col :span="12">
-          <p>系列名称 : {{ style.libSeriesName }}</p>
+          <p>系列名称 : {{ style.storeSeriesName }}</p>
         </van-col>
         <van-col :span="12">
-          <p>系列编号 : {{ style.libSeriesNumberName }}</p>
+          <p>系列编号 : {{ style.storeSeriesNumberName }}</p>
         </van-col>
       </van-row>
     </div>
@@ -87,8 +87,9 @@ export default {
   },
   created() {
     this.style = this.$route.query
+    console.log(this.style)
     this.queryStyleDetails()
-    this.queryLibStyleImage()
+    this.queryStoreStyleImage()
     this.queryShoppingCart()
   },
   data() {
@@ -113,26 +114,27 @@ export default {
     queryStyleDetails(){
       this.$axios({
         method: "GET",
-        url: "/libraryStyle/queryById",
+        url: "/storeStyle/queryById",
         params: {
           id: this.style.id,
         }
       }).then(response => {
+        console.log(response)
         this.style=response.data.data
       })
     },
-    queryLibStyleImage() {
+    queryStoreStyleImage() {
       this.$axios({
         method: "GET",
-        url: "/libraryStyleImage/queryByLibStyleId",
+        url: "/storeStyleImage/queryByStoreStyleId",
         params: {
-          libStyleId: this.style.id,
+          storeStyleId: this.style.id,
         }
       }).then(response => {
+        console.log(response.data.data)
         const data = response.data.data;
-        console.log(data)
         for (let index in data) {
-          data[index] = "https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/" + data[index].libStyleImage
+          data[index] = "https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/" + data[index].styleImage
         }
         this.images = data
       })
@@ -148,7 +150,7 @@ export default {
     clickShopCartButton:function (){
       this.$axios({
         method: "PUT",
-        url: "/libraryStyle/addShoppingCart",
+        url: "/storeStyle/addShoppingCart",
         data: {
           id: this.style.id,
           tenantCrop: this.tenantCrop,
@@ -167,7 +169,7 @@ export default {
     queryShoppingCart(){
       this.$axios({
         method: "GET",
-        url: "/libraryStyle/queryShoppingCart",
+        url: "/storeStyle/queryShoppingCart",
         params: {
           tenantCrop: this.tenantCrop,
         }

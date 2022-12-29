@@ -7,19 +7,24 @@
             <p>订单编号: {{item.orderNo}}</p>
             <p>下单日期: {{item.createDate}}</p>
             <p>订单总价: {{item.totalAmount}}</p>
-            <div class="card" v-for="(childItem,childIndex) in item.libraryOrderStyleVOS" :key="childIndex">
+            <div class="card" v-for="(childItem,childIndex) in item.storeOrderStyleVOS" :key="childIndex">
               <van-row>
                 <van-col :span="10">
                   <div>
-                    <img :src="`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${childItem.mainImage}?imageMogr2/rquality/60`" style="height: 160px;border-radius: 10px"
-                         @click="clickImageItem(childItem.mainImage)" alt="图片已损坏"/>
+                    <van-image class="style-img" radius="7"
+                               @click="clickImageItem(childItem.mainImage)"
+                               fit="contain"
+                               :src="item.styleImage===''?'null'
+                               :'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+childItem.mainImage+'?imageMogr2/rquality/60'">
+                      <template v-slot:error>加载失败,请更换主图</template>
+                    </van-image>
                   </div>
                 </van-col>
-                <van-col :span="14" @click="toStyleDetails({id:childItem.libStyleId})">
-                  <van-row><p>品牌 : {{childItem.libBrandName}}</p></van-row>
-                  <van-row><p>类型 : {{childItem.libTypeName}}</p></van-row>
-                  <van-row><p>系列 : {{childItem.libSeriesName}}</p></van-row>
-                  <van-row><p>系列编号 : {{childItem.libSeriesNumberName}}</p></van-row>
+                <van-col :span="14" @click="toStyleDetails({id:childItem.storeStyleId})">
+                  <van-row><p>品牌 : {{childItem.storeBrandName}}</p></van-row>
+                  <van-row><p>类型 : {{childItem.storeTypeName}}</p></van-row>
+                  <van-row><p>系列 : {{childItem.storeSeriesName}}</p></van-row>
+                  <van-row><p>系列编号 : {{childItem.storeSeriesNumberName}}</p></van-row>
                   <van-row><p>单价 : {{childItem.unitPrice}}</p></van-row>
                   <van-row><p>数量 : {{childItem.styleNum}}</p></van-row>
                   <van-row><p>总金额 : {{childItem.amount}}</p></van-row>
@@ -71,7 +76,7 @@ export default {
       this.loading = true;
       this.$axios({
         method: "GET",
-        url: "/libOrder/queryList",
+        url: "/storeOrder/queryList",
         params: {
           tenantCrop: this.tenantCrop,
         }
