@@ -70,7 +70,7 @@
       </van-collapse-item>
       <van-collapse-item title="营收报告" name="2" icon="shop-o">
         <van-grid :border="false" style="text-align: center" :column-num="4">
-          <van-grid-item v-for="value in proceedsAnalysis" :key="value.projectName" v-if="value.sumMoney!= 0" @click="showProjectsDetails(value.projectName)">
+          <van-grid-item v-for="value in revenueReports" :key="value.projectName" v-if="value.sumMoney!= 0" @click="showProjectsDetails(value.projectName)">
             {{value.projectName}}<br>{{value.sumMoney}}
           </van-grid-item>
         </van-grid>
@@ -417,8 +417,6 @@ export default {
       date: this.formatDate(new Date(new Date().getTime() - 24 * 60 * 60 * 1000)) + ' - ' + this.formatDate(new Date()),
       // 是否显示日期弹窗
       show: false,
-      // 是否显示日历副标题
-      showSubtitle: true,
       // 可选择的最早日期
       minDate: new Date(2015, 0, 1),
       // 是否显示礼服师下拉列表
@@ -759,17 +757,16 @@ export default {
           dressId: this.dressId
         }
       }).then(response => {
-        console.log(response.data.data)
         this.earningSource = response.data.data
       })
     }
   },
   computed: {
-    // revenueReports: function () {
-    //   return this.proceedsAnalysis.filter((item) => {
-    //     return item.projectName !== '押金'
-    //   })
-    // },
+    revenueReports: function () {
+      return this.proceedsAnalysis.filter((item) => {
+        return item.projectName !== '押金'
+      })
+    },
     // depositReports: function () {
     //   return this.proceedsAnalysis.filter((item) => {
     //     return item.projectName === '押金'
