@@ -11,7 +11,9 @@
     <!-- 显示撞档婚纱 -->
     <van-tabs :active="active" sticky offset-top="94">
       <van-tab title="订单撞档">
-        <van-grid :border="false" :column-num="2" :center="false" style="font-size: 12px">
+        <!-- 搜索提示 -->
+        <van-empty image="search" description="暂无订单撞档" v-if="!scheduleOrderList"/>
+        <van-grid :border="false" :column-num="2" :center="false" style="font-size: 12px" v-else>
           <van-grid-item @click="showPopup(item.clothesId, item.clothesName)" v-for="(item,index) in scheduleOrderList" :key="index">
             <van-image
                 :src="item.styleImage"
@@ -19,12 +21,15 @@
             <b>礼服：{{ item.clothesName }}</b>
             <b>店铺：{{ item.shopName }}</b>
             <b>位置：{{ item.positionName }}</b>
+            <b style="color:red;">婚期：{{ item.weddingDay }}</b>
           </van-grid-item>
         </van-grid>
       </van-tab>
 
       <van-tab title="预约撞档">
-        <van-grid :border="false" :column-num="2" :center="false" style="font-size: 12px">
+        <!-- 搜索提示 -->
+        <van-empty image="search" description="暂无预约撞档" v-if="!scheduleAppList"/>
+        <van-grid :border="false" :column-num="2" :center="false" style="font-size: 12px" v-else>
           <van-grid-item @click="showPopup2(item.clothesId, item.clothesName)" v-for="(item,index) in scheduleAppList" :key="index">
             <van-image
                 :src="item.styleImage"
@@ -134,6 +139,7 @@ export default {
       })
     },
     showPopup(clothesId, clothesName) {
+      console.log(clothesId)
       this.queryClothesOrderConflict(clothesId);
       this.clothesNameForPopup = clothesName;
       this.showSchedule = true;
