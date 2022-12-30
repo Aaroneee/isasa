@@ -4,19 +4,24 @@
       <baseNavBar title="确认订单"/>
     </van-sticky>
     <div class="card" v-for="(item,index) in styleList" :key="index">
-<!--      <van-row class="cardTitle"><span>{{item.libTypeName+'-'+item.libSeriesNumberName}}</span></van-row>-->
+<!--      <van-row class="cardTitle"><span>{{item.storeTypeName+'-'+item.storeSeriesNumberName}}</span></van-row>-->
       <van-row>
         <van-col :span="10">
           <div>
-            <img :src="`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${item.mainImage}?imageMogr2/rquality/60`" style="height: 150px;border-radius: 10px"
-                 @click="clickImageItem(item.mainImage)" alt="图片已损坏"/>
+            <van-image class="style-img" radius="7"
+                       @click="clickImageItem(item.mainImage)"
+                       fit="contain"
+                       :src="item.styleImage===''?'null'
+                               :'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.mainImage+'?imageMogr2/rquality/60'">
+              <template v-slot:error>加载失败,请更换主图</template>
+            </van-image>
           </div>
         </van-col>
         <van-col :span="14">
-          <van-row><p>品牌 : {{item.libBrandName}}</p></van-row>
-          <van-row><p>类型 : {{item.libTypeName}}</p></van-row>
-          <van-row><p>系列 : {{item.libSeriesName}}</p></van-row>
-          <van-row><p>系列编号 : {{item.libSeriesNumberName}}</p></van-row>
+          <van-row><p>品牌 : {{item.storeBrandName}}</p></van-row>
+          <van-row><p>类型 : {{item.storeTypeName}}</p></van-row>
+          <van-row><p>系列 : {{item.storeSeriesName}}</p></van-row>
+          <van-row><p>系列编号 : {{item.storeSeriesNumberName}}</p></van-row>
           <van-row><p>价格 : {{item.salePrice}}</p></van-row>
           <van-row>
             <van-col v-for="(childItem,index) in getLabel(item.labelNames)" :key="index" style="margin: 1% 1%">
@@ -34,7 +39,7 @@
       <br>
       <van-row v-for="(item,index) in styleList" :key="index" style="margin-bottom: 10px">
         <van-col :span="12">
-          <span style="font-size: 15px;font-weight: bold">{{item.libTypeName+'-'+item.libSeriesNumberName}} </span>
+          <span style="font-size: 15px;font-weight: bold">{{item.storeTypeName+'-'+item.storeSeriesNumberName}} </span>
           <span style="font-size: 15px;">  共<span style="font-weight: bold">{{item.styleNumber}}</span>件</span>
         </van-col>
         <van-col :span="12">
@@ -79,12 +84,13 @@ export default {
     addOrder(){
       this.$axios({
         method: "PUT",
-        url: "/libOrder/addLibOrder",
+        url: "/storeOrder/addStoreOrder",
         data: this.structureData()
       }).then(response => {
 
         //如果提交订单成功 则调用支付宝 并清空购物车
         if (response.data.code===200) {
+          console.log(response)
           this.delAllShoppingCart();
           if(/Linux/i.test(navigator.platform)){
             androidMethod.getAliPayInfo(response.data.data.id);
@@ -126,7 +132,7 @@ export default {
     delAllShoppingCart(){
       this.$axios({
         method: "POST",
-        url: "/libraryStyle/delAllShoppingCart",
+        url: "/storeStyle/delAllShoppingCart",
         data: {
           tenantCrop: this.tenantCrop,
         }
@@ -136,10 +142,10 @@ export default {
     },
     //构建提交参数
     structureData(){
-      let libraryOrderStyleS=[];
+      let storeOrderStyleS=[];
       this.styleList.forEach(k=>{
-        libraryOrderStyleS.push({
-          libStyleId:k.id,
+        storeOrderStyleS.push({
+          storeStyleId:k.id,
           styleNum:k.styleNumber,
           unitPrice:k.salePrice,
           amount:this.getSingleCountPrice(k.styleNumber,k.salePrice),
@@ -151,7 +157,7 @@ export default {
         totalAmount:this.priceCount,
         payState:0,
         tenantCrop:this.tenantCrop,
-        libraryOrderStyleS:libraryOrderStyleS,
+        storeOrderStyleS:storeOrderStyleS,
       }
     }
   },

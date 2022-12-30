@@ -342,5 +342,68 @@ export default {
             }
         })
     },
+    //查询商城款式类型
+    queryStoreStyleTypeIds: function (type) {
+        return self.$axios({
+            method: "GET",
+            url: "/select/storeStyleTypeIds",
+            params:{
+                type:type
+            }
+        })
+    },
+    //查询商城款式品牌
+    queryStoreBrandIds: function (type) {
+        return self.$axios({
+            method: "GET",
+            url: "/select/storeBrandIds",
+            params:{
+                type:type
+            }
+        })
+    },
+    //查询商城款式系列
+    queryStoreSeriesIds: function (type,storeBrandId) {
+        return self.$axios({
+            method: "GET",
+            url: "/select/storeSeriesIds",
+            params:{
+                type:type,
+                storeBrandId:storeBrandId
+            }
+        })
+    },
+    //查询款式系列编号库
+    queryStoreSeriesNumIds: function (type,storeBrandId,storeSeriesId) {
+        return self.$axios({
+            method: "GET",
+            url: "/select/storeSeriesNumIds",
+            params:{
+                type:type,
+                storeBrandId:storeBrandId,
+                storeSeriesId:storeSeriesId
+            }
+        })
+    },
+    //查询商城款式标签
+    queryStoreLabelIds: function (type) {
+        return self.$axios({
+            method: "GET",
+            url: "/select/storeLabelIds",
+            params:{
+                type:type
+            }
+        })
+    },
+    //查询商城款式图片类型
+    queryStoreStyleImageTypeIds: function (type) {
+        return self.$axios({
+            method: "GET",
+            url: "/select/storeStyleImageTypeIds",
+            params:{
+                type:type
+            }
+        })
+    },
 
 }

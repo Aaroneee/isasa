@@ -39,7 +39,7 @@
             <van-col span="12"  v-for="item in styleList" :key="item.id" style="text-align: center">
               <div class="card"  @click="toStyleDetails(item)">
                 <div class="imgFont">
-                  <van-badge :content="item.libBrandName===''?'':item.libBrandName" color="#7ab4ee">
+                  <van-badge :content="item.storeBrandName===''?'':item.storeBrandName" color="#7ab4ee">
                     <van-image class="style-img" radius="7"
                                fit="contain"
                                :src="item.styleImage===''?'null'
@@ -50,7 +50,7 @@
                   <div class="styleInfo">
                     <van-row>
                       <van-col span="12">
-                        <p class="pFont" style="text-align: left">{{ item.libTypeName }}</p>
+                        <p class="pFont" style="text-align: left">{{ item.storeTypeName }}</p>
                       </van-col>
                       <van-col span="12">
                         <p class="pFont" style="text-align: right">￥{{ item.salePrice===''?0:item.salePrice }}</p>
@@ -58,10 +58,10 @@
                     </van-row>
                     <van-row>
                       <van-col span="12">
-                        <p class="pFont" style="text-align: left">{{ item.libSeriesName===''?'无系列':item.libSeriesName }}</p>
+                        <p class="pFont" style="text-align: left">{{ item.storeSeriesName===''?'无系列':item.storeSeriesName }}</p>
                       </van-col>
                       <van-col span="12">
-                        <p class="pFont" style="text-align: right">{{ item.libSeriesNumberName===''?"无系列编号":item.libSeriesNumberName }}</p>
+                        <p class="pFont" style="text-align: right">{{ item.storeSeriesNumberName===''?"无系列编号":item.storeSeriesNumberName }}</p>
                       </van-col>
                     </van-row>
                   </div>
@@ -103,34 +103,30 @@ export default {
   },
   created() {
     this.queryStyleList()
-    this.queryLibLabelIds();
+    this.queryStoreLabelIds();
     this.queryStyleType()
-    this.queryLibBrand()
+    this.queryStoreBrand()
   },
   components: {
     baseNavBar
   },
   methods: {
     queryStyleList: function () {
-      console.log(this.styleType)
-
-      console.log(this.styleLabels)
-      console.log(this.brand)
       this.loading = true
       this.$axios({
         method:"GET",
-        url:"/libraryStyle/libStyleList",
+        url:"/storeStyle/queryList",
         params:{
           searchValue:this.searchValue,
-          libTypeId:this.styleType,
-          libBrandId:this.brand,
-          libLabelIds: this.styleLabels.toString(),
+          storeTypeId:this.styleType,
+          storeBrandId:this.brand,
+          storeLabelIds: this.styleLabels,
           page:this.page,
           limit:30,
           publishStatus:1,
         }
       }).then(response=>{
-        console.log(response)
+        console.log(this.styleList)
         if (response.data.code === 200) {
           if (response.data.data.nextPage === 0) {
             this.finished = true
@@ -146,8 +142,8 @@ export default {
       })
     },
     //查询品牌库
-    queryLibBrand: function () {
-      this.$selectUtils.queryLibBrandIds(this.$selectUtils.DropDownMenu).then((response) => {
+    queryStoreBrand: function () {
+      this.$selectUtils.queryStoreBrandIds(this.$selectUtils.DropDownMenu).then((response) => {
         this.styleBrandArray.push(...JSON.parse(response.data.data))
       })
     },
@@ -158,7 +154,7 @@ export default {
     },
     //查询款式类型
     queryStyleType: function () {
-      this.$selectUtils.queryLibStyleTypeIds(this.$selectUtils.DropDownMenu).then((response) => {
+      this.$selectUtils.queryStoreStyleTypeIds(this.$selectUtils.DropDownMenu).then((response) => {
         this.styleTypeArray.push(...JSON.parse(response.data.data));
       })
     },
@@ -169,14 +165,13 @@ export default {
       this.queryStyleList();
     },
     //查询标签库列表
-    queryLibLabelIds:function (){
-      this.$selectUtils.queryLibLabelIds().then(response=>{
+    queryStoreLabelIds:function (){
+      this.$selectUtils.queryStoreLabelIds().then(response=>{
         this.styleLabelList=JSON.parse(response.data.data)
       })
     },
     //标签确认
     styleLabelConfirm: function () {
-      console.log(this.styleLabels)
 
       this.$refs.labelRef.toggle()
       this.dataClear()

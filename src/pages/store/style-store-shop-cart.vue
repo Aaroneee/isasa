@@ -6,15 +6,19 @@
         <van-row>
           <van-col :span="10">
             <div>
-              <img :src="`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${item.mainImage}?imageMogr2/rquality/60`" style="height: 150px;border-radius: 10px"
-                   @click="clickImageItem(item.mainImage)" alt="图片已损坏"/>
+              <van-image class="style-img" radius="7"
+                         fit="contain"
+                         :src="item.styleImage===''?'null'
+                               :'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.mainImage+'?imageMogr2/rquality/60'">
+                <template v-slot:error>加载失败,请更换主图</template>
+              </van-image>
             </div>
           </van-col>
           <van-col :span="14" @click="toStyleDetails(item)">
-            <van-row><p>品牌 : {{item.libBrandName}}</p></van-row>
-            <van-row><p>类型 : {{item.libTypeName}}</p></van-row>
-            <van-row><p>系列 : {{item.libSeriesName}}</p></van-row>
-            <van-row><p>系列编号 : {{item.libSeriesNumberName}}</p></van-row>
+            <van-row><p>品牌 : {{item.storeBrandName}}</p></van-row>
+            <van-row><p>类型 : {{item.storeTypeName}}</p></van-row>
+            <van-row><p>系列 : {{item.storeSeriesName}}</p></van-row>
+            <van-row><p>系列编号 : {{item.storeSeriesNumberName}}</p></van-row>
             <van-row><p>价格 : {{item.salePrice}}</p></van-row>
             <van-row>
               <van-col v-for="(childItem,index) in getLabel(item.labelNames)" :key="index" style="margin: 1% 1%">
@@ -63,7 +67,7 @@ export default {
       this.loading = true;
       this.$axios({
         method: "GET",
-        url: "/libraryStyle/queryShoppingCart",
+        url: "/storeStyle/queryShoppingCart",
         params: {
           tenantCrop: this.tenantCrop,
         }
@@ -81,7 +85,7 @@ export default {
     delShoppingCart(id){
       this.$axios({
         method: "POST",
-        url: "/libraryStyle/delShoppingCart",
+        url: "/storeStyle/delShoppingCart",
         data: {
           id: id,
           tenantCrop: this.tenantCrop,
