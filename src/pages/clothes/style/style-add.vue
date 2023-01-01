@@ -42,6 +42,23 @@
         placeholder="款式名称"
         v-model="styleAlias"
       />
+      <van-field
+          readonly
+          label="款式品牌"
+          placeholder="点击选择品牌"
+          clickable
+          name="brand"
+          :value="brand"
+          @click="brandShowPicker = true"
+      />
+      <van-popup v-model="brandShowPicker" round position="bottom">
+        <van-picker
+            show-toolbar
+            :columns="brandArray"
+            @cancel="brandShowPicker = false"
+            @confirm="brandConfirm"
+        />
+      </van-popup>
 <!--      <van-field-->
 <!--          name="factoryNumber"-->
 <!--          v-model="factoryNumber"-->
@@ -143,23 +160,6 @@
       />
       <van-calendar v-model="createDateShowPicker" :min-date="minDate" :max-date="maxDate"
                     @confirm="createDateOnConfirm" :default-date="new Date()"/>
-      <van-field
-          readonly
-          label="款式品牌"
-          placeholder="点击选择品牌"
-          clickable
-          name="brand"
-          :value="brand"
-          @click="brandShowPicker = true"
-      />
-      <van-popup v-model="brandShowPicker" round position="bottom">
-        <van-picker
-            show-toolbar
-            :columns="brandArray"
-            @cancel="brandShowPicker = false"
-            @confirm="brandConfirm"
-        />
-      </van-popup>
       <van-field
           readonly
           clickable
