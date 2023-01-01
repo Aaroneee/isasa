@@ -42,24 +42,24 @@
         placeholder="款式名称"
         v-model="styleAlias"
       />
-      <van-field
-          name="factoryNumber"
-          v-model="factoryNumber"
-          rows="1"
-          label="品牌款式编号"
-          placeholder="品牌款式编号"
-          right-icon="question-o"
-          @click-right-icon="$toast('品牌官方款式编号')"
-      />
-      <van-field
-          name="factoryName"
-          v-model="factoryName"
-          rows="1"
-          label="品牌款式名称"
-          placeholder="品牌款式名称"
-          right-icon="question-o"
-          @click-right-icon="$toast('品牌官方款式名称')"
-      />
+<!--      <van-field-->
+<!--          name="factoryNumber"-->
+<!--          v-model="factoryNumber"-->
+<!--          rows="1"-->
+<!--          label="品牌款式编号"-->
+<!--          placeholder="品牌款式编号"-->
+<!--          right-icon="question-o"-->
+<!--          @click-right-icon="$toast('品牌官方款式编号')"-->
+<!--      />-->
+<!--      <van-field-->
+<!--          name="factoryName"-->
+<!--          v-model="factoryName"-->
+<!--          rows="1"-->
+<!--          label="品牌款式名称"-->
+<!--          placeholder="品牌款式名称"-->
+<!--          right-icon="question-o"-->
+<!--          @click-right-icon="$toast('品牌官方款式名称')"-->
+<!--      />-->
       <van-field label="第一件婚纱">
         <template #input>
           <van-switch v-model="firstSwitch" size="20"/>
