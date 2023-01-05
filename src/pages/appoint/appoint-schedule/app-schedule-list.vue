@@ -107,7 +107,7 @@ export default {
       appointNameArray: [{text: "项目", value: ""}],
       inviterArray: [{text: "预约人", value: ""}],
       appointDressArray: [{text: "礼服师", value: ""}],
-      appointShopArray: [{text: "店铺", value: ""}],
+      appointShopArray: [{text: "全部店铺", value: ""}],
 
       appointDate: this.$dateUtils.vantDateToYMD(new Date()),
       appointName: "",
@@ -127,12 +127,13 @@ export default {
     this.$selectUtils.queryPhoneIsHide(this.mobileViewId).then(response => {
       this.isHide = response.data.data
     })
-    this.queryAppList();
+    this.queryAppointShop();
+    // 先选择第一个店铺，再初始化，所以此处代码注释
+    // this.queryAppList();
     this.queryAppointName();
     this.queryInviter();
     this.queryAppointDress();
-    this.queryAppointShop();
-    this.queryMorePermission()
+    this.queryMorePermission();
   },
   methods: {
     // 查询更多里面的权限
@@ -247,6 +248,7 @@ export default {
     queryAppointShop: function () {
       this.$selectUtils.queryShopIds(this.$selectUtils.DropDownMenu).then(response => {
         this.appointShopArray.push(...JSON.parse(response.data.data));
+        this.appointShopChange(this.appointShopArray[1].value)
       })
     },
     arrival(val) {
