@@ -43,23 +43,40 @@
         v-model="styleAlias"
       />
       <van-field
-          name="factoryNumber"
-          v-model="factoryNumber"
-          rows="1"
-          label="品牌款式编号"
-          placeholder="品牌款式编号"
-          right-icon="question-o"
-          @click-right-icon="$toast('品牌官方款式编号')"
+          readonly
+          label="款式品牌"
+          placeholder="点击选择品牌"
+          clickable
+          name="brand"
+          :value="brand"
+          @click="brandShowPicker = true"
       />
-      <van-field
-          name="factoryName"
-          v-model="factoryName"
-          rows="1"
-          label="品牌款式名称"
-          placeholder="品牌款式名称"
-          right-icon="question-o"
-          @click-right-icon="$toast('品牌官方款式名称')"
-      />
+      <van-popup v-model="brandShowPicker" round position="bottom">
+        <van-picker
+            show-toolbar
+            :columns="brandArray"
+            @cancel="brandShowPicker = false"
+            @confirm="brandConfirm"
+        />
+      </van-popup>
+<!--      <van-field-->
+<!--          name="factoryNumber"-->
+<!--          v-model="factoryNumber"-->
+<!--          rows="1"-->
+<!--          label="品牌款式编号"-->
+<!--          placeholder="品牌款式编号"-->
+<!--          right-icon="question-o"-->
+<!--          @click-right-icon="$toast('品牌官方款式编号')"-->
+<!--      />-->
+<!--      <van-field-->
+<!--          name="factoryName"-->
+<!--          v-model="factoryName"-->
+<!--          rows="1"-->
+<!--          label="品牌款式名称"-->
+<!--          placeholder="品牌款式名称"-->
+<!--          right-icon="question-o"-->
+<!--          @click-right-icon="$toast('品牌官方款式名称')"-->
+<!--      />-->
       <van-field label="第一件婚纱">
         <template #input>
           <van-switch v-model="firstSwitch" size="20"/>
@@ -143,23 +160,6 @@
       />
       <van-calendar v-model="createDateShowPicker" :min-date="minDate" :max-date="maxDate"
                     @confirm="createDateOnConfirm" :default-date="new Date()"/>
-      <van-field
-          readonly
-          label="款式品牌"
-          placeholder="点击选择品牌"
-          clickable
-          name="brand"
-          :value="brand"
-          @click="brandShowPicker = true"
-      />
-      <van-popup v-model="brandShowPicker" round position="bottom">
-        <van-picker
-            show-toolbar
-            :columns="brandArray"
-            @cancel="brandShowPicker = false"
-            @confirm="brandConfirm"
-        />
-      </van-popup>
       <van-field
           readonly
           clickable
