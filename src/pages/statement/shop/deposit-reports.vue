@@ -45,31 +45,134 @@
       <van-collapse-item title="已收押金" name="1" icon="shop-o">
         <van-grid :border="false" style="text-align: center" :column-num="3">
           <van-grid-item>押金数<br/>{{ depositCount }}</van-grid-item>
-          <van-grid-item>押金总金额<br/>{{ depositAmount }}</van-grid-item>
-          <van-grid-item v-for="item in depositReceived" :key="item.depositItemName">
+          <van-grid-item
+              @click="showDepositDetails('已收押金')">押金总金额<br/>{{ depositAmount }}</van-grid-item>
+          <van-grid-item
+              v-for="item in depositReceived"
+              :key="item.depositItemName"
+              @click="showDepositDetails('已收押金', item.paymentId)">
             {{item.depositItemName}}<br>{{item.depositItemAmount}}
           </van-grid-item>
         </van-grid>
       </van-collapse-item>
+
       <van-collapse-item title="已退押金" name="2" icon="shop-o">
         <van-grid :border="false" style="text-align: center" :column-num="3">
           <van-grid-item>押金数<br/>{{ depositCountBack }}</van-grid-item>
-          <van-grid-item>押金总金额<br/>{{ depositAmountBack }}</van-grid-item>
-          <van-grid-item v-for="item in depositBack" :key="item.depositItemName">
+          <van-grid-item @click="showDepositDetails('已退押金')">押金总金额<br/>{{ depositAmountBack }}</van-grid-item>
+          <van-grid-item
+              v-for="item in depositBack"
+              :key="item.depositItemName"
+              @click="showDepositDetails('已退押金', item.paymentId)">
             {{item.depositItemName}}<br>{{item.depositItemAmount}}
           </van-grid-item>
         </van-grid>
       </van-collapse-item>
+
       <van-collapse-item title="未退押金" name="3" icon="shop-o">
         <van-grid :border="false" style="text-align: center" :column-num="3">
           <van-grid-item>押金数<br/>{{ depositCountNoBack }}</van-grid-item>
-          <van-grid-item>押金总金额<br/>{{ depositAmountNoBack }}</van-grid-item>
-          <van-grid-item v-for="item in depositNoBack" :key="item.depositItemName">
+          <van-grid-item @click="showDepositDetails('未退押金')">押金总金额<br/>{{ depositAmountNoBack }}</van-grid-item>
+          <van-grid-item
+              v-for="item in depositNoBack"
+              :key="item.depositItemName"
+              @click="showDepositDetails('未退押金', item.paymentId)">
             {{item.depositItemName}}<br>{{item.depositItemAmount}}
           </van-grid-item>
         </van-grid>
       </van-collapse-item>
     </van-collapse>
+
+    <!-- 已收、未退押金详情 -->
+    <van-popup
+        v-model="showDepositDetail"
+        closeable
+        position="bottom"
+        close-icon-position="top-right"
+        style="height: 60%; background-color: rgba(255,255,255,0.9) "
+        round>
+      <van-row type="flex" justify="space-around" align="center" style="background-color: rgb(255,255,255); height: 12%">
+        {{ depositDetailName }}详情
+      </van-row>
+      <br>
+      <van-row type="flex" justify="center">
+        <van-collapse v-model="activeDepositDetail" :border="false" style="width: 90%">
+          <van-collapse-item v-for="(item,index) in depositDetails" :name="index" :key="index">
+            <template #title>
+              <van-grid :border="false" style="text-align: left; font-size: 12px" :column-num="2" :center="false">
+                <van-grid-item>
+                  收款方式：{{ item.paymentName }}<br>
+                  客户名：{{ item.customerName }}
+                </van-grid-item>
+                <van-grid-item>
+                  收款人：{{ item.payeeName }}<br>
+                  <b>押金数：{{ item.depositAmount }}</b>
+                </van-grid-item>
+              </van-grid>
+            </template>
+            <van-grid :border="false" style="text-align: left; font-size: 12px" :column-num="2" :center="false">
+              <van-grid-item>
+                收款方式：{{ item.paymentName }}<br>
+                客户名：{{ item.customerName }}<br>
+                订单编号：{{ item.orderNo }}
+              </van-grid-item>
+              <van-grid-item>
+                收款人：{{ item.payeeName }}<br>
+                押金数：{{ item.depositAmount }}<br>
+                日期：{{ item.createDate }}
+              </van-grid-item>
+            </van-grid>
+          </van-collapse-item>
+        </van-collapse>
+      </van-row>
+    </van-popup>
+
+    <!-- 已退押金详情 -->
+    <van-popup
+        v-model="showDepositBackDetail"
+        closeable
+        position="bottom"
+        close-icon-position="top-right"
+        style="height: 60%; background-color: rgba(255,255,255,0.9) "
+        round>
+      <van-row type="flex" justify="space-around" align="center" style="background-color: rgb(255,255,255); height: 12%">
+        {{ depositDetailName }}详情
+      </van-row>
+      <br>
+      <van-row type="flex" justify="center">
+        <van-collapse v-model="activeDepositDetail" :border="false" style="width: 90%">
+          <van-collapse-item v-for="(item,index) in depositDetails" :name="index" :key="index">
+            <template #title>
+              <van-grid :border="false" style="text-align: left; font-size: 12px" :column-num="2" :center="false">
+                <van-grid-item>
+                  退款方式：{{ item.refundPayment }}<br>
+                  客户名：{{ item.customerName }}
+                </van-grid-item>
+                <van-grid-item>
+                  退款人：{{ item.payeeName }}<br>
+                  <b>退款金额：{{ item.refundAmount }}</b>
+                </van-grid-item>
+              </van-grid>
+            </template>
+            <van-grid :border="false" style="text-align: left; font-size: 12px" :column-num="2" :center="false">
+              <van-grid-item>
+                客户名：{{ item.customerName }}<br>
+                订单编号：{{ item.orderNo }}<br>
+                押金数：{{ item.depositAmount }}<br>
+                退款方式：{{ item.refundPayment }}<br>
+                退款目标账户：{{ item.targetAccount }}
+              </van-grid-item>
+              <van-grid-item>
+                退款人：{{ item.payeeName }}<br>
+                退款金额：{{ item.refundAmount }}<br>
+                退款目标：{{ item.refundTarget }}<br>
+                退款日期：{{ item.createDate }}
+              </van-grid-item>
+            </van-grid>
+          </van-collapse-item>
+        </van-collapse>
+      </van-row>
+    </van-popup>
   </div>
 </template>
 
@@ -125,6 +228,16 @@ export default {
       depositAmountNoBack: '',
       // 未退各渠道押金金额
       depositNoBack: [],
+      // 是否显示已收押金
+      showDepositDetail: false,
+      // 押金名称
+      depositDetailName: '',
+      // 是否展开单个押金详情
+      activeDepositDetail: [],
+      // 已收和未退押金详情
+      depositDetails: [],
+      // 是否显示已退押金详情
+      showDepositBackDetail: false,
 
     }
   },
@@ -206,6 +319,65 @@ export default {
       this.queryDepositBack();
       this.queryDepositNoBack();
       this.loadingList = true;
+    },
+    queryDepositReceivedDetail(paymentId) {
+      this.$axios({
+        method: "GET",
+        url: "/shopReports/queryDepositDetails",
+        params: {
+          startDate: this.startDate,
+          endDate: this.endDate,
+          tenantCrop: this.tenantCrop,
+          shopId: this.shopId,
+          paymentId: paymentId
+        }
+      }).then(response => {
+        this.depositDetails = response.data.data;
+      })
+    },
+    queryDepositNoBackDetail(paymentId) {
+      this.$axios({
+        method: "GET",
+        url: "/shopReports/queryDepositNoBackDetails",
+        params: {
+          tenantCrop: this.tenantCrop,
+          shopId: this.shopId,
+          paymentId: paymentId
+        }
+      }).then(response => {
+        this.depositDetails = response.data.data;
+      })
+    },
+    showDepositDetails(depositName ,paymentId) {
+      this.activeDepositDetail = [];
+      if (depositName === '已收押金') {
+        this.depositDetailName = depositName;
+        this.queryDepositReceivedDetail(paymentId);
+        this.showDepositDetail = true;
+      } else if (depositName === '已退押金') {
+        this.depositDetailName = depositName;
+        this.queryDepositBackDetail(paymentId);
+        this.showDepositBackDetail = true;
+      } else if (depositName === '未退押金') {
+        this.depositDetailName = depositName;
+        this.queryDepositNoBackDetail(paymentId);
+        this.showDepositDetail = true;
+      }
+    },
+    queryDepositBackDetail(paymentId) {
+      this.$axios({
+        method: "GET",
+        url: "/shopReports/queryDepositBackDetails",
+        params: {
+          startDate: this.startDate,
+          endDate: this.endDate,
+          tenantCrop: this.tenantCrop,
+          shopId: this.shopId,
+          paymentId: paymentId
+        }
+      }).then(response => {
+        this.depositDetails = response.data.data;
+      })
     }
   }
 }
