@@ -81,6 +81,20 @@
           </van-grid-item>
         </van-grid>
       </van-collapse-item>
+
+      <van-collapse-item title="已申请未退押金" name="4" icon="shop-o">
+        <van-grid :border="false" style="text-align: center" :column-num="3">
+          <van-grid-item>已申请未退数<br/>{{ depositCountApplyNoBack }}</van-grid-item>
+          <van-grid-item @click="showDepositDetails('已申请未退押金')">已申请未退金额<br/>{{ depositAmountApplyNoBack }}</van-grid-item>
+          <van-grid-item
+              v-for="item in depositApplyNoBack"
+              :key="item.depositItemName"
+              @click="showDepositDetails('已申请未退押金', item.depositItemName)">
+            {{item.depositItemName}}<br>{{item.depositItemAmount}}
+          </van-grid-item>
+        </van-grid>
+      </van-collapse-item>
+
     </van-collapse>
 
     <!-- 已收、未退押金详情 -->
@@ -173,6 +187,54 @@
         </van-collapse>
       </van-row>
     </van-popup>
+
+    <!-- 已申请未退押金详情 -->
+    <van-popup
+        v-model="showDepositApplyNoBackDetail"
+        closeable
+        position="bottom"
+        close-icon-position="top-right"
+        style="height: 60%; background-color: rgba(255,255,255,0.9) "
+        round>
+      <van-row type="flex" justify="space-around" align="center" style="background-color: rgb(255,255,255); height: 12%">
+        {{ depositDetailName }}详情
+      </van-row>
+      <br>
+      <van-row type="flex" justify="center">
+        <van-collapse v-model="activeDepositDetail" :border="false" style="width: 90%">
+          <van-collapse-item v-for="(item,index) in depositDetails" :name="index" :key="index">
+            <template #title>
+              <van-grid :border="false" style="text-align: left; font-size: 12px" :column-num="2" :center="false">
+                <van-grid-item>
+                  客户名：{{ item.customerName }}<br>
+                  退款方式：{{ item.refundMethod }}
+                </van-grid-item>
+                <van-grid-item>
+                  申请人：{{ item.petitioner }}<br>
+                  <b>退款金额：{{ item.refundAmount }}</b>
+                </van-grid-item>
+              </van-grid>
+            </template>
+            <van-grid :border="false" style="text-align: left; font-size: 12px" :column-num="2" :center="false">
+              <van-grid-item>
+                客户名：{{ item.customerName }}<br>
+                退款方式：{{ item.refundMethod }}<br>
+                退款目标账户名：{{ item.refundTarget }}<br>
+                退款备注：{{ item.refundInfo === "" ? "无" : item.refundInfo }}<br>
+                退款目标账户：{{ item.targetAccount }}
+              </van-grid-item>
+              <van-grid-item>
+                申请人：{{ item.petitioner }}<br>
+                申请时间：{{ item.createDate }}<br>
+                所属店铺：{{ item.shopName }}<br>
+                退款金额：{{ item.refundAmount }}<br>
+                押金收款人：{{ item.payeeName }}
+              </van-grid-item>
+            </van-grid>
+          </van-collapse-item>
+        </van-collapse>
+      </van-row>
+    </van-popup>
   </div>
 </template>
 
@@ -209,7 +271,7 @@ export default {
       shopLoading: false,
       // 店铺列表
       shopArray: [{text: "全国店铺", id: ""}],
-      activeNames: ['1','2','3'],
+      activeNames: ['1','2','3', '4'],
       // 已收押金数
       depositCount: '',
       // 已收押金总金额
@@ -238,7 +300,14 @@ export default {
       depositDetails: [],
       // 是否显示已退押金详情
       showDepositBackDetail: false,
-
+      // 是否显示已申请未退押金详情
+      showDepositApplyNoBackDetail: false,
+      // 已申请未退款各渠道金额
+      depositApplyNoBack: [],
+      // 已申请未退款数
+      depositCountApplyNoBack: '',
+      // 已申请未退款总金额
+      depositAmountApplyNoBack: '',
     }
   },
   methods: {
@@ -318,6 +387,7 @@ export default {
       this.queryDepositReceived();
       this.queryDepositBack();
       this.queryDepositNoBack();
+      this.queryDepositApplyNoBack();
       this.loadingList = true;
     },
     queryDepositReceivedDetail(paymentId) {
@@ -362,6 +432,10 @@ export default {
         this.depositDetailName = depositName;
         this.queryDepositNoBackDetail(paymentId);
         this.showDepositDetail = true;
+      } else if (depositName === '已申请未退押金') {
+        this.depositDetailName = depositName;
+        this.queryDepositApplyNoBackDetails(paymentId);
+        this.showDepositApplyNoBackDetail = true;
       }
     },
     queryDepositBackDetail(paymentId) {
@@ -374,6 +448,33 @@ export default {
           tenantCrop: this.tenantCrop,
           shopId: this.shopId,
           paymentId: paymentId
+        }
+      }).then(response => {
+        this.depositDetails = response.data.data;
+      })
+    },
+    queryDepositApplyNoBack() {
+      this.$axios({
+        method: "GET",
+        url: "/shopReports/queryDepositApplyNoBack",
+        params: {
+          tenantCrop: this.tenantCrop,
+          shopId: this.shopId
+        }
+      }).then(response => {
+        this.depositCountApplyNoBack = response.data.data.depositCount;
+        this.depositAmountApplyNoBack = response.data.data.depositAmount;
+        this.depositApplyNoBack = response.data.data.depositItem;
+      })
+    },
+    queryDepositApplyNoBackDetails(refundMethod) {
+      this.$axios({
+        method: "GET",
+        url: "/shopReports/queryDepositApplyNoBackDetails",
+        params: {
+          tenantCrop: this.tenantCrop,
+          shopId: this.shopId,
+          refundMethod: refundMethod
         }
       }).then(response => {
         this.depositDetails = response.data.data;
