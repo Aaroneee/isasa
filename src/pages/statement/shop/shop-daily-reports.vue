@@ -60,6 +60,7 @@
       <van-loading color="#1989fa" vertical>加载中...</van-loading>
     </div>
     <van-collapse v-model="activeNames" v-else>
+
       <van-collapse-item title="店铺业绩" name="1" icon="shop-o">
         <van-grid :border="false" style="text-align: center">
             <van-grid-item @click="showSaleDetail('总业绩')">总业绩<br/>{{earning}}</van-grid-item>
@@ -68,6 +69,7 @@
             <van-grid-item @click="showTotalEarningDetail()">总营收<br>{{proceedsSum}}</van-grid-item>
         </van-grid>
       </van-collapse-item>
+
       <van-collapse-item title="营收报告" name="2" icon="shop-o">
         <van-grid :border="false" style="text-align: center" :column-num="4">
           <van-grid-item v-for="value in revenueReports" :key="value.projectName" v-if="value.sumMoney!= 0" @click="showProjectsDetails(value.projectName)">
@@ -75,6 +77,7 @@
           </van-grid-item>
         </van-grid>
       </van-collapse-item>
+
       <van-collapse-item title="营收来源分析" name="3" icon="shop-o">
         <van-grid :border="false" style="text-align: center" :column-num="4">
           <van-grid-item v-for="item in earningSource" :key="item.sourceName">
@@ -82,13 +85,7 @@
           </van-grid-item>
         </van-grid>
       </van-collapse-item>
-<!--      <van-collapse-item title="押金报告" name="3" icon="shop-o">
-        <van-grid :border="false" style="text-align: center" :column-num="4">
-          <van-grid-item v-for="value in depositReports" :key="value.projectName" v-if="value.sumMoney!= 0" @click="showProjectsDetails(value.projectName)">
-            {{value.projectName}}<br>{{value.sumMoney}}
-          </van-grid-item>
-        </van-grid>
-      </van-collapse-item>-->
+
       <van-collapse-item title="客资来源分析" name="4" icon="shop-o">
         <van-grid :border="false" style="text-align: center" :column-num="4">
           <van-grid-item v-for="value in cusSource" :key="value.sourceName">
@@ -96,24 +93,33 @@
           </van-grid-item>
         </van-grid>
       </van-collapse-item>
+
       <van-collapse-item title="售前情况" name="5" icon="shop-o">
         <van-grid :border="false" style="text-align: center" :column-num="3">
           <van-grid-item @click="showAppointSaleDetails('售前接待')">售前接待数<br>{{saleReception}}</van-grid-item>
-          <van-grid-item @click="showOrderDetails('一次订单')">一次订单数<br>{{onceTheOrder}}</van-grid-item>
-          <van-grid-item @click="showOnceNotOrderDetails('一次未订单')">一次未订单数<br>{{onceNotOrder}}</van-grid-item>
-          <van-grid-item @click="showOrderDetails('二次订单')">二次订单数<br>{{twiceTheOrder}}</van-grid-item>
+<!--          <van-grid-item @click="showOrderDetails('一次订单')">一次订单数<br>{{onceTheOrder}}</van-grid-item>-->
+          <van-grid-item>一次订单数<br>{{onceTheOrder}}</van-grid-item>
+<!--          <van-grid-item @click="showOnceNotOrderDetails('一次未订单')">一次未订单数<br>{{onceNotOrder}}</van-grid-item>-->
+          <van-grid-item>一次未订单数<br>{{onceNotOrder}}</van-grid-item>
+<!--          <van-grid-item @click="showOrderDetails('二次订单')">二次订单数<br>{{twiceTheOrder}}</van-grid-item>-->
+          <van-grid-item>二次订单数<br>{{twiceTheOrder}}</van-grid-item>
           <van-grid-item>一次转换率<br>{{onceProportion}}</van-grid-item>
           <van-grid-item>综合转换率<br>{{comprehensiveProportion}}</van-grid-item>
         </van-grid>
       </van-collapse-item>
+
       <van-collapse-item title="售后情况" name="6" icon="shop-o">
         <van-grid :border="false" style="text-align: center" :column-num="3">
-          <van-grid-item @click="showAppointSaleDetails('售后接待')">售后接待数<br>{{afterSaleReception}}</van-grid-item>
-          <van-grid-item @click="showAppointSaleDetails('售后升级接待')">售后升级接待数<br>{{afterSaleUpGradeReception}}</van-grid-item>
-          <van-grid-item @click="showOrderDetails('售后订单')">售后订单数<br>{{afterSaleOrderNum}}</van-grid-item>
+<!--          <van-grid-item @click="showAppointSaleDetails('售后接待')">售后接待数<br>{{afterSaleReception}}</van-grid-item>-->
+          <van-grid-item>售后接待数<br>{{afterSaleReception}}</van-grid-item>
+<!--          <van-grid-item @click="showAppointSaleDetails('售后升级接待')">售后升级接待数<br>{{afterSaleUpGradeReception}}</van-grid-item>-->
+          <van-grid-item>售后升级接待数<br>{{afterSaleUpGradeReception}}</van-grid-item>
+<!--          <van-grid-item @click="showOrderDetails('售后订单')">售后订单数<br>{{afterSaleOrderNum}}</van-grid-item>-->
+          <van-grid-item>售后订单数<br>{{afterSaleOrderNum}}</van-grid-item>
           <van-grid-item>售后转换率<br>{{afterSaleProportion}}</van-grid-item>
         </van-grid>
       </van-collapse-item>
+
     </van-collapse>
 
     <!-- 店铺业绩弹窗 -->
