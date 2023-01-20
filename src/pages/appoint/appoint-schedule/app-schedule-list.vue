@@ -10,6 +10,15 @@
             <van-icon name="arrow" size="20" color="#1989fa" @click="nextDay()"/>
           </div>
         </div>
+        <van-cell-group>
+          <van-cell :value="'早班销售：' + forenoonDress" v-if="forenoonDress !==''" />
+          <van-cell :value="'早班行政：' + forenoonReceptionist" v-if="forenoonReceptionist !==''"/>
+          <van-cell :value="'早班售后：' + saleForenoonDress" v-if="saleForenoonDress !==''"/>
+          <van-cell :value="'午班销售：' + noonDress" v-if="noonDress !==''"/>
+          <van-cell :value="'午班行政：' + noonReceptionist" v-if="noonReceptionist !==''"/>
+          <van-cell :value="'午班售后：' + saleNoonDress" v-if="saleNoonDress !==''"/>
+          <van-cell :value="'摄影师：' + cameraman" v-if="cameraman !==''"/>
+        </van-cell-group>
         <form action="javascript:return true">
           <van-search
               @search="queryAppList"
@@ -118,6 +127,15 @@ export default {
       isHide: "",
       actions: [],
       moreActions: [],
+
+      // 排班
+      forenoonDress: '',
+      forenoonReceptionist: '',
+      saleForenoonDress: '',
+      noonDress: '',
+      noonReceptionist: '',
+      saleNoonDress: '',
+      cameraman: '',
     }
   },
   components: {
@@ -170,6 +188,7 @@ export default {
     appointShopChange: function (value) {
       this.appointShop = value;
       this.queryAppList();
+      this.queryAppWork();
     },
     clickItem: function (val) {
       this.$router.push({name: "appDetails", query: {id: val.id, cusId: val.cusId,pageSource:'appScheduleList',mobileViewId:this.mobileViewId}})
@@ -184,6 +203,7 @@ export default {
       this.appointDate=dateStr;
       this.titleText=dateStr+' '+this.$dateUtils.getweekday(date)
       this.queryAppList();
+      this.queryAppWork();
     },
     //后一天
     nextDay :function (){
@@ -195,6 +215,7 @@ export default {
       this.appointDate=dateStr;
       this.titleText=dateStr+' '+this.$dateUtils.getweekday(date)
       this.queryAppList();
+      this.queryAppWork();
     },
 
 
@@ -248,7 +269,8 @@ export default {
     queryAppointShop: function () {
       this.$selectUtils.queryShopIds(this.$selectUtils.DropDownMenu).then(response => {
         this.appointShopArray.push(...JSON.parse(response.data.data));
-        this.appointShopChange(this.appointShopArray[1].value)
+        this.appointShopChange(this.appointShopArray[1].value);
+        this.queryAppWork();
       })
     },
     arrival(val) {
@@ -343,6 +365,27 @@ export default {
     // 添加报价
     addOffer(val) {
       this.$router.push({name: "addOffer", params: {appId: val.id, cusId: val.cusId, cusName: val.name}})
+    },
+    queryAppWork() {
+      this.$axios({
+        method: "GET",
+        url: "/appoint/queryAppWork",
+        params: {
+          appointDate: this.appointDate,
+          appointShop: this.appointShop,
+          tenantCrop: this.tenantCrop
+        }
+      }).then(response => {
+        var appWork = response.data.data;
+        console.log(appWork)
+        this.forenoonDress = appWork.forenoonDress === undefined ? '' : appWork.forenoonDress;
+        this.forenoonReceptionist = appWork.forenoonReceptionist === undefined ? '' : appWork.forenoonReceptionist;
+        this.saleForenoonDress = appWork.saleForenoonDress === undefined ? '' : appWork.saleForenoonDress;
+        this.noonDress = appWork.noonDress === undefined ? '' : appWork.noonDress;
+        this.noonReceptionist = appWork.noonReceptionist === undefined ? '' : appWork.noonReceptionist;
+        this.saleNoonDress = appWork.saleNoonDress === undefined ? '' : appWork.saleNoonDress;
+        this.cameraman = appWork.cameraman === undefined ? '' : appWork.cameraman;
+      })
     }
   },
   beforeRouteLeave (to, from, next) {
@@ -360,7 +403,7 @@ export default {
       })
     }
     next()
-  }
+  },
 }
 </script>
 
