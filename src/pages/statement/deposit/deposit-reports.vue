@@ -128,7 +128,8 @@
               <van-grid-item>
                 收款方式：{{ item.paymentName }}<br>
                 客户名：{{ item.customerName }}<br>
-                订单编号：{{ item.orderNo }}
+                订单编号：{{ item.orderNo }}<br>
+                <a style="color: deepskyblue" @click="showDepositCollectionPictures(item.proceedsId)">查看收押图片</a>
               </van-grid-item>
               <van-grid-item>
                 收款人：{{ item.payeeName }}<br>
@@ -180,7 +181,9 @@
                 退款人：{{ item.payeeName }}<br>
                 退款金额：{{ item.refundAmount }}<br>
                 退款目标：{{ item.refundTarget }}<br>
-                退款日期：{{ item.createDate }}
+                退款日期：{{ item.createDate }}<br>
+                <a style="color: deepskyblue" @click="showDepositCollectionPictures(item.proceedsId)">查看收押图片</a>
+                <a style="color: deepskyblue" @click="showDepositBackPictures(item.refundId)">查看退押图片</a>
               </van-grid-item>
             </van-grid>
           </van-collapse-item>
@@ -228,7 +231,8 @@
                 申请时间：{{ item.createDate }}<br>
                 所属店铺：{{ item.shopName }}<br>
                 退款金额：{{ item.refundAmount }}<br>
-                押金收款人：{{ item.payeeName }}
+                押金收款人：{{ item.payeeName }}<br>
+                <a style="color: deepskyblue" @click="showDepositCollectionPictures(item.proceedsId)">查看收押图片</a>
               </van-grid-item>
             </van-grid>
           </van-collapse-item>
@@ -240,6 +244,10 @@
 
 <script>
 import baseNavBar from "@/components/nav-bar/base-nav-bar";
+import { ImagePreview } from "vant";
+import { Notify } from "vant";
+import {re} from "mathjs";
+
 export default {
   name: "deposit-reports",
   components: {
@@ -478,6 +486,46 @@ export default {
         }
       }).then(response => {
         this.depositDetails = response.data.data;
+      })
+    },
+    showDepositCollectionPictures(proceedsId) {
+      if (proceedsId === '' || proceedsId === undefined) {
+        Notify("当前未设置收押图")
+        return false
+      }
+      this.$axios({
+        method: "GET",
+        url: "/shopReports/queryDepositCollectionPictures",
+        params: {
+          tenantCrop: this.tenantCrop,
+          proceedsId: proceedsId
+        }
+      }).then(response => {
+        if (response.data.data.length === 0) {
+          Notify("当前未设置收押图")
+          return false
+        }
+        ImagePreview(response.data.data)
+      })
+    },
+    showDepositBackPictures(refundId) {
+      if (refundId === '' || refundId === undefined) {
+        Notify("当前未设置退押图")
+        return false
+      }
+      this.$axios({
+        method: "GET",
+        url: "/shopReports/queryDepositBackPictures",
+        params: {
+          tenantCrop: this.tenantCrop,
+          refundId: refundId
+        }
+      }).then(response => {
+        if (response.data.data.length === 0) {
+          Notify("当前未设置退押图")
+          return false
+        }
+        ImagePreview(response.data.data)
       })
     }
   }
