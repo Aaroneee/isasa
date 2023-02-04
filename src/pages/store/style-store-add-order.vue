@@ -113,10 +113,10 @@ export default {
     },
     payResult(status) {
       console.log(status)
-      if (status === 0) {
+      if (status === 0 || status === "0") {
         this.$toast.fail('支付失败');
       }
-      if (status === 1) {
+      if (status === 1 || status === "1") {
         this.$toast.success('支付成功');
 
         this.$router.push({name:"styleStoreOrderList"})
