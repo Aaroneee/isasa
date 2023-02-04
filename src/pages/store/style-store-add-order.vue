@@ -42,7 +42,9 @@
       <van-row v-for="(item,index) in styleList" :key="index" style="margin-bottom: 10px">
         <van-col :span="12">
           <span
-              style="font-size: 15px;font-weight: bold">{{ item.storeTypeName + '-' + item.storeSeriesNumberName }} </span>
+              style="font-size: 15px;font-weight: bold">{{
+              item.storeTypeName + '-' + item.storeSeriesNumberName
+            }} </span>
           <span style="font-size: 15px;">  共<span style="font-weight: bold">{{ item.styleNumber }}</span>件</span>
         </van-col>
         <van-col :span="12">
@@ -67,6 +69,9 @@ export default {
   created() {
     this.styleList = this.$route.query
     this.getCountPrice();
+  },
+  mounted() {
+    window.payResult = this.payResult
   },
   data() {
     return {
@@ -106,12 +111,17 @@ export default {
         }
       })
     },
-    payResult(bool,msg){
-      if (bool == true){
-        this.$toast.fail(msg);
-      }else {
-        this.$toast.fail(msg);
+    payResult(status) {
+      console.log(status)
+      if (status === 0) {
+        this.$toast.fail('支付失败');
       }
+      if (status === 1) {
+        this.$toast.success('支付成功');
+
+        this.$router.push({name:"styleStoreOrderList"})
+      }
+      console.log("js 接受原生回调")
     },
     //获得标签
     getLabel(val) {
