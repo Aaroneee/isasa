@@ -4,7 +4,7 @@
       <baseNavBar title="确认订单"/>
     </van-sticky>
     <div class="card" v-for="(item,index) in styleList" :key="index">
-<!--      <van-row class="cardTitle"><span>{{item.storeTypeName+'-'+item.storeSeriesNumberName}}</span></van-row>-->
+      <!--      <van-row class="cardTitle"><span>{{item.storeTypeName+'-'+item.storeSeriesNumberName}}</span></van-row>-->
       <van-row>
         <van-col :span="10">
           <div>
@@ -18,14 +18,16 @@
           </div>
         </van-col>
         <van-col :span="14">
-          <van-row><p>品牌 : {{item.storeBrandName}}</p></van-row>
-          <van-row><p>类型 : {{item.storeTypeName}}</p></van-row>
-          <van-row><p>系列 : {{item.storeSeriesName}}</p></van-row>
-          <van-row><p>系列编号 : {{item.storeSeriesNumberName}}</p></van-row>
-          <van-row><p>价格 : {{item.salePrice}}</p></van-row>
+          <van-row><p>品牌 : {{ item.storeBrandName }}</p></van-row>
+          <van-row><p>类型 : {{ item.storeTypeName }}</p></van-row>
+          <van-row><p>系列 : {{ item.storeSeriesName }}</p></van-row>
+          <van-row><p>系列编号 : {{ item.storeSeriesNumberName }}</p></van-row>
+          <van-row><p>价格 : {{ item.salePrice }}</p></van-row>
           <van-row>
             <van-col v-for="(childItem,index) in getLabel(item.labelNames)" :key="index" style="margin: 1% 1%">
-              <van-tag size="large" v-once :color="labelColor[Math.floor(Math.random() * labelColor.length)]">{{ childItem }}</van-tag>
+              <van-tag size="large" v-once :color="labelColor[Math.floor(Math.random() * labelColor.length)]">
+                {{ childItem }}
+              </van-tag>
             </van-col>
           </van-row>
           <van-row style="text-align: right">
@@ -39,17 +41,18 @@
       <br>
       <van-row v-for="(item,index) in styleList" :key="index" style="margin-bottom: 10px">
         <van-col :span="12">
-          <span style="font-size: 15px;font-weight: bold">{{item.storeTypeName+'-'+item.storeSeriesNumberName}} </span>
-          <span style="font-size: 15px;">  共<span style="font-weight: bold">{{item.styleNumber}}</span>件</span>
+          <span
+              style="font-size: 15px;font-weight: bold">{{ item.storeTypeName + '-' + item.storeSeriesNumberName }} </span>
+          <span style="font-size: 15px;">  共<span style="font-weight: bold">{{ item.styleNumber }}</span>件</span>
         </van-col>
         <van-col :span="12">
           <p style="width: 100%;font-size: 15px;font-weight: bold;text-align: right">
-            ￥{{getSingleCountPrice(item.styleNumber===undefined?1:item.styleNumber,item.salePrice)}}
+            ￥{{ getSingleCountPrice(item.styleNumber === undefined ? 1 : item.styleNumber, item.salePrice) }}
           </p>
         </van-col>
       </van-row>
     </div>
-    <van-submit-bar :price="priceCount*100" button-text="提交订单" @submit="addOrder" />
+    <van-submit-bar :price="priceCount*100" button-text="提交订单" @submit="addOrder"/>
   </div>
 </template>
 <script>
@@ -68,20 +71,20 @@ export default {
   data() {
     return {
       styleList: [],
-      styleNumber:1,
+      styleNumber: 1,
       tenantCrop: localStorage.getItem("tenantCrop"),
       empId: localStorage.getItem("empId"),
-      priceCount:0,
+      priceCount: 0,
       labelColor: ["#A52A2A", "#FF8C00", "#696969", "#FFA500", "#2F4F4F", "#6495ED", "#FF4500", "#40E0D0"],
 
-      images:[],
+      images: [],
     }
   },
   methods: {
-    clickImageItem(image){
-        ImagePreview([`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image}`])
+    clickImageItem(image) {
+      ImagePreview([`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image}`])
     },
-    addOrder(){
+    addOrder() {
       this.$axios({
         method: "PUT",
         url: "/storeOrder/addStoreOrder",
@@ -89,47 +92,54 @@ export default {
       }).then(response => {
 
         //如果提交订单成功 则调用支付宝 并清空购物车
-        if (response.data.code===200) {
+        if (response.data.code === 200) {
           console.log(response)
           this.delAllShoppingCart();
-          if(/Linux/i.test(navigator.platform)){
+          if (/Linux/i.test(navigator.platform)) {
             androidMethod.getAliPayInfo(response.data.data.id);
-            return;
+          } else {
+            window.webkit.messageHandlers.pay.postMessage(response.data.data.id);
           }
-          //todo 调用苹果原生
-          //window.webkit.messageHandlers.logout.postMessage("已退出")
-        }else {
+
+        } else {
           this.$toast.fail('提交订单失败,请返回重试');
         }
       })
     },
+    payResult(bool,msg){
+      if (bool == true){
+        this.$toast.fail(msg);
+      }else {
+        this.$toast.fail(msg);
+      }
+    },
     //获得标签
-    getLabel(val){
-      return val!==""?val.split(","):[];
+    getLabel(val) {
+      return val !== "" ? val.split(",") : [];
     },
     //获得一个款式的总价
-    getSingleCountPrice(num,price){
+    getSingleCountPrice(num, price) {
       return Number(this.$math.format(
           this.$math.chain(this.$math.bignumber(num))
               .multiply(this.$math.bignumber(price)).done()
       ))
     },
     //获得总价
-    getCountPrice(){
+    getCountPrice() {
       let mathJsChain = this.$math.chain(this.$math.bignumber(0));
-      this.styleList.forEach(k=>{
-        let styleNumber=this.$math.bignumber(k.styleNumber===undefined?1:k.styleNumber);
-        let salePrice=this.$math.bignumber(k.salePrice);
+      this.styleList.forEach(k => {
+        let styleNumber = this.$math.bignumber(k.styleNumber === undefined ? 1 : k.styleNumber);
+        let salePrice = this.$math.bignumber(k.salePrice);
 
         let bigNumber = this.$math.format(
             this.$math.chain(styleNumber)
                 .multiply(salePrice).done());
-        mathJsChain=mathJsChain.add(this.$math.bignumber(bigNumber));
+        mathJsChain = mathJsChain.add(this.$math.bignumber(bigNumber));
       })
-      this.priceCount=Number(this.$math.format(mathJsChain.done()))
+      this.priceCount = Number(this.$math.format(mathJsChain.done()))
     },
     //清空购物车
-    delAllShoppingCart(){
+    delAllShoppingCart() {
       this.$axios({
         method: "POST",
         url: "/storeStyle/delAllShoppingCart",
@@ -141,23 +151,23 @@ export default {
       })
     },
     //构建提交参数
-    structureData(){
-      let storeOrderStyleS=[];
-      this.styleList.forEach(k=>{
+    structureData() {
+      let storeOrderStyleS = [];
+      this.styleList.forEach(k => {
         storeOrderStyleS.push({
-          storeStyleId:k.id,
-          styleNum:k.styleNumber,
-          unitPrice:k.salePrice,
-          amount:this.getSingleCountPrice(k.styleNumber,k.salePrice),
-          tenantCrop:this.tenantCrop,
+          storeStyleId: k.id,
+          styleNum: k.styleNumber,
+          unitPrice: k.salePrice,
+          amount: this.getSingleCountPrice(k.styleNumber, k.salePrice),
+          tenantCrop: this.tenantCrop,
         })
       })
       return {
-        empId:this.empId,
-        totalAmount:this.priceCount,
-        payState:0,
-        tenantCrop:this.tenantCrop,
-        storeOrderStyleS:storeOrderStyleS,
+        empId: this.empId,
+        totalAmount: this.priceCount,
+        payState: 0,
+        tenantCrop: this.tenantCrop,
+        storeOrderStyleS: storeOrderStyleS,
       }
     }
   },
@@ -168,17 +178,19 @@ export default {
 .card {
   background: white;
   border-radius: 7px;
-  margin:  4% 3%;
+  margin: 4% 3%;
   padding: 3% 3%;
   height: 100%;
   overflow: hidden;
 }
-.cardTitle{
+
+.cardTitle {
   text-align: center;
   font-weight: bold;
   font-size: 17px;
   margin-bottom: 10px;
 }
+
 .card .imgParent {
   padding-left: 2%;
   height: 100%;
@@ -188,11 +200,12 @@ export default {
 }
 
 
-.scrollbarDiv{
+.scrollbarDiv {
 
   white-space: nowrap;
   overflow-y: auto;
 }
+
 .scrollbarDiv::-webkit-scrollbar {
   width: 0;
 }
