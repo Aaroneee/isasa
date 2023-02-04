@@ -109,36 +109,30 @@
         {{ depositDetailName }}详情
       </van-row>
       <br>
-      <van-row type="flex" justify="center">
-        <van-collapse v-model="activeDepositDetail" :border="false" style="width: 90%">
-          <van-collapse-item v-for="(item,index) in depositDetails" :name="index" :key="index">
-            <template #title>
-              <van-grid :border="false" style="text-align: left; font-size: 12px" :column-num="2" :center="false">
-                <van-grid-item>
-                  收款方式：{{ item.paymentName }}<br>
-                  客户名：{{ item.customerName }}
-                </van-grid-item>
-                <van-grid-item>
-                  收款人：{{ item.payeeName }}<br>
-                  <b>押金数：{{ item.depositAmount }}</b>
-                </van-grid-item>
-              </van-grid>
-            </template>
-            <van-grid :border="false" style="text-align: left; font-size: 12px" :column-num="2" :center="false">
-              <van-grid-item>
-                收款方式：{{ item.paymentName }}<br>
-                客户名：{{ item.customerName }}<br>
-                订单编号：{{ item.orderNo }}<br>
-                <a style="color: deepskyblue" @click="showDepositCollectionPictures(item.proceedsId)">查看收押图片</a>
-              </van-grid-item>
-              <van-grid-item>
-                收款人：{{ item.payeeName }}<br>
-                押金数：{{ item.depositAmount }}<br>
-                日期：{{ item.createDate }}
-              </van-grid-item>
-            </van-grid>
-          </van-collapse-item>
-        </van-collapse>
+      <van-row
+          type="flex"
+          justify="center"
+          v-for="(item,index) in depositDetails"
+          :name="index"
+          :key="index">
+          <van-grid
+              :border="false"
+              style="text-align: left; font-size: 12px; width: 90%" :column-num="2"
+              :center="false"
+          >
+            <van-grid-item>
+              收款方式：{{ item.paymentName }}<br>
+              客户名：{{ item.customerName }}<br>
+              订单编号：{{ item.orderNo }}<br>
+              日期：{{ item.createDate }}
+            </van-grid-item>
+            <van-grid-item>
+              收款人：{{ item.payeeName }}<br>
+              <b>押金数：{{ item.depositAmount }}</b><br>
+              <a style="color: deepskyblue" @click="showDepositCollectionPictures(item.proceedsId)">查看收押图片</a>
+            </van-grid-item>
+            <hr>
+          </van-grid>
       </van-row>
     </van-popup>
 
@@ -246,7 +240,6 @@
 import baseNavBar from "@/components/nav-bar/base-nav-bar";
 import { ImagePreview } from "vant";
 import { Notify } from "vant";
-import {re} from "mathjs";
 
 export default {
   name: "deposit-reports",
