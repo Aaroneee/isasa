@@ -24,6 +24,7 @@
       <per-button @click="openAppAdd" type="primary" :span="6" per="cus_details:add_appoint">添加预约</per-button>
       <per-button @click="onlineOrderAdd" type="info" :span="6" per="cus_details:online_order_add">线上订单</per-button>
       <per-button @click="cusCommunicate" type="info" :span="6" per="cus_details:add_comm">客资沟通</per-button>
+      <per-button @click="delCustomer" type="warning" :span="6" per="cus_details:cus_delete">客资删除</per-button>
     </van-row>
     <br>
   </div>
@@ -73,7 +74,33 @@ export default {
     //打开客资沟通界面
     cusCommunicate:function (){
       this.$router.push({name:"cusCommunicate",query:{cusId:this.$route.query.cusId}})
-    }
+    },
+    //删除客资
+    delCustomer:function (){
+      this.$dialog.confirm({
+        title: '删除客资',
+        message: '是否确认删除客资?',
+      }).then(() => {
+        this.$axios({
+          method: "POST",
+          url: "/customer/deleteCustomerById",
+          params: {
+            id:this.cusId
+          }
+        }).then(response => {
+          if (response.data.code === 200) {
+            this.$toast.success("删除成功");
+            let self=this;
+            setTimeout(function (){
+              self.$router.replace({name: "cusList"})
+            },800)
+          } else {
+            this.$toast.fail(response.data.msg);
+          }
+        })
+      })
+    },
+
   }
 }
 </script>
