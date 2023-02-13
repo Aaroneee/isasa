@@ -30,7 +30,7 @@
           <p>系列名称 : {{ style.storeSeriesName }}</p>
         </van-col>
         <van-col :span="12">
-          <p>系列编号 : {{ style.storeSeriesNumberName }}</p>
+          <p>系列编号 : {{ style.storeSeriesNum }}</p>
         </van-col>
       </van-row>
     </div>

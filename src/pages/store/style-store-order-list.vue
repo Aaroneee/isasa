@@ -24,7 +24,7 @@
                 <van-row><p>品牌 : {{ childItem.storeBrandName }}</p></van-row>
                 <van-row><p>类型 : {{ childItem.storeTypeName }}</p></van-row>
                 <van-row><p>系列 : {{ childItem.storeSeriesName }}</p></van-row>
-                <van-row><p>系列编号 : {{ childItem.storeSeriesNumberName }}</p></van-row>
+                <van-row><p>系列编号 : {{ childItem.storeSeriesNum }}</p></van-row>
                 <van-row><p>单价 : {{ childItem.unitPrice }}</p></van-row>
                 <van-row><p>数量 : {{ childItem.styleNum }}</p></van-row>
                 <van-row><p>总金额 : {{ childItem.amount }}</p></van-row>
