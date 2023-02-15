@@ -33,7 +33,7 @@
       </template>
     </van-swipe-cell>
     <br><br><br>
-    <van-submit-bar button-text="结算" @submit="onSubmit"/>
+    <van-submit-bar v-show="shopCartList.length>0" button-text="结算" @submit="onSubmit"/>
   </div>
 </template>
 

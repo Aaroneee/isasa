@@ -41,8 +41,6 @@
 
       </van-collapse-item>
     </van-collapse>
-    <br><br><br>
-    <van-submit-bar button-text="结算" @submit="onSubmit"/>
   </div>
 </template>
 
@@ -110,10 +108,6 @@ export default {
       }
       //todo 调用苹果原生
       //window.webkit.messageHandlers.logout.postMessage("已退出")
-    },
-    //跳转到添加订单页面
-    onSubmit() {
-      this.$router.push({name: "styleStoreAddOrder", query: this.orderList})
     },
     clickImageItem: function (image) {
       ImagePreview([`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image}`])
