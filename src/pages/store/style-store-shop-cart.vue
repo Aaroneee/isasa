@@ -18,7 +18,7 @@
             <van-row><p>品牌 : {{item.storeBrandName}}</p></van-row>
             <van-row><p>类型 : {{item.storeTypeName}}</p></van-row>
             <van-row><p>系列 : {{item.storeSeriesName}}</p></van-row>
-            <van-row><p>系列编号 : {{item.storeSeriesNumberName}}</p></van-row>
+            <van-row><p>系列编号 : {{item.storeSeriesNum}}</p></van-row>
             <van-row><p>价格 : {{item.salePrice}}</p></van-row>
             <van-row>
               <van-col v-for="(childItem,index) in getLabel(item.labelNames)" :key="index" style="margin: 1% 1%">
@@ -33,7 +33,7 @@
       </template>
     </van-swipe-cell>
     <br><br><br>
-    <van-submit-bar button-text="结算" @submit="onSubmit"/>
+    <van-submit-bar v-show="shopCartList.length>0" button-text="结算" @submit="onSubmit"/>
   </div>
 </template>
 

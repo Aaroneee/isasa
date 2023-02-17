@@ -24,7 +24,7 @@
                 <van-row><p>品牌 : {{ childItem.storeBrandName }}</p></van-row>
                 <van-row><p>类型 : {{ childItem.storeTypeName }}</p></van-row>
                 <van-row><p>系列 : {{ childItem.storeSeriesName }}</p></van-row>
-                <van-row><p>系列编号 : {{ childItem.storeSeriesNumberName }}</p></van-row>
+                <van-row><p>系列编号 : {{ childItem.storeSeriesNum }}</p></van-row>
                 <van-row><p>单价 : {{ childItem.unitPrice }}</p></van-row>
                 <van-row><p>数量 : {{ childItem.styleNum }}</p></van-row>
                 <van-row><p>总金额 : {{ childItem.amount }}</p></van-row>
@@ -41,8 +41,6 @@
 
       </van-collapse-item>
     </van-collapse>
-    <br><br><br>
-    <van-submit-bar button-text="结算" @submit="onSubmit"/>
   </div>
 </template>
 
@@ -110,10 +108,6 @@ export default {
       }
       //todo 调用苹果原生
       //window.webkit.messageHandlers.logout.postMessage("已退出")
-    },
-    //跳转到添加订单页面
-    onSubmit() {
-      this.$router.push({name: "styleStoreAddOrder", query: this.orderList})
     },
     clickImageItem: function (image) {
       ImagePreview([`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image}`])

@@ -61,7 +61,7 @@
                         <p class="pFont" style="text-align: left">{{ item.storeSeriesName===''?'无系列':item.storeSeriesName }}</p>
                       </van-col>
                       <van-col span="12">
-                        <p class="pFont" style="text-align: right">{{ item.storeSeriesNumberName===''?"无系列编号":item.storeSeriesNumberName }}</p>
+                        <p class="pFont" style="text-align: right">{{ item.storeSeriesNum===''?"无系列编号":item.storeSeriesNum }}</p>
                       </van-col>
                     </van-row>
                   </div>
@@ -126,7 +126,6 @@ export default {
           publishStatus:1,
         }
       }).then(response=>{
-        console.log(this.styleList)
         if (response.data.code === 200) {
           if (response.data.data.nextPage === 0) {
             this.finished = true

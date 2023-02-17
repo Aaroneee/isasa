@@ -4,7 +4,7 @@
       <baseNavBar title="确认订单"/>
     </van-sticky>
     <div class="card" v-for="(item,index) in styleList" :key="index">
-      <!--      <van-row class="cardTitle"><span>{{item.storeTypeName+'-'+item.storeSeriesNumberName}}</span></van-row>-->
+      <!--      <van-row class="cardTitle"><span>{{item.storeTypeName+'-'+item.storeSeriesNum}}</span></van-row>-->
       <van-row>
         <van-col :span="10">
           <div>
@@ -21,7 +21,7 @@
           <van-row><p>品牌 : {{ item.storeBrandName }}</p></van-row>
           <van-row><p>类型 : {{ item.storeTypeName }}</p></van-row>
           <van-row><p>系列 : {{ item.storeSeriesName }}</p></van-row>
-          <van-row><p>系列编号 : {{ item.storeSeriesNumberName }}</p></van-row>
+          <van-row><p>系列编号 : {{ item.storeSeriesNum }}</p></van-row>
           <van-row><p>价格 : {{ item.salePrice }}</p></van-row>
           <van-row>
             <van-col v-for="(childItem,index) in getLabel(item.labelNames)" :key="index" style="margin: 1% 1%">
@@ -43,7 +43,7 @@
         <van-col :span="12">
           <span
               style="font-size: 15px;font-weight: bold">{{
-              item.storeTypeName + '-' + item.storeSeriesNumberName
+              item.storeTypeName + '-' + item.storeSeriesName + '-' + item.storeSeriesNum
             }} </span>
           <span style="font-size: 15px;">  共<span style="font-weight: bold">{{ item.styleNumber }}</span>件</span>
         </van-col>
