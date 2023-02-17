@@ -834,19 +834,8 @@ export default {
       this.querySourceReportsOrder()
       this.querySourceReportsMoney()
     },
-    async empChange() {
-      await this.$axios({
-        method: 'get',
-        url: '/emp/judgeIfServiceRoles',
-        params: {
-          empId: this.empId,
-          tenantCrop: this.tenantCrop
-        }
-      }).then(response => {
-        if (response.data.data == true) {
-          this.querySourceReportsCus()
-        }
-      });
+    empChange() {
+      this.querySourceReportsCus()
       this.querySourceReportsArrival()
       this.querySourceReportsOrder()
       this.querySourceReportsMoney()
