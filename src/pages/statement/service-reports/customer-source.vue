@@ -6,8 +6,9 @@
     <van-dropdown-menu>
 <!--      <van-dropdown-item v-model="serviceId" @change="serviceChange" :options="serviceArray"/>
       <van-dropdown-item v-model="dressId" @change="dressChange" :options="dressArray"/>-->
-      <van-dropdown-item v-model="empId" @change="empChange" :options="empArray"/>
+      <van-dropdown-item v-model="shopId" @change="shopChange" :options="shopArray"/>
       <van-dropdown-item v-model="sourceId" @change="sourceChange" :options="sourceArray"/>
+      <van-dropdown-item v-model="empId" @change="empChange" :options="empArray"/>
     </van-dropdown-menu>
     <van-popup v-model="createDateShow" position="bottom">
       <van-datetime-picker
@@ -412,14 +413,16 @@ export default {
       activeOrder: [],
       activeApp: [],
       activeMoney: [],
+      shopArray: [{text: "选择店铺", value: ""}],
+      shopId: "",
+
     }
   },
   created() {
     this.pageInit()
-    this.queryServiceIds()
-    this.queryDressArray()
     this.querySourceIds()
     this.queryEmpIds()
+    this.queryShopIds()
   },
   mounted() {
     var v = this;
@@ -455,16 +458,10 @@ export default {
       })
     },
     queryEmpIds () {
-      this.$axios({
-        method: 'get',
-        url: '/emp/queryServiceAndDress',
-        params: {
-          tenantCrop: this.tenantCrop,
-          shopId: this.shopId,
-          type: this.$selectUtils.DropDownMenu
+      this.$selectUtils.queryServiceAndDress(this.$selectUtils.DropDownMenu, this.shopId).then(response => {
+        if (response.data.code === 200) {
+          this.empArray.push(...JSON.parse(response.data.data));
         }
-      }).then(response => {
-        this.empArray.push(...JSON.parse(response.data.data))
       })
     },
     queryDressArray() {
@@ -472,11 +469,18 @@ export default {
         this.dressArray.push(...JSON.parse(response.data.data))
       })
     },
+    queryShopIds() {
+      this.$selectUtils.queryShopIds(this.$selectUtils.DropDownMenu).then(response => {
+        if (response.data.code === 200) {
+          this.shopArray.push(...JSON.parse(response.data.data));
+        }
+      })
+    },
     // 获取一级渠道
     querySourceIds() {
       this.$axios({
         method: 'get',
-        url: '/select/firstSourceIds',
+        url: '/select/sourceOneLevelIds',
         params: {
           tenantCrop: this.tenantCrop,
           type: this.$selectUtils.DropDownMenu
@@ -495,7 +499,8 @@ export default {
           date: this.date,
           tenantCrop: this.tenantCrop,
           empId: this.empId,
-          sourceId: this.sourceId
+          sourceId: this.sourceId,
+          shopId: this.shopId
         },
       }).then(response => {
         this.sourceCusData = response.data.data;
@@ -566,7 +571,8 @@ export default {
           date: this.date,
           tenantCrop: this.tenantCrop,
           empId: this.empId,
-          sourceId: this.sourceId
+          sourceId: this.sourceId,
+          shopId: this.shopId
         },
       }).then(response => {
         this.sourceCusArrivalData = response.data.data;
@@ -635,7 +641,8 @@ export default {
           date: this.date,
           tenantCrop: this.tenantCrop,
           empId: this.empId,
-          sourceId: this.sourceId
+          sourceId: this.sourceId,
+          shopId: this.shopId
         },
       }).then(response => {
         this.sourceCusOrderData = response.data.data
@@ -704,7 +711,8 @@ export default {
           date: this.date,
           tenantCrop: this.tenantCrop,
           empId: this.empId,
-          sourceId: this.sourceId
+          sourceId: this.sourceId,
+          shopId: this.shopId
         },
       }).then(response => {
         this.sourceCusMoneyData = response.data.data;
@@ -835,6 +843,17 @@ export default {
       this.querySourceReportsMoney()
     },
     empChange() {
+      this.querySourceReportsCus()
+      this.querySourceReportsArrival()
+      this.querySourceReportsOrder()
+      this.querySourceReportsMoney()
+    },
+    shopChange() {
+      if (this.empId !== "") {
+        this.empId = ""
+      }
+      this.empArray = this.empArray.slice(0,1)
+      this.queryEmpIds()
       this.querySourceReportsCus()
       this.querySourceReportsArrival()
       this.querySourceReportsOrder()
