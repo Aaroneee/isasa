@@ -405,5 +405,16 @@ export default {
             }
         })
     },
-
+    //查询在职的礼服师和客服
+    queryServiceAndDress: function (type, shopId) {
+        return self.$axios({
+            method: "GET",
+            url: "/select/serviceAndDress",
+            params: {
+                type: type,
+                shopId: shopId,
+                tenantCrop: localStorage.getItem("tenantCrop"),
+            }
+        })
+    }
 }
