@@ -189,23 +189,12 @@ export default {
     queryPositionIdsByShop: function (shop) {
       this.$selectUtils.queryPositionIdsByShop(shop, this.$selectUtils.Picker).then(response => {
         this.positionColumnsArray = JSON.parse(response.data.data)
-        if (localStorage.getItem("tenantCrop") == '2a31c23a-c178-441614928053489') {
-          if (this.clothesShopText == "上海华鑫店") {
-            this.positionColumnsArray.forEach(s => {
-              if (s.text.indexOf("新款入库区域") != -1) {
-                this.clothesPosition = s.id
-                this.clothesPositionText = s.text
-              }
-            })
-          } else {
-            this.positionColumnsArray.forEach(s => {
-              if (s.text.indexOf("收件待定") != -1) {
-                this.clothesPosition = s.id
-                this.clothesPositionText = s.text
-              }
-            })
+        this.positionColumnsArray.forEach(s => {
+          if (s.text.indexOf("新款入库区") != -1) {
+            this.clothesPosition = s.id
+            this.clothesPositionText = s.text
           }
-        }
+        })
       })
     },
     queryClothesSize() {
