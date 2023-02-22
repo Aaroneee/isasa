@@ -50,6 +50,7 @@
 export default {
   name: "work",
   created() {
+    console.log(1)
     if (localStorage.getItem("tenantCrop")===null){
       window.location.reload()
     }
@@ -114,6 +115,14 @@ export default {
   // mounted() {
   //   window.setLocalStorage = this.setLocalStorage
   // }
+  activated() {
+    if (localStorage.getItem("tenantCrop")===null){
+      window.location.reload()
+    }
+    this.queryModules()
+    this.queryButton()
+    this.queryShopIdsByEmpId()
+  }
 }
 </script>
 
