@@ -148,12 +148,12 @@ export default {
       clothesPositionText: "",
       positionShowPicker: false,
       washingTip: 0,
-      washingTipChecked: false
+      washingTipChecked: false,
+      myShopIds: localStorage.getItem("shopIds"),
     }
   },
   methods: {
     queryClothesNoByStyleId: function (value) {
-      console.log(value)
       this.$axios({
         method: "get",
         url: "/clothes/queryClothesNoByStyleId",
@@ -183,7 +183,17 @@ export default {
     },
     queryShopIds: function () {
       this.$selectUtils.queryShopIds(this.$selectUtils.Picker).then(response => {
-        this.shopColumnsArray = JSON.parse(response.data.data)
+        let shopArray=JSON.parse(response.data.data);
+        this.shopColumnsArray =shopArray;
+
+        let localShopIds=this.myShopIds.split(",")
+        let shopId=localShopIds.includes("59")?59:Number(localShopIds[0]);
+        let choose=shopArray.filter(k=>{
+          return k.id===shopId;
+        })
+        this.clothesShop=choose[0].id;
+        this.clothesShopText=choose[0].text;
+        this.queryPositionIdsByShop(choose[0].id);
       })
     },
     queryPositionIdsByShop: function (shop) {
@@ -200,6 +210,12 @@ export default {
     queryClothesSize() {
       this.$selectUtils.queryClothesSize().then(response => {
         this.sizeColumnsArray = JSON.parse(response.data.data).map(s => s['name'])
+        this.sizeColumnsArray.forEach(s => {
+          if (s==='F') {
+            this.clothesSize = s
+            return
+          }
+        })
       })
     },
     positionOnConfirm: function (value) {
@@ -208,7 +224,6 @@ export default {
       this.positionShowPicker = false
     },
     washingTipCheck: function (value) {
-      console.log(value)
       this.washingTip = value ? 1 : 0
     },
     addClothesSubmit: function (data) {

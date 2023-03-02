@@ -3,6 +3,7 @@ import styleStoreDetails from "@/pages/store/style-store-details"//款式商城
 import styleStoreAddOrder from "@/pages/store/style-store-add-order"//款式商城
 import styleStoreShopCart from "@/pages/store/style-store-shop-cart"//款式商城
 import styleStoreOrderList from "@/pages/store/style-store-order-list"//款式商城
+import styleStoreOrderAdminList from "@/pages/store/style-store-order-admin-list"//款式商城
 export default[
     {
         path: '/styleStore',
@@ -28,5 +29,10 @@ export default[
         path: '/styleStoreOrderList',
         name: 'styleStoreOrderList',
         component: styleStoreOrderList,
+    },
+    {
+        path: '/styleStoreOrderAdminList',
+        name: 'styleStoreOrderAdminList',
+        component: styleStoreOrderAdminList,
     },
 ]
