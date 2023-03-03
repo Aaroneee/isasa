@@ -93,4 +93,19 @@ export default {
         var date = new Date(dateString.replaceAll("-","/"))
         return date;
     },
+    // 获取当前月最后一天
+    getCurrentMonthLastDay() {
+        var date=new Date();
+        var currentMonth=date.getMonth();
+        var nextMonth=++currentMonth;
+        var nextMonthFirstDay=new Date(date.getFullYear(),nextMonth,1);
+        var oneDay=1000*60*60*24;
+        return new Date(nextMonthFirstDay-oneDay);
+    },
+    // 获取当前月第一天
+    getCurrentMonthFirstDay() {
+        var date=new Date();
+        date.setDate(1);
+        return date;
+    }
 }

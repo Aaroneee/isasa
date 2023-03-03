@@ -334,6 +334,7 @@ export default {
     queryShop: function () {
       this.$selectUtils.queryShopIds(this.$selectUtils.Picker).then(response => {
         this.shopArray.push(...JSON.parse(response.data.data));
+        this.shopName="全国店铺"
       })
     },
     queryDepositReceived() {

@@ -401,6 +401,8 @@ export default {
     baseNavBar
   },
   created() {
+    this.shopName="全国店铺"
+    this.dressName="全国礼服师"
     this.queryShop();
     this.queryDress();
     this.queryShopEarningReports();
@@ -431,7 +433,7 @@ export default {
       dressName: '',
       dressId: '',
       // 礼服师列表
-      dressArray: [{text: "全部礼服师", id: ""}],
+      dressArray: [{text: "全国礼服师", id: ""}],
       // 是否正在加载礼服师
       dressLoading: false,
       // 是否显示店铺下拉列表

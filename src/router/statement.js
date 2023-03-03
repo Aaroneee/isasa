@@ -2,6 +2,7 @@ import shopEarningReports from "@/pages/statement/shop/shop-earning-reports"//�
 import shopDailyReports from "@/pages/statement/shop/shop-daily-reports"//店铺每日业绩
 import customerSource from "@/pages/statement/service-reports/customer-source"
 import depositReports from "@/pages/statement/deposit/deposit-reports";
+import proceedsReports from "@/pages/statement/proceed/proceeds-reports";
 //渠道分析表
 export default[
     {
@@ -23,5 +24,10 @@ export default[
         path: '/depositReports',
         name: 'depositReports',
         component: depositReports,
+    },
+    {
+        path: '/proceedsReports',
+        name: 'proceedsReports',
+        component: proceedsReports
     }
 ]

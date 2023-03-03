@@ -50,7 +50,6 @@
 export default {
   name: "work",
   created() {
-    console.log(1)
     if (localStorage.getItem("tenantCrop")===null){
       window.location.reload()
     }
