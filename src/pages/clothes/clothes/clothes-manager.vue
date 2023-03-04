@@ -71,6 +71,7 @@
 <script>
 import switchNavBar from "@/components/nav-bar/switch-nav-bar"
 import BScroll from 'better-scroll'
+import {re} from "mathjs";
 
 export default {
   name: "clothesManager",
@@ -260,6 +261,11 @@ export default {
     },
     brandChange: function (value) {
       console.log(value)
+      if (value === ''){
+        this.brandKey = ''
+        this.queryClothesList()
+        return
+      }
       this.brand = value
       let id = this.brandIds.filter(item => item.name === value)[0].value
       this.brandKey = id
