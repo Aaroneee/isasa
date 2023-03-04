@@ -3,22 +3,24 @@
     <van-sticky>
       <switchNavBar title="婚纱档期查询" :switchText="dateText" @flag="dateShow=true"/>
       <form action="javascript:return true">
-          <van-search
-              show-action
-              @search="searchStyleName"
-              v-model="styleName"
-              placeholder="请输入婚纱礼服名称">
+        <van-search
+            show-action
+            @search="searchStyleName"
+            v-model="styleName"
+            placeholder="请输入婚纱礼服名称">
           <template #action>
-            <div @click="codeScanShow=!codeScanShow"><van-icon name="scan" /></div>
+            <div @click="codeScanShow=!codeScanShow">
+              <van-icon name="scan"/>
+            </div>
           </template>
-          </van-search>
+        </van-search>
       </form>
       <van-calendar safe-area-inset-bottom v-model="dateShow" type="range" allow-same-day
                     :min-date="minDate" :max-date="maxDate" @confirm="dateOnConfirm"/>
       <van-dropdown-menu style="font-size: 10px">
         <van-dropdown-item v-model="isOrder" @change="isOrderChange" :options="isOrderArray"/>
         <van-dropdown-item v-model="styleType" @change="styleTypeChange" :options="styleTypeArray"/>
-<!--        <van-dropdown-item v-model="clothesSize" @change="clothesSizeChange" :options="clothesSizeArray"/>-->
+        <!--        <van-dropdown-item v-model="clothesSize" @change="clothesSizeChange" :options="clothesSizeArray"/>-->
         <van-dropdown-item v-model="shop" @change="shopChange" :options="shopArray"/>
         <van-dropdown-item :title="positionTitle" v-model="position" @change="positionChange" :options="positionArray"/>
 
@@ -52,18 +54,20 @@
       >
         <van-cell style="font-size: 12px">
           <van-row gutter="5">
-            <van-col span="12"  v-for="item in clothesList" :key="item.id" @click="clickItem(item)" style="text-align: center">
+            <van-col span="12" v-for="item in clothesList" :key="item.id" @click="clickItem(item)"
+                     style="text-align: center">
               <div class="card">
                 <div class="imgFont">
                   <img
-                             :src="item.styleImage===''?'null'
+                      :src="item.styleImage===''?'null'
                              :'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage+'?imageMogr2/rquality/60'"
-                  alt="主图显示失败,请重新设置主图"/>
+                      alt="主图显示失败,请重新设置主图"/>
                   <div class="styleInfo">
 
                     <van-row>
                       <van-col span="14">
-                        <p class="pFont" style="text-align: left">{{item.styleType+'-'+item.styleName+'-'+item.clothesSize+'-'+item.clothesNo}}</p>
+                        <p class="pFont" style="text-align: left">
+                          {{ item.styleType + '-' + item.styleName + '-' + item.clothesSize + '-' + item.clothesNo }}</p>
                       </van-col>
                       <van-col span="10">
                         <p class="pFont" style="text-align: right">{{ item.styleAlias }}</p>
@@ -71,7 +75,7 @@
                     </van-row>
                     <van-row>
                       <van-col span="14">
-                        <p class="pFont" style="text-align: left">{{item.brand===''?'暂无品牌':item.brand}}</p>
+                        <p class="pFont" style="text-align: left">{{ item.brand === '' ? '暂无品牌' : item.brand }}</p>
                       </van-col>
                       <van-col span="10">
                         <p class="pFont" style="text-align: right">{{ item.positionName }}</p>
@@ -95,6 +99,8 @@ import switchNavBar from "@/components/nav-bar/switch-nav-bar"
 export default {
   name: "clothesList",
   created() {
+    this.manager = this.$route.query
+    console.log(this.manager)
     // this.queryClothesList()
     this.queryStyleType()
     this.queryShopIds()
@@ -102,18 +108,22 @@ export default {
     // this.queryPositionIdsByShop()
     this.queryClothesBrand()
     this.queryClothesSize()
+
+    if (this.manager != null) {
+      this.managerChange()
+    }
   },
   data() {
     return {
       codeScanShow: false,
-      dateShow:false,
-      dateText:"选择档期",
-      scheduleDate:"",
+      dateShow: false,
+      dateText: "选择档期",
+      scheduleDate: "",
       tenantCrop: localStorage.getItem("tenantCrop"),
 
-      maxDate:this.$dateUtils.getMaxMinDate()[0],
-      minDate:this.$dateUtils.getMaxMinDate()[1],
-
+      maxDate: this.$dateUtils.getMaxMinDate()[0],
+      minDate: this.$dateUtils.getMaxMinDate()[1],
+      manager: {},
       styleName: "",
       styleType: "",
       styleTypeArray: [{text: "款式", value: ""}],
@@ -129,14 +139,17 @@ export default {
       positionArray: [],
       styleLabelList: [],
       styleLabels: [],
-      isOrder:"",
-      isOrderArray:[{text: "全部", value: ""},{text: "有档期不可用", value: "isOrder"},{text: "无档期可用", value: "notOrder"}],
+      isOrder: "",
+      isOrderArray: [{text: "全部", value: ""}, {text: "有档期不可用", value: "isOrder"}, {
+        text: "无档期可用",
+        value: "notOrder"
+      }],
 
       isactive: false,
       page: 1,
 
-      brandText:"",
-      brand:"",
+      brandText: "",
+      brand: "",
       styleBrandArray: [{text: "品牌", value: ""}],
     }
   },
@@ -176,8 +189,8 @@ export default {
           tenantCrop: this.tenantCrop,
           clothesShop: this.shop,
           clothesPosition: this.position,
-          scheduleDate:this.scheduleDate,
-          isOrder:this.isOrder,
+          scheduleDate: this.scheduleDate,
+          isOrder: this.isOrder,
           brandName: this.brand,
         }
       }).then(response => {
@@ -208,18 +221,27 @@ export default {
       this.styleType = type
       this.queryClothesList()
     },
+    managerChange() {
+      this.shop = this.manager.shopId
+      this.position = this.manager.positionId
+      this.styleLabels = this.manager.styleLabels
+      this.brand = this.manager.brandName
+      this.queryPositionIdsByShop(this.shop)
+      this.positionChange(this.manager.positionId)
+      this.positionTitle = this.manager.position
+    },
     shopChange: function (shop) {
       this.flushClothesListArray()
       this.shop = shop
-      this.position="";
-      this.positionTitle="位置";
+      this.position = "";
+      this.positionTitle = "位置";
       this.queryPositionIdsByShop(shop);
       this.queryClothesList()
     },
     positionChange: function (position) {
       this.flushClothesListArray()
       this.position = position
-      this.positionTitle = this.positionArray.filter(item => item.value === this.position)[0].text
+      this.positionTitle = this.positionArray.filter(item => item.value === this.position).text
       this.queryClothesList()
     },
     clothesSizeChange: function (size) {
@@ -241,7 +263,7 @@ export default {
     queryPositionIdsByShop(shopId) {
       this.$selectUtils.queryPositionIdsByShop(shopId, this.$selectUtils.DropDownMenu).then(response => {
         console.log(response)
-        this.positionArray=JSON.parse(response.data.data)
+        this.positionArray = JSON.parse(response.data.data)
       })
     },
     flushClothesListArray: function () {
@@ -272,20 +294,20 @@ export default {
         this.styleLabels.push(value)
       }
     },
-    dateOnConfirm:function (value){
+    dateOnConfirm: function (value) {
       this.isOrder = "notOrder";
       const s = this.$dateUtils.rangeVantDateToYMD(value);
       this.scheduleDate = s
       const temp = s.split('-')
       this.dateText = temp[1] + "-" + temp[2] + " - " + temp[4] + "-" + temp[5]
       this.dateShow = false
-      if (this.isOrder === ""){
+      if (this.isOrder === "") {
         this.isOrder = "isOrder"
       }
       this.flushClothesListArray()
       this.queryClothesList()
-    },isOrderChange:function (){
-      if (this.scheduleDate === ""){
+    }, isOrderChange: function () {
+      if (this.scheduleDate === "") {
         this.$toast.fail("选择档期后该选项生效")
         return
       }
@@ -327,31 +349,35 @@ export default {
 /*.van-image__img {*/
 /*  min-height: 200px;*/
 /*}*/
-img{
+img {
   height: 245px;
   min-height: 245px;
   width: 100%;
   border-radius: 7px;
 }
-.card{
+
+.card {
   min-height: 290px;
   max-height: 290px;
   min-width: 160px;
-  padding: 5px 5px 0 5px ;
+  padding: 5px 5px 0 5px;
   background-color: white;
   border-radius: 10px;
   margin: 0 auto 3% auto;
 }
-.imgFont{
+
+.imgFont {
   margin: 0 auto;
   width: 100%;
   min-width: 45vw;
   max-width: 45vw;
 }
-.styleInfo{
+
+.styleInfo {
   margin-top: 5px;
 }
-.pFont{
+
+.pFont {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -362,17 +388,20 @@ img{
   /*margin-block-start: 5px;*/
   /*margin-block-end: 5px;*/
 }
-.van-list >>> .van-cell{
+
+.van-list >>> .van-cell {
   padding: 10px 5px;
-  background-color:#f7f8fa;
-  line-height:17px;
+  background-color: #f7f8fa;
+  line-height: 17px;
   /*background-color: #1a2a4c;*/
 }
-.card >>> .van-badge--fixed{
+
+.card >>> .van-badge--fixed {
   left: 0;
   right: auto;
   -webkit-transform: none;
 }
+
 .bgcolor {
   border: 1px solid #de0d0d;
   color: rgb(182, 177, 189);

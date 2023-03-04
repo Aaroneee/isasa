@@ -15,8 +15,14 @@ import styleIntroduce from "@/pages/clothes/style/style-introduce"
 import clothesOperationRecord from "@/pages/clothes/clothes/clothes-operation-record"
 import stylePrice from "@/pages/clothes/style/style-price"
 import clothesBumperAlert from "@/pages/clothes/clothes/clothes-bumper-alert";
+import clothesManager from "@/pages/clothes/clothes/clothes-manager";
 
 export default [
+    {
+        path: '/clothesManager',
+        name: 'clothesManager',
+        component: clothesManager,
+    },
     {
         path: '/clothesAdd',
         name: 'clothesAdd',
