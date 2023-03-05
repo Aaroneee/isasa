@@ -67,7 +67,9 @@
                     <van-row>
                       <van-col span="14">
                         <p class="pFont" style="text-align: left">
-                          {{ item.styleType + '-' + item.styleName + '-' + item.clothesSize + '-' + item.clothesNo }}</p>
+                          {{
+                            item.styleType + '-' + item.styleName + '-' + item.clothesSize + '-' + item.clothesNo
+                          }}</p>
                       </van-col>
                       <van-col span="10">
                         <p class="pFont" style="text-align: right">{{ item.styleAlias }}</p>
@@ -99,8 +101,6 @@ import switchNavBar from "@/components/nav-bar/switch-nav-bar"
 export default {
   name: "clothesList",
   created() {
-    this.manager = this.$route.query
-    console.log(this.manager)
     // this.queryClothesList()
     this.queryStyleType()
     this.queryShopIds()
@@ -109,10 +109,15 @@ export default {
     this.queryClothesBrand()
     this.queryClothesSize()
 
-    if (this.manager != null) {
-      this.managerChange()
+    let query = this.$route.query
+    if (JSON.stringify(query) !== '{}') {
+      this.managerChange(query)
+      console.log("manager not null")
+    } else {
+      console.log("manager null")
     }
   },
+
   data() {
     return {
       codeScanShow: false,
@@ -221,14 +226,20 @@ export default {
       this.styleType = type
       this.queryClothesList()
     },
-    managerChange() {
-      this.shop = this.manager.shopId
-      this.position = this.manager.positionId
-      this.styleLabels = this.manager.styleLabels
-      this.brand = this.manager.brandName
+    managerChange(query) {
+      console.log(query)
+      this.shop = query.shopId
+      this.position = query.positionId
+      if ('styleLabels' in query){
+        this.styleLabels = query.styleLabels
+      }
+      if ('brandName' in query) {
+        this.brand = query.brandName
+      }
       this.queryPositionIdsByShop(this.shop)
-      this.positionChange(this.manager.positionId)
-      this.positionTitle = this.manager.position
+      this.positionTitle = this.positionArray.filter(item => item.value === this.position).text
+      this.flushClothesListArray()
+      this.queryClothesList()
     },
     shopChange: function (shop) {
       this.flushClothesListArray()
@@ -241,7 +252,7 @@ export default {
     positionChange: function (position) {
       this.flushClothesListArray()
       this.position = position
-      this.positionTitle = this.positionArray.filter(item => item.value === this.position).text
+      this.positionTitle = this.positionArray.filter(item => item.value === this.position)[0].text
       this.queryClothesList()
     },
     clothesSizeChange: function (size) {
