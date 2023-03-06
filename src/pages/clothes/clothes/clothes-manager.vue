@@ -33,45 +33,23 @@
     </van-sticky>
 
     <div>
-      <van-list
-          v-model="loading"
-          :finished="finished"
-          offset="20"
-          @load="onLoad"
-          finished-text="没有更多了"
-      >
-        <van-cell style="font-size: 12px">
-          <van-row gutter="5">
-            <van-col span="24" v-for="item in clothesList" :key="item.id">
-              <div class="recommand-wrap">
-                <div class="title">
-                  <span style="font-size: 20px">{{ item[0].shopName }}婚纱礼服</span>
-                </div>
-                <div ref="wrapper">
-                  <ul class="cont" ref="cont">
-                    <li class="cont-item" v-for="it of item" :key="it.id">
-                      <div @click="clickItem(it)">
-                        <div class="cont-dest">{{ it.positionName }}</div>
-                        <div class="cont-price" style="padding-top: 10px">
-                          <span class="price">{{ it.count }}</span>
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </van-col>
-          </van-row>
-        </van-cell>
-      </van-list>
+      <div id="operationDiv" v-for="item in clothesList" :key="item.id">
+        <div id="operationCon">
+          <span style="font-size: 15px;text-align: center;color: #42aef6;">{{ item[0].shopName }}婚纱礼服</span>
+          <div id="operationParent">
+            <div class="operationBlock" v-for="it of item" :key="it.id" @click="clickItem(it)">
+              <p class="pfont">{{ it.positionName }}</p>
+              <p class="pfont">{{ it.count }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import switchNavBar from "@/components/nav-bar/switch-nav-bar"
-import BScroll from 'better-scroll'
-import {re} from "mathjs";
 
 export default {
   name: "clothesManager",
@@ -114,7 +92,7 @@ export default {
       }],
 
       brandIds: [],
-      brandKey:'',
+      brandKey: '',
 
       isactive: false,
       page: 1,
@@ -127,34 +105,7 @@ export default {
   components: {
     switchNavBar
   },
-  mounted() {
-    this.$nextTick(() => {
-      let timer = setTimeout(() => {
-        if (timer) {
-          clearTimeout(timer)
-          this.verScroll()
-        }
-      }, 0)
-    })
-  },
   methods: {
-    verScroll() {
-      let width = this.clothesList.length * 110
-      this.$refs.cont.style.width = width + 'px'
-      this.$nextTick(() => {
-        if (!this.scroll) {
-          this.scroll = new BScroll(this.$refs.wrapper, {
-            startX: 0,
-            click: true,
-            scrollX: true,
-            scrollY: false,
-            eventPassthrough: 'vertical'
-          })
-        } else {
-          this.scroll.refresh()
-        }
-      })
-    },
     clickItem: function (value) {
       value['brandName'] = this.brand
       value['styleLabels'] = this.styleLabels
@@ -261,7 +212,7 @@ export default {
     },
     brandChange: function (value) {
       console.log(value)
-      if (value === ''){
+      if (value === '') {
         this.brandKey = ''
         this.queryClothesList()
         return
@@ -297,42 +248,47 @@ export default {
 </script>
 
 
-<style lang="css" scoped>
-.recommand-wrap {
-  height: 0;
-  padding-bottom: 35%;
-  margin-top: .2rem;
-}
-
-.cont {
-  list-style: none;
-  overflow-x: scroll;
-  white-space: nowrap;
-  font-size: 15px;
-  text-align: center;
-  padding-top: 15px;
-}
-
-.cont-item {
-  position: relative;
-  display: inline-block;
-  padding-left: 20px;
-}
-
-.cont-img {
-  overflow: hidden;
-  width: 2rem;
-  height: 0;
-  padding-bottom: 100%;
-}
-
-.img {
-  width: 100%;
-}
+<style scoped>
 
 .bgcolor {
   border: 1px solid #de0d0d;
   color: rgb(182, 177, 189);
 }
 
+#operationDiv {
+  bottom: 10px;
+  width: 100%;
+  text-align: center;
+  margin-top: 10px;
+}
+
+#operationCon {
+  border-radius: 10px;
+  margin: 0 auto;
+  background: white;
+  height: 105px;
+  width: 95%;
+}
+
+#operationParent {
+  padding: 1px 0;
+  white-space: nowrap;
+  /*文本不会换行，文本会在在同一行上继续*/
+  overflow-y: auto;
+}
+
+#operationParent::-webkit-scrollbar {
+  display: none; /* Chrome Safari */
+}
+.pfont{
+  font-size: 13px;
+  font-weight: lighter;
+}
+
+.operationBlock {
+  height: 50px;
+  text-align: center;
+  display: inline-block;
+  margin: 0 4%
+}
 </style>
