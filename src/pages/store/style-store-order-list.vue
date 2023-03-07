@@ -1,6 +1,16 @@
 <template>
   <div>
-    <baseNavBar title="款式订单"/>
+    <van-sticky>
+      <van-nav-bar
+          :title="'采购列表'"
+          left-text="返回"
+          left-arrow
+          :fixed="true"
+          :placeholder="true"
+          @click-left="$router.replace({name: 'work'})"
+      />
+    </van-sticky>
+    <van-loading type="spinner" v-show="loading"/>
     <van-collapse v-model="activeNames">
       <van-collapse-item :name="index" :title="item.createDate" v-for="(item,index) in orderList" :key="index">
         <div class="cardParent">
@@ -66,21 +76,15 @@ export default {
   created() {
     this.queryShoppingCart()
   },
-  mounted() {
-    window.addEventListener('popstate', this.goBack, false)
-    //防止页面后退
-    history.pushState(null, null, document.URL);
-    window.addEventListener('popstate', function () {
-      history.pushState(null, null, document.URL);
-    });
-  },
   components: {
     baseNavBar
   },
+  beforeRouteEnter (to, from, next) {
+    console.log(to, from) // 可以拿到 from， 知道上一个路由是什么，从而进行判断
+    //在next中写处理函数
+    next(next); // err 与 12134 是随便传的值， 可忽略
+  },
   methods: {
-    goBack() {
-      this.$router.replace({name: "work"})
-    },
     //查询购物车列表
     queryShoppingCart() {
       this.loading = true;
@@ -158,5 +162,8 @@ p {
 
 .delete-button {
   height: 100%;
+}
+.van-loading--spinner{
+  text-align: center;
 }
 </style>

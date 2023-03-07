@@ -90,25 +90,28 @@ export default {
       ImagePreview([`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image}`])
     },
     addOrder() {
-      this.$axios({
-        method: "PUT",
-        url: "/storeOrder/addStoreOrder",
-        data: this.structureData()
-      }).then(response => {
+      this.$dialog.confirm({
+        title: "确认订单?",
+        message: "",
+      }).then(() => {
+        this.$axios({
+          method: "PUT",
+          url: "/storeOrder/addStoreOrder",
+          data: this.structureData()
+        }).then(response => {
+          //如果提交订单成功 则调用支付宝 并清空购物车
+          if (response.data.code === 200) {
+            this.delAllShoppingCart();
+            if (/Linux/i.test(navigator.platform)) {
+              androidMethod.getAliPayInfo(response.data.data.id);
+            } else {
+              window.webkit.messageHandlers.pay.postMessage(response.data.data.id);
+            }
 
-        //如果提交订单成功 则调用支付宝 并清空购物车
-        if (response.data.code === 200) {
-          console.log(response)
-          this.delAllShoppingCart();
-          if (/Linux/i.test(navigator.platform)) {
-            androidMethod.getAliPayInfo(response.data.data.id);
           } else {
-            window.webkit.messageHandlers.pay.postMessage(response.data.data.id);
+            this.$toast.fail('提交订单失败,请返回重试');
           }
-
-        } else {
-          this.$toast.fail('提交订单失败,请返回重试');
-        }
+        })
       })
     },
     payResult(status) {
@@ -169,6 +172,7 @@ export default {
           styleNum: k.styleNumber,
           unitPrice: k.salePrice,
           amount: this.getSingleCountPrice(k.styleNumber, k.salePrice),
+          supplierTenantCrop: k.tenantCrop,
           tenantCrop: this.tenantCrop,
         })
       })
@@ -177,6 +181,7 @@ export default {
         totalAmount: this.priceCount,
         payState: 0,
         tenantCrop: this.tenantCrop,
+        supplierTenantCrop: storeOrderStyleS[0].supplierTenantCrop,
         storeOrderStyleS: storeOrderStyleS,
       }
     }
