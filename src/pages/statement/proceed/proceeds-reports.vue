@@ -64,27 +64,26 @@
       <van-col span="24">
         <div v-show="proceedsViewData.length !== 0" style="background-color: white;margin-bottom: 20px;width: 100%">
           <canvas id="myChart"></canvas>
-          <div>
+          <div class="van_table_show">
+            <div class="test" style="color: #606266;background-color: #f5f7fa">
+              <van-row>
+                <van-col span="8">项目</van-col>
+                <van-col span="8">收款额</van-col>
+                <van-col span="8">详情</van-col>
+              </van-row>
+            </div>
             <van-collapse v-model="activeProceeds">
-              <van-field
-                  readonly
-                  label="项目"
-                  v-model="proceedsTableHeader"
-                  input-align="center"
-                  style="background-color: #f5f7fa"
-              />
               <van-collapse-item
                   :title="value.proceedsName"
                   v-for="(value,index) in proceedsViewData"
-                  :key="index"
+                  :key="value.id"
                   :name="index">
                 <template #title>
-                  <van-field
-                      readonly
-                      :label="value.proceedsName"
-                      input-align="center"
-                      v-model="value.proceedsCount"
-                  />
+                  <van-row>
+                    <van-col span="8">{{value.proceedsName}}</van-col>
+                    <van-col span="8">{{value.proceedsCount}}</van-col>
+                    <van-col span="8"></van-col>
+                  </van-row>
                 </template>
 
                 <template v-if="value.children !== undefined && value.children.length === 0">
@@ -92,23 +91,22 @@
                 </template>
 
                 <template v-if="value.children !== undefined && value.children.length !== 0">
-                  <van-field
-                      readonly
-                      v-for="(item,index) in value.children"
-                      :label="item.shopName"
-                      input-align="center"
-                      v-model="item.proceedsCount"
-                      :key="index"
-                  />
+                  <van-row v-for="item in value.children" :key="item.id">
+                    <van-col span="8">{{item.shopName}}</van-col>
+                    <van-col span="8">{{item.proceedsCount}}</van-col>
+                    <van-col span="8">
+                      <a @click="showPopup(item.shopId, item.projectsId, item.shopName, item.proceedsName)" style="color: #1989fb">查看详情</a>
+                    </van-col>
+                  </van-row>
                 </template>
               </van-collapse-item>
-              <van-field
-                  readonly
-                  label="合计"
-                  v-model="proceedsTotalCount"
-                  input-align="center"
-                  style="font-weight: bold"
-              />
+              <div class="test" style="color: #606266;font-weight:bold">
+                <van-row>
+                  <van-col span="8">合计</van-col>
+                  <van-col span="8">{{proceedsTotalCount}}</van-col>
+                  <van-col span="8"></van-col>
+                </van-row>
+              </div>
             </van-collapse>
           </div>
         </div>
@@ -117,6 +115,45 @@
         </div>
       </van-col>
     </van-row>
+
+    <!-- 收款详情弹窗 -->
+    <van-popup
+        v-model="showProceedsDetail"
+        closeable
+        position="bottom"
+        close-icon-position="top-right"
+        style="height: 60%; background-color: rgba(255,255,255,0.9) "
+        round>
+      <van-row type="flex" justify="space-around" align="center" style="background-color: rgb(255,255,255); height: 12%">
+        {{ proceedsDetailName }}详情
+      </van-row>
+      <br>
+      <van-row
+          type="flex"
+          justify="center"
+          v-for="(item,index) in proceedsDetailData"
+          :name="index"
+          :key="index">
+        <van-grid
+            :border="false"
+            style="text-align: left; font-size: 12px; width: 90%" :column-num="2"
+            :center="false"
+        >
+          <van-grid-item>
+            收款项目：{{ item.projectsName }}<br>
+            收款方式：{{ item.paymentName }}<br>
+            收款人：{{ item.payeeName }}<br>
+            日期：{{ item.createDate }}
+          </van-grid-item>
+          <van-grid-item>
+            <b>收款额：{{ item.proceedsAmount }}</b><br>
+            客户名：{{ item.customerName }}<br>
+            订单编号：{{ item.orderNo }}
+          </van-grid-item>
+          <hr>
+        </van-grid>
+      </van-row>
+    </van-popup>
   </div>
 </template>
 
@@ -166,6 +203,10 @@ export default {
       activeProceeds: [],
       proceedsTableHeader: '收款额',
       proceedsTotalCount: '',
+      showProceedsDetail: false,
+      proceedsDetailName: '',
+      activeProceedsDetail: [],
+      proceedsDetailData: [],
 
     }
   },
@@ -182,6 +223,11 @@ export default {
     });
   },
   methods: {
+    showPopup(shopId, projectsId, shopName, proceedsName) {
+      this.activeProceedsDetail = []
+      this.proceedsDetailName = shopName + " - " + proceedsName
+      this.queryProceedsDetail(shopId, projectsId)
+    },
     dateOnConfirm(date) {
       const [start, end] = date;
       this.show = false;
@@ -322,6 +368,25 @@ export default {
       }
       return {count: count, data: proceedsData}
     },
+    // 根据店铺id和项目id查询收款详情信息
+    queryProceedsDetail(shopId, projectsId) {
+      this.$axios({
+        method: "get",
+        url: "/proceedsReports/queryProceedsDetails",
+        params: {
+          startDate: this.startDate,
+          endDate: this.endDate,
+          date: this.date,
+          dressId: this.payeeId,
+          tenantCrop: this.tenantCrop,
+          shopId: shopId,
+          projectsId: projectsId,
+        }
+      }).then(response => {
+        this.proceedsDetailData = response.data.data
+        this.showProceedsDetail = true
+      })
+    }
   }
 }
 </script>
@@ -332,5 +397,23 @@ export default {
   font-family: -apple-system,BlinkMacSystemFont,'Helvetica Neue',Helvetica,Segoe UI,Arial,Roboto,'PingFang SC',miui,'Hiragino Sans GB','Microsoft Yahei',sans-serif;
   font-size: 14px;
   color: #646566;
+}
+.test {
+  height: 24px;
+  line-height: 24px;
+  padding: 10px 16px;
+  position: relative;
+}
+.test::after {
+  position: absolute;
+  box-sizing: border-box;
+  content: ' ';
+  pointer-events: none;
+  right: 16px;
+  bottom: 0;
+  left: 16px;
+  border-bottom: 1px solid #ebedf0;
+  -webkit-transform: scaleY(.5);
+  transform: scaleY(.5);
 }
 </style>
