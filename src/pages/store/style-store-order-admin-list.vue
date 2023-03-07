@@ -7,7 +7,7 @@
           left-arrow
           :fixed="true"
           :placeholder="true"
-          @click-left="$router.replace({name: 'work'})"
+          @click-left="onClickLeft"
       />
     </van-sticky>
 <!--    <van-loading type="spinner" v-show="loading"/>-->
@@ -79,6 +79,9 @@ export default {
   components: {
     baseNavBar
   },
+  mounted() {
+    window.onClickLeft = this.onClickLeft
+  },
   methods: {
     //查询购物车列表
     queryShoppingCart() {
@@ -110,6 +113,9 @@ export default {
     clickImageItem: function (image) {
       ImagePreview([`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image}`])
     },
+    onClickLeft: function () {
+      this.$router.replace({name: 'work'})
+    }
   },
 }
 </script>

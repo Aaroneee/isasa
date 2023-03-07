@@ -7,7 +7,7 @@
           left-arrow
           :fixed="true"
           :placeholder="true"
-          @click-left="$router.replace({name: 'work'})"
+          @click-left="onClickLeft"
       />
     </van-sticky>
     <van-loading type="spinner" v-show="loading"/>
@@ -76,13 +76,11 @@ export default {
   created() {
     this.queryShoppingCart()
   },
+  mounted() {
+    window.onClickLeft = this.onClickLeft
+  },
   components: {
     baseNavBar
-  },
-  beforeRouteEnter (to, from, next) {
-    console.log(to, from) // 可以拿到 from， 知道上一个路由是什么，从而进行判断
-    //在next中写处理函数
-    next(next); // err 与 12134 是随便传的值， 可忽略
   },
   methods: {
     //查询购物车列表
@@ -116,6 +114,9 @@ export default {
     clickImageItem: function (image) {
       ImagePreview([`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image}`])
     },
+    onClickLeft: function () {
+      this.$router.replace({name: 'work'})
+    }
   },
 }
 </script>
