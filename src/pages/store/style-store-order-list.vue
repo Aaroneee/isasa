@@ -1,6 +1,16 @@
 <template>
   <div>
-    <baseNavBar title="款式订单"/>
+    <van-sticky>
+      <van-nav-bar
+          :title="'采购列表'"
+          left-text="返回"
+          left-arrow
+          :fixed="true"
+          :placeholder="true"
+          @click-left="onClickLeft"
+      />
+    </van-sticky>
+    <van-loading type="spinner" v-show="loading"/>
     <van-collapse v-model="activeNames">
       <van-collapse-item :name="index" :title="item.createDate" v-for="(item,index) in orderList" :key="index">
         <div class="cardParent">
@@ -67,20 +77,12 @@ export default {
     this.queryShoppingCart()
   },
   mounted() {
-    window.addEventListener('popstate', this.goBack, false)
-    //防止页面后退
-    history.pushState(null, null, document.URL);
-    window.addEventListener('popstate', function () {
-      history.pushState(null, null, document.URL);
-    });
+    window.onClickLeft = this.onClickLeft
   },
   components: {
     baseNavBar
   },
   methods: {
-    goBack() {
-      this.$router.replace({name: "work"})
-    },
     //查询购物车列表
     queryShoppingCart() {
       this.loading = true;
@@ -112,6 +114,9 @@ export default {
     clickImageItem: function (image) {
       ImagePreview([`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image}`])
     },
+    onClickLeft: function () {
+      this.$router.replace({name: 'work'})
+    }
   },
 }
 </script>
@@ -158,5 +163,8 @@ p {
 
 .delete-button {
   height: 100%;
+}
+.van-loading--spinner{
+  text-align: center;
 }
 </style>

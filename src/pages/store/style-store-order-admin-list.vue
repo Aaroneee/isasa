@@ -1,8 +1,18 @@
 <template>
   <div>
-    <baseNavBar title="款式订单"/>
+    <van-sticky>
+      <van-nav-bar
+          :title="'款式订单'"
+          left-text="返回"
+          left-arrow
+          :fixed="true"
+          :placeholder="true"
+          @click-left="onClickLeft"
+      />
+    </van-sticky>
+<!--    <van-loading type="spinner" v-show="loading"/>-->
     <van-collapse v-model="activeNames">
-      <van-collapse-item :name="index" :title="item.createDate" v-for="(item,index) in orderList" :key="index">
+      <van-collapse-item :name="index" :title="item.createDate+'\xa0\xa0\xa0'+item.tenantName" v-for="(item,index) in orderList" :key="index">
         <div class="cardParent">
           <p>订单编号: {{ item.orderNo }}</p>
           <p>下单日期: {{ item.createDate }}</p>
@@ -59,36 +69,27 @@ export default {
 
       labelColor: ["#A52A2A", "#FF8C00", "#696969", "#FFA500", "#2F4F4F", "#6495ED", "#FF4500", "#40E0D0"],
 
-      loading: false,
-      tenantCrop: localStorage.getItem("tenantCrop"),
+      loading: true,
+      supplierTenantCrop: localStorage.getItem("tenantCrop"),
     }
   },
   created() {
     this.queryShoppingCart()
   },
-  mounted() {
-    window.addEventListener('popstate', this.goBack, false)
-    //防止页面后退
-    history.pushState(null, null, document.URL);
-    window.addEventListener('popstate', function () {
-      history.pushState(null, null, document.URL);
-    });
-  },
   components: {
     baseNavBar
   },
+  mounted() {
+    window.onClickLeft = this.onClickLeft
+  },
   methods: {
-    goBack() {
-      this.$router.replace({name: "work"})
-    },
     //查询购物车列表
     queryShoppingCart() {
-      this.loading = true;
       this.$axios({
         method: "GET",
-        url: "/storeOrder/queryList",
+        url: "/storeOrder/queryAdminList",
         params: {
-          tenantCrop: this.tenantCrop,
+          supplierTenantCrop:this.supplierTenantCrop,
         }
       }).then(response => {
         this.loading = false
@@ -112,6 +113,9 @@ export default {
     clickImageItem: function (image) {
       ImagePreview([`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image}`])
     },
+    onClickLeft: function () {
+      this.$router.replace({name: 'work'})
+    }
   },
 }
 </script>
@@ -158,5 +162,8 @@ p {
 
 .delete-button {
   height: 100%;
+}
+.van-loading--spinner{
+  text-align: center;
 }
 </style>
