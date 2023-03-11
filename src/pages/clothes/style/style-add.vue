@@ -365,7 +365,9 @@ export default {
       imageTypeText:"",
       imageTypeColumnsArray:[],
       checkbox: true,
-      styleAlias:""
+      styleAlias:"",
+
+      myShopIds: localStorage.getItem("shopIds"),
     }
   },
   created() {
@@ -379,6 +381,15 @@ export default {
   },
   components: {
     baseNavBar
+  },
+  watch:{
+    firstSwitch(newVal,oldVal){
+      if (newVal===true){
+        this.setDefaultClothesSize();
+        this.setDefaultShop();
+        this.setDefaultPosition();
+      }
+    }
   },
   methods: {
     queryStyleIds: function () {
@@ -520,29 +531,14 @@ export default {
     },
     queryShopIds: function () {
       this.$selectUtils.queryShopIds(this.$selectUtils.Picker).then(response => {
-        this.shopColumnsArray = JSON.parse(response.data.data)
+        this.shopColumnsArray =JSON.parse(response.data.data);
+        this.setDefaultShop();
       })
     },
     queryPositionIdsByShop: function (shop) {
       this.$selectUtils.queryPositionIdsByShop(shop, this.$selectUtils.Picker).then(response => {
         this.positionColumnsArray = JSON.parse(response.data.data)
-        if (localStorage.getItem("tenantCrop") == '2a31c23a-c178-441614928053489') {
-          if (this.clothesShopText == "上海华鑫店") {
-            this.positionColumnsArray.forEach(s => {
-              if (s.text.indexOf("新款入库区域") != -1) {
-                this.clothesPosition = s.id
-                this.clothesPositionText = s.text
-              }
-            })
-          } else {
-            this.positionColumnsArray.forEach(s => {
-              if (s.text.indexOf("收件待定") != -1) {
-                this.clothesPosition = s.id
-                this.clothesPositionText = s.text
-              }
-            })
-          }
-        }
+        this.setDefaultPosition();
       })
     },
     queryImageType:function(){
@@ -553,6 +549,7 @@ export default {
     queryClothesSize() {
       this.$selectUtils.queryClothesSize().then(response => {
         this.clothesSizeColumnsArray = JSON.parse(response.data.data).map(s => s['name'])
+        this.setDefaultClothesSize()
       })
     },
     positionOnConfirm: function (value) {
@@ -638,6 +635,35 @@ export default {
           this.styleOnConfirm({id:this.styleType,text:this.styleTypeText})
         }
       }
+    },
+    //设置款式默认尺寸
+    setDefaultClothesSize:function (){
+      this.clothesSizeColumnsArray.forEach(s => {
+        if (s==='F') {
+          this.clothesSize = s
+          return
+        }
+      })
+    },
+    //设置默认店铺
+    setDefaultShop:function (){
+      let localShopIds=this.myShopIds.split(",")
+      let shopId=localShopIds.includes("59")?59:Number(localShopIds[0]);
+      let choose=this.shopColumnsArray.filter(k=>{
+        return k.id===shopId;
+      })
+      this.clothesShop=choose[0].id;
+      this.clothesShopText=choose[0].text;
+      this.queryPositionIdsByShop(choose[0].id);
+    },
+    //设置默认位置
+    setDefaultPosition:function (){
+      this.positionColumnsArray.forEach(s => {
+        if (s.text.indexOf("新款入库区") !== -1) {
+          this.clothesPosition = s.id
+          this.clothesPositionText = s.text
+        }
+      })
     },
     positionClick() {
 
