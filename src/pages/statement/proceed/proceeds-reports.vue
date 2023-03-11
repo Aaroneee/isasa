@@ -184,7 +184,7 @@ export default {
       payeeName: '',
       payeeId: '',
       // 收款人列表
-      payeeArray: [{text: "全国收款人", id: ""}],
+      payeeArray: [{text: "所有收款人", id: ""}],
       // 是否正在加载礼服师
       payeeLoading: false,
       // 是否显示店铺下拉列表
@@ -195,7 +195,7 @@ export default {
       // 是否正在加载店铺
       shopLoading: false,
       // 店铺列表
-      shopArray: [{text: "全国店铺", id: ""}],
+      shopArray: [{text: "所有店铺", id: ""}],
       // 收款视图
       proceedsViewData: {},
       proceedsView: {},
