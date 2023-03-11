@@ -211,7 +211,7 @@ export default {
     }
   },
   created() {
-    this.shopName="全国店铺"
+    this.shopName="所有店铺"
     this.queryPayeeArray()
     this.queryShopArray()
     this.queryProceedsTotalReports()
