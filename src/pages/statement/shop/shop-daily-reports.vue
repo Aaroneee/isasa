@@ -21,24 +21,6 @@
       <van-field
           readonly
           clickable
-          label="礼服师："
-          :value="dressName"
-          placeholder="选择礼服师"
-          @click="showDress = true"
-      />
-      <van-popup v-model="showDress" round position="bottom">
-        <van-picker
-            show-toolbar
-            :columns="dressArray"
-            @cancel="showDress = false"
-            @confirm="dressOnConfirm"
-            :loading="dressLoading"
-        />
-      </van-popup>
-
-      <van-field
-          readonly
-          clickable
           label="店铺："
           :value="shopName"
           placeholder="选择店铺"
@@ -51,6 +33,24 @@
             @cancel="showShop = false"
             @confirm="shopOnConfirm"
             :loading="shopLoading"
+        />
+      </van-popup>
+
+      <van-field
+          readonly
+          clickable
+          label="礼服师："
+          :value="dressName"
+          placeholder="选择礼服师"
+          @click="showDress = true"
+      />
+      <van-popup v-model="showDress" round position="bottom">
+        <van-picker
+            show-toolbar
+            :columns="dressArray"
+            @cancel="showDress = false"
+            @confirm="dressOnConfirm"
+            :loading="dressLoading"
         />
       </van-popup>
     </van-sticky>
@@ -401,8 +401,8 @@ export default {
     baseNavBar
   },
   created() {
-    this.shopName="全国店铺"
-    this.dressName="全国礼服师"
+    this.shopName="所有店铺"
+    this.dressName="所有礼服师"
     this.queryShop();
     this.queryDress();
     this.queryShopEarningReports();
@@ -433,7 +433,7 @@ export default {
       dressName: '',
       dressId: '',
       // 礼服师列表
-      dressArray: [{text: "全国礼服师", id: ""}],
+      dressArray: [{text: "所有礼服师", id: ""}],
       // 是否正在加载礼服师
       dressLoading: false,
       // 是否显示店铺下拉列表
@@ -444,7 +444,7 @@ export default {
       // 是否正在加载店铺
       shopLoading: false,
       // 店铺列表
-      shopArray: [{text: "全国店铺", id: ""}],
+      shopArray: [{text: "所有店铺", id: ""}],
       activeNames: ['1','2','3','4','5', '6'],
       activeEarningDetail: [],
 

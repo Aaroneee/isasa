@@ -63,7 +63,6 @@
     <van-row>
       <van-col span="24">
         <div v-show="proceedsViewData.length !== 0" style="background-color: white;margin-bottom: 20px;width: 100%">
-          <canvas id="myChart"></canvas>
           <div class="van_table_show">
             <div class="test" style="color: #606266;background-color: #f5f7fa">
               <van-row>
@@ -109,6 +108,8 @@
               </div>
             </van-collapse>
           </div>
+          <van-divider style="color: #1989fb; font-size: 15px">收款统计图</van-divider>
+          <canvas id="myChart"></canvas>
         </div>
         <div v-show="proceedsViewData.length === 0" style="background-color: white;width: 100%;height: 100vh">
           <van-empty description="暂无收款" />
