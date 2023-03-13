@@ -16,6 +16,7 @@ import clothesOperationRecord from "@/pages/clothes/clothes/clothes-operation-re
 import stylePrice from "@/pages/clothes/style/style-price"
 import clothesBumperAlert from "@/pages/clothes/clothes/clothes-bumper-alert";
 import clothesManager from "@/pages/clothes/clothes/clothes-manager";
+import clothesEdit from "@/pages/clothes/clothes/clothes-edit";
 
 export default [
     {
@@ -108,5 +109,10 @@ export default [
         path: '/clothesBumperAlert',
         name: 'clothesBumperAlert',
         component: clothesBumperAlert,
-    }
+    },
+    {
+        path: '/clothesEdit',
+        name: 'clothesEdit',
+        component: clothesEdit,
+    },
 ]

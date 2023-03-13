@@ -55,6 +55,10 @@
       <div id="operationCon">
         <p class="PTitle">操作菜单</p>
         <div id="operationParent">
+          <div class="operationBlock" @click="updateClothes">
+            <van-icon name="edit" size="30"/>
+            <p>编辑</p>
+          </div>
           <div class="operationBlock" @click="clothesOperation">
             <van-icon name="back-top" size="30"/>
             <p>出样陈列</p>
@@ -232,6 +236,10 @@ export default {
       }).catch(() => {
         // on cancel
       });
+    },
+    //编辑婚纱
+    updateClothes:function (){
+      this.$router.push({name: "clothesEdit", query: this.clothes})
     },
     //出样陈列
     clothesOperation: function () {

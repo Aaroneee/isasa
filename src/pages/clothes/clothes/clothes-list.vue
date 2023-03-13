@@ -173,13 +173,13 @@ export default {
       console.log(value)
       // TODO  婚纱详情待开发
       this.$router.push({name: "clothesDetails", query: value})
-    }, searchStyleName: function (value) {
+    },
+    searchStyleName: function (value) {
       this.page = 1
       this.styleName = value
       this.clothesList = []
       this.queryClothesList()
-    }
-    ,
+    },
     queryClothesList: function () {
       this.loading = true
       this.$axios({
@@ -213,14 +213,13 @@ export default {
           this.$toast.fail(response.data.msg);
         }
       })
-    }
-    , onLoad() {
+    },
+    onLoad() {
       const that = this
       setTimeout(function () {
         that.queryClothesList()
       }, 1000)
-    }
-    ,
+    },
     styleTypeChange: function (type) {
       this.flushClothesListArray()
       this.styleType = type
@@ -289,7 +288,6 @@ export default {
     queryStyleLabelList: function () {
       this.$selectUtils.queryStyleLabels().then((response) => {
         this.styleLabelList.push(...response.data.data);
-        console.log(response)
       })
     },
     styleLabelConfirm: function () {
@@ -344,10 +342,13 @@ export default {
     },
   },
   beforeRouteLeave(to, from, next) {
-    // 从列表页去到别的页面，如果不是判断页面，则不缓存列表页
-    this.$route.meta.keepAlive = to.name === 'clothesDetails';
+    if (to.name === 'clothesDetails') {
+      this.$store.commit('setKeepAlive', ['clothesList'])
+    } else {
+      this.$store.commit('setKeepAlive', [])
+    }
     next()
-  },
+  }
 }
 </script>
 
