@@ -380,6 +380,7 @@
 
 <script>
 import switchNavBar from "@/components/nav-bar/switch-nav-bar"
+import axios from "axios";
 
 export default {
 
@@ -527,9 +528,9 @@ export default {
         title: '申请退押',
         message: '申请退押？'
       }).then(() => {
-        this.$axios({
+        axios({
           method: "PUT",
-          url: '/ios/applyForRefundMo',
+          url: 'https://www.ivorybai.com:8080/ios/applyForRefundMo',
           params: {
             empId: this.empId,
             createMan: document.getElementById("empName").value,
@@ -752,9 +753,9 @@ export default {
     //查 已退押列表。默认 主管看全国当月， 非主管 看该店当月
     queryAlreadyRefundList: function () {
       this.alreadyRefundList = []
-      this.$axios({
+      axios({
         method: "GET",
-        url: '/ivory/ios/queryAlreadyRefundList',
+        url: 'https://www.ivorybai.com:8080/ios/queryAlreadyRefundList',
         params: {
           city: this.orderShop,
           weddingDate: this.weddingDate === "选择订单婚期" ? this.$dateUtils.tran_second_of_the_month(this.$dateUtils.getTimeStr('M'))
@@ -800,9 +801,9 @@ export default {
     applyRefundMortgageList: function () {
       this.noRefundList =[]
 
-      this.$axios({
+     axios({
         method: "GET",
-        url: '/ivory/ios/applyRefundMortgageList',
+        url: 'https://www.ivorybai.com:8080/ios/applyRefundMortgageList',
         params: {
           city: this.orderShop,
           weddingDate: this.weddingDate === "选择订单婚期" ? "选择订单婚期"
@@ -821,9 +822,9 @@ export default {
     //查正在用衣服的客户 即未还纱列表。默认 主管看全国所有的未还纱，非主管 看该店所有的(该店的礼服师都能处理还纱)。
     queryUsingClothesCustomer: function () {
       this.usingClothesCustomerList =[]
-      this.$axios({
+      axios({
         method: "GET",
-        url: '/ivory/ios/queryUsingClothesCustomer',
+        url: 'https://www.ivorybai.com:8080/ios/queryUsingClothesCustomer',
         params: {
           city: this.orderShop,
           weddingDate: this.weddingDate === "选择订单婚期" ? "选择订单婚期"
