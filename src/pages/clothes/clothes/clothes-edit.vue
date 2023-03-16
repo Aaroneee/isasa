@@ -152,7 +152,7 @@ export default {
       }).then(() => {
         this.$axios({
           method: "post",
-          url: '/clothes/mUpdateClothes',
+          url: '/clothes/updateClothesStyle',
           data: {
             id:this.form.id,
             styleId:this.form.styleId,
