@@ -18,6 +18,14 @@ module.exports = {
         hotOnly: false,
 
         proxy : {
+            '/ivory':{
+                target : 'https://www.ivorybai.com:8080/',
+                // ws : true,
+                changeOrigin : true,
+                pathRewrite : {
+                    '^/api/ivory' : ''
+                }
+            },
             '/' : {
                 target : 'http://localhost:8090/',
                 // ws : true,

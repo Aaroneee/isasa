@@ -35,7 +35,7 @@
     <div>
       <div id="operationDiv" v-for="item in clothesList" :key="item.id">
         <div id="operationCon">
-          <span style="font-size: 15px;text-align: center;color: #42aef6;">{{ item[0].shopName }}婚纱礼服</span>
+          <span style="font-size: 17px;text-align: center;color: #42aef6;">{{ item[0].shopName }}婚纱礼服</span>
           <div id="operationParent">
             <div class="operationBlock" v-for="it of item" :key="it.id" @click="clickItem(it)">
               <p class="pfont">{{ it.positionName }}</p>
@@ -282,7 +282,6 @@ export default {
 }
 .pfont{
   font-size: 13px;
-  font-weight: lighter;
 }
 
 .operationBlock {
