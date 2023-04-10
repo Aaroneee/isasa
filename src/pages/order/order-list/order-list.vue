@@ -48,8 +48,11 @@
                 <van-col span="12" style="text-align: right">婚期:{{ item.weddingDay }}</van-col>
               </van-row>
               <van-row>
-                <van-col>
+                <van-col span="12">
                   礼服师:{{ item.dress }}
+                </van-col>
+                <van-col span="12" style="text-align: right">
+                  化妆师:{{ item.cosmetics }}
                 </van-col>
               </van-row>
               <van-row>
@@ -171,6 +174,7 @@ export default {
           dress: this.dress
         }
       }).then(response => {
+        console.log(response)
         if (response.data.code === 200) {
           if (response.data.data.nextPage === 0) {
             this.finished = true

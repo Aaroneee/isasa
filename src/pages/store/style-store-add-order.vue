@@ -180,6 +180,7 @@ export default {
         empId: this.empId,
         totalAmount: this.priceCount,
         payState: 0,
+        orderState: 0,
         tenantCrop: this.tenantCrop,
         supplierTenantCrop: storeOrderStyleS[0].supplierTenantCrop,
         storeOrderStyleS: storeOrderStyleS,
