@@ -464,6 +464,7 @@ export default {
           shopId: this.shopId
         }
       }).then(response => {
+        console.log(response.data.data)
         this.depositCountApplyNoBack = response.data.data.depositCount;
         this.depositAmountApplyNoBack = response.data.data.depositAmount;
         this.depositApplyNoBack = response.data.data.depositItem;
