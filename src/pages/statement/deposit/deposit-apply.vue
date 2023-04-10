@@ -143,12 +143,7 @@ export default {
         title: '确认取消修改？'
       }).then(() => {
         // on confirm
-        this.$router.push({
-          name: 'depositDetail',
-          params: {
-            item: this.item
-          }
-        })
+        this.$router.back()
       }).catch(() => {
         // on cancel
         return false;

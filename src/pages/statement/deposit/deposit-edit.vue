@@ -277,12 +277,7 @@ export default {
       Dialog.confirm({
         message: '您还未保存，是否返回？',
       }).then(() => {
-        this.$router.push({
-          name: 'depositDetail',
-          params: {
-            item: this.oldData
-          }
-        })
+        this.$router.back()
       }).catch(() => {
         return false;
       });

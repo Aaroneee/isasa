@@ -133,12 +133,7 @@ export default {
       Dialog.confirm({
         message: '您还未提交，是否返回？',
       }).then(() => {
-        this.$router.push({
-          name: 'depositDetail',
-          params: {
-            item: this.item
-          }
-        })
+        this.$router.back()
       }).catch(() => {
         return false;
       });

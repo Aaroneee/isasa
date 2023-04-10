@@ -90,7 +90,9 @@ export default {
   data() {
     return {
       titleText: '押金详情',
-      item: this.$route.params.item,
+      item: {},
+      proceedsId: this.$route.params.id,
+      type: this.$route.params.type,
       proceedsPicture: '',
       refundPicture: '',
       tenantCrop: localStorage.getItem('tenantCrop'),
@@ -98,11 +100,12 @@ export default {
     }
   },
   created() {
-    this.showDepositCollectionPictures(this.item.proceedsId)
+    this.queryDepositItemDetail()
+    this.showDepositCollectionPictures(this.proceedsId)
   },
   methods: {
     onClickLeft() {
-      this.$router.push('depositList')
+      this.$router.back()
     },
     clickApplyItem() {
       this.$router.push({
@@ -169,6 +172,19 @@ export default {
         params: {
           item: this.item
         }
+      })
+    },
+    // 查询单条押金记录
+    queryDepositItemDetail() {
+      this.$axios({
+        method: 'GET',
+        url: '/proceeds/getItemDetail',
+        params: {
+          type: this.type,
+          proceedsId: this.proceedsId
+        }
+      }).then(response => {
+        this.item = response.data.data
       })
     }
   }

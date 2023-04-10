@@ -6,7 +6,7 @@ import depositConfirm from "@/pages/statement/deposit/deposit-confirm";
 
 export default [
     {
-        path: '/depositDetail',
+        path: '/depositDetail/:type/:id',
         name: 'depositDetail',
         component: depositDetail,
     },
