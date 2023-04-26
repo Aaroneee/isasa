@@ -69,6 +69,7 @@ export default {
   created() {
     this.styleList = this.$route.query
     this.getCountPrice();
+    this.queryAdvanceCharge();
   },
   mounted() {
     window.payResult = this.payResult
@@ -83,12 +84,26 @@ export default {
       labelColor: ["#A52A2A", "#FF8C00", "#696969", "#FFA500", "#2F4F4F", "#6495ED", "#FF4500", "#40E0D0"],
 
       images: [],
+      advanceCharge:0,
     }
   },
   methods: {
     clickImageItem(image) {
       ImagePreview([`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image}`])
     },
+    //查询预付款
+    queryAdvanceCharge(){
+      this.$axios({
+        method: "GET",
+        url: "/tenant/queryTenantInfo",
+        params:{
+          tenantCrop:this.tenantCrop
+        }
+      }).then(response => {
+        this.advanceCharge=response.data.data.advanceCharge;
+      })
+    },
+    //点击订单
     addOrder() {
       this.$dialog.confirm({
         title: "确认订单?",
@@ -99,9 +114,15 @@ export default {
           url: "/storeOrder/addStoreOrder",
           data: this.structureData()
         }).then(response => {
-          //如果提交订单成功 则调用支付宝 并清空购物车
+          //如果提交订单成功则进入支付逻辑
           if (response.data.code === 200) {
             this.delAllShoppingCart();
+            //如果余额有钱则使用余额支付 否则直接使用支付宝
+            if(this.advanceCharge>=this.priceCount){
+              this.changeAdvanceCharge(response.data.data.id);
+              return;
+            }
+            //则判断是否有预付款, 如果有并且够则询问是否直接付款,如果不够或没有则给出弹窗
             if (/Linux/i.test(navigator.platform)) {
               androidMethod.getAliPayInfo(response.data.data.id);
             } else {
@@ -114,6 +135,36 @@ export default {
         })
       })
     },
+    //调用余额支付
+    changeAdvanceCharge(orderId){
+      this.$dialog.confirm({
+        title: '支付提示',
+        message: '当前预付款余额: '+this.advanceCharge+'<br>是否直接使用余额支付?',
+      }).then(() => {
+        this.$axios({
+          method: "POST",
+          url: "/storeOrder/advanceChargePay",
+          data: {
+            tenantCrop:this.tenantCrop,
+            id:orderId,
+            totalAmount: this.priceCount,
+            payChannel:2,
+            empId: this.empId,
+            orderState: 1,
+          }
+        }).then(response => {
+          //如果提交订单成功则进入支付逻辑
+          if (response.data.code === 200) {
+            this.$toast.success('支付成功');
+
+            this.$router.push({name:"styleStoreOrderList"})
+          } else {
+            this.$toast.fail('支付失败,请到采购列表完成支付!');
+          }
+        })
+      })
+    },
+
     payResult(status) {
       console.log(status)
       if (status === 0 || status === "0") {
@@ -179,7 +230,6 @@ export default {
       return {
         empId: this.empId,
         totalAmount: this.priceCount,
-        payState: 0,
         orderState: 0,
         tenantCrop: this.tenantCrop,
         supplierTenantCrop: storeOrderStyleS[0].supplierTenantCrop,

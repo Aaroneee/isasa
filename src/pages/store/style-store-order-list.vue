@@ -41,11 +41,11 @@
               </van-col>
             </van-row>
           </div>
-          <p v-if="item.payState===0" style="text-align: right">
+          <p v-if="item.orderState===0" style="text-align: right">
             <van-button plain round type="danger" size="small" @click="goPay(item.id)">点击支付</van-button>
           </p>
-          <p v-else :style="{color: item.payState===1?'green':'blue',fontWeight:'bold',textAlign:'right'}">
-            {{ item.payState === 1 ? '已支付' : '已退款' }}
+          <p v-else :style="{color: getOrderStateText(item.orderState)[1] ,fontWeight:'bold',textAlign:'right'}">
+            {{ getOrderStateText(item.orderState)[0] }}
           </p>
         </div>
 
@@ -57,6 +57,7 @@
 <script>
 import {ImagePreview} from "vant";
 import baseNavBar from "@/components/nav-bar/base-nav-bar";
+import {re} from "mathjs";
 
 export default {
   name: "style-store-order-list",
@@ -116,7 +117,20 @@ export default {
     },
     onClickLeft: function () {
       this.$router.replace({name: 'work'})
-    }
+    },
+    //获取订单显示文本
+    getOrderStateText(orderState){
+      switch (orderState){
+        case 1:
+          return ["待确认","#FFA500FF"];
+        case 2:
+          return ["待发货","#FFA500FF"];
+        case 3:
+          return ["已发货","green"];
+        case 4:
+          return ["已退款","red"];
+      }
+    },
   },
 }
 </script>
