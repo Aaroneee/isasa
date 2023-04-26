@@ -416,5 +416,16 @@ export default {
                 tenantCrop: localStorage.getItem("tenantCrop"),
             }
         })
+    },
+    // 查询退款方式
+    queryRefundPaymentIds(type) {
+        return self.$axios({
+            method: 'GET',
+            url: '/select/refundPaymentId',
+            params: {
+                type: type,
+                tenantCrop: localStorage.getItem('tenantCrop')
+            }
+        })
     }
 }

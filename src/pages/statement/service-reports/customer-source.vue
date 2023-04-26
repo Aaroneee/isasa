@@ -1,26 +1,24 @@
 <template>
   <div>
     <van-sticky>
-      <switchNavBar title="渠道分析表" switchText="日期" @flag="createDateShow=true"/>
-    </van-sticky>
-    <van-dropdown-menu>
-<!--      <van-dropdown-item v-model="serviceId" @change="serviceChange" :options="serviceArray"/>
-      <van-dropdown-item v-model="dressId" @change="dressChange" :options="dressArray"/>-->
-      <van-dropdown-item v-model="shopId" @change="shopChange" :options="shopArray"/>
-      <van-dropdown-item v-model="sourceId" @change="sourceChange" :options="sourceArray"/>
-      <van-dropdown-item v-model="empId" @change="empChange" :options="empArray"/>
-    </van-dropdown-menu>
-    <van-popup v-model="createDateShow" position="bottom">
-      <van-datetime-picker
-          v-model="chooseDate"
-          type="year-month"
-          title="选择年月"
+      <baseNavBar title="渠道分析表"/>
+      <van-dropdown-menu>
+        <!--      <van-dropdown-item v-model="serviceId" @change="serviceChange" :options="serviceArray"/>
+              <van-dropdown-item v-model="dressId" @change="dressChange" :options="dressArray"/>-->
+        <van-dropdown-item v-model="shopId" @change="shopChange" :options="shopArray"/>
+        <van-dropdown-item v-model="sourceId" @change="sourceChange" :options="sourceArray"/>
+        <van-dropdown-item v-model="empId" @change="empChange" :options="empArray"/>
+      </van-dropdown-menu>
+      <van-cell title="选择日期:" :value="date" @click="createDateShow = true"/>
+      <van-calendar
+          v-model="createDateShow"
+          type="range"
+          @confirm="dateOnConfirm"
+          allow-same-day
           :min-date="minDate"
-          :max-date="maxDate"
-          @cancel="createDateShow = false"
-          @confirm="createDateOnConfirm"
       />
-    </van-popup>
+    </van-sticky>
+
     <van-tabs v-model="active" animated swipeable :lazy-render="false" color="#409eff">
       <van-tab title="渠道客资" :disabled="!isService">
         <van-row>
@@ -358,12 +356,12 @@
 
 <script>
 import F2 from '@antv/f2';
-import switchNavBar from '@/components/nav-bar/switch-nav-bar'
+import baseNavBar from "@/components/nav-bar/base-nav-bar";
 
 export default {
   name: "customer-source",
   components: {
-    switchNavBar
+    baseNavBar
   },
   data() {
     return {
@@ -423,6 +421,7 @@ export default {
     this.querySourceIds()
     this.queryEmpIds()
     this.queryShopIds()
+    this.date = this.formatDate(this.$dateUtils.getCurrentMonthFirstDay()) + " - " + this.formatDate(this.$dateUtils.getCurrentMonthLastDay())
   },
   mounted() {
     var v = this;
@@ -447,6 +446,15 @@ export default {
       this.querySourceReportsArrival()
       this.querySourceReportsOrder()
       this.querySourceReportsMoney()
+    },
+    formatDate(date) {
+      return `${date.getFullYear()}-${this.$dateUtils.dateIsSingle(date.getMonth() + 1)}-${this.$dateUtils.dateIsSingle(date.getDate())}`;
+    },
+    dateOnConfirm(date) {
+      const [start, end] = date;
+      this.createDateShow = false;
+      this.date = this.formatDate(start) + ' - ' + this.formatDate(end);
+      this.pageInit()
     },
     queryServiceIds: function () {
       this.$selectUtils.queryServiceIds(this.$selectUtils.DropDownMenu).then(response => {
