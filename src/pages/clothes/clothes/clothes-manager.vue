@@ -118,7 +118,7 @@ export default {
       this.loading = true
       this.$axios({
         method: "get",
-        url: '/clothes/queryPositionClothesCount',
+        url: '/clothes/mobileQueryPositionClothesCount',
         params: {
           tenantCrop: this.tenantCrop,
           styleLabels: this.styleLabels.toString(),
