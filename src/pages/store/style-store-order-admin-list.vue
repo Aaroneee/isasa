@@ -120,13 +120,13 @@ export default {
     getOrderStateText(orderState){
       switch (orderState){
         case 1:
-          return ["待确认","#FFA500FF"];
-        case 2:
           return ["待发货","#FFA500FF"];
+        case 2:
+          return ["已发货","#187e18"];
         case 3:
-          return ["已发货","green"];
+          return ["已退款","#e02e2e"];
         case 4:
-          return ["已退款","red"];
+          return ["已取消","#ec7878"];
       }
     },
   },
