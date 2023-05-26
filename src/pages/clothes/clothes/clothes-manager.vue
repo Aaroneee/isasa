@@ -42,6 +42,10 @@
               <p v-if="it.dummy === '1'" class="pfont">{{ it.positionName }}</p>
               <p class="pfont">{{ it.count }}</p>
             </div>
+            <div class="operationBlock">
+              <p style="color: #1AA090" class="pfont">存疑数量</p>
+              <p class="pfont">{{ item[0].doubtCount }}</p>
+            </div>
           </div>
         </div>
       </div>
