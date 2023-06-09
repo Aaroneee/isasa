@@ -3,8 +3,8 @@
     <baseNavBar title="购物车"/>
     <van-swipe-cell v-for="(item,index) in shopCartList" :key="index">
       <div class="card">
-        <van-row>
-          <van-col :span="10">
+        <van-row gutter="20">
+          <van-col :span="11">
             <div>
               <van-image class="style-img" radius="7"
                          fit="contain"
@@ -14,11 +14,13 @@
               </van-image>
             </div>
           </van-col>
-          <van-col :span="14" @click="toStyleDetails(item)">
+          <van-col :span="13" @click="toStyleDetails(item)">
             <van-row><p>品牌 : {{item.storeBrandName}}</p></van-row>
             <van-row><p>类型 : {{item.storeTypeName}}</p></van-row>
             <van-row><p>系列 : {{item.storeSeriesName}}</p></van-row>
             <van-row><p>系列编号 : {{item.storeSeriesNum}}</p></van-row>
+            <van-row><p>款式名称 : {{ item.styleName }}</p></van-row>
+            <van-row><p>款式编号 : {{ item.styleNum }}</p></van-row>
             <van-row><p>价格 : {{item.salePrice}}</p></van-row>
             <van-row>
               <van-col v-for="(childItem,index) in getLabel(item.labelNames)" :key="index" style="margin: 1% 1%">

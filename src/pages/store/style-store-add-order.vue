@@ -5,8 +5,8 @@
     </van-sticky>
     <div class="card" v-for="(item,index) in styleList" :key="index">
       <!--      <van-row class="cardTitle"><span>{{item.storeTypeName+'-'+item.storeSeriesNum}}</span></van-row>-->
-      <van-row>
-        <van-col :span="10">
+      <van-row gutter="20">
+        <van-col :span="11">
           <div>
             <van-image class="style-img" radius="7"
                        @click="clickImageItem(item.mainImage)"
@@ -17,11 +17,13 @@
             </van-image>
           </div>
         </van-col>
-        <van-col :span="14">
+        <van-col :span="13">
           <van-row><p>品牌 : {{ item.storeBrandName }}</p></van-row>
           <van-row><p>类型 : {{ item.storeTypeName }}</p></van-row>
           <van-row><p>系列 : {{ item.storeSeriesName }}</p></van-row>
           <van-row><p>系列编号 : {{ item.storeSeriesNum }}</p></van-row>
+          <van-row><p>款式名称 : {{ item.styleName }}</p></van-row>
+          <van-row><p>款式编号 : {{ item.styleNum }}</p></van-row>
           <van-row><p>价格 : {{ item.salePrice }}</p></van-row>
           <van-row>
             <van-col v-for="(childItem,index) in getLabel(item.labelNames)" :key="index" style="margin: 1% 1%">

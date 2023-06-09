@@ -9,7 +9,7 @@
         <div class="scrollbarDiv">
           <div v-for="(image, index) in images" :key="index" style="display: inline;margin-right: 2%">
             <img :src="image" style="height: 300px"
-                 @click="clickImageItem(index)" alt="图片已损坏"/>
+                 @click="clickImageItem(index)" alt="未查到图片"/>
           </div>
         </div>
       </van-row>
@@ -23,6 +23,14 @@
         </van-col>
         <van-col :span="12">
           <p>款式售价 : {{ style.salePrice }}元</p>
+        </van-col>
+      </van-row>
+      <van-row>
+        <van-col :span="12">
+          <p>款式名称 : {{ style.styleName }}</p>
+        </van-col>
+        <van-col :span="12">
+          <p>款式编号 : {{ style.styleNum }}</p>
         </van-col>
       </van-row>
       <van-row>
