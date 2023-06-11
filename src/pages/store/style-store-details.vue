@@ -21,8 +21,22 @@
         <van-col :span="12">
           <p>款式类型 : {{ style.storeTypeName }}</p>
         </van-col>
+
+      </van-row>
+      <van-row>
         <van-col :span="12">
           <p>款式售价 : {{ style.salePrice }}元</p>
+        </van-col>
+        <van-col :span="12">
+          <p>建议零售价 : {{ style.suggestSalePrice }}元</p>
+        </van-col>
+      </van-row>
+      <van-row>
+        <van-col :span="12">
+          <p>折扣金额 : {{ style.discountPrice }}元</p>
+        </van-col>
+        <van-col :span="12">
+          <p>折扣比例 : {{ style.discountRatio*100 }}</p>
         </van-col>
       </van-row>
       <van-row>
