@@ -10,16 +10,19 @@
       <van-cell title="产品到期时间" :value="tenant.tenantEndDate" icon="flag-o"/>
     </van-cell-group>
     <van-button
-        style="margin-top: 5%"
-        class="logout"
-        color="linear-gradient(to right, #ff6134, #ee0a24)"
-        round
-        type="info"
-        @click="logout"
-        block>退出
+      style="margin-top: 10%"
+      class="logout"
+      color="linear-gradient(to right, #ff6134, #ee0a24)"
+      round
+      type="info"
+      @click="logout"
+      block>退出
     </van-button>
+    <div class="purchaseBox" @click="purchase">
+      <p class="purchaseBoxP">产&nbsp;品&nbsp;续&nbsp;费</p>
+    </div>
   </div>
-</template>
+</template>续费
 
 <script>
 export default {
@@ -40,7 +43,7 @@ export default {
         message: '确定要退出登录吗，将回到登陆界面',
         overlay: false,
       }).then(() => {
-        if(/Linux/i.test(navigator.platform)){
+        if (/Linux/i.test(navigator.platform)) {
           androidMethod.logOut();
           return;
         }
@@ -65,7 +68,20 @@ export default {
         }
         this.tenant = response.data.data;
       })
-    }
+    },
+    //充值
+    purchase() {
+      this.$dialog.confirm({
+        message: '<p style="font-weight: bold">确定是否续费? \n\n 续费时长 : 1年 \n\n 续费金额 :1000元</p>',
+        overlay: false,
+      }).then(() => {
+        //todo 编写充值逻辑
+
+      }).catch(() => {
+        // on cancel
+      });
+
+    },
   }
 }
 </script>
@@ -77,5 +93,19 @@ export default {
 .logout {
   width: 90%;
   margin: 0 auto;
+}
+
+.purchaseBox {
+  text-align: center;
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.purchaseBoxP {
+  color: #8a8a8a;
+  border-bottom: 2px solid #8a8a8a;
+  font-weight: bold
 }
 </style>
