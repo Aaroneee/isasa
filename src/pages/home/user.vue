@@ -29,11 +29,27 @@ export default {
   name: "user",
   data() {
     return {
-      tenant: {}
+      tenant: {},
+      form: {
+        tenantId: "",
+        payDate: new Date(),
+        createDate: new Date(),
+        tenantName: "",
+        recorderEmpId: "",
+        payEmpId: "",
+        addDay: "0",
+        money: 1000,
+        remark: "用户自行充值",
+        tenantCrop: "",
+      },
+      resultId: "",
     }
   },
   created() {
     this.queryTenant();
+  },
+  mounted() {
+    window.payResult = this.payResult
   },
   methods: {
     //退出登录
@@ -67,6 +83,7 @@ export default {
           return false;
         }
         this.tenant = response.data.data;
+        this.setForm();
       })
     },
     //充值
@@ -75,12 +92,60 @@ export default {
         message: '<p style="font-weight: bold">确定是否续费? \n\n 续费时长 : 1年 \n\n 续费金额 :1000元</p>',
         overlay: false,
       }).then(() => {
-        //todo 编写充值逻辑
+        this.$axios({
+          method: "POST",
+          url: "/tenantPurchase/savePurchase",
+          data: this.form
+        }).then(response => {
+          if (response.data.code === 200) {
+            this.resultId = response.data.data.id;
+            if (/Linux/i.test(navigator.platform)) {
+              androidMethod.getPurchaseInfo(this.resultId);
+            } else {
+              //todo 苹果在这里调原生
+            }
+
+
+          } else {
+            this.$toast.fail(response.data.msg)
+          }
+        });
 
       }).catch(() => {
         // on cancel
       });
+    },
+    payResult(status) {
+      if (status === 0 || status === "0") {
+        this.$toast.fail('支付失败!');
+        this.queryTenant();
+      }
+      if (status === 1 || status === "1") {
+        this.$axios({
+          method: "POST",
+          url: "/tenantPurchase/changeDay",
+          data: {
+            id: this.resultId
+          }
+        }).then(response => {
+          if (response.data.code === 200) {
+            this.$toast.success('支付成功');
+            this.queryTenant();
 
+          } else {
+            this.$toast.fail(response.data.msg)
+          }
+        });
+
+      }
+    },
+
+    setForm() {
+      this.form.tenantId = this.tenant.tenantId;
+      this.form.tenantName = this.tenant.tenantName;
+      this.form.recorderEmpId = this.tenant.id;
+      this.form.payEmpId = this.tenant.id;
+      this.form.tenantCrop = this.tenant.tenantCrop;
     },
   }
 }
