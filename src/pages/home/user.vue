@@ -102,10 +102,8 @@ export default {
             if (/Linux/i.test(navigator.platform)) {
               androidMethod.getPurchaseInfo(this.resultId);
             } else {
-              //todo 苹果在这里调原生
+              window.webkit.messageHandlers.pay.postMessage(this.resultId);
             }
-
-
           } else {
             this.$toast.fail(response.data.msg)
           }
