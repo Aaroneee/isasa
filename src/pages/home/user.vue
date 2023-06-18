@@ -102,7 +102,7 @@ export default {
             if (/Linux/i.test(navigator.platform)) {
               androidMethod.getPurchaseInfo(this.resultId);
             } else {
-              window.webkit.messageHandlers.pay.postMessage(this.resultId);
+              window.webkit.messageHandlers.purchase.postMessage(this.resultId);
             }
           } else {
             this.$toast.fail(response.data.msg)
