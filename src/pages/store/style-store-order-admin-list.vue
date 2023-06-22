@@ -18,7 +18,7 @@
           <p>下单日期: {{ item.createDate }}</p>
           <p>订单总价: {{ item.totalAmount }}</p>
           <div class="card" v-for="(childItem,childIndex) in item.storeOrderStyleVOS" :key="childIndex">
-            <van-row>
+            <van-row gutter="20">
               <van-col :span="10">
                 <div>
                   <van-image class="style-img" radius="7"
@@ -38,6 +38,7 @@
                 <van-row><p>单价 : {{ childItem.unitPrice }}</p></van-row>
                 <van-row><p>数量 : {{ childItem.styleNum }}</p></van-row>
                 <van-row><p>总金额 : {{ childItem.amount }}</p></van-row>
+                <van-row><p :style="{color: getOrderStateText(item.orderState)[1]}">款式状态 : {{ getOrderStateText(childItem.styleState)[0] }}</p></van-row>
               </van-col>
             </van-row>
           </div>
@@ -119,6 +120,8 @@ export default {
     //获取订单显示文本
     getOrderStateText(orderState){
       switch (orderState){
+        case 0:
+          return ["待付款","#FFA500FF"];
         case 1:
           return ["待发货","#FFA500FF"];
         case 2:

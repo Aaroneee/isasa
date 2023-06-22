@@ -38,6 +38,7 @@
                 <van-row><p>单价 : {{ childItem.unitPrice }}</p></van-row>
                 <van-row><p>数量 : {{ childItem.styleNum }}</p></van-row>
                 <van-row><p>总金额 : {{ childItem.amount }}</p></van-row>
+                <van-row><p :style="{color: getOrderStateText(item.orderState)[1]}">款式状态 : {{ getOrderStateText(childItem.styleState)[0] }}</p></van-row>
               </van-col>
             </van-row>
           </div>
