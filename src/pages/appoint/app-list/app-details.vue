@@ -213,6 +213,7 @@ export default {
     return {
       appId: this.$route.query.id,
       cusId: this.$route.query.cusId,
+      tenantCrop: localStorage.getItem("tenantCrop"),
       appointVo: {},
       pageSource: this.$route.query.pageSource,
       mobileViewId: this.$route.query.mobileViewId,
@@ -386,9 +387,10 @@ export default {
     queryYarnClothesListByCudId: function () {
       this.$axios({
         method: "get",
-        url: '/clothesYarn/queryYarnClothesListByCusId',
+        url: '/clothesYarn/queryYarnClothesListByCusIdAndTenantCrop',
         params: {
-          cusId: this.cusId
+          cusId: this.cusId,
+          tenantCrop: this.tenantCrop
         }
       }).then(response => {
         response.data.data.forEach(s => s['flag'] = false)
