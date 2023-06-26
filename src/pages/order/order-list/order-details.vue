@@ -94,93 +94,22 @@
           <van-empty v-if="yarnClothesList.length == 0" description="暂无试纱记录"/>
           <div>
             <van-cell style="font-size: 12px">
+              <div v-for="(group, key) in yarnClothesList" :key="key">
+                <van-cell :title="key + '的试纱记录'" center :border="false"
+                          style="padding-top: 0; padding-bottom: 0;text-align: center;font-size: 16px"></van-cell>
               <van-row gutter="5">
                 <van-grid :column-num="2" :border="false">
-                  <van-grid-item v-for="item in yarnClothesList" :key="item.id">
+                  <van-grid-item v-for="item in group" :key="item.id">
                     <van-image :src="item.styleImage==='' ? 'null' : item.styleImage" @click="clickItem2(item)"
                               alt="主图显示失败,请重新设置主图" radius="10px" height="58vw" width="40vw"/>
                     <span>{{ item.styleType+'-'+item.styleName+'-'+item.clothesSize+'-'+item.clothesNo }}</span>
                     <span>{{ item.empName === '' ? '暂无' : item.empName}}</span>
-                    <span>{{ item.arriveDate }}</span>
                   </van-grid-item>
                 </van-grid>
-<!--                <van-col span="12"  v-for="item in yarnClothesList" :key="item.id" style="text-align: center">
-                  <div class="card">
-                    <div class="imgFont">
-                      <div style="width: 40vw;height: 58vw" @click="clickItem2(item)">
-                        <img
-                            :src="item.styleImage==='' ? 'null' : item.styleImage"
-                            alt="主图显示失败,请重新设置主图" style="width: 100%; height: 100%; border-radius: 10px;"/>
-                      </div>
-
-
-&lt;!&ndash;                      <div class="styleInfo">&ndash;&gt;
-&lt;!&ndash;                        <van-row type="flex" justify="space-between">&ndash;&gt;
-&lt;!&ndash;                          <van-col span="50%" offset="1">&ndash;&gt;
-&lt;!&ndash;                            <b class="pFont">礼服名称：{{ item.styleType+'-'+item.styleName+'-'+item.clothesSize+'-'+item.clothesNo }}</b>&ndash;&gt;
-&lt;!&ndash;                          </van-col>&ndash;&gt;
-&lt;!&ndash;                        </van-row>&ndash;&gt;
-
-&lt;!&ndash;                        <van-row  type="flex" justify="space-between">&ndash;&gt;
-&lt;!&ndash;                          <van-col span="50%" offset="1">&ndash;&gt;
-&lt;!&ndash;                            <b class="pFont">礼服师：{{ item.empName === '' ? '暂无' : item.empName}}</b>&ndash;&gt;
-&lt;!&ndash;                          </van-col>&ndash;&gt;
-&lt;!&ndash;                        </van-row>&ndash;&gt;
-
-&lt;!&ndash;                        <van-row type="flex" justify="space-between">&ndash;&gt;
-&lt;!&ndash;                          <van-col span="100%" offset="1">&ndash;&gt;
-&lt;!&ndash;                            <b class="pFont">试纱日期：{{ item.arriveDate }}</b>&ndash;&gt;
-&lt;!&ndash;                          </van-col>&ndash;&gt;
-&lt;!&ndash;                        </van-row>&ndash;&gt;
-&lt;!&ndash;                      </div>&ndash;&gt;
-
-                      <div class="styleInfo">
-                        <table>
-                          <tr>
-&lt;!&ndash;                            <td style="text-align-last:justify"><b class="pFont">礼服名称：</b></td>&ndash;&gt;
-                            <td style="text-align: center">{{ item.styleType+'-'+item.styleName+'-'+item.clothesSize+'-'+item.clothesNo }}</td>
-                          </tr>
-                          <tr>
-&lt;!&ndash;                            <td style="text-align-last:justify"><b class="pFont">礼服师：</b></td>&ndash;&gt;
-                            <td style="text-align: center"><b class="pFont">{{ item.empName === '' ? '暂无' : item.empName}}</b></td>
-                          </tr>
-                          <tr>
-&lt;!&ndash;                            <td style="text-align-last:justify"><b class="pFont">试纱日期：</b></td>&ndash;&gt;
-                            <td style="text-align: center"><b class="pFont">{{ item.arriveDate }}</b></td>
-                          </tr>
-                        </table>
-                      </div>
-
-                    </div>
-                  </div>
-                </van-col>-->
               </van-row>
+              </div>
             </van-cell>
           </div>
-<!--          <van-empty v-if="yarnClothesList.length == 0" description="暂无试纱记录"/>-->
-<!--          <div v-else>-->
-<!--            <van-grid :border="false" :column-num="2" :gutter="1" style="font-size: 14px;">-->
-<!--              <van-grid-item v-for="item in yarnClothesList" :key="item.id" >-->
-<!--                <div v-if="item.styleImage !== ''">-->
-<!--                  <div style="width: 40vw;height: 58vw"  @click="clickItem2(item)">-->
-<!--                    <img style="width: 100%; height: 100%;cursor:zoom-in;border-radius: 5px"-->
-<!--                         :src="item.styleImage"/>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--                <div v-else>-->
-<!--                  <van-image class="style-img">-->
-<!--                    <template v-slot:error>未上传图片</template>-->
-<!--                  </van-image>-->
-<!--                </div>-->
-<!--                <div>-->
-<!--                  <span v-text="item.styleType+'-'+item.styleName+'-'+item.clothesSize+'-'+item.clothesNo"></span><br>-->
-<!--                  <span v-text="item.arriveDate">试纱日期：</span><br>-->
-<!--                  <span v-text="item.empName"></span><br>-->
-<!--                  <span v-text="item.styleType+'-'+item.styleName+'-'+item.clothesSize+'-'+item.clothesNo"></span><br>-->
-<!--                </div>-->
-<!--              </van-grid-item>-->
-<!--            </van-grid>-->
-<!--          </div>-->
         </van-tab>
         <van-tab title="所有订单">
           <van-empty v-if="orderList.length === 0" description="暂无订单记录"/>
@@ -427,8 +356,26 @@ export default {
         if (response.data.data != "") {
           response.data.data.forEach(s => s['flag'] = false)
         }
-        this.yarnClothesList = response.data.data
+        const groupedData = this.groupDataByYarnCreateDate(response.data.data);
+        for (let key in groupedData) {
+          groupedData[key] = this.sortDataByYarnCreateDate(groupedData[key]);
+        }
+        console.log(groupedData)
+        this.yarnClothesList = groupedData
       })
+    },
+    sortDataByYarnCreateDate: function (arr) {
+      return arr.sort((a, b) => new Date(b.yarnCreateDate) - new Date(a.yarnCreateDate));
+    },
+    groupDataByYarnCreateDate: function (arr) {
+      return arr.reduce((result, current) => {
+        const date = current.yarnCreateDate;
+        if (!result[date]) {
+          result[date] = [];
+        }
+        result[date].push(current);
+        return result;
+      }, {});
     },
     queryOrderListByAppId() {
       this.$axios({
