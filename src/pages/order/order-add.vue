@@ -460,7 +460,7 @@ export default {
     },
     //选择收款进度
     selectProceedsRate: function () {
-      let proportion = this.spareMoney + this.receivedMoney / this.orderPrice;
+      let proportion = (this.spareMoney + this.receivedMoney) / this.orderPrice;
       if (proportion >= 0 && proportion < 0.8) this.proceedsRate = "N->0-80%";
       else if (proportion < 1) this.proceedsRate = "D->80%-100%";
       else if (proportion === 1) this.proceedsRate = "W->100%";
@@ -508,11 +508,18 @@ export default {
               }).then(response => {
                 console.log(response)
                 if (response.data.code !== 200) {
-                  if (response.data.code !== 200) {
-                    this.$toast.fail(response.data.msg)
-                    return
-                  }
+                  this.$toast.fail(response.data.msg)
+                  return
                 }
+                this.$toast.success("订单添加成功!")
+                this.$dialog.confirm({
+                  message: '是否确认跳转到订单列表?',
+                }).then(() => {
+                  this.$router.push({name: "orderList"})
+                }).catch(() => {
+                  console.log("取消按钮 刷新当前页面")
+                  this.reload()
+                })
               })
             } else {  //该客资无线上订单则直接添加新订单
               this.$axios({
@@ -524,17 +531,17 @@ export default {
                   this.$toast.fail(response.data.msg)
                   return
                 }
+                this.$toast.success("订单添加成功!")
+                this.$dialog.confirm({
+                  message: '是否确认跳转到订单列表?',
+                }).then(() => {
+                  this.$router.push({name: "orderList"})
+                }).catch(() => {
+                  console.log("取消按钮 刷新当前页面")
+                  this.reload()
+                })
               })
             }
-            this.$toast.success("订单添加成功!")
-            this.$dialog.confirm({
-              message: '是否确认跳转到订单列表?',
-            }).then(() => {
-              this.$router.push({name: "orderList"})
-            }).catch(() => {
-              console.log("取消按钮 刷新当前页面")
-              this.reload()
-            })
           }
         })
       })
