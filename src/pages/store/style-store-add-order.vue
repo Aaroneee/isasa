@@ -25,7 +25,7 @@
           <van-row><p>款式名称 : {{ item.styleName }}</p></van-row>
           <van-row><p>款式编号 : {{ item.styleNum }}</p></van-row>
           <van-row><p>价格 : {{ item.salePrice }}</p></van-row>
-          <van-row><p>建议零售价 : {{item.suggestSalePrice}}</p></van-row>
+          <van-row><p>建议零售价 : {{ item.suggestSalePrice }}</p></van-row>
           <van-row>
             <van-col v-for="(childItem,index) in getLabel(item.labelNames)" :key="index" style="margin: 1% 1%">
               <van-tag size="large" v-once :color="labelColor[Math.floor(Math.random() * labelColor.length)]">
@@ -45,7 +45,7 @@
       <van-row v-for="(item,index) in styleList" :key="index" style="margin-bottom: 10px">
         <van-col :span="12">
           <span
-              style="font-size: 15px;font-weight: bold">{{
+                  style="font-size: 15px;font-weight: bold">{{
               item.storeTypeName + '-' + item.storeSeriesName + '-' + item.storeSeriesNum
             }} </span>
           <span style="font-size: 15px;">  共<span style="font-weight: bold">{{ item.styleNumber }}</span>件</span>
@@ -56,14 +56,20 @@
           </p>
         </van-col>
       </van-row>
+      <br><br>
+      <van-row>
+        <p style="font-weight: bold;font-size: 15px;"
+           v-html="`${priceCount} (原价) * ${styleDiscountRatio} (客户折扣)&ensp;&ensp;=&ensp;&ensp;${totalAmount} (总金额)`"/>
+      </van-row>
     </div>
     <br><br><br><br>
-    <van-submit-bar :price="priceCount*100" button-text="提交订单" @submit="addOrder"/>
+    <van-submit-bar :price="totalAmount*100" button-text="提交订单" @submit="addOrder"/>
   </div>
 </template>
 <script>
 import baseNavBar from "@/components/nav-bar/base-nav-bar"
 import {ImagePreview} from "vant";
+import mathUtils from "@/common/js/utils/math-utils"
 
 export default {
   name: "styleDetails",
@@ -72,7 +78,6 @@ export default {
   },
   created() {
     this.styleList = this.$route.query
-    this.getCountPrice();
     this.queryAdvanceCharge();
   },
   mounted() {
@@ -84,11 +89,16 @@ export default {
       styleNumber: 1,
       tenantCrop: localStorage.getItem("tenantCrop"),
       empId: localStorage.getItem("empId"),
+      //折扣前价格
       priceCount: 0,
       labelColor: ["#A52A2A", "#FF8C00", "#696969", "#FFA500", "#2F4F4F", "#6495ED", "#FF4500", "#40E0D0"],
 
       images: [],
-      advanceCharge:0,
+      advanceCharge: 0,
+      //折扣比例
+      styleDiscountRatio: 0,
+      //折扣后价格
+      totalAmount: 0,
     }
   },
   methods: {
@@ -96,15 +106,17 @@ export default {
       ImagePreview([`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image}`])
     },
     //查询预付款
-    queryAdvanceCharge(){
+    queryAdvanceCharge() {
       this.$axios({
         method: "GET",
         url: "/tenant/queryTenantInfo",
-        params:{
-          tenantCrop:this.tenantCrop
+        params: {
+          tenantCrop: this.tenantCrop
         }
       }).then(response => {
-        this.advanceCharge=response.data.data.advanceCharge;
+        this.advanceCharge = response.data.data.advanceCharge;
+        this.styleDiscountRatio = response.data.data.styleDiscountRatio;
+        this.getCountPrice();
       })
     },
     //点击订单
@@ -122,7 +134,7 @@ export default {
           if (response.data.code === 200) {
             this.delAllShoppingCart();
             //如果余额有钱则使用余额支付 否则直接使用支付宝
-            if(this.advanceCharge>=this.priceCount){
+            if (this.advanceCharge >= this.totalAmount) {
               this.changeAdvanceCharge(response.data.data.id);
               return;
             }
@@ -140,19 +152,19 @@ export default {
       })
     },
     //调用余额支付
-    changeAdvanceCharge(orderId){
+    changeAdvanceCharge(orderId) {
       this.$dialog.confirm({
         title: '支付提示',
-        message: '当前预付款余额: '+this.advanceCharge+'<br>是否直接使用余额支付?',
+        message: '当前预付款余额: ' + this.advanceCharge + '<br>是否直接使用余额支付?',
       }).then(() => {
         this.$axios({
           method: "POST",
           url: "/storeOrder/advanceChargePay",
           data: {
-            tenantCrop:this.tenantCrop,
-            id:orderId,
-            totalAmount: this.priceCount,
-            payChannel:2,
+            tenantCrop: this.tenantCrop,
+            id: orderId,
+            totalAmount: this.totalAmount,
+            payChannel: 2,
             empId: this.empId,
             orderState: 1,
           }
@@ -161,7 +173,7 @@ export default {
           if (response.data.code === 200) {
             this.$toast.success('支付成功');
 
-            this.$router.push({name:"styleStoreOrderList"})
+            this.$router.push({name: "styleStoreOrderList"})
           } else {
             this.$toast.fail('支付失败,请到采购列表完成支付!');
           }
@@ -177,7 +189,7 @@ export default {
       if (status === 1 || status === "1") {
         this.$toast.success('支付成功');
 
-        this.$router.push({name:"styleStoreOrderList"})
+        this.$router.push({name: "styleStoreOrderList"})
       }
       console.log("js 接受原生回调")
     },
@@ -185,7 +197,7 @@ export default {
     getLabel(val) {
       return val !== "" ? val.split(",") : [];
     },
-    //获得一个款式的总价
+    //获得一个款式的总价 数量*单价
     getSingleCountPrice(num, price) {
       return Number(this.$math.format(
           this.$math.chain(this.$math.bignumber(num))
@@ -204,7 +216,10 @@ export default {
                 .multiply(salePrice).done());
         mathJsChain = mathJsChain.add(this.$math.bignumber(bigNumber));
       })
+      //获取总价
       this.priceCount = Number(this.$math.format(mathJsChain.done()))
+      //获取折扣后价格
+      this.totalAmount = mathUtils.multiply(this.priceCount, this.styleDiscountRatio);
     },
     //清空购物车
     delAllShoppingCart() {
@@ -233,8 +248,9 @@ export default {
       })
       return {
         empId: this.empId,
-        totalAmount: this.priceCount,
+        totalAmount: this.totalAmount,
         orderState: 0,
+        styleDiscountRatio: this.styleDiscountRatio,
         tenantCrop: this.tenantCrop,
         supplierTenantCrop: storeOrderStyleS[0].supplierTenantCrop,
         storeOrderStyleS: storeOrderStyleS,
