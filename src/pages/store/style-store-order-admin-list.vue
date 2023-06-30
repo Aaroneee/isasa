@@ -18,7 +18,7 @@
           <p>下单日期: {{ item.createDate }}</p>
           <p>订单总价: {{ item.totalAmount }}</p>
           <div class="card" v-for="(childItem,childIndex) in item.storeOrderStyleVOS" :key="childIndex">
-            <van-row gutter="20">
+            <van-row gutter="10">
               <van-col :span="10">
                 <div>
                   <van-image class="style-img" radius="7"

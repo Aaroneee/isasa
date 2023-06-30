@@ -33,14 +33,6 @@
       </van-row>
       <van-row>
         <van-col :span="12">
-          <p>折扣金额 : {{ style.discountPrice }}元</p>
-        </van-col>
-        <van-col :span="12">
-          <p>折扣比例 : {{ style.discountRatio*100 }}</p>
-        </van-col>
-      </van-row>
-      <van-row>
-        <van-col :span="12">
           <p>款式名称 : {{ style.styleName }}</p>
         </van-col>
         <van-col :span="12">

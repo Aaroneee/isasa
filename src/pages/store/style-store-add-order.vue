@@ -26,8 +26,6 @@
           <van-row><p>款式编号 : {{ item.styleNum }}</p></van-row>
           <van-row><p>价格 : {{ item.salePrice }}</p></van-row>
           <van-row><p>建议零售价 : {{item.suggestSalePrice}}</p></van-row>
-          <van-row><p>折扣金额 : {{item.discountPrice}}</p></van-row>
-          <van-row><p>折扣比例 : {{item.discountRatio*100}}</p></van-row>
           <van-row>
             <van-col v-for="(childItem,index) in getLabel(item.labelNames)" :key="index" style="margin: 1% 1%">
               <van-tag size="large" v-once :color="labelColor[Math.floor(Math.random() * labelColor.length)]">

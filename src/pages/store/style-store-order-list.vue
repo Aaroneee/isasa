@@ -18,7 +18,7 @@
           <p>下单日期: {{ item.createDate }}</p>
           <p>订单总价: {{ item.totalAmount }}</p>
           <div class="card" v-for="(childItem,childIndex) in item.storeOrderStyleVOS" :key="childIndex">
-            <van-row>
+            <van-row gutter="10">
               <van-col :span="10">
                 <div>
                   <van-image class="style-img" radius="7"
@@ -95,6 +95,7 @@ export default {
           tenantCrop: this.tenantCrop,
         }
       }).then(response => {
+        console.log(response)
         this.loading = false
         if (response.data.code !== 200) return false;
         this.orderList = response.data.data;
@@ -121,7 +122,10 @@ export default {
     },
     //获取订单显示文本
     getOrderStateText(orderState){
+      console.log(orderState)
       switch (orderState){
+        case 0:
+          return ["待发货","#ffb93d"];
         case 1:
           return ["待发货","#FFA500FF"];
         case 2:
