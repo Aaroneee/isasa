@@ -4,14 +4,14 @@
       <baseNavBar title="账户信息"/>
     </van-sticky>
     <div class="card">
-      <div style="text-align: center;padding-top: 5%">
-        <p style="font-size: 37px;font-weight: bolder">{{mathUtils.add(advanceCharge,cashPledge)}}</p>
+      <div style="text-align: center;height:45%;padding-top: 5%">
+        <p style="font-size: 35px;font-weight: bolder">{{mathUtils.add(advanceCharge,cashPledge)}}</p>
         <p style="font-size: 20px;">总余额(元)</p>
       </div>
-      <van-row style="text-align: center;margin-top: 6%">
+      <van-row style="text-align: center;height:45%;margin-top: 5%;padding-bottom: 5%">
         <van-col :span="11">
           <div >
-            <p style="font-size: 25px;font-weight: bolder">{{advanceCharge}}</p>
+            <p style="font-size: 20px;font-weight: bolder">{{advanceCharge}}</p>
             <p style="font-size: 15px;">预付款余额(元)</p>
           </div>
         </van-col>
@@ -20,7 +20,7 @@
         </van-col>
         <van-col :span="11">
           <div>
-            <p style="font-size: 25px;font-weight: bolder">{{cashPledge}}</p>
+            <p style="font-size: 20px;font-weight: bolder">{{cashPledge}}</p>
             <p style="font-size: 15px;">押金余额(元)</p>
           </div>
         </van-col>
@@ -174,7 +174,6 @@ export default {
 .card {
   margin: 3% auto 3% auto;
   background-color: #6391d2;
-  height: 20vh;
   width: 90%;
   color: #ffffff;
   border-radius: 10px;
@@ -197,9 +196,8 @@ export default {
   margin: 0 auto;
   background: #f1f1f1;/*背景色为浅灰色*/
   width:2px;/*设置宽高*/
-  height:55px;
-  left:150px;
-
+  height:30px;
+  padding-top: 30%;
 }
 /* 账单上线分割线 */
 .van-divider{
