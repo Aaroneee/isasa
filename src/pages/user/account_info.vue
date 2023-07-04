@@ -5,17 +5,20 @@
     </van-sticky>
     <div class="card">
       <div style="text-align: center;padding-top: 5%">
-        <p style="font-size: 40px;font-weight: bolder">{{mathUtils.add(advanceCharge,cashPledge)}}</p>
+        <p style="font-size: 37px;font-weight: bolder">{{mathUtils.add(advanceCharge,cashPledge)}}</p>
         <p style="font-size: 20px;">总余额(元)</p>
       </div>
-      <van-row style="text-align: center;margin-top: 7%">
-        <van-col :span="12">
+      <van-row style="text-align: center;margin-top: 6%">
+        <van-col :span="11">
           <div >
             <p style="font-size: 25px;font-weight: bolder">{{advanceCharge}}</p>
             <p style="font-size: 15px;">预付款余额(元)</p>
           </div>
         </van-col>
-        <van-col :span="12">
+        <van-col :span="2">
+          <div class="line"></div>
+        </van-col>
+        <van-col :span="11">
           <div>
             <p style="font-size: 25px;font-weight: bolder">{{cashPledge}}</p>
             <p style="font-size: 15px;">押金余额(元)</p>
@@ -24,6 +27,50 @@
       </van-row>
 
     </div>
+
+    <van-divider content-position="left">交易明细</van-divider>
+    <div class="listCard">
+      <van-list
+              v-model="listData.loading"
+              :finished="listData.finished"
+              finished-text="没有更多了"
+              @load="onLoad"
+      >
+        <van-cell v-for="item in listData.billList" :key="item.id" style="margin: 2% 0">
+          <van-row style="margin: 2% 0">
+            <van-col :span="12">
+              {{item.operationDate}}
+            </van-col>
+            <van-col :span="4" :style="{textAlign:'center',fontWeight:'bolder',color:getTextAndColor(item.operationType)[1]}">
+              {{getTextAndColor(item.operationType)[0]}}
+            </van-col>
+            <van-col :span="8" :style="{textAlign:'right',fontWeight:'bolder',color:getTextAndColor(item.operationType)[1]}">
+              {{item.operationType===2?'-':'+'}} {{item.money}}
+            </van-col>
+          </van-row>
+
+          <van-row style="margin: 2% 0">
+            <van-col :span="15">
+              账户 : {{item.moneyType===1?'押金':'预付款'}}
+            </van-col>
+            <van-col :span="9" :style="{textAlign:'right'}">
+              操作人 : {{item.operationEmpName}}
+            </van-col>
+          </van-row>
+          <van-row style="margin: 2% 0">
+            <p> {{item.moneyType===1?'押金':'预付款'}}剩余 : {{ item.balance}}</p>
+            <!--            <p>{{ item.remark}}</p>-->
+          </van-row>
+          <van-row style="margin: 2% 0">
+            <p>备注: </p>
+            <p>{{ item.remark}}</p>
+          </van-row>
+        </van-cell>
+
+      </van-list>
+    </div>
+
+
   </div>
 </template>
 
@@ -31,6 +78,7 @@
 
 import baseNavBar from "@/components/nav-bar/base-nav-bar"
 import mathUtils from "@/common/js/utils/math-utils";
+import {re} from "mathjs";
 
 export default {
   name: "account_info",
@@ -45,6 +93,13 @@ export default {
       tenantCrop: localStorage.getItem("tenantCrop"),
       advanceCharge:0,
       cashPledge:0,
+
+      listData:{
+        billList:[],
+        finished:false,
+        loading:false,
+        page: 1
+      },
 
 
     }
@@ -74,20 +129,42 @@ export default {
       })
     },
 
-    //查询公司信息
+    //查询公司流水
     queryTenantBill() {
+      this.listData.loading=true;
       this.$axios({
         method: "GET",
         url: "/tenantBill/queryList",
         params: {
-          tenantCrop: this.tenantCrop
+          tenantCrop: this.tenantCrop,
+          page: this.listData.page,
+          limit:5,
         }
       }).then(response => {
         console.log(response)
+        if (response.data.data.nextPage === 0) {
+          this.listData.finished = true
+        } else {
+          this.listData.page = response.data.data.nextPage
+        }
+        this.listData.loading=false;
+        this.listData.billList.push(...response.data.data.list);
 
       })
     },
 
+    //获取操作类型文本和颜色
+    getTextAndColor(type){
+      switch (type){
+        case 1: return ["存入",'red'];
+        case 2: return ["支出",'green'];
+        case 3: return [`退款`,'#bea81b'];
+      }
+    },
+    onLoad() {
+      console.log(111)
+      this.queryTenantBill()
+    },
 
   }
 }
@@ -95,12 +172,38 @@ export default {
 
 <style scoped>
 .card {
-  margin: 3% auto 0 auto;
+  margin: 3% auto 3% auto;
   background-color: #6391d2;
-  height: 180px;
+  height: 20vh;
   width: 90%;
   color: #ffffff;
   border-radius: 10px;
+}
+
+.listCard{
+  overflow-y:auto;
+  margin: 0 auto;
+  width: 90%;
+  height: 67vh;
+  color: #ffffff;
+
+}
+
+.listCard >>> .van-cell{
+  border-radius: 10px;
+}
+
+.line{
+  margin: 0 auto;
+  background: #f1f1f1;/*背景色为浅灰色*/
+  width:2px;/*设置宽高*/
+  height:55px;
+  left:150px;
+
+}
+/* 账单上线分割线 */
+.van-divider{
+  margin: 5px 0;
 }
 
 p{
