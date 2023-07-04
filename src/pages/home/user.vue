@@ -9,14 +9,19 @@
       <van-cell title="公司城市" :value="tenant.tenantCity" icon="location-o"/>
       <van-cell title="产品到期时间" :value="tenant.tenantEndDate" icon="flag-o"/>
     </van-cell-group>
+    <van-cell-group title="" class="gird_module">
+      <van-grid :border="false" clickable :column-num="4">
+        <van-grid-item icon="debit-pay" text="账户信息" @click="onClickItem('accountInfo', 0)"/>
+      </van-grid>
+    </van-cell-group>
     <van-button
-      style="margin-top: 10%"
-      class="logout"
-      color="linear-gradient(to right, #ff6134, #ee0a24)"
-      round
-      type="info"
-      @click="logout"
-      block>退出
+            style="margin-top: 10%"
+            class="logout"
+            color="linear-gradient(to right, #ff6134, #ee0a24)"
+            round
+            type="info"
+            @click="logout"
+            block>退出
     </van-button>
     <div class="purchaseBox" @click="purchase">
       <p class="purchaseBoxP">产&nbsp;品&nbsp;续&nbsp;费</p>
@@ -137,7 +142,10 @@ export default {
 
       }
     },
-
+    onClickItem: function (event,id) {
+      this.$store.commit('setKeepAlive', [event])
+      this.$router.push({name: event,query:{id: id}})
+    },
     setForm() {
       this.form.tenantId = this.tenant.tenantId;
       this.form.tenantName = this.tenant.tenantName;

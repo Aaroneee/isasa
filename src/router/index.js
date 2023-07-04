@@ -11,6 +11,7 @@ import statement from "@/router/statement"
 import afterSale from "@/router/afterSale";
 import store from "@/router/store";
 import deposit from "@/router/deposit";//押金
+import user from "@/router/user";//押金
 
 // import login from '../pages/login/login'//首页
 
@@ -30,6 +31,7 @@ const router = new Router({
         ...afterSale,
         ...store,
         ...deposit,
+        ...user,
     ],
     scrollBehavior(to, from, savedPosition) {
         if (savedPosition) {
