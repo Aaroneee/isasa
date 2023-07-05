@@ -2,17 +2,37 @@
   <div>
     <van-sticky>
       <van-nav-bar
-          :title="'款式订单'"
-          left-text="返回"
-          left-arrow
-          :fixed="true"
-          :placeholder="true"
-          @click-left="onClickLeft"
+        :title="'款式订单'"
+        left-text="返回"
+        left-arrow
+        :fixed="true"
+        :placeholder="true"
+        @click-left="onClickLeft"
       />
     </van-sticky>
-<!--    <van-loading type="spinner" v-show="loading"/>-->
+    <!--    <van-loading type="spinner" v-show="loading"/>-->
     <van-collapse v-model="activeNames">
-      <van-collapse-item :name="index" :title="item.createDate+'\xa0\xa0\xa0'+item.tenantName" v-for="(item,index) in orderList" :key="index">
+      <van-collapse-item :name="index" :style="{color: `${getOrderStateText(item.orderState)[1]} !important`}"
+                         v-for="(item,index) in orderList" :key="index">
+        <template #title>
+          <van-row>
+            <van-col :span="12">
+              {{ item.orderNo }}
+            </van-col>
+            <van-col :span="12" style="text-align: center">
+              {{ item.tenantName }}
+
+            </van-col>
+          </van-row>
+          <van-row>
+            <van-col :span="12">
+              {{ item.createDate }}
+            </van-col>
+            <van-col :span="12" style="text-align: center">
+              {{ getOrderStateText(item.orderState)[0] }}
+            </van-col>
+          </van-row>
+        </template>
         <div class="cardParent">
           <p>订单编号: {{ item.orderNo }}</p>
           <p>下单日期: {{ item.createDate }}</p>
@@ -31,6 +51,8 @@
                 </div>
               </van-col>
               <van-col :span="14" @click="toStyleDetails({id:childItem.storeStyleId})">
+                <van-row><p :style="{color: getOrderStateText(childItem.styleState)[1]}">款式状态 :
+                  {{ getOrderStateText(childItem.styleState)[0] }}</p></van-row>
                 <van-row><p>品牌 : {{ childItem.storeBrandName }}</p></van-row>
                 <van-row><p>类型 : {{ childItem.storeTypeName }}</p></van-row>
                 <van-row><p>系列 : {{ childItem.storeSeriesName }}</p></van-row>
@@ -38,15 +60,11 @@
                 <van-row><p>单价 : {{ childItem.unitPrice }}</p></van-row>
                 <van-row><p>数量 : {{ childItem.styleNum }}</p></van-row>
                 <van-row><p>总金额 : {{ childItem.amount }}</p></van-row>
-                <van-row><p :style="{color: getOrderStateText(item.orderState)[1]}">款式状态 : {{ getOrderStateText(childItem.styleState)[0] }}</p></van-row>
               </van-col>
             </van-row>
           </div>
           <p v-if="item.orderState===0" style="text-align: right">
             <van-button plain round type="danger" size="small" @click="goPay(item.id)">点击支付</van-button>
-          </p>
-          <p v-else :style="{color: getOrderStateText(item.orderState)[1],fontWeight:'bold',textAlign:'right'}">
-            {{ getOrderStateText(item.orderState)[0] }}
           </p>
         </div>
 
@@ -90,7 +108,7 @@ export default {
         method: "GET",
         url: "/storeOrder/queryAdminList",
         params: {
-          supplierTenantCrop:this.supplierTenantCrop,
+          supplierTenantCrop: this.supplierTenantCrop,
         }
       }).then(response => {
         this.loading = false
@@ -118,18 +136,18 @@ export default {
       this.$router.replace({name: 'work'})
     },
     //获取订单显示文本
-    getOrderStateText(orderState){
-      switch (orderState){
+    getOrderStateText(orderState) {
+      switch (orderState) {
         case 0:
-          return ["待付款","#FFA500FF"];
+          return ["待付款", "#FFA500FF"];
         case 1:
-          return ["待发货","#FFA500FF"];
+          return ["待发货", "#be7c00"];
         case 2:
-          return ["已发货","#187e18"];
+          return ["已发货", "#187e18"];
         case 3:
-          return ["已退款","#e02e2e"];
+          return ["已退款", "#e02e2e"];
         case 4:
-          return ["已取消","#ec7878"];
+          return ["已取消", "#ec7878"];
       }
     },
   },
@@ -179,7 +197,8 @@ p {
 .delete-button {
   height: 100%;
 }
-.van-loading--spinner{
+
+.van-loading--spinner {
   text-align: center;
 }
 </style>
