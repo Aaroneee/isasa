@@ -1,7 +1,7 @@
 <template>
   <div>
     <van-sticky>
-      <baseNavBar title="账户信息"/>
+      <switchNavBar title="账户信息" switchText="充值" @flag="dialogState=!dialogState"/>
     </van-sticky>
     <div class="card">
       <div style="text-align: center;height:45%;padding-top: 5%">
@@ -69,16 +69,37 @@
 
       </van-list>
     </div>
+    <van-dialog v-model="dialogState" title="充值" show-cancel-button confirm-button-text="充值"
+                :before-close="openRecharge">
+      <br>
+      <van-form>
+        <van-field name="moneyType" label="充值项目">
+          <template #input>
+            <van-radio-group v-model="moneyType" direction="horizontal">
+              <van-radio :name="2">预付款</van-radio>
+              <van-radio :name="1">押金</van-radio>
+            </van-radio-group>
+          </template>
+        </van-field>
+        <van-field
+            v-model="money"
+            label="充值金额"
+            name="money"
+            type="number"
+            placeholder="充值金额"
+            :rules="[{ validator, message: '请输入正数' }]"
+        />
+      </van-form>
 
+    </van-dialog>
 
   </div>
 </template>
 
 <script>
 
-import baseNavBar from "@/components/nav-bar/base-nav-bar"
+import switchNavBar from "@/components/nav-bar/switch-nav-bar"
 import mathUtils from "@/common/js/utils/math-utils";
-import {re} from "mathjs";
 
 export default {
   name: "account_info",
@@ -100,16 +121,21 @@ export default {
         loading:false,
         page: 1
       },
-
-
+      dialogState:false,
+      moneyType:2,
+      money:0,
+      empId:localStorage.getItem("empId"),
     }
   },
   components: {
-    baseNavBar
+    switchNavBar
   },
   created() {
     this.queryAdvanceCharge();
     this.queryTenantBill();
+  },
+  mounted() {
+    window.payResult = this.payResult
   },
   watch: {},
   methods: {
@@ -141,7 +167,6 @@ export default {
           limit:5,
         }
       }).then(response => {
-        console.log(response)
         if (response.data.data.nextPage === 0) {
           this.listData.finished = true
         } else {
@@ -161,8 +186,59 @@ export default {
         case 3: return [`退款`,'#bea81b'];
       }
     },
+    openRecharge(action, done){
+      if (action==="cancel"){
+        done();
+      }
+      if (Number(this.money)>0){
+        done();
+        this.openRecharge1();
+      }
+      this.$toast.fail("请输入正数!");
+      done(false);
+    },
+    openRecharge1(){
+      if (/Linux/i.test(navigator.platform)) {
+        androidMethod.getPayInfo(this.money,this.moneyType);
+      } else {
+
+      }
+    },
+    payResult(status){
+      if (status === 0 || status === "0") {
+        this.$toast.fail('充值失败!');
+      } else if (status === 1 || status === "1") {
+        this.$axios({
+          method: "POST",
+          url: "/tenantBill/saveRecharge",
+          data: {
+            tenantId: this.tenantVO.id,
+            operationEmpId: this.empId,
+            recordEmpId: this.empId,
+            operationType:1,
+            moneyType:this.moneyType,
+            money: this.money,
+            remark: "用户手机端自行充值!",
+            tenantCrop:this.tenantCrop,
+          }
+        }).then(response => {
+          if (response.data.code === 200) {
+            this.$toast.success('充值成功');
+          } else {
+            this.$toast.fail(response.data.msg)
+          }
+
+        })
+      }
+      this.listData.page=1;
+      this.listData.billList=[];
+      this.queryAdvanceCharge();
+      this.queryTenantBill();
+    },
+    validator(val) {
+      return /^([0-9]*[.]?[0-9]+|[.]?[0-9]+)$/.test(val)&&val instanceof Number;
+    },
     onLoad() {
-      console.log(111)
       this.queryTenantBill()
     },
 

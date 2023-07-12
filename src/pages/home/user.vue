@@ -121,9 +121,7 @@ export default {
     payResult(status) {
       if (status === 0 || status === "0") {
         this.$toast.fail('支付失败!');
-        this.queryTenant();
-      }
-      if (status === 1 || status === "1") {
+      } else if (status === 1 || status === "1") {
         this.$axios({
           method: "POST",
           url: "/tenantPurchase/changeDay",
@@ -133,14 +131,13 @@ export default {
         }).then(response => {
           if (response.data.code === 200) {
             this.$toast.success('支付成功');
-            this.queryTenant();
-
           } else {
             this.$toast.fail(response.data.msg)
           }
         });
 
       }
+      this.queryTenant();
     },
     onClickItem: function (event,id) {
       this.$store.commit('setKeepAlive', [event])
