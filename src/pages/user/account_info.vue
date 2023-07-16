@@ -201,7 +201,12 @@ export default {
       if (/Linux/i.test(navigator.platform)) {
         androidMethod.getPayInfo(this.money,this.moneyType);
       } else {
-
+        const iosdata = {
+          money: this.money,
+          moneyType: this.moneyType
+        };
+        const jsonString = JSON.stringify(iosdata);
+        window.webkit.messageHandlers.bill.postMessage(jsonString);
       }
     },
     payResult(status){
