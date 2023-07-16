@@ -4,7 +4,7 @@
       <van-row style="margin: 8px 8px;padding:8px 8px;background-color: #ffffff;border-radius: 5px;">
         <van-col :span="8">
           <div style="height: 25px;display: flex;justify-content: flex-start;align-items: center">
-            <img @click="openImg" :src="logo" style="height: 100%"/>
+            <img  @click="openImg" :src="logo" style="height: 100%;border-radius: 10%;"/>
           </div>
         </van-col>
         <van-col :span="8">
@@ -82,7 +82,7 @@ export default {
   },
   data() {
     return {
-      logo: require("@/assets/logo.png"),
+      logo: require("@/assets/icon.jpg"),
       copyLinkVal: 0,
       tenantCrop: localStorage.getItem("tenantCrop"),
       empId: localStorage.getItem("empId"),
