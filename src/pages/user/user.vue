@@ -1,5 +1,8 @@
 <template>
   <div style="margin-bottom: 15%">
+    <van-sticky>
+      <baseNavBar title="个人信息"/>
+    </van-sticky>
     <p style="font-size: 35px;text-align: center;margin: 20% 0">{{ tenant.empName }}</p>
     <van-cell-group>
       <van-cell title="职位" :value="tenant.roleName" icon="manager-o"/>
@@ -30,8 +33,11 @@
 </template>续费
 
 <script>
+import baseNavBar from "@/components/nav-bar/base-nav-bar.vue";
+
 export default {
   name: "user",
+  components: {baseNavBar},
   data() {
     return {
       tenant: {},

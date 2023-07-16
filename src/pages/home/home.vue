@@ -1,15 +1,14 @@
 <template>
   <div>
-    <div style="padding-bottom: 10vh">
+    <div>
       <keep-alive>
         <router-view/>
       </keep-alive>
     </div>
-    <van-tabbar route>
+    <van-tabbar route style="height: 6vh">
       <van-tabbar-item to="/" icon='wap-home-o'>工作台</van-tabbar-item>
       <van-tabbar-item to="/statistic" icon='bar-chart-o'>报表</van-tabbar-item>
       <van-tabbar-item to="/store" icon='shop-o'>商城</van-tabbar-item>
-      <van-tabbar-item to="/user" icon='user-o'>我</van-tabbar-item>
     </van-tabbar>
   </div>
 </template>
