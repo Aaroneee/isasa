@@ -85,7 +85,8 @@ export default {
       tenantCrop: localStorage.getItem("tenantCrop"),
 
       currentDate: new Date(),
-      date:this.$dateUtils.vantDateToYM(new Date())+" - "+this.$dateUtils.vantDateToYM(new Date()),
+      startDate:this.$dateUtils.vantDateToYM(new Date()) + "-01",
+      endDate:this.$dateUtils.vantDateToYM(new Date()) + "-" + this.$dateUtils.getLastDayByYm(new Date()),
 
       shopId: "",
       shopArray:[{text:"店铺",value: ""}],
@@ -142,7 +143,8 @@ export default {
         method: "GET",
         url: "/shopReports/queryShopEarningReports",
         params: {
-          date: this.date,
+          startDate: this.startDate,
+          endDate: this.endDate,
           tenantCrop: this.tenantCrop,
           shopId: this.shopId,
           dressId: this.dressId,
@@ -158,7 +160,8 @@ export default {
       this.queryShopEarningReports();
     },
     appointDateOnConfirm: function (time) {
-      this.date = this.$dateUtils.vantDateToYM(time)+" - "+this.$dateUtils.vantDateToYM(time);
+      this.startDate = this.$dateUtils.vantDateToYMD(time);
+      this.endDate = this.$dateUtils.vantDateToYM(time) + "-" + this.$dateUtils.getLastDayByYm(time);
       this.queryShopEarningReports();
       this.$refs.item.toggle();
     },

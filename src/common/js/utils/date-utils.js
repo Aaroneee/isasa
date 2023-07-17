@@ -137,5 +137,12 @@ export default {
         var date = new Date();
         date.setDate(1);
         return date;
+    },
+    //获取最后一天 参数Date类型的Ym
+    getLastDayByYm(date){
+        let year = date.getFullYear();
+        let month = date.getMonth();
+        let lastDay = new Date(year, month+1, 0).getDate();
+        return lastDay;
     }
 }
