@@ -2,14 +2,28 @@
   <div>
     <van-sticky>
       <van-nav-bar
-        :title="'款式订单'"
-        left-text="返回"
-        left-arrow
-        :fixed="true"
-        :placeholder="true"
-        @click-left="onClickLeft"
+          :title="'款式订单'"
+          left-text="返回"
+          left-arrow
+          :fixed="true"
+          :placeholder="true"
+          @click-left="onClickLeft"
       />
+
+      <van-search
+          v-model="tenantName"
+          show-action
+          placeholder="请输入搜索关键词"
+      >
+        <template #action>
+          <div @click="queryAdminList()">搜索</div>
+        </template>
+      </van-search>
+    <van-dropdown-menu active-color="#1989fa" >
+      <van-dropdown-item v-model="orderState" :options="orderStateArray" @change="queryAdminList()"/>
+    </van-dropdown-menu>
     </van-sticky>
+
     <!--    <van-loading type="spinner" v-show="loading"/>-->
     <van-collapse v-model="activeNames">
       <van-collapse-item :name="index" :style="{color: `${getOrderStateText(item.orderState)[1]} !important`}"
@@ -81,6 +95,8 @@ export default {
   name: "style-store-order-admin-list",
   data() {
     return {
+      orderState: 0,
+      tenantName: "",
       orderList: [],
       activeNames: [0],
 
@@ -90,10 +106,19 @@ export default {
 
       loading: true,
       supplierTenantCrop: localStorage.getItem("tenantCrop"),
+
+      orderStateArray: [
+        {text: '全部', value: ''},
+        {text: '待付款', value: 0},
+        {text: '待发货', value: 1},
+        {text: '已发货', value: 2},
+        {text: '已退款', value: 3},
+        {text: '已取消', value: 4},
+      ],
     }
   },
   created() {
-    this.queryShoppingCart()
+    this.queryAdminList()
   },
   components: {
     baseNavBar
@@ -103,11 +128,13 @@ export default {
   },
   methods: {
     //查询购物车列表
-    queryShoppingCart() {
+    queryAdminList() {
       this.$axios({
         method: "GET",
         url: "/storeOrder/queryAdminList",
         params: {
+          tenantName: this.tenantName,
+          orderState: this.orderState,
           supplierTenantCrop: this.supplierTenantCrop,
         }
       }).then(response => {
