@@ -54,14 +54,15 @@
       >
         <van-cell style="font-size: 12px">
           <van-row gutter="5">
-            <van-col span="12" v-for="item in clothesList" :key="item.id" @click="clickItem(item)"
-                     style="text-align: center">
+            <van-col span="12" v-for="item in clothesList" :key="item.id" @click="clickItem(item)">
               <div class="card">
-                <div class="imgFont">
-                  <img
-                      :src="item.styleImage===''?'null'
+                  <div class="imgParent">
+                    <img
+                        :src="item.styleImage===''?'null'
                              :'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage+'?imageMogr2/rquality/60'"
-                      alt="主图显示失败,请重新设置主图"/>
+                        alt="主图显示失败,请重新设置主图"/>
+                  </div>
+
                   <div class="styleInfo">
 
                     <van-row>
@@ -84,8 +85,6 @@
                       </van-col>
                     </van-row>
                   </div>
-                </div>
-
               </div>
             </van-col>
           </van-row>
@@ -358,35 +357,29 @@ export default {
   font-size: 12px;
 }
 
-/*.van-image__img {*/
-/*  min-height: 200px;*/
-/*}*/
+
+.card {
+  height: 300px;
+  background-color: white;
+  border-radius: 10px;
+  margin-top: 5%;
+  padding:0 3%;
+}
+
+.imgParent{
+  height: 250px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 2%
+}
 img {
   height: 245px;
-  min-height: 245px;
-  width: 100%;
   border-radius: 7px;
 }
 
-.card {
-  min-height: 290px;
-  max-height: 290px;
-  min-width: 160px;
-  padding: 5px 5px 0 5px;
-  background-color: white;
-  border-radius: 10px;
-  margin: 0 auto 3% auto;
-}
-
-.imgFont {
-  margin: 0 auto;
-  width: 100%;
-  min-width: 45vw;
-  max-width: 45vw;
-}
-
 .styleInfo {
-  margin-top: 5px;
+  margin-top: 7px;
 }
 
 .pFont {
@@ -394,11 +387,8 @@ img {
   white-space: nowrap;
   text-overflow: ellipsis;
   margin: 0;
-
   font-weight: bold;
   font-size: 11px;
-  /*margin-block-start: 5px;*/
-  /*margin-block-end: 5px;*/
 }
 
 .van-list >>> .van-cell {

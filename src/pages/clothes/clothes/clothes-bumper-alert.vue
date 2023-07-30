@@ -13,32 +13,85 @@
       <van-tab title="订单撞档">
         <!-- 搜索提示 -->
         <van-empty image="search" description="暂无订单撞档" v-if="!scheduleOrderList"/>
-        <van-grid :border="false" :column-num="2" :center="false" style="font-size: 12px" v-else>
-          <van-grid-item @click="showPopup(item.clothesId, item.clothesName)" v-for="(item,index) in scheduleOrderList" :key="index">
-            <van-image
-                :src="item.styleImage"
-                style="height: 80%;"/><br>
-            <b>礼服：{{ item.clothesName }}</b>
-            <b>店铺：{{ item.shopName }}</b>
-            <b>位置：{{ item.positionName }}</b>
-            <b style="color:red;">婚期：{{ item.weddingDay }}</b>
-          </van-grid-item>
-        </van-grid>
+        <van-row gutter="5">
+          <van-col span="12" v-for="item in scheduleOrderList" :key="item.id" @click="showPopup(item.clothesId, item.clothesName)">
+            <div class="card">
+              <div class="imgParent">
+                <img
+                    :src="item.styleImage===''?'null'
+                             :item.styleImage+'?imageMogr2/rquality/60'"
+                    alt="主图显示失败,请重新设置主图"/>
+              </div>
+
+              <div class="styleInfo" style="text-align: center">
+                <van-row>
+                  <van-col span="24">
+                    <p class="pFont">
+                      {{
+                        item.clothesName
+                      }}</p>
+                  </van-col>
+                </van-row>
+                <van-row>
+                  <van-col span="24">
+                    <p class="pFont" >{{ item.shopName }}</p>
+                  </van-col>
+                </van-row>
+                <van-row>
+                  <van-col span="24">
+                    <p class="pFont" >{{ item.positionName }}</p>
+                  </van-col>
+                </van-row>
+                <van-row>
+                  <van-col span="24">
+                    <p class="pFont" style="color: red">
+                      婚期： {{
+                        item.weddingDay
+                      }}</p>
+                  </van-col>
+                </van-row>
+              </div>
+            </div>
+          </van-col>
+        </van-row>
       </van-tab>
 
       <van-tab title="预约撞档">
         <!-- 搜索提示 -->
         <van-empty image="search" description="暂无预约撞档" v-if="!scheduleAppList"/>
-        <van-grid :border="false" :column-num="2" :center="false" style="font-size: 12px" v-else>
-          <van-grid-item @click="showPopup2(item.clothesId, item.clothesName)" v-for="(item,index) in scheduleAppList" :key="index">
-            <van-image
-                :src="item.styleImage"
-                style="height: 80%;"/><br>
-            <b>礼服：{{ item.clothesName }}</b>
-            <b>店铺：{{ item.shopName }}</b>
-            <b>位置：{{ item.positionName }}</b>
-          </van-grid-item>
-        </van-grid>
+        <van-row gutter="5">
+          <van-col span="12" v-for="item in scheduleAppList" :key="item.id" @click="showPopup2(item.clothesId, item.clothesName)">
+            <div class="card">
+              <div class="imgParent">
+                <img
+                    :src="item.styleImage===''?'null'
+                             :item.styleImage+'?imageMogr2/rquality/60'"
+                    alt="主图显示失败,请重新设置主图"/>
+              </div>
+
+              <div class="styleInfo" style="text-align: center">
+                <van-row>
+                  <van-col span="24">
+                    <p class="pFont">
+                      {{
+                        item.clothesName
+                      }}</p>
+                  </van-col>
+                </van-row>
+                <van-row>
+                  <van-col span="24">
+                    <p class="pFont" >{{ item.shopName }}</p>
+                  </van-col>
+                </van-row>
+                <van-row>
+                  <van-col span="24">
+                    <p class="pFont" >{{ item.positionName }}</p>
+                  </van-col>
+                </van-row>
+              </div>
+            </div>
+          </van-col>
+        </van-row>1
       </van-tab>
     </van-tabs>
 
@@ -212,5 +265,37 @@ export default {
 </script>
 
 <style scoped>
-
+.card {
+  height: 325px;
+  background-color: white;
+  border-radius: 10px;
+  margin-top: 5%;
+  padding:0 3%;
+}
+.imgParent{
+  height: 250px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 2%
+}
+img {
+  height: 245px;
+  border-radius: 7px;
+}
+.pFont {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin: 0;
+  font-weight: bold;
+  font-size: 11px;
+}
+p{
+  display: block;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  margin-inline-start: 0;
+  margin-inline-end: 0;
+}
 </style>
