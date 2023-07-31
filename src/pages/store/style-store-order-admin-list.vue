@@ -13,13 +13,10 @@
         <van-col :span="12">
           <van-search
               v-model="tenantName"
-              show-action
               placeholder="请输入搜索关键词"
-          >
-            <template #action>
-              <div @click="queryAdminList()">搜索</div>
-            </template>
-          </van-search>
+              input-align="center"
+              @search="queryAdminList()"
+          />
         </van-col>
         <van-col :span="12" style="height: 100%">
           <van-dropdown-menu active-color="#1989fa">
@@ -58,14 +55,13 @@
           <div class="card" v-for="(childItem,childIndex) in item.storeOrderStyleVOS" :key="childIndex">
             <van-row gutter="10">
               <van-col :span="10">
-                <div>
-                  <van-image class="style-img" radius="7"
-                             @click="clickImageItem(childItem.mainImage)"
-                             fit="contain"
-                             :src="item.styleImage===''?'null'
-                               :'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+childItem.mainImage+'?imageMogr2/rquality/60'">
-                    <template v-slot:error>加载失败,请更换主图</template>
-                  </van-image>
+                <div class="imgParent">
+                  <img
+                      class="style-img" radius="7"
+                      @click="clickImageItem(childItem.mainImage)"
+                      :src="item.styleImage===''?'null'
+                             :'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+childItem.mainImage+'?imageMogr2/rquality/60'"
+                      alt="主图显示失败,请重新设置主图"/>
                 </div>
               </van-col>
               <van-col :span="14" @click="toStyleDetails({id:childItem.storeStyleId})">
@@ -78,6 +74,10 @@
                 <van-row><p>单价 : {{ childItem.unitPrice }}</p></van-row>
                 <van-row><p>数量 : {{ childItem.styleNum }}</p></van-row>
                 <van-row><p>总金额 : {{ childItem.amount }}</p></van-row>
+                <van-button v-if="childItem.styleState===1"
+                    style="border-radius: 10px;background-color: #a0e05b;border-color: #a0e05b;width: 100%;height: 35px;font-size: 13px"
+                    @click.stop="(()=>{openChildTrackingNumberState=true;orderId=item.id;orderStyleId=childItem.id})" text="单件发货">
+                </van-button>
               </van-col>
             </van-row>
           </div>
@@ -85,26 +85,24 @@
             <van-col v-if="item.orderState===1" :span="6" style="text-align: center">
               <van-button
                   style="border-radius: 10px;background-color: #a0e05b;border-color: #a0e05b;width: 100%;height: 35px;font-size: 13px"
-                  @click="(()=>{openTrackingNumberState=true;orderId=item.id})">一键发货
+                  @click="(()=>{openTrackingNumberState=true;orderId=item.id})" text="一键发货">
               </van-button>
             </van-col>
             <van-col v-if="item.orderState===1" :span="6" style="text-align: center">
               <van-button
                   style="border-radius: 10px;background-color: #e0ba5b;border-color: #e0ba5b;width: 100%;height: 35px;font-size: 13px"
-                  @click="cancelOrder('取消并退款',item.id)">取消并退款
+                  @click="cancelOrder('取消并退款',item.id)" text="取消并退款">
               </van-button>
             </van-col>
             <van-col v-if="item.orderState===0" :span="6" style="text-align: center">
               <van-button
                   style="border-radius: 10px;background-color: #e0e05b;border-color: #e0e05b;width: 100%;height: 35px;font-size: 13px"
-                  @click="cancelOrder('取消订单',item.id)">取消订单
-              </van-button>
+                  @click="cancelOrder('取消订单',item.id)" text="取消订单"/>
             </van-col>
             <van-col v-if="[3,4].includes(item.orderState)" :span="6" style="text-align: center">
               <van-button
                   style="border-radius: 10px;background-color: #da1212;border-color: #da1212;width: 100%;height: 35px;font-size: 13px"
-                  @click="delByOrderId(item.id)">删除订单
-              </van-button>
+                  @click="delByOrderId(item.id)" text="删除订单" />
             </van-col>
           </van-row>
         </div>
@@ -113,6 +111,9 @@
     </van-collapse>
     <van-dialog v-model="openTrackingNumberState" title="快递单号" show-cancel-button @confirm="inputTrackingNumber">
       <van-field v-model="trackingNumberVal" placeholder="请输入快递单号"/>
+    </van-dialog>
+    <van-dialog v-model="openChildTrackingNumberState" title="快递单号" show-cancel-button @confirm="inputChildTrackingNumber">
+      <van-field v-model="childTrackingNumberVal" placeholder="请输入快递单号"/>
     </van-dialog>
   </div>
 </template>
@@ -148,6 +149,10 @@ export default {
       orderId: "",
       openTrackingNumberState: false,
       trackingNumberVal: "",
+
+      orderStyleId: "",
+      openChildTrackingNumberState: false,
+      childTrackingNumberVal: "",
     }
   },
   created() {
@@ -175,6 +180,26 @@ export default {
         if (response.data.code !== 200) return false;
         this.orderList = response.data.data;
       })
+    },
+    //发货按钮
+    inputChildTrackingNumber() {
+      this.$axios({
+        method: "POST",
+        url: "/storeOrderStyle/sendStyle",
+        data: {
+          id: this.orderStyleId,
+          storeOrderId:this.orderId,
+          styleState:2,
+          trackingNumber: this.childTrackingNumberVal,
+        }
+      }).then(response => {
+        if (response.data.code === 200){
+          this.$toast.success("单件款式发货成功!");
+          this.queryAdminList();
+          return;
+        }
+        this.$toast.fail(response.data.msg);
+      });
     },
     //发货按钮
     inputTrackingNumber() {
@@ -296,22 +321,17 @@ export default {
   height: 100%;
   overflow: hidden;
 }
-
-.cardTitle {
-  text-align: center;
-  font-weight: bold;
-  font-size: 17px;
-  margin-bottom: 10px;
+.van-search{
+  padding: 7px 12px ;
 }
-
-.card .imgParent {
-  padding-left: 2%;
-  height: 100%;
-  width: 80px;
-  display: inline-block;
-  /*align-items: center;*/
+.imgParent{
+  max-height: 250px;
 }
-
+img {
+  max-height: 250px;
+  width: 100%;
+  border-radius: 7px;
+}
 p {
   font-size: 14px;
   margin: 0 0 2% 0;
