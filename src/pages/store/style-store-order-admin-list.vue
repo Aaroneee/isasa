@@ -9,19 +9,26 @@
           :placeholder="true"
           @click-left="onClickLeft"
       />
+      <van-row>
+        <van-col :span="12">
+          <van-search
+              v-model="tenantName"
+              show-action
+              placeholder="请输入搜索关键词"
+          >
+            <template #action>
+              <div @click="queryAdminList()">搜索</div>
+            </template>
+          </van-search>
+        </van-col>
+        <van-col :span="12" style="height: 100%">
+          <van-dropdown-menu active-color="#1989fa">
+            <van-dropdown-item v-model="orderState" :options="orderStateArray" @change="queryAdminList()"/>
+          </van-dropdown-menu>
+        </van-col>
+      </van-row>
 
-      <van-search
-          v-model="tenantName"
-          show-action
-          placeholder="请输入搜索关键词"
-      >
-        <template #action>
-          <div @click="queryAdminList()">搜索</div>
-        </template>
-      </van-search>
-    <van-dropdown-menu active-color="#1989fa" >
-      <van-dropdown-item v-model="orderState" :options="orderStateArray" @change="queryAdminList()"/>
-    </van-dropdown-menu>
+
     </van-sticky>
 
     <!--    <van-loading type="spinner" v-show="loading"/>-->
@@ -31,18 +38,15 @@
         <template #title>
           <van-row>
             <van-col :span="12">
-              {{ item.orderNo }}
+              {{ item.tenantName }}
             </van-col>
             <van-col :span="12" style="text-align: center">
-              {{ item.tenantName }}
+              {{ item.createDate }}
 
             </van-col>
           </van-row>
           <van-row>
-            <van-col :span="12">
-              {{ item.createDate }}
-            </van-col>
-            <van-col :span="12" style="text-align: center">
+            <van-col :span="12" :style="{color:getOrderStateText(item.orderState)[1]}">
               {{ getOrderStateText(item.orderState)[0] }}
             </van-col>
           </van-row>
@@ -77,13 +81,39 @@
               </van-col>
             </van-row>
           </div>
-          <p v-if="item.orderState===0" style="text-align: right">
-            <van-button plain round type="danger" size="small" @click="goPay(item.id)">点击支付</van-button>
-          </p>
+          <van-row :gutter="5">
+            <van-col v-if="item.orderState===1" :span="6" style="text-align: center">
+              <van-button
+                  style="border-radius: 10px;background-color: #a0e05b;border-color: #a0e05b;width: 100%;height: 35px;font-size: 13px"
+                  @click="(()=>{openTrackingNumberState=true;orderId=item.id})">一键发货
+              </van-button>
+            </van-col>
+            <van-col v-if="item.orderState===1" :span="6" style="text-align: center">
+              <van-button
+                  style="border-radius: 10px;background-color: #e0ba5b;border-color: #e0ba5b;width: 100%;height: 35px;font-size: 13px"
+                  @click="cancelOrder('取消并退款',item.id)">取消并退款
+              </van-button>
+            </van-col>
+            <van-col v-if="item.orderState===0" :span="6" style="text-align: center">
+              <van-button
+                  style="border-radius: 10px;background-color: #e0e05b;border-color: #e0e05b;width: 100%;height: 35px;font-size: 13px"
+                  @click="cancelOrder('取消订单',item.id)">取消订单
+              </van-button>
+            </van-col>
+            <van-col v-if="[3,4].includes(item.orderState)" :span="6" style="text-align: center">
+              <van-button
+                  style="border-radius: 10px;background-color: #da1212;border-color: #da1212;width: 100%;height: 35px;font-size: 13px"
+                  @click="delByOrderId(item.id)">删除订单
+              </van-button>
+            </van-col>
+          </van-row>
         </div>
 
       </van-collapse-item>
     </van-collapse>
+    <van-dialog v-model="openTrackingNumberState" title="快递单号" show-cancel-button @confirm="inputTrackingNumber">
+      <van-field v-model="trackingNumberVal" placeholder="请输入快递单号"/>
+    </van-dialog>
   </div>
 </template>
 
@@ -115,6 +145,9 @@ export default {
         {text: '已退款', value: 3},
         {text: '已取消', value: 4},
       ],
+      orderId: "",
+      openTrackingNumberState: false,
+      trackingNumberVal: "",
     }
   },
   created() {
@@ -143,18 +176,82 @@ export default {
         this.orderList = response.data.data;
       })
     },
+    //发货按钮
+    inputTrackingNumber() {
+      this.$axios({
+        method: "POST",
+        url: "/storeOrder/sendAllStyles",
+        data: {
+          id: this.orderId,
+          orderState: 2,
+          trackingNumber: this.trackingNumberVal,
+        }
+      }).then(response => {
+        if (response.data.code === 200) {
+          this.$toast.success("订单发货成功!");
+          this.queryAdminList();
+          return;
+        }
+        this.$toast.fail(response.data.msg);
+      });
+    },
+    //取消和退款
+    cancelOrder(type, orderId) {
+      let text = type === '取消并退款' ? "是否取消该订单？款项将退回账户预付款!" : "是否取消订单？";
+      let resultText = type === '取消并退款' ? "取消成功,钱款已退回!" : "取消成功!";
+      this.$dialog.confirm({
+        title: type,
+        message: text,
+      })
+          .then(() => {
+            this.$axios({
+              method: "POST",
+              url: "/storeOrder/cancelOrder",
+              data: {
+                id: orderId,
+              }
+            }).then(response => {
+              if (response.data.code === 200) {
+                this.$toast.success(resultText);
+                this.queryAdminList();
+                return;
+              }
+              this.$toast.fail(response.data.msg);
+            });
+          })
+          .catch(() => {
+            // on cancel
+          });
+    },
+    //删除订单
+    delByOrderId(orderId) {
+      this.$dialog.confirm({
+        title: "删除订单",
+        message: "是否删除该订单?",
+      })
+          .then(() => {
+            this.$axios({
+              method: "POST",
+              url: "/storeOrder/delById",
+              data: {
+                id: orderId,
+              }
+            }).then(response => {
+              if (response.data.code === 200){
+                this.$toast.success("删除成功!");
+                this.queryAdminList();
+                return;
+              }
+              this.$toast.fail(response.data.msg);
+            });
+          })
+          .catch(() => {
+            // on cancel
+          });
+    },
     //跳转到款式详情
     toStyleDetails(value) {
       this.$router.push({name: "styleStoreDetails", query: value})
-    },
-    //点击支付
-    goPay(id) {
-      if (/Linux/i.test(navigator.platform)) {
-        androidMethod.getAliPayInfo(id);
-        return;
-      }
-      //todo 调用苹果原生
-      //window.webkit.messageHandlers.logout.postMessage("已退出")
     },
     clickImageItem: function (image) {
       ImagePreview([`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image}`])
