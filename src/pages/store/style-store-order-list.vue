@@ -19,7 +19,7 @@
             <van-col :span="12">
               {{ item.storeOrderStyleVOS[0].storeBrandName }}
             </van-col>
-            <van-col :span="12" :style="{color:getOrderStateText(item.orderState)[1]}">
+            <van-col :span="12" :style="{textAlign:'center',color:getOrderStateText(item.orderState)[1]}">
               {{ getOrderStateText(item.orderState)[0] }}
             </van-col>
           </van-row>
@@ -62,9 +62,31 @@
               </van-col>
             </van-row>
           </div>
-          <p v-if="item.orderState===0" style="text-align: right">
-            <van-button plain round type="danger" size="small" @click="goPay(item.id)">点击支付</van-button>
-          </p>
+          <van-row :gutter="5">
+            <van-col v-if="item.orderState===0" :span="6" style="text-align: center">
+              <van-button
+                  style="border-radius: 10px;background-color: #a0e05b;border-color: #a0e05b;width: 100%;height: 35px;font-size: 13px"
+                  @click="goPay(item.id)" text="点击支付">
+              </van-button>
+            </van-col>
+            <van-col v-if="item.orderState===0" :span="6" style="text-align: center">
+              <van-button
+                  style="border-radius: 10px;background-color: #e0e05b;border-color: #e0e05b;width: 100%;height: 35px;font-size: 13px"
+                  @click="cancelOrder('取消订单',item.id)" text="取消订单"/>
+            </van-col>
+            <van-col v-if="item.orderState===1" :span="6" style="text-align: center">
+              <van-button
+                  style="border-radius: 10px;background-color: #e0ba5b;border-color: #e0ba5b;width: 100%;height: 35px;font-size: 13px"
+                  @click="cancelOrder('取消并退款',item.id)" text="取消并退款">
+              </van-button>
+            </van-col>
+
+            <van-col v-if="[3,4].includes(item.orderState)" :span="6" style="text-align: center">
+              <van-button
+                  style="border-radius: 10px;background-color: #da1212;border-color: #da1212;width: 100%;height: 35px;font-size: 13px"
+                  @click="delByOrderId(item.id)" text="删除订单" />
+            </van-col>
+          </van-row>
         </div>
 
       </van-collapse-item>
@@ -93,7 +115,7 @@ export default {
     }
   },
   created() {
-    this.queryShoppingCart()
+    this.queryOrderList()
   },
   mounted() {
     window.onClickLeft = this.onClickLeft
@@ -103,7 +125,7 @@ export default {
   },
   methods: {
     //查询购物车列表
-    queryShoppingCart() {
+    queryOrderList() {
       this.loading = true;
       this.$axios({
         method: "GET",
@@ -112,7 +134,6 @@ export default {
           tenantCrop: this.tenantCrop,
         }
       }).then(response => {
-        console.log(response)
         this.loading = false
         if (response.data.code !== 200) return false;
         this.orderList = response.data.data;
@@ -131,6 +152,60 @@ export default {
       //todo 调用苹果原生
       //window.webkit.messageHandlers.logout.postMessage("已退出")
     },
+    //取消和退款
+    cancelOrder(type, orderId) {
+      let text = type === '取消并退款' ? "是否取消该订单？款项将退回账户预付款!" : "是否取消订单？";
+      let resultText = type === '取消并退款' ? "取消成功,钱款已退回!" : "取消成功!";
+      this.$dialog.confirm({
+        title: type,
+        message: text,
+      })
+          .then(() => {
+            this.$axios({
+              method: "POST",
+              url: "/storeOrder/cancelOrder",
+              data: {
+                id: orderId,
+              }
+            }).then(response => {
+              if (response.data.code === 200) {
+                this.$toast.success(resultText);
+                this.queryOrderList();
+                return;
+              }
+              this.$toast.fail(response.data.msg);
+            });
+          })
+          .catch(() => {
+            // on cancel
+          });
+    },
+    //删除订单
+    delByOrderId(orderId) {
+      this.$dialog.confirm({
+        title: "删除订单",
+        message: "是否删除该订单?",
+      })
+          .then(() => {
+            this.$axios({
+              method: "POST",
+              url: "/storeOrder/delById",
+              data: {
+                id: orderId,
+              }
+            }).then(response => {
+              if (response.data.code === 200){
+                this.$toast.success("删除成功!");
+                this.queryOrderList();
+                return;
+              }
+              this.$toast.fail(response.data.msg);
+            });
+          })
+          .catch(() => {
+            // on cancel
+          });
+    },
     clickImageItem: function (image) {
       ImagePreview([`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image}`])
     },
@@ -139,7 +214,6 @@ export default {
     },
     //获取订单显示文本
     getOrderStateText(orderState){
-      console.log(orderState)
       switch (orderState){
         case 0:
           return ["待付款", "#FFA500FF"];
