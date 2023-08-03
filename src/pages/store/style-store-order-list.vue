@@ -17,9 +17,9 @@
         <template #title>
           <van-row>
             <van-col :span="12">
-              {{ item.orderNo }}
+              {{ item.storeOrderStyleVOS[0].storeBrandName }}
             </van-col>
-            <van-col :span="12" style="text-align: center">
+            <van-col :span="12" :style="{color:getOrderStateText(item.orderState)[1]}">
               {{ getOrderStateText(item.orderState)[0] }}
             </van-col>
           </van-row>
