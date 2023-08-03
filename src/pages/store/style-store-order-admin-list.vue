@@ -1,14 +1,7 @@
 <template>
   <div>
     <van-sticky>
-      <van-nav-bar
-          :title="'款式订单'"
-          left-text="返回"
-          left-arrow
-          :fixed="true"
-          :placeholder="true"
-          @click-left="onClickLeft"
-      />
+      <baseNavBar title="款式订单"/>
       <van-row>
         <van-col :span="12">
           <van-search

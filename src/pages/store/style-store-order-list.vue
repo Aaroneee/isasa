@@ -1,14 +1,7 @@
 <template>
   <div>
     <van-sticky>
-      <van-nav-bar
-          :title="'采购列表'"
-          left-text="返回"
-          left-arrow
-          :fixed="true"
-          :placeholder="true"
-          @click-left="onClickLeft"
-      />
+      <baseNavBar title="采购列表"/>
     </van-sticky>
     <van-loading type="spinner" v-show="loading"/>
     <van-collapse v-model="activeNames">
@@ -97,7 +90,6 @@
 <script>
 import {ImagePreview} from "vant";
 import baseNavBar from "@/components/nav-bar/base-nav-bar";
-import {re} from "mathjs";
 
 export default {
   name: "style-store-order-list",
@@ -208,9 +200,6 @@ export default {
     },
     clickImageItem: function (image) {
       ImagePreview([`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image}`])
-    },
-    onClickLeft: function () {
-      this.$router.replace({name: 'work'})
     },
     //获取订单显示文本
     getOrderStateText(orderState){
