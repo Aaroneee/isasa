@@ -18,6 +18,7 @@ import Clipboard from "vue-clipboard2";
 import hasPermission from "./permission/index";
 import { Lazyload } from 'vant';
 import { create, all } from 'mathjs'
+import md5 from 'js-md5';
 
 const mathjs = create(all)
 
@@ -40,6 +41,9 @@ Vue.prototype.$projectsType = projectsType;
 Vue.prototype.$stringUtils = stringUtils;
 Vue.prototype.$per = hasPermission;
 Vue.prototype.$math = mathjs
+Vue.prototype.$md5 = md5
+
+
 Vue.use(SlimCropper)
 Vue.use(Clipboard)
 Vue.config.productionTip = false
