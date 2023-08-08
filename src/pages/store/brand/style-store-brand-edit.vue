@@ -90,37 +90,35 @@ export default {
       })
     },
     onSubmit: function () {
-      this.$dialog.confirm({
+      let self=this
+      self.$dialog.confirm({
         title: '修改系列',
         message: '是否确定修改系列名称和编号?',
+        beforeClose:function (action, done){
+          if (self.file.length>0){
+            let arr = self.file[0].file.name.split(".");
+            let name=self.$md5(arr[0] + new Date())+'.'+ arr[arr.length - 1];
+            self.$upload.uploadSingeFile(self.$upload.clothesImage,self.file[0].file,name).then(value=>{
+              if (!value){
+                self.$toast.fail("图片上传失败,请重试");
+                return;
+              }
+              self.seriesInfo.seriesImg=name;
+              self.updateSeries(done);
+            })
+          }else
+            self.updateSeries(done);
+        },
       })
-          .then(() => {
-            if (this.file.length>0){
-              let arr = this.file[0].file.name.split(".");
-              let name=this.$md5(arr[0] + new Date())+'.'+ arr[arr.length - 1];
-              this.$upload.uploadSingeFile(this.$upload.clothesImage,this.file[0].file,name).then(value=>{
-                if (!value){
-                  this.$toast.fail("图片上传失败,请重试");
-                  return;
-                }
-                this.seriesInfo.seriesImg=name;
-                this.updateSeries();
-              })
-            }else
-              this.updateSeries();
-          })
-          .catch(() => {
-            this.$toast.fail('已取消');
-          });
-
     },
-    updateSeries(){
+    updateSeries(done){
       this.$axios({
         method: "POST",
         url: "/storeSeries/updateSeries",
         data: this.seriesInfo
       }).then(response => {
-        response.data.code===200?this.$toast.success('修改成功'):this.$toast.fail('修改失败');
+        response.data.code===200?this.$toast.success('修改成功'):this.$toast.fail(response.data.msg);
+        done();
         this.queryById();
       })
     },
@@ -159,6 +157,7 @@ export default {
 
 .style-img {
   height: 270px;
+  max-width: 80vw;
   display: block;
   margin: 0 auto;
   border-radius: 10px;

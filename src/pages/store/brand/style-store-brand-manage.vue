@@ -1,14 +1,14 @@
 <template>
   <div>
     <van-sticky>
-      <SwitchNavBar title="品牌系列管理" :switchText="'添加'" @flag="toAdd()"/>
+      <SwitchNavBar title="品牌系列管理" switchText="添加品牌" @flag="toBrandAdd()"/>
     </van-sticky>
     <div>
       <van-collapse v-model="activeNames">
         <van-collapse-item :title="item.brandName" :name="index"  v-for="(item,index) in brandList" :key="item.id">
           <van-row gutter="5">
             <van-col span="12" style="text-align: center">
-              <div class="card" @click="toEdit(chilItem.id)" >
+              <div class="card" @click="toSeriesAdd(item)" >
                 <div class="style-img" style="border:1px dashed  gray;display: flex;justify-content: center;align-items: center">
                   <van-icon name="plus" size="50" color="#000000" />
                 </div>
@@ -24,7 +24,7 @@
             <van-col span="12" v-for="(chilItem,chilIndex) in item.storeSeriesVOS" :key="chilItem.id" style="text-align: center">
               <div class="card" @click="toEdit(chilItem.id)">
                 <div class="imgFont">
-                  <van-badge :content="chilItem.brandName" color="#7ab4ee">
+                  <van-badge :content="chilItem.brandName" color="#7ab4ee" style="right: revert;left: 0">
                     <img class="style-img"
                          :src="chilItem.seriesImg===''?'https://isasaerp-img-1304365928.cos.ap-shanghai.myqcloud.com/logo.png'
                                :'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+chilItem.seriesImg+'?imageMogr2/rquality/60'">
@@ -88,28 +88,18 @@ export default {
     toEdit(id){
       this.$router.push({name: 'styleStoreBrandEdit', query: {id: id}})
     },
-    toAdd(id){
-      this.$router.push({name: 'styleStoreBrandAdd', query: {id: id}})
-    }
+    toBrandAdd(){
+      this.$router.push({name: 'styleStoreBrandAdd'})
+    },
+    toSeriesAdd(item){
+      this.$router.push({name: 'styleStoreSeriesAdd', query: {storeBrand: item}})
+    },
   },
 }
 </script>
 
 
 <style scoped>
-.van-dropdown-menu >>> .van-dropdown-menu__title {
-  font-size: 12px;
-}
-
-.tag-padding {
-  margin-left: 5px;
-  margin-right: 5px;
-}
-
-.bgcolor {
-  border: 1px solid #de0d0d;
-  color: rgb(182, 177, 189);
-}
 
 .styleInfo {
   margin-bottom: 5px;
@@ -152,18 +142,12 @@ export default {
   padding: 0 3px;
   font-size: 12px;
   text-align: center;
+  color: var(--my-text-color);
 }
-
-.van-list >>> .van-cell {
-  padding: 10px 5px;
-  background-color: #f7f8fa;
-  line-height: 17px;
-  /*background-color: #1a2a4c;*/
-}
-
-.card >>> .van-badge--fixed {
-  left: 0;
-  right: auto;
-  -webkit-transform: none;
+.imgFont >>>.van-badge--fixed{
+  right: revert ;
+  left: 0 ;
+  -webkit-transform:translate(0);
+  transform:translate(0);
 }
 </style>

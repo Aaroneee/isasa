@@ -1,0 +1,16 @@
+:root {
+  /*文本*/
+  --my-text-color: #3F4254;
+  /*备注*/
+  --my-describe-color: #B5B5C3;
+
+
+  /*基础*/
+  --my-base-color: #409EFF;
+  /*成功*/
+  --my-success-color: #67C23A;
+  /*错误*/
+  --my-error-color: #F56C6C;
+  /*警告*/
+  --my-warning-color: #E6A23C;
+}

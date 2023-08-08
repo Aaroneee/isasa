@@ -73,41 +73,37 @@ export default {
   },
   methods: {
     onSubmit: function () {
-      this.$dialog.confirm({
-        title: this.form.onlyBrand ? '添加品牌系列' : '添加品牌',
-        message: this.form.onlyBrand ? '是否确定添加品牌和系列名称编号?' : '是否确定添加该品牌',
-        beforeClose:this.addSeries,
+      let self=this
+      self.$dialog.confirm({
+        title: self.form.onlyBrand ? '添加品牌系列' : '添加品牌',
+        message: self.form.onlyBrand ? '是否确定添加品牌和系列名称编号?' : '是否确定添加该品牌',
+        beforeClose:function (action, done){
+          if (self.file.length > 0 && self.form.onlyBrand) {
+            let arr = self.file[0].file.name.split(".");
+            let name = self.$md5(arr[0] + new Date()) + '.' + arr[arr.length - 1];
+            self.$upload.uploadSingeFile(self.$upload.clothesImage, self.file[0].file, name).then(value => {
+              if (!value) {
+                self.$toast.fail("图片上传失败,请重试");
+                return;
+              }
+              self.form.seriesImg = name;
+              self.addBrand(done)
+            })
+          }else {
+            self.addBrand(done)
+          }
+        },
       })
     },
-    addSeries(action, done) {
-      if (this.file.length > 0 && this.form.onlyBrand) {
-        let arr = this.file[0].file.name.split(".");
-        let name = this.$md5(arr[0] + new Date()) + '.' + arr[arr.length - 1];
-        this.$upload.uploadSingeFile(this.$upload.clothesImage, this.file[0].file, name).then(value => {
-          if (!value) {
-            this.$toast.fail("图片上传失败,请重试");
-            return;
-          }
-          this.form.seriesImg = name;
-          this.$axios({
-            method: "PUT",
-            url: "/storeBrand/addBrandSeries",
-            data: this.form
-          }).then(response => {
-            response.data.code === 200 ? this.$toast.success('添加成功') : this.$toast.fail(response.data.msg);
-            done();
-          })
-        })
-      }else {
-        this.$axios({
-          method: "PUT",
-          url: "/storeBrand/addBrandSeries",
-          data: this.form
-        }).then(response => {
-          response.data.code === 200 ? this.$toast.success('添加成功') : this.$toast.fail(response.data.msg);
-          done();
-        })
-      }
+    addBrand(done) {
+      this.$axios({
+        method: "PUT",
+        url: "/storeBrand/addBrandSeries",
+        data: this.form
+      }).then(response => {
+        response.data.code === 200 ? this.$toast.success('添加成功') : this.$toast.fail(response.data.msg);
+        done();
+      })
 
     },
     checkBoxChange(val) {

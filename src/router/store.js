@@ -7,6 +7,7 @@ import styleStoreOrderAdminList from "@/pages/store/style-store-order-admin-list
 import styleStoreBrandManage from "@/pages/store/brand/style-store-brand-manage.vue"//款式商城
 import styleStoreBrandEdit from "@/pages/store/brand/style-store-brand-edit.vue"//款式商城
 import styleStoreBrandAdd from "@/pages/store/brand/style-store-brand-add.vue"//款式商城
+import styleStoreSeriesAdd from "@/pages/store/brand/style-store-series-add.vue"//款式商城
 export default[
     {
         path: '/styleStore',
@@ -51,5 +52,10 @@ export default[
         path: '/styleStoreBrandAdd',
         name: 'styleStoreBrandAdd',
         component: styleStoreBrandAdd,
+    },
+    {
+        path: '/styleStoreSeriesAdd',
+        name: 'styleStoreSeriesAdd',
+        component: styleStoreSeriesAdd,
     },
 ]
