@@ -1,7 +1,7 @@
 <template>
   <div>
     <van-sticky>
-      <baseNavBar title="品牌系列管理"/>
+      <SwitchNavBar title="品牌系列管理" :switchText="'添加'" @flag="toAdd()"/>
     </van-sticky>
     <div>
       <van-list
@@ -46,7 +46,7 @@
 
 <script>
 
-import baseNavBar from "@/components/nav-bar/base-nav-bar.vue";
+import SwitchNavBar from "@/components/nav-bar/switch-nav-bar.vue";
 
 export default {
   name: "style-store-brand-manage",
@@ -63,7 +63,7 @@ export default {
     this.queryStoreSeriesList()
   },
   components: {
-    baseNavBar
+    SwitchNavBar
   },
   methods: {
     queryStoreSeriesList: function () {
@@ -87,6 +87,9 @@ export default {
     },
     toEdit(id){
       this.$router.push({name: 'styleStoreBrandEdit', query: {id: id}})
+    },
+    toAdd(id){
+      this.$router.push({name: 'styleStoreBrandAdd', query: {id: id}})
     }
   },
 }
