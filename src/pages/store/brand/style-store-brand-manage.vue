@@ -4,31 +4,41 @@
       <SwitchNavBar title="品牌系列管理" :switchText="'添加'" @flag="toAdd()"/>
     </van-sticky>
     <div>
-      <van-list
-          v-model="loading"
-          :finished="finished"
-          @load="onLoad"
-          finished-text="没有更多了">
-        <van-cell style="font-size: 12px">
+      <van-collapse v-model="activeNames">
+        <van-collapse-item :title="item.brandName" :name="index"  v-for="(item,index) in brandList" :key="item.id">
           <van-row gutter="5">
-            <van-col span="12" v-for="item in brandList" :key="item.id" style="text-align: center">
-              <div class="card" @click="toEdit(item.id)">
+            <van-col span="12" style="text-align: center">
+              <div class="card" @click="toEdit(chilItem.id)" >
+                <div class="style-img" style="border:1px dashed  gray;display: flex;justify-content: center;align-items: center">
+                  <van-icon name="plus" size="50" color="#000000" />
+                </div>
+                <div class="styleInfo">
+                  <van-row>
+                    <van-col span="24">
+                      <p class="pFont">添加系列</p>
+                    </van-col>
+                  </van-row>
+                </div>
+              </div>
+            </van-col>
+            <van-col span="12" v-for="(chilItem,chilIndex) in item.storeSeriesVOS" :key="chilItem.id" style="text-align: center">
+              <div class="card" @click="toEdit(chilItem.id)">
                 <div class="imgFont">
-                  <van-badge :content="item.brandName" color="#7ab4ee">
+                  <van-badge :content="chilItem.brandName" color="#7ab4ee">
                     <img class="style-img"
-                         :src="item.seriesImg===''?'null'
-                               :'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.seriesImg+'?imageMogr2/rquality/60'">
+                         :src="chilItem.seriesImg===''?'https://isasaerp-img-1304365928.cos.ap-shanghai.myqcloud.com/logo.png'
+                               :'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+chilItem.seriesImg+'?imageMogr2/rquality/60'">
                   </van-badge>
                   <div class="styleInfo">
                     <van-row>
                       <van-col span="24">
-                        <p class="pFont">{{ item.seriesName }}</p>
+                        <p class="pFont">{{ chilItem.seriesName }}</p>
                       </van-col>
 
                     </van-row>
                     <van-row>
                       <van-col span="24">
-                        <p class="pFont">{{ item.seriesNum }}</p>
+                        <p class="pFont">{{ chilItem.seriesNum }}</p>
                       </van-col>
                     </van-row>
 
@@ -38,8 +48,8 @@
               </div>
             </van-col>
           </van-row>
-        </van-cell>
-      </van-list>
+        </van-collapse-item>
+      </van-collapse>
     </div>
   </div>
 </template>
@@ -52,11 +62,9 @@ export default {
   name: "style-store-brand-manage",
   data() {
     return {
+      activeNames: [0],
       brandList: [],
       tenantCrop: localStorage.getItem("tenantCrop"),
-
-      loading: false,
-      finished: false,
     }
   },
   created() {
@@ -67,23 +75,15 @@ export default {
   },
   methods: {
     queryStoreSeriesList: function () {
-      this.loading = true
       this.$axios({
         method: "GET",
-        url: "/storeSeries/queryList",
+        url: "/storeBrand/queryList",
         params: {
           tenantCrop: this.tenantCrop,
         }
       }).then(response => {
-        this.loading = false
-        this.finished = true
         this.brandList = response.data.data;
-        console.log(this.brandList)
       })
-    },
-    onLoad() {
-      this.loading = true;
-      this.queryStoreSeriesList()
     },
     toEdit(id){
       this.$router.push({name: 'styleStoreBrandEdit', query: {id: id}})
