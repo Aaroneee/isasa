@@ -9,7 +9,7 @@
           <van-row gutter="5">
             <van-col span="12" style="text-align: center">
               <div class="card" @click="toSeriesAdd(item)" >
-                <div class="style-img" style="border:1px dashed  gray;display: flex;justify-content: center;align-items: center">
+                <div style="border-radius: 10px;height: 220px;border:1px dashed  gray;display: flex;justify-content: center;align-items: center">
                   <van-icon name="plus" size="50" color="#000000" />
                 </div>
                 <div class="styleInfo">
@@ -25,9 +25,11 @@
               <div class="card" @click="toEdit(chilItem.id)">
                 <div class="imgFont">
                   <van-badge :content="chilItem.brandName" color="#7ab4ee" style="right: revert;left: 0">
-                    <img class="style-img"
-                         :src="chilItem.seriesImg===''?'https://isasaerp-img-1304365928.cos.ap-shanghai.myqcloud.com/logo.png'
-                               :'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+chilItem.seriesImg+'?imageMogr2/rquality/60'">
+                    <div style="height: 220px;display: flex;align-items: center">
+                      <img class="style-img"
+                           :src="chilItem.seriesImg===''?'https://isasaerp-img-1304365928.cos.ap-shanghai.myqcloud.com/logo.png'
+                                 :'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+chilItem.seriesImg+'?imageMogr2/rquality/60'">
+                    </div>
                   </van-badge>
                   <div class="styleInfo">
                     <van-row>
@@ -106,7 +108,7 @@ export default {
 }
 
 .style-img {
-  min-height: 220px;
+  max-height: 220px;
   max-height: 220px;
 
   max-width: 165px;
