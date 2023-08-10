@@ -50,11 +50,13 @@
               <van-col :span="10">
                 <div class="imgParent">
                   <img
-                      class="style-img" radius="7"
+                      class="style-img"
                       @click="clickImageItem(childItem.mainImage)"
-                      :src="item.styleImage===''?'null'
-                             :'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+childItem.mainImage+'?imageMogr2/rquality/60'"
-                      alt="主图显示失败,请重新设置主图"/>
+                      :src="'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+childItem.mainImage+'?imageMogr2/rquality/60'"
+                      alt="主图显示失败,请重新设置主图"
+                      @error="($event)=>{
+                        $event.target.src='https://isasaerp-img-1304365928.cos.ap-shanghai.myqcloud.com/logoFont.jpg?imageMogr2/rquality/2';
+                      }"/>
                 </div>
               </van-col>
               <van-col :span="14" @click="toStyleDetails({id:childItem.storeStyleId})">
@@ -329,13 +331,5 @@ p {
   font-size: 14px;
   margin: 0 0 2% 0;
   color: #000000;
-}
-
-.delete-button {
-  height: 100%;
-}
-
-.van-loading--spinner {
-  text-align: center;
 }
 </style>

@@ -6,7 +6,7 @@
     <van-loading type="spinner" v-show="loading"/>
     <van-collapse v-model="activeNames">
       <van-collapse-item :name="index" :style="{color: `${getOrderStateText(item.orderState)[1]} !important`}"
-                          v-for="(item,index) in orderList" :key="index">
+                         v-for="(item,index) in orderList" :key="index">
         <template #title>
           <van-row>
             <van-col :span="12">
@@ -32,14 +32,14 @@
           <div class="card" v-for="(childItem,childIndex) in item.storeOrderStyleVOS" :key="childIndex">
             <van-row gutter="10">
               <van-col :span="10">
-                <div>
-                  <van-image class="style-img" radius="7"
+                <div class="imgParent">
+                  <img class="style-img"
                              @click="clickImageItem(childItem.mainImage)"
-                             fit="contain"
-                             :src="item.styleImage===''?'null'
-                               :'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+childItem.mainImage+'?imageMogr2/rquality/60'">
-                    <template v-slot:error>加载失败,请更换主图</template>
-                  </van-image>
+                             :src="
+                   'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+childItem.mainImage+'?imageMogr2/rquality/60'"
+                             @error="($event)=>{
+                        $event.target.src='https://isasaerp-img-1304365928.cos.ap-shanghai.myqcloud.com/logoFont.jpg?imageMogr2/rquality/2';
+                      }" alt=""/>
                 </div>
               </van-col>
               <van-col :span="14" @click="toStyleDetails({id:childItem.storeStyleId})">
@@ -77,7 +77,7 @@
             <van-col v-if="[3,4].includes(item.orderState)" :span="6" style="text-align: center">
               <van-button
                   style="border-radius: 10px;background-color: #da1212;border-color: #da1212;width: 100%;height: 35px;font-size: 13px"
-                  @click="delByOrderId(item.id)" text="删除订单" />
+                  @click="delByOrderId(item.id)" text="删除订单"/>
             </van-col>
           </van-row>
         </div>
@@ -186,7 +186,7 @@ export default {
                 id: orderId,
               }
             }).then(response => {
-              if (response.data.code === 200){
+              if (response.data.code === 200) {
                 this.$toast.success("删除成功!");
                 this.queryOrderList();
                 return;
@@ -202,8 +202,8 @@ export default {
       ImagePreview([`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image}`])
     },
     //获取订单显示文本
-    getOrderStateText(orderState){
-      switch (orderState){
+    getOrderStateText(orderState) {
+      switch (orderState) {
         case 0:
           return ["待付款", "#FFA500FF"];
         case 1:
@@ -238,32 +238,20 @@ export default {
   height: 100%;
   overflow: hidden;
 }
-
-.cardTitle {
-  text-align: center;
-  font-weight: bold;
-  font-size: 17px;
-  margin-bottom: 10px;
+.van-search{
+  padding: 7px 12px ;
 }
-
-.card .imgParent {
-  padding-left: 2%;
-  height: 100%;
-  width: 80px;
-  display: inline-block;
-  /*align-items: center;*/
+.imgParent{
+  max-height: 250px;
 }
-
+img {
+  max-height: 250px;
+  width: 100%;
+  border-radius: 7px;
+}
 p {
   font-size: 14px;
   margin: 0 0 2% 0;
   color: #000000;
-}
-
-.delete-button {
-  height: 100%;
-}
-.van-loading--spinner{
-  text-align: center;
 }
 </style>

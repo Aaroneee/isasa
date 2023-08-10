@@ -27,8 +27,10 @@
                   <van-badge :content="chilItem.brandName" color="#7ab4ee" style="right: revert;left: 0">
                     <div style="height: 220px;display: flex;align-items: center">
                       <img class="style-img"
-                           :src="chilItem.seriesImg===''?'https://isasaerp-img-1304365928.cos.ap-shanghai.myqcloud.com/logo.png'
-                                 :'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+chilItem.seriesImg+'?imageMogr2/rquality/60'">
+                           :src="'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+chilItem.seriesImg+'?imageMogr2/rquality/60'"
+                           @error="($event)=>{
+                        $event.target.src='https://isasaerp-img-1304365928.cos.ap-shanghai.myqcloud.com/logoFont.jpg?imageMogr2/rquality/2';
+                      }">
                     </div>
                   </van-badge>
                   <div class="styleInfo">
