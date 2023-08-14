@@ -2,6 +2,25 @@
   <div>
     <van-sticky>
       <baseNavBar title="款式商城"/>
+      <van-dropdown-menu>
+        <van-dropdown-item :title="styleTypeText" v-model="styleType" @change="styleTypeChange" :options="styleTypeArray"/>
+        <van-dropdown-item :title="styleLabels.length>0?'款式标签 '+styleLabels.length:'款式标签'" ref="labelRef" title-class>
+          <van-row type="flex" style="padding: 10px">
+            <van-col style="margin: 5px" v-for="item in styleLabelList" :key="item.value">
+              <van-tag color="#B6B1BD" :class="{'bgcolor':styleLabels.indexOf(item.value)>-1}"
+                       round plain size="large"
+                       @click="pushStyleLabel(item.value)">{{ item.name }}
+              </van-tag>
+            </van-col>
+          </van-row>
+          <div style="padding: 30px 30px 30px 30px;">
+            <van-button type="danger" block round @click="styleLabelConfirm">
+              确认
+            </van-button>
+          </div>
+        </van-dropdown-item>
+        <!--        <van-dropdown-item :title="brandText" v-model="brand" @change="brandChange"  :options="styleBrandArray"/>-->
+      </van-dropdown-menu>
     </van-sticky>
     <div>
       <van-list
@@ -62,12 +81,21 @@ export default {
       loading: false,
       finished: false,
 
+      styleType: "",
+      styleTypeText: "",
+
+      styleLabels: [],
+      styleTypeArray: [{text: "款式类型", value: ""}],
+      styleLabelList:[],
+
       page: 1,
       tenantCrop: localStorage.getItem("tenantCrop"),
     }
   },
   created() {
     this.queryStyleList()
+    this.queryStoreLabelIds();
+    this.queryStyleType()
   },
   components: {
     baseNavBar
@@ -80,6 +108,8 @@ export default {
         url:"/storeStyle/queryList",
         params:{
           storeSeriesId:this.$route.query.id,
+          storeTypeId:this.styleType,
+          storeLabelIds: this.styleLabels.toString(),
           page:this.page,
           limit:30,
           publishStatus:1,
@@ -98,6 +128,38 @@ export default {
           this.$toast.fail(response.data.msg);
         }
       })
+    },
+    //查询款式类型
+    queryStyleType: function () {
+      this.$selectUtils.queryStoreStyleTypeIds(this.$selectUtils.DropDownMenu).then((response) => {
+        this.styleTypeArray.push(...JSON.parse(response.data.data));
+      })
+    },
+    //切换款式类型
+    styleTypeChange: function (value) {
+      this.styleType = value
+      this.dataClear()
+      this.queryStyleList();
+    },
+    //查询标签库列表
+    queryStoreLabelIds:function (){
+      this.$selectUtils.queryStoreLabelIds().then(response=>{
+        this.styleLabelList=JSON.parse(response.data.data)
+      })
+    },
+    //标签确认
+    styleLabelConfirm: function () {
+      this.$refs.labelRef.toggle()
+      this.dataClear()
+      this.queryStyleList();
+    },
+    //点击标签
+    pushStyleLabel: function (value) {
+      if (this.styleLabels.indexOf(value) > -1) {
+        this.styleLabels.splice(this.styleLabels.indexOf(value, 0), 1)
+      } else {
+        this.styleLabels.push(value)
+      }
     },
     toStyleDetails(value) {
       this.$router.push({name: "styleStoreDetails", query: value})
@@ -136,8 +198,8 @@ export default {
 }
 
 .bgcolor {
-  border: 1px solid #de0d0d;
-  color: rgb(182, 177, 189);
+  background-color: #de0d0d;
+  color:white;
 }
 
 .styleInfo{
