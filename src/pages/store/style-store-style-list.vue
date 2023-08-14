@@ -47,7 +47,7 @@
                         <p class="pFont" style="text-align: left">{{ item.storeTypeName }}</p>
                       </van-col>
                       <van-col span="12">
-                        <p class="pFont" style="text-align: right">￥{{ item.salePrice===''?'未标价':item.salePrice }}</p>
+                        <p class="pFont" style="text-align: right">{{ item.styleNum===''?'无编号':item.styleNum }}</p>
                       </van-col>
                     </van-row>
                     <van-row>
