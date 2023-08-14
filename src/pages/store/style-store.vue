@@ -75,10 +75,9 @@ export default {
     queryStoreBrandList: function () {
       this.$axios({
         method: "GET",
-        url: "/storeBrand/queryList",
+        url: "/storeBrand/queryAllList",
         params: {
           id:this.brand,
-          tenantCrop: this.tenantCrop,
         }
       }).then(response => {
         this.brandStyleList = response.data.data;
