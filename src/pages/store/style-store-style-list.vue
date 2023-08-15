@@ -44,10 +44,10 @@
                   <div class="styleInfo">
                     <van-row>
                       <van-col span="12">
-                        <p class="pFont" style="text-align: left">{{ item.storeTypeName }}</p>
+                        <p class="pFont" style="text-align: left">{{ item.styleName===''?item.storeTypeName:item.styleName }}</p>
                       </van-col>
                       <van-col span="12">
-                        <p class="pFont" style="text-align: right">{{ item.styleNum===''?'无编号':item.styleNum }}</p>
+                        <p class="pFont" style="text-align: right">￥{{ item.salePrice===''?'未标价':item.salePrice }}</p>
                       </van-col>
                     </van-row>
                     <van-row>
@@ -55,7 +55,7 @@
                         <p class="pFont" style="text-align: left">{{ item.storeSeriesName===''?'无系列':item.storeSeriesName }}</p>
                       </van-col>
                       <van-col span="12">
-                        <p class="pFont" style="text-align: right">{{ item.storeSeriesNum===''?"无编号":item.storeSeriesNum }}</p>
+                        <p class="pFont" style="text-align: right">{{ item.styleNum===''?"无款式编号":item.styleNum }}</p>
                       </van-col>
                     </van-row>
                   </div>
