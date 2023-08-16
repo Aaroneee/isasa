@@ -38,14 +38,19 @@
             <van-col :span="12" :style="{color:getOrderStateText(item.orderState)[1]}">
               {{ getOrderStateText(item.orderState)[0] }}
             </van-col>
-            <van-col :span="12" v-show="item.orderState===1">
+            <van-col :span="12" style="text-align: center">
+              ¥ {{ item.totalAmount }}
+            </van-col>
+          </van-row>
+          <van-row >
+            <van-col :span="8" v-show="item.orderState===1">
               <van-button
                   style="border-radius: 5px;background-color: var(--my-success-one-color);border-color: var(--my-success-one-color);width: 100%;height: 25px;font-size: 12px;"
                   @click.stop="(()=>{openTrackingNumberState=true;orderId=item.id})" text="一键发货">
               </van-button>
             </van-col>
-            <van-col :span="12" v-show="item.orderState===2" style="text-align: center">
-              <span @click.stop="copyTrackingNumber(item.trackingNumber)" style="color: var(--my-describe-color)">{{item.trackingNumber}}</span>
+            <van-col :span="24" v-show="item.orderState===2">
+              <span @click.stop="copyTrackingNumber(item.trackingNumber)" style="color: var(--my-describe-color)">快递单号 : {{item.trackingNumber}}</span>
             </van-col>
           </van-row>
         </template>
