@@ -45,7 +45,7 @@
               </van-button>
             </van-col>
             <van-col :span="12" v-show="item.orderState===2" style="text-align: center">
-              <p @click.stop="copyTrackingNumber(item.trackingNumber)" style="color: var(--my-describe-color)">{{item.trackingNumber}}</p>
+              <span @click.stop="copyTrackingNumber(item.trackingNumber)" style="color: var(--my-describe-color)">{{item.trackingNumber}}</span>
             </van-col>
           </van-row>
         </template>

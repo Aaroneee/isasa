@@ -27,7 +27,7 @@
           </van-row>
           <van-row>
             <van-col :span="24" v-show="item.orderState===2">
-              <p @click.stop="copyTrackingNumber(item.trackingNumber)" style="color: var(--my-describe-color)">快递单号 : {{item.trackingNumber}}</p>
+              <span @click.stop="copyTrackingNumber(item.trackingNumber)" style="color: var(--my-describe-color)">快递单号 : {{item.trackingNumber}}</span>
             </van-col>
           </van-row>
         </template>
