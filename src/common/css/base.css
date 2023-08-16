@@ -7,10 +7,21 @@
 
   /*基础*/
   --my-base-color: #409EFF;
+
   /*成功*/
   --my-success-color: #67C23A;
-  /*错误*/
-  --my-error-color: #F56C6C;
+  /*成功-1*/
+  --my-success-one-color: #07c160;
+
+
   /*警告*/
   --my-warning-color: #E6A23C;
+  /*警告-1*/
+  --my-warning-one-color: #FAAB0C;
+
+
+  /*错误*/
+  --my-error-color: #F56C6C;
+  /*错误*/
+  --my-error-one-color: #EE0A24;
 }
