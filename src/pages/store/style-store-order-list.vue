@@ -12,16 +12,22 @@
             <van-col :span="12">
               {{ item.storeOrderStyleVOS[0].storeBrandName }}
             </van-col>
-            <van-col :span="12" :style="{textAlign:'center',color:getOrderStateText(item.orderState)[1]}">
-              {{ getOrderStateText(item.orderState)[0] }}
-            </van-col>
-          </van-row>
-          <van-row>
             <van-col :span="12">
               {{ item.createDate }}
             </van-col>
-            <van-col :span="12" style="text-align: center">
-              {{ item.totalAmount }}
+
+          </van-row>
+          <van-row>
+            <van-col :span="12" :style="{textAlign:'left',color:getOrderStateText(item.orderState)[1]}">
+              {{ getOrderStateText(item.orderState)[0] }}
+            </van-col>
+            <van-col :span="12">
+              总金额 : {{ item.totalAmount }}
+            </van-col>
+          </van-row>
+          <van-row>
+            <van-col :span="24" v-show="item.orderState===2">
+              <p @click.stop="copyTrackingNumber(item.trackingNumber)" style="color: var(--my-describe-color)">快递单号 : {{item.trackingNumber}}</p>
             </van-col>
           </van-row>
         </template>
@@ -45,6 +51,9 @@
               <van-col :span="14" @click="toStyleDetails({id:childItem.storeStyleId})">
                 <van-row><p :style="{color: getOrderStateText(childItem.styleState)[1]}">款式状态 :
                   {{ getOrderStateText(childItem.styleState)[0] }}</p></van-row>
+                <van-row v-show="childItem.styleState===2">
+                  <p @click.stop="copyTrackingNumber(childItem.trackingNumber)" style="color: var(--my-describe-color)">快递单号 : {{childItem.trackingNumber}}</p>
+                </van-row>
                 <van-row><p>品牌 : {{ childItem.storeBrandName }}</p></van-row>
                 <van-row><p>类型 : {{ childItem.storeTypeName }}</p></van-row>
                 <van-row><p>系列 : {{ childItem.storeSeriesName }}</p></van-row>
@@ -58,25 +67,25 @@
           <van-row :gutter="5">
             <van-col v-if="item.orderState===0" :span="6" style="text-align: center">
               <van-button
-                  style="border-radius: 10px;background-color: #a0e05b;border-color: #a0e05b;width: 100%;height: 35px;font-size: 13px"
+                  style="border-radius: 10px;background-color: var(--my-success-one-color);border-color: var(--my-success-one-color);width: 100%;height: 35px;font-size: 13px"
                   @click="goPay(item.id)" text="点击支付">
               </van-button>
             </van-col>
             <van-col v-if="item.orderState===0" :span="6" style="text-align: center">
               <van-button
-                  style="border-radius: 10px;background-color: #e0e05b;border-color: #e0e05b;width: 100%;height: 35px;font-size: 13px"
+                  style="border-radius: 10px;background-color: var(--my-warning-one-color);border-color: var(--my-warning-one-color);width: 100%;height: 35px;font-size: 13px"
                   @click="cancelOrder('取消订单',item.id)" text="取消订单"/>
             </van-col>
             <van-col v-if="item.orderState===1" :span="6" style="text-align: center">
               <van-button
-                  style="border-radius: 10px;background-color: #e0ba5b;border-color: #e0ba5b;width: 100%;height: 35px;font-size: 13px"
+                  style="border-radius: 10px;background-color: var(--my-warning-color);border-color: var(--my-warning-color);width: 100%;height: 35px;font-size: 13px"
                   @click="cancelOrder('取消并退款',item.id)" text="取消并退款">
               </van-button>
             </van-col>
 
             <van-col v-if="[3,4].includes(item.orderState)" :span="6" style="text-align: center">
               <van-button
-                  style="border-radius: 10px;background-color: #da1212;border-color: #da1212;width: 100%;height: 35px;font-size: 13px"
+                  style="border-radius: 10px;background-color: var(--my-error-color);border-color: var(--my-error-color);width: 100%;height: 35px;font-size: 13px"
                   @click="delByOrderId(item.id)" text="删除订单"/>
             </van-col>
           </van-row>
@@ -201,19 +210,28 @@ export default {
     clickImageItem: function (image) {
       ImagePreview([`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image}`])
     },
+    //复制文本
+    copyTrackingNumber(text){
+      let _this = this;
+      _this.$copyText(text).then(function (e) {
+        _this.$toast.success({message:'已复制快递单号', duration: 700});
+      }, err => {
+        _this.$toast.fail({message: '快递单号复制失败,请充实', duration: 700});
+      })
+    },
     //获取订单显示文本
     getOrderStateText(orderState) {
       switch (orderState) {
         case 0:
-          return ["待付款", "#FFA500FF"];
+          return ["待付款", "#FAAB0C"];
         case 1:
-          return ["待发货", "#be7c00"];
+          return ["待发货", "#E6A23C"];
         case 2:
-          return ["已发货", "#187e18"];
+          return ["已发货", "#07c160"];
         case 3:
-          return ["已退款", "#e02e2e"];
+          return ["已退款", "#EE0A24"];
         case 4:
-          return ["已取消", "#ec7878"];
+          return ["已取消", "#F56C6C"];
       }
     },
   },
