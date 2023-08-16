@@ -73,9 +73,9 @@
                 <van-row v-show="childItem.styleState===2">
                   <p @click.stop="copyTrackingNumber(childItem.trackingNumber)" style="color: var(--my-describe-color)">快递单号 : {{childItem.trackingNumber}}</p>
                 </van-row>
-                <van-row><p>品牌 : {{ childItem.storeBrandName }}</p></van-row>
                 <van-row><p>类型 : {{ childItem.storeTypeName }}</p></van-row>
-                <van-row><p>系列 : {{ childItem.storeSeriesName }}</p></van-row>
+                <van-row><p>品牌 : {{ childItem.storeBrandName }}</p></van-row>
+                <van-row><p>系列名称 : {{ childItem.storeSeriesName }}</p></van-row>
                 <van-row><p>系列编号 : {{ childItem.storeSeriesNum }}</p></van-row>
                 <van-row><p>单价 : {{ childItem.unitPrice }}</p></van-row>
                 <van-row><p>数量 : {{ childItem.styleNum }}</p></van-row>
@@ -185,6 +185,7 @@ export default {
         this.loading = false
         if (response.data.code !== 200) return false;
         this.orderList = response.data.data;
+        console.log(this.orderList)
       })
     },
     //单件发货按钮
