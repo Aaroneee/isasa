@@ -42,7 +42,7 @@
               ¥ {{ item.totalAmount }}
             </van-col>
           </van-row>
-          <van-row >
+          <van-row>
             <van-col :span="8" v-show="item.orderState===1">
               <van-button
                   style="border-radius: 5px;background-color: var(--my-success-one-color);border-color: var(--my-success-one-color);width: 100%;height: 25px;font-size: 12px;"
@@ -50,7 +50,9 @@
               </van-button>
             </van-col>
             <van-col :span="24" v-show="item.orderState===2">
-              <span @click.stop="copyTrackingNumber(item.trackingNumber)" style="color: var(--my-describe-color)">快递单号 : {{item.trackingNumber}}</span>
+              <span @click.stop="copyTrackingNumber(item.trackingNumber)" style="color: var(--my-describe-color)">快递单号 : {{
+                  item.trackingNumber
+                }}</span>
             </van-col>
           </van-row>
         </template>
@@ -76,7 +78,8 @@
                 <van-row><p :style="{color: getOrderStateText(childItem.styleState)[1]}">款式状态 :
                   {{ getOrderStateText(childItem.styleState)[0] }}</p></van-row>
                 <van-row v-show="childItem.styleState===2">
-                  <p @click.stop="copyTrackingNumber(childItem.trackingNumber)" style="color: var(--my-describe-color)">快递单号 : {{childItem.trackingNumber}}</p>
+                  <p @click.stop="copyTrackingNumber(childItem.trackingNumber)" style="color: var(--my-describe-color)">
+                    快递单号 : {{ childItem.trackingNumber }}</p>
                 </van-row>
                 <van-row><p>类型 : {{ childItem.storeTypeName }}</p></van-row>
                 <van-row><p>品牌 : {{ childItem.storeBrandName }}</p></van-row>
@@ -87,7 +90,8 @@
                 <van-row><p>总金额 : {{ childItem.amount }}</p></van-row>
                 <van-button v-if="childItem.styleState===1"
                             style="border-radius: 10px;background-color: var(--my-success-color);border-color: var(--my-success-color);width: 100%;height: 25px;font-size: 12px"
-                            @click.stop="(()=>{openChildTrackingNumberState=true;orderId=item.id;orderStyleId=childItem.id})" text="单件发货">
+                            @click.stop="(()=>{openChildTrackingNumberState=true;orderId=item.id;orderStyleId=childItem.id})"
+                            text="单件发货">
                 </van-button>
               </van-col>
             </van-row>
@@ -110,10 +114,17 @@
                   style="border-radius: 10px;background-color: var(--my-warning-one-color);border-color: var(--my-warning-one-color);width: 100%;height: 35px;font-size: 13px"
                   @click="cancelOrder('取消订单',item.id)" text="取消订单"/>
             </van-col>
+            <van-col v-if="item.orderState===0" :span="8" style="text-align: center">
+              <van-button
+                  style="border-radius: 10px;background-color: var(--my-base-color);border-color: var(--my-base-color);width: 100%;height: 35px;font-size: 13px"
+                  @click="openUpdateAmount(item)"
+                  text="价格修改"/>
+            </van-col>
+
             <van-col v-if="[3,4].includes(item.orderState)" :span="8" style="text-align: center">
               <van-button
                   style="border-radius: 10px;background-color: var(--my-error-color);border-color: var(--my-error-color);width: 100%;height: 35px;font-size: 13px"
-                  @click="delByOrderId(item.id)" text="删除订单" />
+                  @click="delByOrderId(item.id)" text="删除订单"/>
             </van-col>
           </van-row>
         </div>
@@ -123,8 +134,29 @@
     <van-dialog v-model="openTrackingNumberState" title="快递单号" show-cancel-button @confirm="inputTrackingNumber">
       <van-field v-model="trackingNumberVal" placeholder="请输入快递单号"/>
     </van-dialog>
-    <van-dialog v-model="openChildTrackingNumberState" title="快递单号" show-cancel-button @confirm="inputChildTrackingNumber">
+    <van-dialog v-model="openChildTrackingNumberState" title="快递单号" show-cancel-button
+                @confirm="inputChildTrackingNumber">
       <van-field v-model="childTrackingNumberVal" placeholder="请输入快递单号"/>
+    </van-dialog>
+    <van-dialog v-model="updateAmount.openChangeAmountState" title="价格调整" show-cancel-button
+                @confirm="inputChangeAmount">
+      <van-field v-model="updateAmount.changeAmount" type="number" @blur="watchUpdateAmount" label="加减价格"
+                 placeholder="请输入加减价格"/>
+      <van-field
+          v-model="updateAmount.changeAmountRemark"
+          rows="1"
+          autosize
+          label="调整原因"
+          type="textarea"
+          placeholder="请输入调整原因"
+      />
+      <van-field
+          v-model="updateAmount.finalTotalAmount"
+          label="最终价格"
+          readonly
+          type="number"
+          placeholder="最终价格"
+      />
     </van-dialog>
   </div>
 </template>
@@ -132,6 +164,7 @@
 <script>
 import {ImagePreview} from "vant";
 import baseNavBar from "@/components/nav-bar/base-nav-bar";
+import MathUtils from "@/common/js/utils/math-utils";
 
 export default {
   name: "style-store-order-admin-list",
@@ -164,6 +197,21 @@ export default {
       orderStyleId: "",
       openChildTrackingNumberState: false,
       childTrackingNumberVal: "",
+
+      updateAmount: {
+        //选中的订单
+        orderId: "",
+        //原订单重甲
+        totalAmount: '',
+        openChangeAmountState: false,
+        //加减的价格
+        changeAmount: "",
+        changeAmountRemark: "",
+        //最终显示价格
+        finalTotalAmount: '',
+      }
+
+
     }
   },
   created() {
@@ -200,16 +248,16 @@ export default {
         url: "/storeOrderStyle/sendStyle",
         data: {
           id: this.orderStyleId,
-          storeOrderId:this.orderId,
-          styleState:2,
+          storeOrderId: this.orderId,
+          styleState: 2,
           trackingNumber: this.childTrackingNumberVal,
         }
       }).then(response => {
-        if (response.data.code === 200){
+        if (response.data.code === 200) {
           this.$toast.success("单件款式发货成功!");
           this.queryAdminList();
-          this.orderStyleId="";
-          this.childTrackingNumberVal="";
+          this.orderStyleId = "";
+          this.childTrackingNumberVal = "";
           return;
         }
         this.$toast.fail(response.data.msg);
@@ -229,8 +277,8 @@ export default {
         if (response.data.code === 200) {
           this.$toast.success("订单发货成功!");
           this.queryAdminList();
-          this.orderId="";
-          this.trackingNumberVal="";
+          this.orderId = "";
+          this.trackingNumberVal = "";
           return;
         }
         this.$toast.fail(response.data.msg);
@@ -278,7 +326,7 @@ export default {
                 id: orderId,
               }
             }).then(response => {
-              if (response.data.code === 200){
+              if (response.data.code === 200) {
                 this.$toast.success("删除成功!");
                 this.queryAdminList();
                 return;
@@ -289,6 +337,50 @@ export default {
           .catch(() => {
             // on cancel
           });
+    },
+    //打开订单修改价格
+    openUpdateAmount(item) {
+      this.updateAmount.openChangeAmountState = true;
+      this.updateAmount.orderId = item.id;
+      this.updateAmount.changeAmount = '';
+      this.updateAmount.finalTotalAmount = item.totalAmount
+      this.updateAmount.changeAmountRemark = "";
+      this.updateAmount.totalAmount = item.totalAmount
+    },
+    //鉴定修改价格输入框
+    watchUpdateAmount() {
+      if ([null, '', 0, undefined].includes(this.updateAmount.changeAmount)) {
+        this.updateAmount.finalTotalAmount = this.updateAmount.totalAmount;
+        return;
+      }
+      this.updateAmount.finalTotalAmount = MathUtils.add(this.updateAmount.totalAmount, this.updateAmount.changeAmount);
+    },
+    //确认修改价格
+    inputChangeAmount() {
+      let flag = [null, '', 0, undefined];
+      if (flag.includes(this.updateAmount.changeAmount)
+          || flag.includes(this.updateAmount.orderId)
+          || flag.includes(this.updateAmount.changeAmountRemark)) {
+        this.$toast.fail("请输入完整!")
+        return false;
+      }
+      this.$axios({
+        method: "POST",
+        url: "/storeOrderAmount/addAmount",
+        data: {
+          orderId: this.updateAmount.orderId,
+          amount: this.updateAmount.changeAmount,
+          remark: this.updateAmount.changeAmountRemark,
+          finalAmount: this.updateAmount.finalTotalAmount,
+        }
+      }).then(response => {
+        if (response.data.code === 200) {
+          this.$toast.success("修改成功!");
+          this.queryAdminList();
+          return;
+        }
+        this.$toast.fail(response.data.msg);
+      });
     },
     //跳转到款式详情
     toStyleDetails(value) {
@@ -301,10 +393,10 @@ export default {
       this.$router.replace({name: 'work'})
     },
     //复制文本
-    copyTrackingNumber(text){
+    copyTrackingNumber(text) {
       let _this = this;
       _this.$copyText(text).then(function (e) {
-        _this.$toast.success({message:'已复制快递单号', duration: 700});
+        _this.$toast.success({message: '已复制快递单号', duration: 700});
       }, err => {
         _this.$toast.fail({message: '快递单号复制失败,请充实', duration: 700});
       })
@@ -346,26 +438,30 @@ export default {
   height: 100%;
   overflow: hidden;
 }
-.van-search{
-  padding: 7px 12px ;
+
+.van-search {
+  padding: 7px 12px;
 }
-.imgParent{
+
+.imgParent {
   max-height: 250px;
 }
+
 img {
   max-height: 250px;
   width: 100%;
   border-radius: 7px;
 }
+
 p {
   font-size: 14px;
   margin: 0 0 2% 0;
   color: #000000;
-  word-break:normal;
-  width:auto;
-  display:block;
-  white-space:pre-wrap;
-  word-wrap : break-word ;
-  overflow: hidden ;
+  word-break: normal;
+  width: auto;
+  display: block;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow: hidden;
 }
 </style>
