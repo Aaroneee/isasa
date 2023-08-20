@@ -28,7 +28,7 @@
           </van-row>
           <van-row>
             <van-col :span="24" v-show="item.orderState===2">
-              <span @click.stop="copyTrackingNumber(item.trackingNumber)" style="color: var(--my-describe-color)">快递单号 : {{item.trackingNumber}}</span>
+              <span @click.stop="copyTrackingNumber(item.trackingNumber)" style="color: var(--my-describe-color)">快递单号 : {{ item.trackingNumber }}</span>
             </van-col>
           </van-row>
         </template>
@@ -43,10 +43,10 @@
               <van-col :span="10">
                 <div class="imgParent">
                   <img class="style-img"
-                             @click="clickImageItem(childItem.mainImage)"
-                             :src="
+                       @click="clickImageItem(childItem.mainImage)"
+                       :src="
                    'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+childItem.mainImage+'?imageMogr2/rquality/60'"
-                             @error="($event)=>{
+                       @error="($event)=>{
                         $event.target.src='https://isasaerp-img-1304365928.cos.ap-shanghai.myqcloud.com/logoFont.jpg?imageMogr2/rquality/2';
                       }" alt=""/>
                 </div>
@@ -55,7 +55,8 @@
                 <van-row><p :style="{color: getOrderStateText(childItem.styleState)[1]}">款式状态 :
                   {{ getOrderStateText(childItem.styleState)[0] }}</p></van-row>
                 <van-row v-show="childItem.styleState===2">
-                  <p @click.stop="copyTrackingNumber(childItem.trackingNumber)" style="color: var(--my-describe-color)">快递单号 : {{childItem.trackingNumber}}</p>
+                  <p @click.stop="copyTrackingNumber(childItem.trackingNumber)" style="color: var(--my-describe-color)">
+                    快递单号 : {{ childItem.trackingNumber }}</p>
                 </van-row>
                 <van-row><p>类型 : {{ childItem.storeTypeName }}</p></van-row>
                 <van-row><p>品牌 : {{ childItem.storeBrandName }}</p></van-row>
@@ -182,10 +183,9 @@ export default {
     goPay(id) {
       if (/Linux/i.test(navigator.platform)) {
         androidMethod.getAliPayInfo(id);
-        return;
+      }else {
+        window.webkit.messageHandlers.pay.postMessage(id);
       }
-      //todo 调用苹果原生
-      //window.webkit.messageHandlers.logout.postMessage("已退出")
     },
     //取消和退款
     cancelOrder(type, orderId) {
@@ -258,10 +258,10 @@ export default {
       ImagePreview([`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image}`])
     },
     //复制文本
-    copyTrackingNumber(text){
+    copyTrackingNumber(text) {
       let _this = this;
       _this.$copyText(text).then(function (e) {
-        _this.$toast.success({message:'已复制快递单号', duration: 700});
+        _this.$toast.success({message: '已复制快递单号', duration: 700});
       }, err => {
         _this.$toast.fail({message: '快递单号复制失败,请充实', duration: 700});
       })
@@ -303,17 +303,21 @@ export default {
   height: 100%;
   overflow: hidden;
 }
-.van-search{
-  padding: 7px 12px ;
+
+.van-search {
+  padding: 7px 12px;
 }
-.imgParent{
+
+.imgParent {
   max-height: 250px;
 }
+
 img {
   max-height: 250px;
   width: 100%;
   border-radius: 7px;
 }
+
 p {
   font-size: 14px;
   margin: 0 0 2% 0;
