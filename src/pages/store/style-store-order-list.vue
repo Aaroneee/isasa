@@ -23,6 +23,7 @@
             </van-col>
             <van-col :span="12">
               总金额 : {{ item.totalAmount }}
+              <van-icon @click.stop="queryChangeAmountList(item.id)" v-show="item.changeAmount!==''" name="question-o"/>
             </van-col>
           </van-row>
           <van-row>
@@ -34,7 +35,9 @@
         <div class="cardParent">
           <p>订单编号: {{ item.orderNo }}</p>
           <p>下单日期: {{ item.createDate }}</p>
-          <p>订单总价: {{ item.totalAmount }}</p>
+          <p>订单总价: {{ item.totalAmount }}
+            <van-icon @click.stop="queryChangeAmountList(item.id)" v-show="item.changeAmount!==''" name="question-o"/>
+          </p>
           <div class="card" v-for="(childItem,childIndex) in item.storeOrderStyleVOS" :key="childIndex">
             <van-row gutter="10">
               <van-col :span="10">
@@ -93,6 +96,32 @@
 
       </van-collapse-item>
     </van-collapse>
+    <van-popup v-model="updateAmount.openChangeAmountListState" round style="width: 80vw;height: 50vh;padding:8px 16px 24px;
+    background-color: #F0F2F5">
+      <p style="text-align: center;font-size:18px;font-weight: bolder" >价格历史</p>
+      <div v-for="(updateAmountItem,updateAmountIndex) in updateAmount.changeAmountList" :key="updateAmountIndex"
+           class="updateAmountCard">
+        <p :style="{textAlign: 'center',fontSize: '16px',color:updateAmountItem.amount<0?'#67C23A':'#F56C6C'}">{{updateAmountItem.createDate}}</p>
+        <van-row style="margin: 4% 0 2% 0">
+          <van-col :span="10" style="height: 20px;">价格调整 :</van-col>
+          <van-col :span="14" style="height: 20px;display: flex;align-items: center">
+            {{ updateAmountItem.amount>0?'+'+updateAmountItem.amount:updateAmountItem.amount }}
+          </van-col>
+        </van-row>
+        <van-row style="margin: 2% 0">
+          <van-col :span="10">调整前价格 :</van-col>
+          <van-col :span="14">{{ updateAmountItem.originalAmount }}</van-col>
+        </van-row>
+        <van-row style="margin: 2% 0">
+          <van-col :span="10">调整后价格 :</van-col>
+          <van-col :span="14">{{ updateAmountItem.finalAmount }}</van-col>
+        </van-row>
+        <van-row style="margin: 2% 0">
+          <van-col :span="10">调整备注 :</van-col>
+          <van-col :span="14">{{ updateAmountItem.remark }}</van-col>
+        </van-row>
+      </div>
+    </van-popup>
   </div>
 </template>
 
@@ -113,6 +142,11 @@ export default {
 
       loading: false,
       tenantCrop: localStorage.getItem("tenantCrop"),
+
+      updateAmount: {
+        openChangeAmountListState: false,
+        changeAmountList: [],
+      }
     }
   },
   created() {
@@ -207,6 +241,19 @@ export default {
             // on cancel
           });
     },
+    //查询价格修改历史
+    queryChangeAmountList(orderId) {
+      this.$axios({
+        method: "GET",
+        url: "/storeOrderAmount/queryList",
+        params: {
+          orderId: orderId,
+        }
+      }).then(response => {
+        this.updateAmount.changeAmountList = response.data.data.reverse();
+        this.updateAmount.openChangeAmountListState = true;
+      });
+    },
     clickImageItem: function (image) {
       ImagePreview([`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image}`])
     },
@@ -271,5 +318,24 @@ p {
   font-size: 14px;
   margin: 0 0 2% 0;
   color: #000000;
+  word-break: normal;
+  width: auto;
+  display: block;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow: hidden;
+}
+.updateAmountCard {
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding:8px 16px 24px;
+  margin:8px 16px 24px;
+  font-size: 14px;
+  word-break: normal;
+  width: auto;
+  display: block;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow: hidden;
 }
 </style>
