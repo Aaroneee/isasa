@@ -62,6 +62,17 @@
            v-html="`${priceCount} (原价) * ${styleDiscountRatio} (客户折扣)&ensp;&ensp;=&ensp;&ensp;${totalAmount} (总金额)`"/>
       </van-row>
     </div>
+    <div class="card">
+      <van-row class="cardTitle"><span>订单备注</span></van-row>
+      <van-field
+          v-model="remark"
+          autosize
+          type="textarea"
+          maxlength="100"
+          placeholder="请输入留言"
+          show-word-limit
+      />
+    </div>
     <br><br><br><br>
     <van-submit-bar :price="totalAmount*100" button-text="提交订单" @submit="addOrder"/>
   </div>
@@ -99,6 +110,8 @@ export default {
       styleDiscountRatio: 0,
       //折扣后价格
       totalAmount: 0,
+      //客户备注
+      remark:"",
     }
   },
   methods: {
@@ -254,6 +267,7 @@ export default {
         tenantCrop: this.tenantCrop,
         supplierTenantCrop: storeOrderStyleS[0].supplierTenantCrop,
         storeOrderStyleS: storeOrderStyleS,
+        remark: this.remark,
       }
     }
   },
