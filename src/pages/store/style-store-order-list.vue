@@ -2,6 +2,20 @@
   <div>
     <van-sticky>
       <baseNavBar title="采购列表"/>
+      <van-row style="display: flex;align-items: center;background: #FFFFFF;">
+        <van-col :span="12" style="height: 100%;">
+          <div style="height:100%;border-radius: 10px;display: flex;
+flex-direction: column;justify-content: center;align-items: center">
+            <p style="font-size: 15px">预付款余额</p>
+            <p style="font-size: 14px">¥ {{ advanceCharge }}</p>
+          </div>
+        </van-col>
+        <van-col :span="12" style="height: 100%">
+          <van-dropdown-menu active-color="#1989fa">
+            <van-dropdown-item v-model="orderState" :options="orderStateArray" @change="queryOrderList()"/>
+          </van-dropdown-menu>
+        </van-col>
+      </van-row>
     </van-sticky>
     <van-loading type="spinner" v-show="loading"/>
     <van-collapse v-model="activeNames">
@@ -137,8 +151,17 @@ export default {
   name: "style-store-order-list",
   data() {
     return {
+      orderState: "",
       orderList: [],
       activeNames: [0],
+      orderStateArray: [
+        {text: '全部', value: ''},
+        {text: '待付款', value: 0},
+        {text: '待发货', value: 1},
+        {text: '已发货', value: 2},
+        {text: '已退款', value: 3},
+        {text: '已取消', value: 4},
+      ],
 
       priceCount: 0,
 
@@ -174,6 +197,7 @@ export default {
         method: "GET",
         url: "/storeOrder/queryList",
         params: {
+          orderState: this.orderState,
           tenantCrop: this.tenantCrop,
         }
       }).then(response => {
