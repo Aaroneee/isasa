@@ -67,27 +67,30 @@
                 <van-row><p>总金额 : {{ childItem.amount }}</p></van-row>
               </van-col>
             </van-row>
+            <van-row>
+              备注：{{item.remark}}
+            </van-row>
           </div>
           <van-row :gutter="5">
-            <van-col v-if="item.orderState===0" :span="6" style="text-align: center">
+            <van-col v-if="item.orderState===0" :span="8" style="text-align: center">
               <van-button
                   style="border-radius: 10px;background-color: var(--my-success-one-color);border-color: var(--my-success-one-color);width: 100%;height: 35px;font-size: 13px"
                   @click="goPay(item.id)" text="点击支付">
               </van-button>
             </van-col>
-            <van-col v-if="item.orderState===0" :span="6" style="text-align: center">
+            <van-col v-if="item.orderState===0" :span="8" style="text-align: center">
               <van-button
                   style="border-radius: 10px;background-color: var(--my-warning-one-color);border-color: var(--my-warning-one-color);width: 100%;height: 35px;font-size: 13px"
                   @click="cancelOrder('取消订单',item.id)" text="取消订单"/>
             </van-col>
-            <van-col v-if="item.orderState===1" :span="6" style="text-align: center">
+            <van-col v-if="item.orderState===1" :span="8" style="text-align: center">
               <van-button
                   style="border-radius: 10px;background-color: var(--my-warning-color);border-color: var(--my-warning-color);width: 100%;height: 35px;font-size: 13px"
                   @click="cancelOrder('取消并退款',item.id)" text="取消并退款">
               </van-button>
             </van-col>
 
-            <van-col v-if="[3,4].includes(item.orderState)" :span="6" style="text-align: center">
+            <van-col v-if="[3,4].includes(item.orderState)" :span="8" style="text-align: center">
               <van-button
                   style="border-radius: 10px;background-color: var(--my-error-color);border-color: var(--my-error-color);width: 100%;height: 35px;font-size: 13px"
                   @click="delByOrderId(item.id)" text="删除订单"/>

@@ -98,6 +98,9 @@
                 </van-button>
               </van-col>
             </van-row>
+            <van-row>
+              订单备注：{{item.remark}}
+            </van-row>
           </div>
           <van-row :gutter="5">
             <van-col v-if="item.orderState===1" :span="8" style="text-align: center">
