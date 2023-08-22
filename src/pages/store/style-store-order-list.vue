@@ -75,7 +75,7 @@
             <van-col v-if="item.orderState===0" :span="8" style="text-align: center">
               <van-button
                   style="border-radius: 10px;background-color: var(--my-success-one-color);border-color: var(--my-success-one-color);width: 100%;height: 35px;font-size: 13px"
-                  @click="goPay(item.id)" text="点击支付">
+                  @click="goPay(item.id,item.totalAmount)" text="点击支付">
               </van-button>
             </van-col>
             <van-col v-if="item.orderState===0" :span="8" style="text-align: center">
@@ -146,15 +146,19 @@ export default {
 
       loading: false,
       tenantCrop: localStorage.getItem("tenantCrop"),
+      empId: localStorage.getItem("empId"),
 
       updateAmount: {
         openChangeAmountListState: false,
         changeAmountList: [],
-      }
+      },
+      //预付款
+      advanceCharge: 0,
     }
   },
   created() {
     this.queryOrderList()
+    this.queryAdvanceCharge()
   },
   mounted() {
     window.onClickLeft = this.onClickLeft
@@ -183,7 +187,13 @@ export default {
       this.$router.push({name: "styleStoreDetails", query: value})
     },
     //点击支付
-    goPay(id) {
+    goPay(id,totalAmount) {
+      //如果余额有钱则使用余额支付 否则直接使用支付宝
+      if (this.advanceCharge >= totalAmount) {
+        this.changeAdvanceCharge(id,totalAmount);
+
+        return;
+      }
       if (/Linux/i.test(navigator.platform)) {
         androidMethod.getAliPayInfo(id);
       }else {
@@ -256,6 +266,47 @@ export default {
         this.updateAmount.changeAmountList = response.data.data.reverse();
         this.updateAmount.openChangeAmountListState = true;
       });
+    },
+    //查询预付款
+    queryAdvanceCharge() {
+      this.$axios({
+        method: "GET",
+        url: "/tenant/queryTenantInfo",
+        params: {
+          tenantCrop: this.tenantCrop
+        }
+      }).then(response => {
+        this.advanceCharge = response.data.data.advanceCharge;
+      })
+    },
+    //调用余额支付
+    changeAdvanceCharge(orderId,totalAmount) {
+      this.$dialog.confirm({
+        title: '支付提示',
+        message: '当前预付款余额: ' + this.advanceCharge + '<br>是否直接使用余额支付?',
+      }).then(() => {
+        this.$axios({
+          method: "POST",
+          url: "/storeOrder/advanceChargePay",
+          data: {
+            tenantCrop: this.tenantCrop,
+            id: orderId,
+            totalAmount: totalAmount,
+            payChannel: 2,
+            empId: this.empId,
+            orderState: 1,
+          }
+        }).then(response => {
+          //如果提交订单成功则进入支付逻辑
+          if (response.data.code === 200) {
+            this.$toast.success('支付成功');
+
+            this.queryOrderList();
+          } else {
+            this.$toast.fail('支付失败,请刷重试!');
+          }
+        })
+      })
     },
     clickImageItem: function (image) {
       ImagePreview([`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image}`])
