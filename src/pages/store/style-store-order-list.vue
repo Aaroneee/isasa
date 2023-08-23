@@ -329,6 +329,7 @@ export default {
           } else {
             this.$toast.fail('支付失败,请刷重试!');
           }
+          this.queryAdvanceCharge();
         })
       })
     },
