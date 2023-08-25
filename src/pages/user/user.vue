@@ -1,9 +1,9 @@
 <template>
-  <div style="margin-bottom: 15%">
+  <div>
     <van-sticky>
       <baseNavBar title="个人信息"/>
     </van-sticky>
-    <p style="font-size: 35px;text-align: center;margin: 20% 0">{{ tenant.empName }}</p>
+    <p style="font-size: 35px;text-align: center;margin: 10% 0">{{ tenant.empName }}</p>
     <van-cell-group>
       <van-cell title="职位" :value="tenant.roleName" icon="manager-o"/>
       <van-cell title="店铺" :value="tenant.shopName" icon="wap-home-o"/>
@@ -30,7 +30,7 @@
       <p class="purchaseBoxP">产&nbsp;品&nbsp;续&nbsp;费</p>
     </div>
   </div>
-</template>续费
+</template>
 
 <script>
 import baseNavBar from "@/components/nav-bar/base-nav-bar.vue";
@@ -172,7 +172,7 @@ export default {
 .purchaseBox {
   text-align: center;
   position: absolute;
-  bottom: 50px;
+  bottom: 1px;
   left: 50%;
   transform: translate(-50%, -50%);
 }

@@ -2,6 +2,20 @@
   <div>
     <van-sticky>
       <baseNavBar title="采购列表"/>
+      <van-row style="display: flex;align-items: center;background: #FFFFFF;">
+        <van-col :span="12" style="height: 100%;">
+          <div style="height:100%;border-radius: 10px;display: flex;
+flex-direction: column;justify-content: center;align-items: center">
+            <p style="font-size: 15px">预付款余额</p>
+            <p style="font-size: 14px">¥ {{ advanceCharge }}</p>
+          </div>
+        </van-col>
+        <van-col :span="12" style="height: 100%">
+          <van-dropdown-menu active-color="#1989fa">
+            <van-dropdown-item v-model="orderState" :options="orderStateArray" @change="queryOrderList()"/>
+          </van-dropdown-menu>
+        </van-col>
+      </van-row>
     </van-sticky>
     <van-loading type="spinner" v-show="loading"/>
     <van-collapse v-model="activeNames">
@@ -23,27 +37,30 @@
             </van-col>
             <van-col :span="12">
               总金额 : {{ item.totalAmount }}
+              <van-icon @click.stop="queryChangeAmountList(item.id)" v-show="item.changeAmount!==''" name="question-o"/>
             </van-col>
           </van-row>
           <van-row>
             <van-col :span="24" v-show="item.orderState===2">
-              <p @click.stop="copyTrackingNumber(item.trackingNumber)" style="color: var(--my-describe-color)">快递单号 : {{item.trackingNumber}}</p>
+              <span @click.stop="copyTrackingNumber(item.trackingNumber)" style="color: var(--my-describe-color)">快递单号 : {{ item.trackingNumber }}</span>
             </van-col>
           </van-row>
         </template>
         <div class="cardParent">
           <p>订单编号: {{ item.orderNo }}</p>
           <p>下单日期: {{ item.createDate }}</p>
-          <p>订单总价: {{ item.totalAmount }}</p>
+          <p>订单总价: {{ item.totalAmount }}
+            <van-icon @click.stop="queryChangeAmountList(item.id)" v-show="item.changeAmount!==''" name="question-o"/>
+          </p>
           <div class="card" v-for="(childItem,childIndex) in item.storeOrderStyleVOS" :key="childIndex">
             <van-row gutter="10">
               <van-col :span="10">
                 <div class="imgParent">
                   <img class="style-img"
-                             @click="clickImageItem(childItem.mainImage)"
-                             :src="
+                       @click="clickImageItem(childItem.mainImage)"
+                       :src="
                    'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+childItem.mainImage+'?imageMogr2/rquality/60'"
-                             @error="($event)=>{
+                       @error="($event)=>{
                         $event.target.src='https://isasaerp-img-1304365928.cos.ap-shanghai.myqcloud.com/logoFont.jpg?imageMogr2/rquality/2';
                       }" alt=""/>
                 </div>
@@ -52,38 +69,42 @@
                 <van-row><p :style="{color: getOrderStateText(childItem.styleState)[1]}">款式状态 :
                   {{ getOrderStateText(childItem.styleState)[0] }}</p></van-row>
                 <van-row v-show="childItem.styleState===2">
-                  <p @click.stop="copyTrackingNumber(childItem.trackingNumber)" style="color: var(--my-describe-color)">快递单号 : {{childItem.trackingNumber}}</p>
+                  <p @click.stop="copyTrackingNumber(childItem.trackingNumber)" style="color: var(--my-describe-color)">
+                    快递单号 : {{ childItem.trackingNumber }}</p>
                 </van-row>
-                <van-row><p>品牌 : {{ childItem.storeBrandName }}</p></van-row>
                 <van-row><p>类型 : {{ childItem.storeTypeName }}</p></van-row>
-                <van-row><p>系列 : {{ childItem.storeSeriesName }}</p></van-row>
+                <van-row><p>品牌 : {{ childItem.storeBrandName }}</p></van-row>
+                <van-row><p>系列名称 : {{ childItem.storeSeriesName }}</p></van-row>
                 <van-row><p>系列编号 : {{ childItem.storeSeriesNum }}</p></van-row>
                 <van-row><p>单价 : {{ childItem.unitPrice }}</p></van-row>
                 <van-row><p>数量 : {{ childItem.styleNum }}</p></van-row>
                 <van-row><p>总金额 : {{ childItem.amount }}</p></van-row>
               </van-col>
             </van-row>
+            <van-row>
+              备注：{{item.remark}}
+            </van-row>
           </div>
           <van-row :gutter="5">
-            <van-col v-if="item.orderState===0" :span="6" style="text-align: center">
+            <van-col v-if="item.orderState===0" :span="8" style="text-align: center">
               <van-button
                   style="border-radius: 10px;background-color: var(--my-success-one-color);border-color: var(--my-success-one-color);width: 100%;height: 35px;font-size: 13px"
-                  @click="goPay(item.id)" text="点击支付">
+                  @click="goPay(item.id,item.totalAmount)" text="点击支付">
               </van-button>
             </van-col>
-            <van-col v-if="item.orderState===0" :span="6" style="text-align: center">
+            <van-col v-if="item.orderState===0" :span="8" style="text-align: center">
               <van-button
                   style="border-radius: 10px;background-color: var(--my-warning-one-color);border-color: var(--my-warning-one-color);width: 100%;height: 35px;font-size: 13px"
                   @click="cancelOrder('取消订单',item.id)" text="取消订单"/>
             </van-col>
-            <van-col v-if="item.orderState===1" :span="6" style="text-align: center">
+            <van-col v-if="item.orderState===1" :span="8" style="text-align: center">
               <van-button
                   style="border-radius: 10px;background-color: var(--my-warning-color);border-color: var(--my-warning-color);width: 100%;height: 35px;font-size: 13px"
                   @click="cancelOrder('取消并退款',item.id)" text="取消并退款">
               </van-button>
             </van-col>
 
-            <van-col v-if="[3,4].includes(item.orderState)" :span="6" style="text-align: center">
+            <van-col v-if="[3,4].includes(item.orderState)" :span="8" style="text-align: center">
               <van-button
                   style="border-radius: 10px;background-color: var(--my-error-color);border-color: var(--my-error-color);width: 100%;height: 35px;font-size: 13px"
                   @click="delByOrderId(item.id)" text="删除订单"/>
@@ -93,6 +114,32 @@
 
       </van-collapse-item>
     </van-collapse>
+    <van-popup v-model="updateAmount.openChangeAmountListState" round style="width: 80vw;height: 50vh;padding:8px 16px 24px;
+    background-color: #F0F2F5">
+      <p style="text-align: center;font-size:18px;font-weight: bolder" >价格历史</p>
+      <div v-for="(updateAmountItem,updateAmountIndex) in updateAmount.changeAmountList" :key="updateAmountIndex"
+           class="updateAmountCard">
+        <p :style="{textAlign: 'center',fontSize: '16px',color:updateAmountItem.amount<0?'#67C23A':'#F56C6C'}">{{updateAmountItem.createDate}}</p>
+        <van-row style="margin: 4% 0 2% 0">
+          <van-col :span="10" style="height: 20px;">价格调整 :</van-col>
+          <van-col :span="14" style="height: 20px;display: flex;align-items: center">
+            {{ updateAmountItem.amount>0?'+'+updateAmountItem.amount:updateAmountItem.amount }}
+          </van-col>
+        </van-row>
+        <van-row style="margin: 2% 0">
+          <van-col :span="10">调整前价格 :</van-col>
+          <van-col :span="14">{{ updateAmountItem.originalAmount }}</van-col>
+        </van-row>
+        <van-row style="margin: 2% 0">
+          <van-col :span="10">调整后价格 :</van-col>
+          <van-col :span="14">{{ updateAmountItem.finalAmount }}</van-col>
+        </van-row>
+        <van-row style="margin: 2% 0">
+          <van-col :span="10">调整备注 :</van-col>
+          <van-col :span="14">{{ updateAmountItem.remark }}</van-col>
+        </van-row>
+      </div>
+    </van-popup>
   </div>
 </template>
 
@@ -104,8 +151,17 @@ export default {
   name: "style-store-order-list",
   data() {
     return {
+      orderState: "",
       orderList: [],
       activeNames: [0],
+      orderStateArray: [
+        {text: '全部', value: ''},
+        {text: '待付款', value: 0},
+        {text: '待发货', value: 1},
+        {text: '已发货', value: 2},
+        {text: '已退款', value: 3},
+        {text: '已取消', value: 4},
+      ],
 
       priceCount: 0,
 
@@ -113,10 +169,19 @@ export default {
 
       loading: false,
       tenantCrop: localStorage.getItem("tenantCrop"),
+      empId: localStorage.getItem("empId"),
+
+      updateAmount: {
+        openChangeAmountListState: false,
+        changeAmountList: [],
+      },
+      //预付款
+      advanceCharge: 0,
     }
   },
   created() {
     this.queryOrderList()
+    this.queryAdvanceCharge()
   },
   mounted() {
     window.onClickLeft = this.onClickLeft
@@ -132,6 +197,7 @@ export default {
         method: "GET",
         url: "/storeOrder/queryList",
         params: {
+          orderState: this.orderState,
           tenantCrop: this.tenantCrop,
         }
       }).then(response => {
@@ -145,13 +211,18 @@ export default {
       this.$router.push({name: "styleStoreDetails", query: value})
     },
     //点击支付
-    goPay(id) {
-      if (/Linux/i.test(navigator.platform)) {
-        androidMethod.getAliPayInfo(id);
+    goPay(id,totalAmount) {
+      //如果余额有钱则使用余额支付 否则直接使用支付宝
+      if (this.advanceCharge >= totalAmount) {
+        this.changeAdvanceCharge(id,totalAmount);
+
         return;
       }
-      //todo 调用苹果原生
-      //window.webkit.messageHandlers.logout.postMessage("已退出")
+      if (/Linux/i.test(navigator.platform)) {
+        androidMethod.getAliPayInfo(id);
+      }else {
+        window.webkit.messageHandlers.pay.postMessage(id);
+      }
     },
     //取消和退款
     cancelOrder(type, orderId) {
@@ -207,14 +278,69 @@ export default {
             // on cancel
           });
     },
+    //查询价格修改历史
+    queryChangeAmountList(orderId) {
+      this.$axios({
+        method: "GET",
+        url: "/storeOrderAmount/queryList",
+        params: {
+          orderId: orderId,
+        }
+      }).then(response => {
+        this.updateAmount.changeAmountList = response.data.data.reverse();
+        this.updateAmount.openChangeAmountListState = true;
+      });
+    },
+    //查询预付款
+    queryAdvanceCharge() {
+      this.$axios({
+        method: "GET",
+        url: "/tenant/queryTenantInfo",
+        params: {
+          tenantCrop: this.tenantCrop
+        }
+      }).then(response => {
+        this.advanceCharge = response.data.data.advanceCharge;
+      })
+    },
+    //调用余额支付
+    changeAdvanceCharge(orderId,totalAmount) {
+      this.$dialog.confirm({
+        title: '支付提示',
+        message: '当前预付款余额: ' + this.advanceCharge + '<br>是否直接使用余额支付?',
+      }).then(() => {
+        this.$axios({
+          method: "POST",
+          url: "/storeOrder/advanceChargePay",
+          data: {
+            tenantCrop: this.tenantCrop,
+            id: orderId,
+            totalAmount: totalAmount,
+            payChannel: 2,
+            empId: this.empId,
+            orderState: 1,
+          }
+        }).then(response => {
+          //如果提交订单成功则进入支付逻辑
+          if (response.data.code === 200) {
+            this.$toast.success('支付成功');
+
+            this.queryOrderList();
+          } else {
+            this.$toast.fail('支付失败,请刷重试!');
+          }
+          this.queryAdvanceCharge();
+        })
+      })
+    },
     clickImageItem: function (image) {
       ImagePreview([`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image}`])
     },
     //复制文本
-    copyTrackingNumber(text){
+    copyTrackingNumber(text) {
       let _this = this;
       _this.$copyText(text).then(function (e) {
-        _this.$toast.success({message:'已复制快递单号', duration: 700});
+        _this.$toast.success({message: '已复制快递单号', duration: 700});
       }, err => {
         _this.$toast.fail({message: '快递单号复制失败,请充实', duration: 700});
       })
@@ -256,20 +382,43 @@ export default {
   height: 100%;
   overflow: hidden;
 }
-.van-search{
-  padding: 7px 12px ;
+
+.van-search {
+  padding: 7px 12px;
 }
-.imgParent{
+
+.imgParent {
   max-height: 250px;
 }
+
 img {
   max-height: 250px;
   width: 100%;
   border-radius: 7px;
 }
+
 p {
   font-size: 14px;
   margin: 0 0 2% 0;
   color: #000000;
+  word-break: normal;
+  width: auto;
+  display: block;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow: hidden;
+}
+.updateAmountCard {
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding:8px 16px 24px;
+  margin:8px 16px 24px;
+  font-size: 14px;
+  word-break: normal;
+  width: auto;
+  display: block;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow: hidden;
 }
 </style>
