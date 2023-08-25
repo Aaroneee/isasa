@@ -465,12 +465,12 @@ export default {
             data.imageType=this.imageType;
             data.brandId = this.brandId
             data.empId = localStorage.getItem("empId")
-            data.styleLabels = this.finalStyleLabels.toString()
+            data.styleLabels = this.finalStyleLabels
             data.styleAlias = this.styleAlias
             this.$axios({
               method: "POST",
               url: "/style/saveStyle",
-              params: data
+              data: data
             }).then((response) => {
               if (response.data.code === 200) {
                 this.overlayShow = false
