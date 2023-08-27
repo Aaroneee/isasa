@@ -242,20 +242,9 @@
 
       <van-field name="uploader" label="婚纱图片">
         <template #input>
-          <van-uploader v-model="fileList" :after-read="afterRead" multiple :max-count="1"/>
+          <van-uploader v-model="fileList" :after-read="afterRead" :max-count="1"/>
         </template>
       </van-field>
-      <!-- 裁剪页 -->
-      <transition name="slim-fade">
-        <div v-show="cropShow" class="crop-wrap">
-          <SlimCropper ref="cropper" :src="inputImgUrl" :aspect-ratio="0.7"></SlimCropper>
-          <div class="btn-box">
-            <button type="button" class="crop-btn" @click="hideCrop">取消</button>
-            <button type="button" class="crop-btn" @click="submitCrop">使用</button>
-          </div>
-        </div>
-      </transition>
-
       <br>
       <van-button
           color="linear-gradient(to right, #50E64D, #03B300)"
@@ -272,24 +261,6 @@
 
 <script>
 import baseNavBar from '@/components/nav-bar/base-nav-bar'
-
-// 将 blob 对象转化为 url
-const getObjectURL = (file) => {
-  let url
-  if (window.createObjectURL) { // basic
-    url = window.createObjectURL(file)
-  } else if (window.URL) { // mozilla(firefox)
-    url = window.URL.createObjectURL(file)
-  } else if (window.webkitURL) { // webkit or chrome
-    url = window.webkitURL.createObjectURL(file)
-  }
-  return url
-}
-
-function blobToFile(theBlob, fileName) {
-  //A Blob() is almost a File() - it's just missing the two properties below which we will add
-  return new window.File([theBlob], fileName, {type: 'image/jpeg'})
-}
 
 export default {
   name: "styleAdd",
@@ -342,9 +313,6 @@ export default {
       clothesPositionText: "",
       positionShowPicker: false,
 
-      cropShow: false, // 裁剪弹窗显示
-      inputImgUrl: '', // input 选中的图片 url
-      getObjectURL,
       loading: false,
       overlayShow: false,
 
@@ -566,17 +534,6 @@ export default {
     },
     afterRead(file) {
       this.fileName = file.file.name
-      this.inputImgUrl = getObjectURL(file.file)
-      this.showCrop()
-      // this.fileList[0].status = "uploading"
-      // this.fileList[0].message = "上传中..."
-      // this.$upload.clothesImageUpload(file)
-      // .then(response=>{
-      //   let data = response.data
-      //   if (data.code === 200){
-      //     this.fileList[0].status = ""
-      //   }
-      // })
     },
     uploadClothesImage: function () {
       return new Promise((resolve, reject) => {
@@ -598,20 +555,6 @@ export default {
           resolve(true)
         }
       })
-    },
-    // 显示裁剪页
-    showCrop() {
-      this.cropShow = true
-    },
-    // 隐藏裁剪页
-    hideCrop: function () {
-      this.cropShow = false
-    },
-    // 裁剪页确认
-    async submitCrop() {
-      this.hideCrop()
-      const img = await this.$refs.cropper.getCroppedBlob('image/jpeg', 0.7)
-      this.fileList[0].file = blobToFile(img, this.fileName)
     },
     brandConfirm: function (value,index) {
       this.brand = value.text;
