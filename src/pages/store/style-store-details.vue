@@ -11,21 +11,19 @@
             <img :src="image" style="height: 300px"
                  @click="clickImageItem(index)" alt="未查到图片"/>
           </div>
-          <div v-for="(item, index) in styleVideoList" :key="item.id" style="display: inline;margin-right: 2%">
-            <video
-                controls
-                preload="none"
-                webkit-playsinline="true"
-                playsinline="true"
-                x5-video-player-type="h5"
-                x5-video-player-fullscreen="true"
-                x-webkit-airplay="allow"
-                x5-video-orientation="portraint"
-                style="object-fit:fill;width: 100%;height: 100%;">
-              <source :src="`https://style-video-1304365928.cos.ap-shanghai.myqcloud.com/${item.storeStyleVideo}`"
-                      type="video/mp4">
-              <source src="video.ogg" type="video/ogg; codecs=dirac, speex">
-            </video>
+          <div v-for="(item, index) in styleVideoList" :key="item.id" style="display: inline-block;margin-right: 2%">
+            <vue-plyr :options="plyrOptions" :ref="`plyr${index}`">
+              <video
+                  controls
+                  crossorigin
+                  playsinline
+              >
+                <source
+                    :src="`https://style-video-1304365928.cos.ap-shanghai.myqcloud.com/${item.storeStyleVideo}`"
+                    type="video/mp4"
+                />
+              </video>
+            </vue-plyr>
           </div>
         </div>
       </van-row>
@@ -125,7 +123,10 @@ export default {
   data() {
     return {
       style: {},
-
+      plyrOptions: {
+        // Plyr 播放器的配置选项
+        controls: ['play-large','play', 'mute','progress', 'fullscreen','custom-control'], // 控制按钮
+      },
       labelNames:[],
       labelColor: ["#A52A2A", "#FF8C00", "#696969", "#FFA500", "#2F4F4F", "#6495ED", "#FF4500", "#40E0D0"],
 
@@ -140,7 +141,19 @@ export default {
       this.labelNames=val!==""?val.split(","):[];
     },
   },
+  mounted() {
+    // // 监听 Plyr 播放器的 fullscreenchange 事件
+    // this.styleVideoList.forEach((item,index)=>{
+    //   console.log(this.$refs[`plyr${index}`])
+    //   this.$refs[`plyr${index}`].player.on('custom-control', this.handleCustomControl);
+    // })
+  },
   methods: {
+    handleCustomControl(event) {
+      event.preventDefault();
+      // // 自定义控件按钮被点击时的操作
+      console.log('Custom control clicked:', event);
+    },
     queryStyleDetails(){
       this.$axios({
         method: "GET",
@@ -177,6 +190,12 @@ export default {
         }
       }).then(response => {
         this.styleVideoList = response.data.data
+        this.$nextTick(()=>{
+          this.styleVideoList.forEach((item,index)=>{
+            console.log(this.$refs[`plyr${index}`][0])
+            this.$refs[`plyr${index}`][0].player.on('fullscreenchange', this.handleCustomControl, { passive: false });
+          })
+        })
       })
     },
     clickService:function (){
