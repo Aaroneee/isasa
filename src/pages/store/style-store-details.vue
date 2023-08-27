@@ -12,7 +12,7 @@
                  @click="clickImageItem(index)" alt="未查到图片"/>
           </div>
           <div v-for="(item, index) in styleVideoList" :key="item.id" style="display: inline-block;margin-right: 2%">
-            <vue-plyr :options="plyrOptions" :ref="`plyr${index}`">
+            <vue-plyr :options="plyrOptions" :ref="`plyr${index}`" style="height: 300px">
               <video
                   controls
                   crossorigin
@@ -124,8 +124,8 @@ export default {
     return {
       style: {},
       plyrOptions: {
-        // Plyr 播放器的配置选项
-        controls: ['play-large','play', 'mute','progress', 'fullscreen','custom-control'], // 控制按钮
+        // Plyr 播放器的配置选项 fullscreen
+        controls: ['play-large','play', 'mute','progress'], // 控制按钮
       },
       labelNames:[],
       labelColor: ["#A52A2A", "#FF8C00", "#696969", "#FFA500", "#2F4F4F", "#6495ED", "#FF4500", "#40E0D0"],
