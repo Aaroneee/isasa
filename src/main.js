@@ -43,10 +43,13 @@ Vue.prototype.$stringUtils = stringUtils;
 Vue.prototype.$per = hasPermission;
 Vue.prototype.$math = mathjs
 Vue.prototype.$md5 = md5
+import VuePlyr from 'vue-plyr'
+import 'vue-plyr/dist/vue-plyr.css'
 
 
 Vue.use(SlimCropper)
 Vue.use(Clipboard)
+Vue.use(VuePlyr)
 Vue.config.productionTip = false
 
 axios.defaults.baseURL = '/api'
