@@ -11,6 +11,22 @@
             <img :src="image" style="height: 300px"
                  @click="clickImageItem(index)" alt="未查到图片"/>
           </div>
+          <div v-for="(item, index) in styleVideoList" :key="item.id" style="display: inline;margin-right: 2%">
+            <video
+                controls
+                preload="none"
+                webkit-playsinline="true"
+                playsinline="true"
+                x5-video-player-type="h5"
+                x5-video-player-fullscreen="true"
+                x-webkit-airplay="allow"
+                x5-video-orientation="portraint"
+                style="object-fit:fill;width: 100%;height: 100%;">
+              <source :src="`https://style-video-1304365928.cos.ap-shanghai.myqcloud.com/${item.storeStyleVideo}`"
+                      type="video/mp4">
+              <source src="video.ogg" type="video/ogg; codecs=dirac, speex">
+            </video>
+          </div>
         </div>
       </van-row>
     </div>
@@ -101,9 +117,9 @@ export default {
   },
   created() {
     this.style = this.$route.query
-    console.log(this.style)
     this.queryStyleDetails()
     this.queryStoreStyleImage()
+    this.queryStyleVideo()
     this.queryShoppingCart()
   },
   data() {
@@ -115,7 +131,7 @@ export default {
 
       images:[],
       shopCartNum:0,
-
+      styleVideoList:[],
       tenantCrop: localStorage.getItem("tenantCrop"),
     }
   },
@@ -133,7 +149,6 @@ export default {
           id: this.style.id,
         }
       }).then(response => {
-        console.log(response)
         this.style=response.data.data
       })
     },
@@ -145,12 +160,23 @@ export default {
           storeStyleId: this.style.id,
         }
       }).then(response => {
-        console.log(response.data.data)
         const data = response.data.data;
         for (let index in data) {
-          data[index] = "https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/" + data[index].styleImage
+          data[index] = `https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${data[index].styleImage}?imageSlim`
         }
         this.images = data
+      })
+    },
+    //查询款式视频
+    queryStyleVideo() {
+      this.$axios({
+        method: "GET",
+        url: "/storeStyleVideo/queryList",
+        params: {
+          styleId: this.style.id
+        }
+      }).then(response => {
+        this.styleVideoList = response.data.data
       })
     },
     clickService:function (){
@@ -188,7 +214,6 @@ export default {
           tenantCrop: this.tenantCrop,
         }
       }).then(response => {
-        console.log(response)
         if (response.data.code!==200) return false;
         let res=response.data.data;
         this.shopCartNum=res.length===0?0:res.length;
