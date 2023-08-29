@@ -58,7 +58,7 @@
       </van-row>
       <br><br>
       <van-row>
-        <p style="font-weight: bold;font-size: 15px;"
+        <p v-show="styleDiscountRatio!==1" style="font-weight: bold;font-size: 15px;"
            v-html="`${priceCount} (原价) * ${styleDiscountRatio} (客户折扣)&ensp;&ensp;=&ensp;&ensp;${totalAmount} (总金额)`"/>
       </van-row>
     </div>
@@ -186,7 +186,7 @@ export default {
           if (response.data.code === 200) {
             this.$toast.success('支付成功');
 
-            this.$router.push({name: "styleStoreOrderList"})
+            this.$router.replace({name: "styleStoreOrderList"})
           } else {
             this.$toast.fail('支付失败,请到采购列表完成支付!');
           }
@@ -202,7 +202,7 @@ export default {
       if (status === 1 || status === "1") {
         this.$toast.success('支付成功');
 
-        this.$router.push({name: "styleStoreOrderList"})
+        this.$router.replace({name: "styleStoreOrderList"})
       }
       console.log("js 接受原生回调")
     },
