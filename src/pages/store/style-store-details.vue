@@ -9,9 +9,9 @@
         <div class="scrollbarDiv">
           <div v-for="(image, index) in images" :key="index" style="display: inline;margin-right: 2%">
             <img :src="image" style="height: 300px"
-                 @click="clickImageItem(index)" alt="未查到图片"/>
+                 @click="imageShowClick(index)" alt="未查到图片"/>
           </div>
-          <div v-for="(item, index) in styleVideoList" :key="item.id" style="display: inline-block;margin-right: 2%">
+          <div v-for="(item, index) in styleVideoList" :key="images.length+index" style="display: inline-block;margin-right: 2%">
             <vue-plyr :options="plyrOptions" :ref="`plyr${index}`" style="height: 300px">
               <video
                   controls
@@ -100,6 +100,16 @@
 <!--          @click="clickBuyButton"-->
 <!--      />-->
     </van-goods-action>
+    <van-icon v-show="imageShow" name="ellipsis" class="more" :style="{'z-index':9999}" @click="showShare = true"/>
+    <van-image-preview v-model="imageShow" @change="imageChange" :images="images" :startPosition="openImagesIndex" @close="()=>{
+      this.imageShow=false;
+      this.showShare=false;
+    }"/>
+    <van-share-sheet
+        v-model="showShare"
+        :options="options"
+        @select="onSelect"
+    />
   </div>
 
 </template>
@@ -134,6 +144,13 @@ export default {
       shopCartNum:0,
       styleVideoList:[],
       tenantCrop: localStorage.getItem("tenantCrop"),
+
+      showShare: false,
+      imageShow:false,
+      options: [
+        { name: '保存图片', icon: 'https://icon-image-1304365928.cos.ap-shanghai.myqcloud.com/save.png' },
+      ],
+      openImagesIndex:"",
     }
   },
   watch: {
@@ -149,6 +166,22 @@ export default {
     // })
   },
   methods: {
+    onSelect(option, index) {
+      if (index == 0) {
+        let imageUrl = this.images[this.openImagesIndex].replace('?imageSlim', '');
+        /Linux/i.test(navigator.platform)
+            ? androidMethod.downImage(imageUrl)
+            : window.webkit.messageHandlers.save.postMessage(imageUrl);
+        this.showShare = false
+      }
+    },
+    imageShowClick(index) {
+      this.openImagesIndex = index
+      this.imageShow = true
+    },
+    imageChange(index) {
+      this.imageIndex = index
+    },
     handleCustomControl(event) {
       event.preventDefault();
       // // 自定义控件按钮被点击时的操作
@@ -192,7 +225,6 @@ export default {
         this.styleVideoList = response.data.data
         this.$nextTick(()=>{
           this.styleVideoList.forEach((item,index)=>{
-            console.log(this.$refs[`plyr${index}`][0])
             this.$refs[`plyr${index}`][0].player.on('fullscreenchange', this.handleCustomControl, { passive: false });
           })
         })
@@ -238,9 +270,6 @@ export default {
         this.shopCartNum=res.length===0?0:res.length;
       })
     },
-    clickImageItem: function (index) {
-      ImagePreview(this.images,index)
-    },
     toShopCartList(){
       this.$router.push({name: "styleStoreShopCart"})
     },
@@ -282,5 +311,11 @@ p {
   font-size: 15px;
   margin: 2% 0;
 }
-
+.more {
+  position: absolute;
+  top: 13px;
+  right: 6px;
+  color: #f5f7fa;
+  font-size: 27px;
+}
 </style>
