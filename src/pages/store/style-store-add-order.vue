@@ -38,6 +38,17 @@
           </van-row>
         </van-col>
       </van-row>
+      <van-row>
+        <van-field
+            style="padding: 10px 16px 0 10px;"
+            v-model="item.styleRemark"
+            autosize
+            type="textarea"
+            maxlength="100"
+            placeholder="请输入留言"
+            show-word-limit
+        />
+      </van-row>
     </div>
     <div class="card">
       <van-row class="cardTitle"><span>价格明细</span></van-row>
@@ -185,12 +196,16 @@ export default {
           //如果提交订单成功则进入支付逻辑
           if (response.data.code === 200) {
             this.$toast.success('支付成功');
-
-            this.$router.replace({name: "styleStoreOrderList"})
           } else {
             this.$toast.fail('支付失败,请到采购列表完成支付!');
           }
+          let self=this;
+          setTimeout(()=>{
+            self.$router.replace({name: "styleStoreOrderList"})
+          })
         })
+      }).catch(()=>{
+        this.$router.replace({name: "styleStoreOrderList"})
       })
     },
 
@@ -257,6 +272,7 @@ export default {
           amount: this.getSingleCountPrice(k.styleNumber, k.salePrice),
           supplierTenantCrop: k.tenantCrop,
           tenantCrop: this.tenantCrop,
+          remark: k.styleRemark,
         })
       })
       return {

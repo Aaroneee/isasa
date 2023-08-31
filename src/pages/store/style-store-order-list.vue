@@ -50,6 +50,7 @@ flex-direction: column;justify-content: center;align-items: center">
           <p>订单编号: {{ item.orderNo }}</p>
           <p>下单日期: {{ item.createDate }}</p>
           <p>订单总价: {{ item.totalAmount }}
+          <p style="color: var(--my-describe-color)">订单备注: {{ item.remark }}
             <van-icon @click.stop="queryChangeAmountList(item.id)" v-show="item.changeAmount!==''" name="question-o"/>
           </p>
           <div class="card" v-for="(childItem,childIndex) in item.storeOrderStyleVOS" :key="childIndex">
@@ -82,7 +83,7 @@ flex-direction: column;justify-content: center;align-items: center">
               </van-col>
             </van-row>
             <van-row>
-              备注：{{item.remark}}
+              款式备注：{{childItem.remark}}
             </van-row>
           </div>
           <van-row :gutter="5">
@@ -204,6 +205,7 @@ export default {
         this.loading = false
         if (response.data.code !== 200) return false;
         this.orderList = response.data.data;
+        console.log(this.orderList)
       })
     },
     //跳转到款式详情
