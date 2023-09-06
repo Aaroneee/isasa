@@ -147,6 +147,7 @@ flex-direction: column;justify-content: center;align-items: center">
 <script>
 import {ImagePreview} from "vant";
 import baseNavBar from "@/components/nav-bar/base-nav-bar";
+import MathUtils from "@/common/js/utils/math-utils";
 
 export default {
   name: "style-store-order-list",
@@ -223,11 +224,16 @@ export default {
 
         return;
       }
-      if (/Linux/i.test(navigator.platform)) {
-        androidMethod.getAliPayInfo(id);
-      }else {
-        window.webkit.messageHandlers.pay.postMessage(id);
-      }
+      this.$dialog.confirm({
+        title: '预付款不足',
+        message: `是否先用支付宝支付差额: ${MathUtils.subtract(totalAmount,this.advanceCharge)}?`,
+      }).then(() => {
+        if (/Linux/i.test(navigator.platform)) {
+          androidMethod.getAliPayInfo(id);
+        }else {
+          window.webkit.messageHandlers.pay.postMessage(id);
+        }
+      })
     },
     payResult(status) {
       if (status === 0 || status === "0") {

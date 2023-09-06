@@ -92,6 +92,7 @@
 import baseNavBar from "@/components/nav-bar/base-nav-bar"
 import {ImagePreview} from "vant";
 import mathUtils from "@/common/js/utils/math-utils"
+import MathUtils from "@/common/js/utils/math-utils";
 
 export default {
   name: "styleDetails",
@@ -161,16 +162,19 @@ export default {
             this.delAllShoppingCart();
             //如果余额有钱则使用余额支付 否则直接使用支付宝
             if (this.advanceCharge >= this.totalAmount) {
-              this.changeAdvanceCharge(response.data.data.id);
+              this.changeAdvanceCharge(this.orderId);
               return;
             }
-            //则判断是否有预付款, 如果有并且够则询问是否直接付款,如果不够或没有则给出弹窗
-            if (/Linux/i.test(navigator.platform)) {
-              androidMethod.getAliPayInfo(response.data.data.id);
-            } else {
-              window.webkit.messageHandlers.pay.postMessage(response.data.data.id);
-            }
-
+            this.$dialog.confirm({
+              title: '预付款不足',
+              message: `是否先用支付宝支付差额: ${MathUtils.subtract(this.totalAmount,this.advanceCharge)}?`,
+            }).then(() => {
+              if (/Linux/i.test(navigator.platform)) {
+                androidMethod.getAliPayInfo(this.orderId);
+              }else {
+                window.webkit.messageHandlers.pay.postMessage(this.orderId);
+              }
+            })
           } else {
             this.$toast.fail('提交订单失败,请返回重试');
           }
@@ -212,7 +216,6 @@ export default {
     },
 
     payResult(status) {
-      console.log(status)
       if (status === 0 || status === "0") {
         this.$toast.fail('支付失败');
         let self=this;
