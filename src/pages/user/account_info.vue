@@ -1,7 +1,7 @@
 <template>
   <div>
     <van-sticky>
-      <switchNavBar title="账户信息" switchText="充值" @flag="dialogState=!dialogState"/>
+      <BaseNavBar title="账户信息"/>
     </van-sticky>
     <div class="card">
       <div style="text-align: center;height:45%;padding-top: 5%">
@@ -24,6 +24,12 @@
             <p style="font-size: 15px;">押金余额(元)</p>
           </div>
         </van-col>
+      </van-row>
+      <van-row  style="display: flex;justify-content: center">
+        <div @click="dialogState=!dialogState" class="buttonShow"
+             style="">
+          充值
+        </div>
       </van-row>
 
     </div>
@@ -98,7 +104,7 @@
 
 <script>
 
-import switchNavBar from "@/components/nav-bar/switch-nav-bar"
+import BaseNavBar from "@/components/nav-bar/base-nav-bar.vue";
 import mathUtils from "@/common/js/utils/math-utils";
 
 export default {
@@ -128,7 +134,7 @@ export default {
     }
   },
   components: {
-    switchNavBar
+    BaseNavBar
   },
   created() {
     this.queryAdvanceCharge();
@@ -284,7 +290,18 @@ export default {
 .van-divider{
   margin: 5px 0;
 }
-
+.buttonShow{
+  width: 60%;
+  height: 38px;
+  margin-bottom: 5%;
+  font-size: 14px;
+  font-weight: bolder;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items:center;
+  background: var(--my-success-two-color);
+}
 p{
   margin-block-start: 0px;
   margin-block-end: 0px;
