@@ -9,6 +9,7 @@
             placeholder="请输入婚纱礼服名称来搜索款式"/>
       </form>
       <van-dropdown-menu style="font-size: 10px">
+      <van-dropdown-item v-model="sortField" @change="sortFieldChange" :options="sortFieldArray"/>
       <van-dropdown-item v-model="styleType" @change="styleTypeChange" :options="styleTypeArray"/>
       <van-dropdown-item v-model="clothesSize" @change="clothesSizeChange" :options="clothesSizeArray"/>
       <van-dropdown-item v-model="shop" @change="shopChange" :options="shopArray"/>
@@ -172,6 +173,12 @@ export default {
       clothesId: "",
       cusId: "",
 
+      sortField:"",
+      sortFieldArray: [
+        {text: "婚纱排序", value: ""},
+        {text: "款式编号", value: "styleName"},
+        {text: "添加日期", value: "purchaseDate"},
+      ],
       styleType: "",
       styleTypeArray: [{text: "款式", value: ""}],
       clothesSize: "",
@@ -250,6 +257,7 @@ export default {
         params: {
           page: this.page,
           limit: 100,
+          sortField: this.sortField,
           styleType: this.styleType,
           clothesSize: this.clothesSize,
           clothesShop: this.shop,
@@ -276,6 +284,10 @@ export default {
     styleTypeChange: function (type) {
       this.clothesList = []
       this.styleType = type
+      this.queryClothesList()
+    },
+    sortFieldChange:function(type){
+      this.sortField=type;
       this.queryClothesList()
     }
     , shopChange: function (shop) {
