@@ -12,6 +12,7 @@
         <!--        <van-dropdown-item :title="positionTitle" v-model="position" @change="positionChange" :options="positionArray"/>-->
 
         <van-dropdown-item title="标签" ref="labelRef">
+          <van-search v-model="searchText" placeholder="搜索标签" @input="filteredStyleLabelList"/>
           <van-row type="flex" style="padding: 10px">
             <van-col style="margin: 5px" v-for="item in styleLabelList" :key="item.value">
               <van-tag color="#B6B1BD" type="danger" :class="{'bgcolor':styleLabels.indexOf(item.value)>-1}"
@@ -27,8 +28,12 @@
             </van-button>
           </div>
         </van-dropdown-item>
-        <van-dropdown-item title="品牌" @change="brandChange" v-model="brand" :options="styleBrandArray"/>
-
+        <van-dropdown-item title="品牌" ref="brandRef">
+          <van-search v-model="searchBrand" placeholder="搜索品牌" @input="filteredBrandLabelList"/>
+          <van-cell v-for="item in styleBrandArray" :key="item.id">
+            <van-col span="12" @click="brandChange(item.value)">{{ item.text }}</van-col>
+          </van-cell>
+        </van-dropdown-item>
       </van-dropdown-menu>
     </van-sticky>
 
@@ -55,6 +60,7 @@
 
 <script>
 import switchNavBar from "@/components/nav-bar/switch-nav-bar"
+import {re} from "mathjs";
 
 export default {
   name: "clothesManager",
@@ -89,6 +95,8 @@ export default {
       position: "",
       positionArray: [],
       styleLabelList: [],
+      styleFilterList: [],
+      brandFilterList: [],
       styleLabels: [],
       isOrder: "",
       isOrderArray: [{text: "全部", value: ""}, {text: "有档期不可用", value: "isOrder"}, {
@@ -101,10 +109,12 @@ export default {
 
       isactive: false,
       page: 1,
+      searchText: '',
+      searchBrand: '',
 
       brandText: "",
       brand: "",
-      styleBrandArray: [{text: "品牌", value: ""}],
+      styleBrandArray: [{text: "全部", value: ""}],
     }
   },
   components: {
@@ -115,8 +125,27 @@ export default {
       value['brandName'] = this.brand
       value['styleLabels'] = this.styleLabels
       this.$router.push({name: "clothesList", query: value})
-    }
-    ,
+    },
+    filteredStyleLabelList() {
+      console.log(this.searchText)
+      if (this.searchText === '') {
+        this.styleLabelList = this.styleFilterList
+      } else {
+        this.styleLabelList = this.styleLabelList.filter(item => {
+          return item.name.toLowerCase().includes(this.searchText.toLowerCase())
+        });
+      }
+    },
+    filteredBrandLabelList() {
+      console.log(this.searchBrand)
+      if (this.searchBrand === '') {
+        this.styleBrandArray = this.brandFilterList
+      } else {
+        this.styleBrandArray = this.styleBrandArray.filter(item => {
+          return item.text.toLowerCase().includes(this.searchBrand.toLowerCase())
+        });
+      }
+    },
     queryClothesList: function () {
       this.clothesList = []
       this.loading = true
@@ -193,6 +222,7 @@ export default {
     queryStyleLabelList: function () {
       this.$selectUtils.queryStyleLabels().then((response) => {
         this.styleLabelList.push(...response.data.data);
+        this.styleFilterList.push(...response.data.data);
         console.log(response)
       })
     },
@@ -216,6 +246,7 @@ export default {
       this.queryClothesList()
     },
     brandChange: function (value) {
+      this.$refs.brandRef.toggle()
       console.log(value)
       if (value === '') {
         this.brandKey = ''
@@ -233,6 +264,7 @@ export default {
       })
       this.$selectUtils.queryMBrandIds().then((response) => {
         this.styleBrandArray.push(...JSON.parse(response.data.data))
+        this.brandFilterList.push(...JSON.parse(response.data.data))
       })
     },
     queryClothesSize() {
@@ -285,7 +317,8 @@ export default {
 #operationParent::-webkit-scrollbar {
   display: none; /* Chrome Safari */
 }
-.pfont{
+
+.pfont {
   font-size: 13px;
 }
 

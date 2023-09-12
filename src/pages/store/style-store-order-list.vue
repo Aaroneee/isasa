@@ -50,6 +50,7 @@ flex-direction: column;justify-content: center;align-items: center">
           <p>订单编号: {{ item.orderNo }}</p>
           <p>下单日期: {{ item.createDate }}</p>
           <p>订单总价: {{ item.totalAmount }}
+          <p style="color: var(--my-describe-color)">订单备注: {{ item.remark }}
             <van-icon @click.stop="queryChangeAmountList(item.id)" v-show="item.changeAmount!==''" name="question-o"/>
           </p>
           <div class="card" v-for="(childItem,childIndex) in item.storeOrderStyleVOS" :key="childIndex">
@@ -82,7 +83,7 @@ flex-direction: column;justify-content: center;align-items: center">
               </van-col>
             </van-row>
             <van-row>
-              备注：{{item.remark}}
+              款式备注：{{childItem.remark}}
             </van-row>
           </div>
           <van-row :gutter="5">
@@ -146,6 +147,7 @@ flex-direction: column;justify-content: center;align-items: center">
 <script>
 import {ImagePreview} from "vant";
 import baseNavBar from "@/components/nav-bar/base-nav-bar";
+import MathUtils from "@/common/js/utils/math-utils";
 
 export default {
   name: "style-store-order-list",
@@ -177,6 +179,8 @@ export default {
       },
       //预付款
       advanceCharge: 0,
+      //点击支付暂时存orderId
+      orderId:0.
     }
   },
   created() {
@@ -185,6 +189,7 @@ export default {
   },
   mounted() {
     window.onClickLeft = this.onClickLeft
+    window.payResult = this.payResult
   },
   components: {
     baseNavBar
@@ -212,16 +217,63 @@ export default {
     },
     //点击支付
     goPay(id,totalAmount) {
+      this.orderId=id;
       //如果余额有钱则使用余额支付 否则直接使用支付宝
       if (this.advanceCharge >= totalAmount) {
         this.changeAdvanceCharge(id,totalAmount);
 
         return;
       }
-      if (/Linux/i.test(navigator.platform)) {
-        androidMethod.getAliPayInfo(id);
-      }else {
-        window.webkit.messageHandlers.pay.postMessage(id);
+      this.$dialog.confirm({
+        title: '预付款不足',
+        message: `是否先用支付宝支付差额: ${MathUtils.subtract(totalAmount,this.advanceCharge)}?`,
+      }).then(() => {
+        if (/Linux/i.test(navigator.platform)) {
+          androidMethod.getAliPayInfo(id);
+        }else {
+          window.webkit.messageHandlers.pay.postMessage(id);
+        }
+      })
+    },
+    payResult(status) {
+      if (status === 0 || status === "0") {
+        this.$toast.fail('支付失败');
+      }
+      if (status === 1 || status === "1") {
+
+        //查询订单 如果是差额支付 则直接使用预付款支付剩余
+        this.$axios({
+          method: "GET",
+          url: "/storeOrder/queryInfoById",
+          params: {
+            id:this.orderId
+          }
+        }).then(response=>{
+          let orderStyle=response.data.data;
+          if (orderStyle.unpaidAmount!=0){
+            this.$axios({
+              method: "POST",
+              url: "/storeOrder/advanceChargePay",
+              data: {
+                tenantCrop: this.tenantCrop,
+                id: this.orderId,
+                totalAmount: orderStyle.unpaidAmount,
+                payChannel: 2,
+                empId: this.empId,
+                orderState: 1,
+              }
+            }).then(response1 => {
+              if (response1.data.code===200){
+                this.$toast.success('支付成功');
+                this.queryOrderList();
+                this.queryAdvanceCharge();
+              }else {
+                this.$toast.fail('支付失败');
+              }
+            })
+          }
+        })
+
       }
     },
     //取消和退款

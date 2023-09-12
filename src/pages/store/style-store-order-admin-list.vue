@@ -61,6 +61,7 @@
           <p>订单编号: {{ item.orderNo }}</p>
           <p>下单日期: {{ item.createDate }}</p>
           <p>订单总价: {{ item.totalAmount }}
+          <p style="color: var(--my-describe-color)">订单备注: {{ item.remark }}
             <van-icon @click.stop="queryChangeAmountList(item.id)" v-show="item.changeAmount!==''" name="question-o"/>
           </p>
           <div class="card" v-for="(childItem,childIndex) in item.storeOrderStyleVOS" :key="childIndex">
@@ -99,7 +100,7 @@
               </van-col>
             </van-row>
             <van-row>
-              订单备注：{{item.remark}}
+              款式备注：{{childItem.remark}}
             </van-row>
           </div>
           <van-row :gutter="5">

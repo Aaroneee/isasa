@@ -38,6 +38,17 @@
           </van-row>
         </van-col>
       </van-row>
+      <van-row>
+        <van-field
+            style="padding: 10px 16px 0 10px;"
+            v-model="item.styleRemark"
+            autosize
+            type="textarea"
+            maxlength="100"
+            placeholder="请输入留言"
+            show-word-limit
+        />
+      </van-row>
     </div>
     <div class="card">
       <van-row class="cardTitle"><span>价格明细</span></van-row>
@@ -58,7 +69,7 @@
       </van-row>
       <br><br>
       <van-row>
-        <p style="font-weight: bold;font-size: 15px;"
+        <p v-show="styleDiscountRatio!==1" style="font-weight: bold;font-size: 15px;"
            v-html="`${priceCount} (原价) * ${styleDiscountRatio} (客户折扣)&ensp;&ensp;=&ensp;&ensp;${totalAmount} (总金额)`"/>
       </van-row>
     </div>
@@ -81,6 +92,7 @@
 import baseNavBar from "@/components/nav-bar/base-nav-bar"
 import {ImagePreview} from "vant";
 import mathUtils from "@/common/js/utils/math-utils"
+import MathUtils from "@/common/js/utils/math-utils";
 
 export default {
   name: "styleDetails",
@@ -112,6 +124,7 @@ export default {
       totalAmount: 0,
       //客户备注
       remark:"",
+      orderId:0,
     }
   },
   methods: {
@@ -145,19 +158,23 @@ export default {
         }).then(response => {
           //如果提交订单成功则进入支付逻辑
           if (response.data.code === 200) {
+            this.orderId=response.data.data.id;
             this.delAllShoppingCart();
             //如果余额有钱则使用余额支付 否则直接使用支付宝
             if (this.advanceCharge >= this.totalAmount) {
-              this.changeAdvanceCharge(response.data.data.id);
+              this.changeAdvanceCharge(this.orderId);
               return;
             }
-            //则判断是否有预付款, 如果有并且够则询问是否直接付款,如果不够或没有则给出弹窗
-            if (/Linux/i.test(navigator.platform)) {
-              androidMethod.getAliPayInfo(response.data.data.id);
-            } else {
-              window.webkit.messageHandlers.pay.postMessage(response.data.data.id);
-            }
-
+            this.$dialog.confirm({
+              title: '预付款不足',
+              message: `是否先用支付宝支付差额: ${MathUtils.subtract(this.totalAmount,this.advanceCharge)}?`,
+            }).then(() => {
+              if (/Linux/i.test(navigator.platform)) {
+                androidMethod.getAliPayInfo(this.orderId);
+              }else {
+                window.webkit.messageHandlers.pay.postMessage(this.orderId);
+              }
+            })
           } else {
             this.$toast.fail('提交订单失败,请返回重试');
           }
@@ -185,24 +202,64 @@ export default {
           //如果提交订单成功则进入支付逻辑
           if (response.data.code === 200) {
             this.$toast.success('支付成功');
-
-            this.$router.push({name: "styleStoreOrderList"})
           } else {
             this.$toast.fail('支付失败,请到采购列表完成支付!');
           }
+          let self=this;
+          setTimeout(()=>{
+            self.$router.replace({name: "styleStoreOrderList"})
+          })
         })
+      }).catch(()=>{
+        this.$router.replace({name: "styleStoreOrderList"})
       })
     },
 
     payResult(status) {
-      console.log(status)
       if (status === 0 || status === "0") {
         this.$toast.fail('支付失败');
+        let self=this;
+        setTimeout(()=>{
+          self.$router.replace({name: "styleStoreOrderList"})
+        },1000)
       }
       if (status === 1 || status === "1") {
-        this.$toast.success('支付成功');
 
-        this.$router.push({name: "styleStoreOrderList"})
+        //查询订单 如果是差额支付 则直接使用预付款支付剩余
+        this.$axios({
+          method: "GET",
+          url: "/storeOrder/queryInfoById",
+          params: {
+            id:this.orderId
+          }
+        }).then(response=>{
+          let orderStyle=response.data.data;
+          if (orderStyle.unpaidAmount!=0){
+            this.$axios({
+              method: "POST",
+              url: "/storeOrder/advanceChargePay",
+              data: {
+                tenantCrop: this.tenantCrop,
+                id: this.orderId,
+                totalAmount: orderStyle.unpaidAmount,
+                payChannel: 2,
+                empId: this.empId,
+                orderState: 1,
+              }
+            }).then(response1 => {
+              if (response1.data.code === 200) {
+                this.$toast.success('支付成功');
+              } else {
+                this.$toast.fail('支付失败,请到采购列表完成支付!');
+              }
+              let self=this;
+              setTimeout(()=>{
+                self.$router.replace({name: "styleStoreOrderList"})
+              },1000)
+            })
+          }
+        })
+
       }
       console.log("js 接受原生回调")
     },
@@ -257,6 +314,7 @@ export default {
           amount: this.getSingleCountPrice(k.styleNumber, k.salePrice),
           supplierTenantCrop: k.tenantCrop,
           tenantCrop: this.tenantCrop,
+          remark: k.styleRemark,
         })
       })
       return {
