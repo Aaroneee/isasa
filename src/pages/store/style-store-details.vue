@@ -9,7 +9,7 @@
         <van-tab title="图片" >
             <van-swipe :loop="false" ref="swiper" @change="imageChange" style="margin-top: 1%">
               <van-swipe-item v-for="(image, index) in images" :key="index" style="text-align: center">
-                <img :src="`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image.styleImage}?imageSlim`"
+                <img v-lazy="`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image.styleImage}?imageSlim`"
                      style="height: 270px;max-width: 85vw" @click="imageShowClick(index)" alt=""/>
               </van-swipe-item>
             </van-swipe>
