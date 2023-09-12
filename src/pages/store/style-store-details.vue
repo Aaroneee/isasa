@@ -5,30 +5,38 @@
     </van-sticky>
     <!--    头部-->
     <div class="card">
-      <van-row>
-        <div class="scrollbarDiv">
-          <div v-for="(image, index) in images" :key="index" style="display: inline;margin-right: 2%">
-            <img :src="image" style="height: 300px"
-                 @click="imageShowClick(index)" alt="未查到图片"/>
-          </div>
-          <div v-for="(item, index) in styleVideoList" :key="images.length+index" style="display: inline-block;margin-right: 2%">
-            <vue-plyr :options="plyrOptions" :ref="`plyr${index}`" style="height: 300px">
-              <video
-                  controls
-                  crossorigin
-                  playsinline
-              >
-                <source
-                    :src="`https://style-video-1304365928.cos.ap-shanghai.myqcloud.com/${item.storeStyleVideo}`"
-                    type="video/mp4"
-                />
-              </video>
-            </vue-plyr>
-          </div>
-        </div>
-      </van-row>
+      <van-tabs type="card">
+        <van-tab title="标签 1">图片</van-tab>
+        <van-tab title="标签 2">视频</van-tab>
+      </van-tabs>
+<!--      <van-row>-->
+<!--        <van-swipe :loop="false" ref="swiper" @change="imageChange">-->
+<!--          <van-swipe-item v-for="(image, index) in images" :key="index" style="text-align: center">-->
+<!--            <img :src="`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image.styleImage}?imageSlim`"-->
+<!--                 style="height: 300px;max-width: 85vw" @click="imageShowClick(index)" alt=""/>-->
+<!--          </van-swipe-item>-->
+<!--        </van-swipe>-->
+<!--        <div v-for="(item, index) in styleVideoList" :key="images.length+index" style="display: inline-block;margin-right: 2%">-->
+<!--          <vue-plyr :options="plyrOptions" :ref="`plyr${index}`" style="height: 300px">-->
+<!--            <video-->
+<!--                controls-->
+<!--                crossorigin-->
+<!--                playsinline-->
+<!--            >-->
+<!--              <source-->
+<!--                  :src="`https://style-video-1304365928.cos.ap-shanghai.myqcloud.com/${item.storeStyleVideo}`"-->
+<!--                  type="video/mp4"-->
+<!--              />-->
+<!--            </video>-->
+<!--          </vue-plyr>-->
+<!--        </div>-->
+<!--        <van-radio-group v-model="imagePosition" direction="horizontal" >-->
+<!--          <van-radio v-for="(typeName , index) in imageTypes" :name="typeName" :key="index"-->
+<!--                     icon-size="15px" checked-color="#409EFF" @click="imageTypeSelect">{{ typeName }}</van-radio>-->
+<!--        </van-radio-group>-->
+<!--      </van-row>-->
     </div>
-<!--    信息-->
+    <!--    信息-->
     <div class="card">
       <van-row><p class="cardTitle">款式信息</p></van-row>
       <van-row>
@@ -94,14 +102,14 @@
       <van-goods-action-icon icon="cart-o" text="购物车" :badge="shopCartNum" @click="toShopCartList"/>
       <van-goods-action-icon  />
       <van-goods-action-button type="warning" text="加入购物车" @click="clickShopCartButton"/>
-<!--      <van-goods-action-button-->
-<!--          type="danger"-->
-<!--          text="立即购买"-->
-<!--          @click="clickBuyButton"-->
-<!--      />-->
+      <!--      <van-goods-action-button-->
+      <!--          type="danger"-->
+      <!--          text="立即购买"-->
+      <!--          @click="clickBuyButton"-->
+      <!--      />-->
     </van-goods-action>
     <van-icon v-show="imageShow" name="ellipsis" class="more" :style="{'z-index':9999}" @click="showShare = true"/>
-    <van-image-preview v-model="imageShow" @change="imageChange" :images="images" :startPosition="openImagesIndex" @close="()=>{
+    <van-image-preview v-model="imageShow" @change="imagePreviewChange" :images="previewImages" :startPosition="openImagesIndex" @close="()=>{
       this.imageShow=false;
       this.showShare=false;
     }"/>
@@ -127,7 +135,7 @@ export default {
     this.style = this.$route.query
     this.queryStyleDetails()
     this.queryStoreStyleImage()
-    this.queryStyleVideo()
+    // this.queryStyleVideo()
     this.queryShoppingCart()
   },
   data() {
@@ -151,6 +159,10 @@ export default {
         { name: '保存图片', icon: 'https://icon-image-1304365928.cos.ap-shanghai.myqcloud.com/save.png' },
       ],
       openImagesIndex:"",
+
+      previewImages:[],
+      imageTypes:[],
+      imagePosition:"",
     }
   },
   watch: {
@@ -167,8 +179,10 @@ export default {
   },
   methods: {
     onSelect(option, index) {
-      if (index == 0) {
-        let imageUrl = this.images[this.openImagesIndex].replace('?imageSlim', '');
+      if (index === 0) {
+        console.log(this.openImagesIndex)
+        let imageUrl = this.previewImages[this.openImagesIndex];
+
         /Linux/i.test(navigator.platform)
             ? androidMethod.downImage(imageUrl)
             : window.webkit.messageHandlers.save.postMessage(imageUrl);
@@ -179,8 +193,8 @@ export default {
       this.openImagesIndex = index
       this.imageShow = true
     },
-    imageChange(index) {
-      this.imageIndex = index
+    imagePreviewChange(index) {
+      this.openImagesIndex = index
     },
     handleCustomControl(event) {
       event.preventDefault();
@@ -206,11 +220,14 @@ export default {
           storeStyleId: this.style.id,
         }
       }).then(response => {
-        const data = response.data.data;
-        for (let index in data) {
-          data[index] = `https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${data[index].styleImage}?imageSlim`
-        }
-        this.images = data
+        console.log(response.data.data);
+        response.data.data.forEach(k=>{
+          this.previewImages.push(`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${k.styleImage}`)
+          this.imageTypes.push(k.storeImageTypeName);
+        })
+        this.imageTypes=Array.from(new Set(this.imageTypes));
+        this.images=response.data.data;
+        this.imagePosition=this.imageTypes[0];
       })
     },
     //查询款式视频
@@ -230,12 +247,28 @@ export default {
         })
       })
     },
+    //图片滑动时改变radio的值
+    imageChange:function (val){
+      this.imagePosition=this.images[val].storeImageTypeName;
+    },
+    //radio 点击后 图片跳转
+    imageTypeSelect(val){
+      console.log(this.imagePosition)
+      for(let i = 0;i < this.images.length; i++){
+        if (this.images[i].storeImageTypeName===this.imagePosition){
+          // //因为要把选择的图片展示正中间 所以要-1在0位展示上一张 这么1位就展示的是选中类型的图
+          // this.$refs.swiper.swipeTo(i-1);
+          this.$refs.swiper.swipeTo(i);
+          return;
+        }
+      }
+    },
     clickService:function (){
 
     },
     //点击购买按钮
     clickBuyButton:function (){
-        this.$router.push({name: "styleStoreAddOrder", query: [this.style]})
+      this.$router.push({name: "styleStoreAddOrder", query: [this.style]})
     },
     //点击添加到购物车按钮
     clickShopCartButton:function (){
@@ -295,16 +328,6 @@ export default {
   width: 80px;
   display: inline-block;
   /*align-items: center;*/
-}
-
-
-.scrollbarDiv{
-
-  white-space: nowrap;
-  overflow-y: auto;
-}
-.scrollbarDiv::-webkit-scrollbar {
-  width: 0;
 }
 
 p {
