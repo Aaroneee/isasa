@@ -28,7 +28,7 @@
           <van-grid-item v-if="item[0] != null">
             <div v-if="item[0].styleImage !== ''">
               <van-image class="style-img" radius="7"
-                         :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[0].styleImage">
+                         :src="'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[0].styleImage+'?imageSlim'">
               </van-image>
             </div>
             <div v-else>
@@ -46,7 +46,7 @@
           <van-grid-item v-if="item[1] != null">
             <div v-if="item[1].styleImage !== ''">
               <van-image class="style-img" radius="7"
-                         :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[1].styleImage">
+                         :src="'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item[1].styleImage+'?imageSlim'">
               </van-image>
             </div>
             <div v-else>
@@ -151,6 +151,7 @@ export default {
     this.queryStyleType()
     this.queryShopIds()
     this.queryScheduleRule()
+    this.queryClothesList();
   }
   , data() {
     return {
@@ -256,7 +257,7 @@ export default {
         url: '/clothes/clothesList',
         params: {
           page: this.page,
-          limit: 100,
+          limit: 30,
           sortField: this.sortField,
           styleType: this.styleType,
           clothesSize: this.clothesSize,
@@ -283,29 +284,33 @@ export default {
     ,
     styleTypeChange: function (type) {
       this.clothesList = []
+      this.page=1;
       this.styleType = type
       this.queryClothesList()
     },
     sortFieldChange:function(type){
+      this.clothesList = []
+      this.page=1;
       this.sortField=type;
       this.queryClothesList()
     }
     , shopChange: function (shop) {
       this.clothesList = []
+      this.page=1;
       this.shop = shop
       this.queryPositionIdsByShop(shop)
       this.queryClothesList()
     },
     positionChange: function (position) {
       this.clothesList = []
-
+      this.page=1;
       this.position = position
       this.positionTitle = this.positionArray.filter(item => item.value === this.position)[0].text
       this.queryClothesList()
     }
     , clothesSizeChange: function (size) {
       this.clothesList = []
-
+      this.page=1;
       this.clothesSize = size
       this.queryClothesList()
     }
