@@ -5,36 +5,38 @@
     </van-sticky>
     <!--    头部-->
     <div class="card">
-      <van-tabs type="card">
-        <van-tab title="标签 1">图片</van-tab>
-        <van-tab title="标签 2">视频</van-tab>
+      <van-tabs animated>
+        <van-tab title="图片" >
+            <van-swipe :loop="false" ref="swiper" @change="imageChange" style="margin-top: 1%">
+              <van-swipe-item v-for="(image, index) in images" :key="index" style="text-align: center">
+                <img :src="`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image.styleImage}?imageSlim`"
+                     style="height: 270px;max-width: 85vw" @click="imageShowClick(index)" alt=""/>
+              </van-swipe-item>
+            </van-swipe>
+            <van-radio-group v-model="imagePosition" direction="horizontal" >
+              <van-radio v-for="(typeName , index) in imageTypes" :name="typeName" :key="index"
+                         icon-size="15px" checked-color="#409EFF" @click="imageTypeSelect">{{ typeName }}</van-radio>
+            </van-radio-group>
+        </van-tab>
+        <van-tab title="视频" >
+          <van-swipe :loop="false" style="margin-top: 1%">
+            <van-swipe-item v-for="(item, index) in styleVideoList" :key="index" style="text-align: center">
+              <vue-plyr :options="plyrOptions" :ref="`plyr${index}`" style="height: 300px">
+                <video
+                    controls
+                    crossorigin
+                    playsinline
+                >
+                  <source
+                      :src="`https://style-video-1304365928.cos.ap-shanghai.myqcloud.com/${item.storeStyleVideo}`"
+                      type="video/mp4"
+                  />
+                </video>
+              </vue-plyr>
+            </van-swipe-item>
+          </van-swipe>
+        </van-tab>
       </van-tabs>
-<!--      <van-row>-->
-<!--        <van-swipe :loop="false" ref="swiper" @change="imageChange">-->
-<!--          <van-swipe-item v-for="(image, index) in images" :key="index" style="text-align: center">-->
-<!--            <img :src="`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image.styleImage}?imageSlim`"-->
-<!--                 style="height: 300px;max-width: 85vw" @click="imageShowClick(index)" alt=""/>-->
-<!--          </van-swipe-item>-->
-<!--        </van-swipe>-->
-<!--        <div v-for="(item, index) in styleVideoList" :key="images.length+index" style="display: inline-block;margin-right: 2%">-->
-<!--          <vue-plyr :options="plyrOptions" :ref="`plyr${index}`" style="height: 300px">-->
-<!--            <video-->
-<!--                controls-->
-<!--                crossorigin-->
-<!--                playsinline-->
-<!--            >-->
-<!--              <source-->
-<!--                  :src="`https://style-video-1304365928.cos.ap-shanghai.myqcloud.com/${item.storeStyleVideo}`"-->
-<!--                  type="video/mp4"-->
-<!--              />-->
-<!--            </video>-->
-<!--          </vue-plyr>-->
-<!--        </div>-->
-<!--        <van-radio-group v-model="imagePosition" direction="horizontal" >-->
-<!--          <van-radio v-for="(typeName , index) in imageTypes" :name="typeName" :key="index"-->
-<!--                     icon-size="15px" checked-color="#409EFF" @click="imageTypeSelect">{{ typeName }}</van-radio>-->
-<!--        </van-radio-group>-->
-<!--      </van-row>-->
     </div>
     <!--    信息-->
     <div class="card">
@@ -135,7 +137,7 @@ export default {
     this.style = this.$route.query
     this.queryStyleDetails()
     this.queryStoreStyleImage()
-    // this.queryStyleVideo()
+    this.queryStyleVideo()
     this.queryShoppingCart()
   },
   data() {
@@ -156,7 +158,7 @@ export default {
       showShare: false,
       imageShow:false,
       options: [
-        { name: '保存图片', icon: 'https://icon-image-1304365928.cos.ap-shanghai.myqcloud.com/save.png' },
+        { name: '保存原图', icon: 'https://icon-image-1304365928.cos.ap-shanghai.myqcloud.com/save.png' },
       ],
       openImagesIndex:"",
 
@@ -171,18 +173,12 @@ export default {
     },
   },
   mounted() {
-    // // 监听 Plyr 播放器的 fullscreenchange 事件
-    // this.styleVideoList.forEach((item,index)=>{
-    //   console.log(this.$refs[`plyr${index}`])
-    //   this.$refs[`plyr${index}`].player.on('custom-control', this.handleCustomControl);
-    // })
+
   },
   methods: {
     onSelect(option, index) {
       if (index === 0) {
-        console.log(this.openImagesIndex)
-        let imageUrl = this.previewImages[this.openImagesIndex];
-
+        let imageUrl = this.previewImages[this.openImagesIndex].replace("?imageSlim","");
         /Linux/i.test(navigator.platform)
             ? androidMethod.downImage(imageUrl)
             : window.webkit.messageHandlers.save.postMessage(imageUrl);
@@ -195,11 +191,6 @@ export default {
     },
     imagePreviewChange(index) {
       this.openImagesIndex = index
-    },
-    handleCustomControl(event) {
-      event.preventDefault();
-      // // 自定义控件按钮被点击时的操作
-      console.log('Custom control clicked:', event);
     },
     queryStyleDetails(){
       this.$axios({
@@ -220,9 +211,8 @@ export default {
           storeStyleId: this.style.id,
         }
       }).then(response => {
-        console.log(response.data.data);
         response.data.data.forEach(k=>{
-          this.previewImages.push(`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${k.styleImage}`)
+          this.previewImages.push(`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${k.styleImage}?imageSlim`)
           this.imageTypes.push(k.storeImageTypeName);
         })
         this.imageTypes=Array.from(new Set(this.imageTypes));
@@ -240,11 +230,6 @@ export default {
         }
       }).then(response => {
         this.styleVideoList = response.data.data
-        this.$nextTick(()=>{
-          this.styleVideoList.forEach((item,index)=>{
-            this.$refs[`plyr${index}`][0].player.on('fullscreenchange', this.handleCustomControl, { passive: false });
-          })
-        })
       })
     },
     //图片滑动时改变radio的值
@@ -253,7 +238,6 @@ export default {
     },
     //radio 点击后 图片跳转
     imageTypeSelect(val){
-      console.log(this.imagePosition)
       for(let i = 0;i < this.images.length; i++){
         if (this.images[i].storeImageTypeName===this.imagePosition){
           // //因为要把选择的图片展示正中间 所以要-1在0位展示上一张 这么1位就展示的是选中类型的图
@@ -262,9 +246,6 @@ export default {
           return;
         }
       }
-    },
-    clickService:function (){
-
     },
     //点击购买按钮
     clickBuyButton:function (){
@@ -327,9 +308,15 @@ export default {
   height: 100%;
   width: 80px;
   display: inline-block;
-  /*align-items: center;*/
 }
+.scrollbarDiv{
 
+  white-space: nowrap;
+  overflow-y: auto;
+}
+.scrollbarDiv::-webkit-scrollbar {
+  width: 0;
+}
 p {
   font-size: 15px;
   margin: 2% 0;
