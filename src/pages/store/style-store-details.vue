@@ -6,19 +6,17 @@
     <!--    头部-->
     <div class="card">
       <van-tabs animated>
-        <van-tab title="图片" >
-            <van-swipe :loop="false" ref="swiper" @change="imageChange" style="margin-top: 1%">
-              <van-swipe-item v-for="(image, index) in images" :key="index" style="text-align: center">
-                <img v-lazy="`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image.styleImage}?imageSlim`"
-                     style="height: 270px;max-width: 85vw" @click="imageShowClick(index)" alt=""/>
-              </van-swipe-item>
-            </van-swipe>
-            <van-radio-group v-model="imagePosition" direction="horizontal" >
-              <van-radio v-for="(typeName , index) in imageTypes" :name="typeName" :key="index"
-                         icon-size="15px" checked-color="#409EFF" @click="imageTypeSelect">{{ typeName }}</van-radio>
-            </van-radio-group>
+        <van-tab title="图片">
+          <van-swipe :loop="false" ref="swiper" @change="imageChange" style="margin-top: 1%">
+            <van-swipe-item v-for="(image, index) in images" :key="index" style="text-align: center">
+              <img
+                  v-lazy="`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image.styleImage}?imageSlim`"
+                  style="height: 270px;max-width: 85vw" @click="imageShowClick(index)" alt=""/>
+            </van-swipe-item>
+          </van-swipe>
+          <p style="text-align: center">{{ imgTypeName }}</p>
         </van-tab>
-        <van-tab title="视频" >
+        <van-tab title="视频">
           <van-swipe :loop="false" style="margin-top: 1%">
             <van-swipe-item v-for="(item, index) in styleVideoList" :key="index" style="text-align: center">
               <vue-plyr :options="plyrOptions" :ref="`plyr${index}`" style="height: 300px">
@@ -77,7 +75,9 @@
       <van-row><p class="cardTitle">款式标签</p></van-row>
       <van-row v-if="labelNames.length>0" type="flex" justify="center">
         <van-col v-for="(item,index) in labelNames" :key="index" style="margin: 1% 1%">
-          <van-tag size="large" v-once :color="labelColor[Math.floor(Math.random() * labelColor.length)]">{{ item }}</van-tag>
+          <van-tag size="large" v-once :color="labelColor[Math.floor(Math.random() * labelColor.length)]">
+            {{item }}
+          </van-tag>
         </van-col>
       </van-row>
       <van-row v-else>
@@ -100,9 +100,9 @@
     <br><br><br><br><br><br>
     <p/>
     <van-goods-action>
-      <van-goods-action-icon  />
+      <van-goods-action-icon/>
       <van-goods-action-icon icon="cart-o" text="购物车" :badge="shopCartNum" @click="toShopCartList"/>
-      <van-goods-action-icon  />
+      <van-goods-action-icon/>
       <van-goods-action-button type="warning" text="加入购物车" @click="clickShopCartButton"/>
       <!--      <van-goods-action-button-->
       <!--          type="danger"-->
@@ -111,7 +111,8 @@
       <!--      />-->
     </van-goods-action>
     <van-icon v-show="imageShow" name="ellipsis" class="more" :style="{'z-index':9999}" @click="showShare = true"/>
-    <van-image-preview v-model="imageShow" @change="imagePreviewChange" :images="previewImages" :startPosition="openImagesIndex" @close="()=>{
+    <van-image-preview v-model="imageShow" @change="imagePreviewChange" :images="previewImages"
+                       :startPosition="openImagesIndex" @close="()=>{
       this.imageShow=false;
       this.showShare=false;
     }"/>
@@ -145,31 +146,30 @@ export default {
       style: {},
       plyrOptions: {
         // Plyr 播放器的配置选项 fullscreen
-        controls: ['play-large','play', 'mute','progress'], // 控制按钮
+        controls: ['play-large', 'play', 'mute', 'progress'], // 控制按钮
       },
-      labelNames:[],
+      labelNames: [],
       labelColor: ["#A52A2A", "#FF8C00", "#696969", "#FFA500", "#2F4F4F", "#6495ED", "#FF4500", "#40E0D0"],
 
-      images:[],
-      shopCartNum:0,
-      styleVideoList:[],
+      images: [],
+      shopCartNum: 0,
+      styleVideoList: [],
       tenantCrop: localStorage.getItem("tenantCrop"),
 
       showShare: false,
-      imageShow:false,
+      imageShow: false,
       options: [
-        { name: '保存原图', icon: 'https://icon-image-1304365928.cos.ap-shanghai.myqcloud.com/save.png' },
+        {name: '保存原图', icon: 'https://icon-image-1304365928.cos.ap-shanghai.myqcloud.com/save.png'},
       ],
-      openImagesIndex:"",
+      openImagesIndex: "",
 
-      previewImages:[],
-      imageTypes:[],
-      imagePosition:"",
+      previewImages: [],
+      imgTypeName: "",
     }
   },
   watch: {
-    'style.labelNames':function (val){
-      this.labelNames=val!==""?val.split(","):[];
+    'style.labelNames': function (val) {
+      this.labelNames = val !== "" ? val.split(",") : [];
     },
   },
   mounted() {
@@ -178,7 +178,7 @@ export default {
   methods: {
     onSelect(option, index) {
       if (index === 0) {
-        let imageUrl = this.previewImages[this.openImagesIndex].replace("?imageSlim","");
+        let imageUrl = this.previewImages[this.openImagesIndex].replace("?imageSlim", "");
         /Linux/i.test(navigator.platform)
             ? androidMethod.downImage(imageUrl)
             : window.webkit.messageHandlers.save.postMessage(imageUrl);
@@ -192,7 +192,7 @@ export default {
     imagePreviewChange(index) {
       this.openImagesIndex = index
     },
-    queryStyleDetails(){
+    queryStyleDetails() {
       this.$axios({
         method: "GET",
         url: "/storeStyle/queryById",
@@ -200,7 +200,7 @@ export default {
           id: this.style.id,
         }
       }).then(response => {
-        this.style=response.data.data
+        this.style = response.data.data
       })
     },
     queryStoreStyleImage() {
@@ -211,13 +211,12 @@ export default {
           storeStyleId: this.style.id,
         }
       }).then(response => {
-        response.data.data.forEach(k=>{
+        if (response.data.data.length < 1) return;
+        response.data.data.forEach(k => {
           this.previewImages.push(`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${k.styleImage}?imageSlim`)
-          this.imageTypes.push(k.storeImageTypeName);
         })
-        this.imageTypes=Array.from(new Set(this.imageTypes));
-        this.images=response.data.data;
-        this.imagePosition=this.imageTypes[0];
+        this.images = response.data.data;
+        this.imgTypeName = response.data.data[0].storeImageTypeName;
       })
     },
     //查询款式视频
@@ -233,26 +232,15 @@ export default {
       })
     },
     //图片滑动时改变radio的值
-    imageChange:function (val){
-      this.imagePosition=this.images[val].storeImageTypeName;
-    },
-    //radio 点击后 图片跳转
-    imageTypeSelect(val){
-      for(let i = 0;i < this.images.length; i++){
-        if (this.images[i].storeImageTypeName===this.imagePosition){
-          // //因为要把选择的图片展示正中间 所以要-1在0位展示上一张 这么1位就展示的是选中类型的图
-          // this.$refs.swiper.swipeTo(i-1);
-          this.$refs.swiper.swipeTo(i);
-          return;
-        }
-      }
+    imageChange: function (val) {
+      this.imgTypeName = this.images[val].storeImageTypeName;
     },
     //点击购买按钮
-    clickBuyButton:function (){
+    clickBuyButton: function () {
       this.$router.push({name: "styleStoreAddOrder", query: [this.style]})
     },
     //点击添加到购物车按钮
-    clickShopCartButton:function (){
+    clickShopCartButton: function () {
       this.$axios({
         method: "PUT",
         url: "/storeStyle/addShoppingCart",
@@ -261,7 +249,7 @@ export default {
           tenantCrop: this.tenantCrop,
         }
       }).then(response => {
-        if (response.data.code!==200){
+        if (response.data.code !== 200) {
           this.$toast.fail('添加失败,请返回重试!');
           return false;
         }
@@ -271,7 +259,7 @@ export default {
       })
     },
     //查询购物车列表
-    queryShoppingCart(){
+    queryShoppingCart() {
       this.$axios({
         method: "GET",
         url: "/storeStyle/queryShoppingCart",
@@ -279,12 +267,12 @@ export default {
           tenantCrop: this.tenantCrop,
         }
       }).then(response => {
-        if (response.data.code!==200) return false;
-        let res=response.data.data;
-        this.shopCartNum=res.length===0?0:res.length;
+        if (response.data.code !== 200) return false;
+        let res = response.data.data;
+        this.shopCartNum = res.length === 0 ? 0 : res.length;
       })
     },
-    toShopCartList(){
+    toShopCartList() {
       this.$router.push({name: "styleStoreShopCart"})
     },
   },
@@ -295,32 +283,39 @@ export default {
 .card {
   background: white;
   border-radius: 7px;
-  margin:  4% 3%;
+  margin: 4% 3%;
   padding: 3% 3%;
   height: 100%;
   overflow: hidden;
 }
-.cardTitle{
-  text-align: center;font-weight: bold
+
+.cardTitle {
+  text-align: center;
+  font-weight: bold
 }
+
 .card .imgParent {
   padding-left: 2%;
   height: 100%;
   width: 80px;
   display: inline-block;
 }
-.scrollbarDiv{
+
+.scrollbarDiv {
 
   white-space: nowrap;
   overflow-y: auto;
 }
+
 .scrollbarDiv::-webkit-scrollbar {
   width: 0;
 }
+
 p {
   font-size: 15px;
   margin: 2% 0;
 }
+
 .more {
   position: absolute;
   top: 13px;
