@@ -148,7 +148,7 @@
                 <div class="test" style="color: #606266;background-color: #f5f7fa">
                   <van-row>
                     <van-col span="8">渠道</van-col>
-                    <van-col span="8">到店数</van-col>
+                    <van-col span="8">订单数</van-col>
                     <van-col span="8">到店订单转化率</van-col>
                   </van-row>
                 </div>
