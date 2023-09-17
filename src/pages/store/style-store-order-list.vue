@@ -158,6 +158,7 @@ export default {
       activeNames: [0],
       orderStateArray: [
         {text: '全部', value: ''},
+        {text: '待付款|待发货', value: 100},
         {text: '待付款', value: 0},
         {text: '待发货', value: 1},
         {text: '已发货', value: 2},
