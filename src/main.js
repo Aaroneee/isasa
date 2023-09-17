@@ -20,6 +20,7 @@ import hasPermission from "./permission/index";
 import { Lazyload } from 'vant';
 import { create, all } from 'mathjs'
 import md5 from 'js-md5';
+import VConsole from 'vconsole';
 
 const mathjs = create(all)
 
@@ -53,6 +54,7 @@ Vue.use(VuePlyr)
 Vue.config.productionTip = false
 
 axios.defaults.baseURL = '/api'
+// const vConsole = new VConsole();
 let token=localStorage.getItem("token");
 axios.defaults.headers['token'] = `${token!==null?token:""}`;
 axios.defaults.headers['isWebView'] = "WebView";

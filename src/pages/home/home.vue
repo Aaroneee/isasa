@@ -1,6 +1,8 @@
 <template>
   <div>
-    <div>
+    <UserHeadComponents/>
+
+    <div style="height: 91vh;overflow:auto;margin-top: 30px;background-color: rgb(246,247,249)">
       <keep-alive>
         <router-view/>
       </keep-alive>
@@ -14,6 +16,7 @@
 </template>
 
 <script>
+import UserHeadComponents from "@/components/user-head-component.vue";
 //
 export default {
   name: "home",
@@ -24,6 +27,7 @@ export default {
       localStorage.setItem("token", token);
     },
   },
+  components: {UserHeadComponents},
   mounted() {
     window.setLocalStorage = this.setLocalStorage
   }
