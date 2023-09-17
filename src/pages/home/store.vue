@@ -15,33 +15,15 @@ export default {
   name: "store",
   data() {
     return {
-      modules: {},
+      modules: JSON.parse(localStorage.getItem("modules")),
     }
-  },
-  created() {
-    this.queryModules();
   },
   methods: {
     onClickItem: function (event, id) {
       this.$store.commit('setKeepAlive', [event])
       this.$router.push({name: event, query: {id: id}})
     },
-    queryModules() {
-      this.$axios({
-        method: "GET",
-        url: '/index/mobileManBar',
-        params: {
-          tenantCrop: localStorage.getItem("tenantCrop"),
-          empId: localStorage.getItem("empId"),
-        }
-      }).then(response => {
-        this.modules = response.data.data;
-      })
-    }
   },
-  activated() {
-    this.queryModules();
-  }
 }
 </script>
 

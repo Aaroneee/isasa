@@ -11,21 +11,21 @@ export default [
         children:[
             //我的
             {
-                path: '',
+                path: '/work',
                 name: 'work',
-                component: work
+                component: work,
             },
             //我的
             {
                 path: '/statistic',
                 name: 'statistic',
-                component: statistic
+                component: statistic,
             },
             //商城
             {
                 path: '/store',
                 name: 'store',
-                component: store
+                component: store,
             },
         ]
     },

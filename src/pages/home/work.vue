@@ -43,21 +43,13 @@
 
 export default {
   name: "work",
-  created() {
-    if (localStorage.getItem("tenantCrop") === null) {
-      window.location.reload()
-    }
-    this.queryModules()
-    this.queryButton()
-    this.queryShopIdsByEmpId()
-  },
   data() {
     return {
       logo: require("@/assets/icon.jpg"),
       copyLinkVal: 0,
       tenantCrop: localStorage.getItem("tenantCrop"),
       empId: localStorage.getItem("empId"),
-      modules: {},
+      modules: JSON.parse(localStorage.getItem("modules"))
     }
   },
   methods: {
@@ -65,57 +57,8 @@ export default {
       this.$store.commit('setKeepAlive', [event])
       this.$router.push({name: event, query: {id: id}})
     },
-    // setLocalStorage: function (tenantCrop, empId,token) {
-    //   localStorage.setItem("tenantCrop", tenantCrop);
-    //   localStorage.setItem("empId", empId);
-    //   localStorage.setItem("token", token);
-    //   this.queryModules()
-    // },
-    queryModules() {
-      this.$axios({
-        method: "GET",
-        url: '/index/mobileManBar',
-        params: {
-          tenantCrop: this.tenantCrop,
-          empId: this.empId,
-        }
-      }).then(response => {
-        this.modules = response.data.data
-      })
-
-    },
-    queryButton() {
-      this.$axios({
-        method: "GET",
-        url: "/index/mobileButton",
-        params: {
-          empId: this.empId,
-        }
-      }).then(response => {
-        this.$store.commit("setPermission", response.data.data)
-      })
-    },
-    queryShopIdsByEmpId() {
-      this.$axios({
-        method: "GET",
-        url: "/emp/queryEmpShopIdsByEmpId",
-        params: {
-          empId: localStorage.getItem("empId")
-        }
-      }).then(response => {
-        localStorage.setItem("shopIds", response.data.data)
-      })
-    },
 
   },
-  // mounted() {
-  //   window.setLocalStorage = this.setLocalStorage
-  // }
-  activated() {
-    this.queryModules()
-    this.queryButton()
-    this.queryShopIdsByEmpId()
-  }
 }
 </script>
 
