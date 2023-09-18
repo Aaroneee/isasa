@@ -60,7 +60,8 @@
         <div class="cardParent">
           <p>订单编号: {{ item.orderNo }}</p>
           <p>下单日期: {{ item.createDate }}</p>
-          <p>订单总价: {{ item.totalAmount }}
+          <p>订单总价: {{ item.totalAmount }}</p>
+          <p>支付方式: {{ item.payChannel===1?"支付宝":item.payChannel===2?"预付款余额":"组合支付" }}</p>
           <p style="color: var(--my-describe-color)">订单备注: {{ item.remark }}
             <van-icon @click.stop="queryChangeAmountList(item.id)" v-show="item.changeAmount!==''" name="question-o"/>
           </p>
@@ -203,7 +204,7 @@ export default {
   name: "style-store-order-admin-list",
   data() {
     return {
-      orderState: 100,
+      orderState: 0,
       tenantName: "",
       orderList: [],
       activeNames: [0],

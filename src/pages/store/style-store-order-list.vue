@@ -49,7 +49,8 @@ flex-direction: column;justify-content: center;align-items: center">
         <div class="cardParent">
           <p>订单编号: {{ item.orderNo }}</p>
           <p>下单日期: {{ item.createDate }}</p>
-          <p>订单总价: {{ item.totalAmount }}
+          <p>订单总价: {{ item.totalAmount }}</p>
+          <p>支付方式: {{ item.payChannel===1?"支付宝":item.payChannel===2?"预付款余额":"组合支付" }}</p>
           <p style="color: var(--my-describe-color)">订单备注: {{ item.remark }}
             <van-icon @click.stop="queryChangeAmountList(item.id)" v-show="item.changeAmount!==''" name="question-o"/>
           </p>
@@ -153,7 +154,7 @@ export default {
   name: "style-store-order-list",
   data() {
     return {
-      orderState: 100,
+      orderState: "",
       orderList: [],
       activeNames: [0],
       orderStateArray: [
@@ -230,18 +231,34 @@ export default {
         message: `是否先用支付宝支付差额: ${MathUtils.subtract(totalAmount,this.advanceCharge)}?`,
       }).then(() => {
         if (/Linux/i.test(navigator.platform)) {
-          androidMethod.getAliPayInfo(id);
+          androidMethod.getStoreOrderInfo(id);
         }else {
           window.webkit.messageHandlers.pay.postMessage(id);
         }
       })
     },
+    //如果支付宝充值成功
     payResult(status) {
       if (status === 0 || status === "0") {
         this.$toast.fail('支付失败');
+        this.queryOrderList();
+        return;
       }
-      if (status === 1 || status === "1") {
-
+      //支付宝支付后更改订单状态
+      this.$axios({
+        method: "POST",
+        url: "/storeOrder/changeOrderState",
+        params: {
+          id:this.orderId,
+          empId:this.empId,
+          tenantCrop:this.tenantCrop,
+        }
+      }).then(response=>{
+        if (response.data.code !== 200) {
+          this.$toast.fail('支付失败,请提供支付截图给管理员!');
+          this.queryOrderList();
+          return;
+        }
         //查询订单 如果是差额支付 则直接使用预付款支付剩余
         this.$axios({
           method: "GET",
@@ -249,9 +266,10 @@ export default {
           params: {
             id:this.orderId
           }
-        }).then(response=>{
-          let orderStyle=response.data.data;
-          if (orderStyle.unpaidAmount!=0){
+        }).then(response1=>{
+          let orderStyle=response1.data.data;
+          //说明支付的是差额
+          if (![undefined,null,0,""].includes(orderStyle.unpaidAmount)){
             this.$axios({
               method: "POST",
               url: "/storeOrder/advanceChargePay",
@@ -259,23 +277,20 @@ export default {
                 tenantCrop: this.tenantCrop,
                 id: this.orderId,
                 totalAmount: orderStyle.unpaidAmount,
-                payChannel: 2,
                 empId: this.empId,
-                orderState: 1,
+                payChannel:3,
               }
-            }).then(response1 => {
-              if (response1.data.code===200){
-                this.$toast.success('支付成功');
-                this.queryOrderList();
-                this.queryAdvanceCharge();
-              }else {
-                this.$toast.fail('支付失败');
-              }
+            }).then(response2 => {
+              response2.data.code === 200?this.$toast.success('支付成功'):this.$toast.fail('支付失败,请到采购列表完成支付!');
+              this.queryOrderList();
             })
+          }else { //全款支付 直接成功跳转到列表
+            this.$toast.success('支付成功');
+            this.queryOrderList();
           }
         })
+      })
 
-      }
     },
     //取消和退款
     cancelOrder(type, orderId) {
