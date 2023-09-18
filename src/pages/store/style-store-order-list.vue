@@ -153,7 +153,7 @@ export default {
   name: "style-store-order-list",
   data() {
     return {
-      orderState: "",
+      orderState: 100,
       orderList: [],
       activeNames: [0],
       orderStateArray: [

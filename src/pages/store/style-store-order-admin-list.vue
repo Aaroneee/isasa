@@ -203,7 +203,7 @@ export default {
   name: "style-store-order-admin-list",
   data() {
     return {
-      orderState: 0,
+      orderState: 100,
       tenantName: "",
       orderList: [],
       activeNames: [0],
