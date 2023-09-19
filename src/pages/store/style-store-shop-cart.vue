@@ -21,6 +21,7 @@
             <van-row><p>系列编号 : {{item.storeSeriesNum}}</p></van-row>
             <van-row><p>款式名称 : {{ item.styleName }}</p></van-row>
             <van-row><p>款式编号 : {{ item.styleNum }}</p></van-row>
+            <van-row><p>选购尺寸 : {{ item.clothesSize }}</p></van-row>
             <van-row><p>价格 : {{item.salePrice}}</p></van-row>
             <van-row><p>建议零售价 : {{item.suggestSalePrice}}</p></van-row>
             <van-row>
