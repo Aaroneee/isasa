@@ -10,7 +10,7 @@
           <van-swipe :loop="false" ref="swiper" @change="imageChange" style="margin-top: 1%">
             <van-swipe-item v-for="(image, index) in images" :key="index" style="text-align: center">
               <img
-                  v-lazy="`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image.styleImage}?imageSlim`"
+                  v-lazy="`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image.styleImage}?imageMogr2/rquality/20`"
                   style="height: 270px;max-width: 85vw" @click="imageShowClick(index)" alt=""/>
             </van-swipe-item>
           </van-swipe>
@@ -103,7 +103,7 @@
       <van-goods-action-icon/>
       <van-goods-action-icon icon="cart-o" text="购物车" :badge="shopCartNum" @click="toShopCartList"/>
       <van-goods-action-icon/>
-      <van-goods-action-button type="warning" text="加入购物车" @click="clickShopCartButton"/>
+      <van-goods-action-button type="warning" text="加入购物车" @click="clothesSizeShow=true"/>
       <!--      <van-goods-action-button-->
       <!--          type="danger"-->
       <!--          text="立即购买"-->
@@ -121,6 +121,31 @@
         :options="options"
         @select="onSelect"
     />
+    <van-dialog v-model="clothesSizeShow" title="选择尺寸" show-cancel-button @confirm="clickShopCartButton">
+      <van-row>
+        <van-field
+            readonly
+            clickable
+            name="picker"
+            :value="clothesSize"
+            label="婚纱尺寸"
+            placeholder="点击选择尺寸"
+            @click="clothesSizePicker = true"
+        />
+
+      </van-row>
+    </van-dialog>
+    <van-popup v-model="clothesSizePicker" position="bottom">
+      <van-picker
+          show-toolbar
+          :columns="clothesSizeArray"
+          @confirm="(val)=>{
+            clothesSize=val;
+            clothesSizePicker=false;
+          }"
+          @cancel="clothesSizePicker = false"
+      />
+    </van-popup>
   </div>
 
 </template>
@@ -165,6 +190,11 @@ export default {
 
       previewImages: [],
       imgTypeName: "",
+
+      clothesSize:"S",
+      clothesSizeShow:false,
+      clothesSizePicker:false,
+      clothesSizeArray:['S', 'M', 'L', 'F'],
     }
   },
   watch: {
@@ -178,7 +208,7 @@ export default {
   methods: {
     onSelect(option, index) {
       if (index === 0) {
-        let imageUrl = this.previewImages[this.openImagesIndex].replace("?imageSlim", "");
+        let imageUrl = this.previewImages[this.openImagesIndex].replace("?imageMogr2/rquality/20", "");
         /Linux/i.test(navigator.platform)
             ? androidMethod.downImage(imageUrl)
             : window.webkit.messageHandlers.save.postMessage(imageUrl);
@@ -213,7 +243,7 @@ export default {
       }).then(response => {
         if (response.data.data.length < 1) return;
         response.data.data.forEach(k => {
-          this.previewImages.push(`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${k.styleImage}?imageSlim`)
+          this.previewImages.push(`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${k.styleImage}?imageMogr2/rquality/20`)
         })
         this.images = response.data.data;
         this.imgTypeName = response.data.data[0].storeImageTypeName;
@@ -246,15 +276,11 @@ export default {
         url: "/storeStyle/addShoppingCart",
         data: {
           id: this.style.id,
+          clothesSize: this.clothesSize,
           tenantCrop: this.tenantCrop,
         }
       }).then(response => {
-        if (response.data.code !== 200) {
-          this.$toast.fail('添加失败,请返回重试!');
-          return false;
-        }
-        this.$toast.success('添加成功');
-        //todo
+        response.data.code === 200?this.$toast.success('添加成功'):this.$toast.fail(response.data.msg);
         this.queryShoppingCart();
       })
     },
