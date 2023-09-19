@@ -71,7 +71,7 @@
                   <img
                       class="style-img"
                       @click="clickImageItem(childItem.mainImage)"
-                      :src="'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+childItem.mainImage+'?imageMogr2/rquality/60'"
+                      :src="'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+childItem.mainImage+'?imageMogr2/rquality/20'"
                       alt="主图显示失败,请重新设置主图"
                       @error="($event)=>{
                         $event.target.src='https://isasaerp-img-1304365928.cos.ap-shanghai.myqcloud.com/logoFont.jpg?imageMogr2/rquality/2';
@@ -89,6 +89,7 @@
                 <van-row><p>品牌 : {{ childItem.storeBrandName }}</p></van-row>
                 <van-row><p>系列名称 : {{ childItem.storeSeriesName }}</p></van-row>
                 <van-row><p>系列编号 : {{ childItem.storeSeriesNum }}</p></van-row>
+                <van-row><p>选购尺寸 : {{ childItem.clothesSize }}</p></van-row>
                 <van-row><p>单价 : {{ childItem.unitPrice }}</p></van-row>
                 <van-row><p>数量 : {{ childItem.styleNum }}</p></van-row>
                 <van-row><p>总金额 : {{ childItem.amount }}</p></van-row>
