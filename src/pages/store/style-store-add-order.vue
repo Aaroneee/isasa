@@ -57,7 +57,7 @@
       <van-row v-for="(item,index) in styleList" :key="index" style="margin-bottom: 10px">
         <van-col :span="12">
           <span
-                  style="font-size: 15px;font-weight: bold">{{
+              style="font-size: 15px;font-weight: bold">{{
               item.storeTypeName + '-' + item.storeSeriesName + '-' + item.storeSeriesNum
             }} </span>
           <span style="font-size: 15px;">  共<span style="font-weight: bold">{{ item.styleNumber }}</span>件</span>
@@ -171,7 +171,7 @@ export default {
               message: `是否先用支付宝支付差额: ${MathUtils.subtract(this.totalAmount,this.advanceCharge)}?`,
             }).then(() => {
               if (/Linux/i.test(navigator.platform)) {
-                androidMethod.getAliPayInfo(this.orderId);
+                androidMethod.getStoreOrderInfo(this.orderId);
               }else {
                 window.webkit.messageHandlers.pay.postMessage(this.orderId);
               }
@@ -215,7 +215,7 @@ export default {
         this.$router.replace({name: "styleStoreOrderList"})
       })
     },
-
+    //如果支付宝充值成功
     payResult(status) {
       if (status === 0 || status === "0") {
         this.$toast.fail('支付失败');
@@ -224,8 +224,24 @@ export default {
           self.$router.replace({name: "styleStoreOrderList"})
         },1000)
       }
-      if (status === 1 || status === "1") {
-
+      //支付宝支付后更改订单状态
+      this.$axios({
+        method: "POST",
+        url: "/storeOrder/changeOrderState",
+        params: {
+          id:this.orderId,
+          empId:this.empId,
+          tenantCrop:this.tenantCrop,
+        }
+      }).then(response=>{
+        if (response.data.code !== 200) {
+          this.$toast.fail('支付失败,请提供支付截图给管理员!');
+          let self=this;
+          setTimeout(()=>{
+            self.$router.replace({name: "styleStoreOrderList"})
+          },1000)
+          return
+        }
         //查询订单 如果是差额支付 则直接使用预付款支付剩余
         this.$axios({
           method: "GET",
@@ -233,9 +249,10 @@ export default {
           params: {
             id:this.orderId
           }
-        }).then(response=>{
-          let orderStyle=response.data.data;
-          if (orderStyle.unpaidAmount!=0){
+        }).then(response1=>{
+          let orderStyle=response1.data.data;
+          //说明支付的是差额
+          if (![undefined,null,0,""].includes(orderStyle.unpaidAmount)){
             this.$axios({
               method: "POST",
               url: "/storeOrder/advanceChargePay",
@@ -243,12 +260,11 @@ export default {
                 tenantCrop: this.tenantCrop,
                 id: this.orderId,
                 totalAmount: orderStyle.unpaidAmount,
-                payChannel: 2,
                 empId: this.empId,
-                orderState: 1,
+                payChannel: 3,
               }
-            }).then(response1 => {
-              if (response1.data.code === 200) {
+            }).then(response2 => {
+              if (response2.data.code === 200) {
                 this.$toast.success('支付成功');
               } else {
                 this.$toast.fail('支付失败,请到采购列表完成支付!');
@@ -258,11 +274,15 @@ export default {
                 self.$router.replace({name: "styleStoreOrderList"})
               },1000)
             })
+          }else { //全款支付 直接成功跳转到列表
+            this.$toast.success('支付成功');
+            let self=this;
+            setTimeout(()=>{
+              self.$router.replace({name: "styleStoreOrderList"})
+            },1000)
           }
         })
-
-      }
-      console.log("js 接受原生回调")
+      })
     },
     //获得标签
     getLabel(val) {

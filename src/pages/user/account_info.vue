@@ -37,10 +37,10 @@
     <van-divider content-position="left">交易明细</van-divider>
     <div class="listCard">
       <van-list
-              v-model="listData.loading"
-              :finished="listData.finished"
-              finished-text="没有更多了"
-              @load="onLoad"
+          v-model="listData.loading"
+          :finished="listData.finished"
+          finished-text="没有更多了"
+          @load="onLoad"
       >
         <van-cell v-for="item in listData.billList" :key="item.id" style="margin: 2% 0">
           <van-row style="margin: 2% 0">
@@ -57,14 +57,15 @@
 
           <van-row style="margin: 2% 0">
             <van-col :span="15">
-              账户 : {{item.moneyType===1?'押金':'预付款'}}
+              账户 : {{item.moneyType===1?'押金':item.moneyType===2?'预付款':"支付宝"}}
             </van-col>
             <van-col :span="9" :style="{textAlign:'right'}">
               操作人 : {{item.operationEmpName}}
             </van-col>
           </van-row>
           <van-row style="margin: 2% 0">
-            <p> {{item.moneyType===1?'押金':'预付款'}}剩余 : {{ item.balance}}</p>
+            <p> {{item.moneyType===1?`押金剩余 : ${item.balance}`
+                :item.moneyType===2?`预付款剩余 : ${item.balance}`:"支付宝付款"}}</p>
             <!--            <p>{{ item.remark}}</p>-->
           </van-row>
           <van-row style="margin: 2% 0">
