@@ -191,7 +191,7 @@ export default {
       previewImages: [],
       imgTypeName: "",
 
-      clothesSize:"S",
+      clothesSize:"M",
       clothesSizeShow:false,
       clothesSizePicker:false,
       clothesSizeArray:['S', 'M', 'L', 'F'],
