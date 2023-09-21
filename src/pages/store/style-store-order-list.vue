@@ -50,7 +50,7 @@ flex-direction: column;justify-content: center;align-items: center">
           <p>订单编号: {{ item.orderNo }}</p>
           <p>下单日期: {{ item.createDate }}</p>
           <p>订单总价: {{ item.totalAmount }}</p>
-          <p>支付方式: {{ item.payChannel===1?"支付宝":item.payChannel===2?"预付款余额":"组合支付" }}</p>
+          <p v-show="![undefined,null,''].includes(item.payChannel)">支付方式: {{ item.payChannel===1?"支付宝":item.payChannel===2?"预付款余额":"组合支付" }}</p>
           <p style="color: var(--my-describe-color)">订单备注: {{ item.remark }}
             <van-icon @click.stop="queryChangeAmountList(item.id)" v-show="item.changeAmount!==''" name="question-o"/>
           </p>
