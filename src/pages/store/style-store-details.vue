@@ -121,30 +121,25 @@
         :options="options"
         @select="onSelect"
     />
-    <van-dialog v-model="clothesSizeShow" title="选择尺寸" show-cancel-button @confirm="clickShopCartButton">
+    <van-popup round position="bottom" v-model="clothesSizeShow" style="height: 40vh">
+      <van-divider content-position="left">尺码</van-divider>
       <van-row>
-        <van-field
-            readonly
-            clickable
-            name="picker"
-            :value="clothesSize"
-            label="婚纱尺寸"
-            placeholder="点击选择尺寸"
-            @click="clothesSizePicker = true"
-        />
-
+        <van-col :span="6" class="sizeNotActive">
+          <p :class="clothesSize==='S'?'sizeP sizeActiveP':'sizeP sizeNotActiveP'" @click='clothesSize="S"'>S</p>
+        </van-col>
+        <van-col :span="6" class="sizeNotActive">
+          <p :class="clothesSize==='M'?'sizeP sizeActiveP':'sizeP sizeNotActiveP'" @click='clothesSize="M"'>M</p>
+        </van-col>
+        <van-col :span="6" class="sizeNotActive">
+          <p :class="clothesSize==='L'?'sizeP sizeActiveP':'sizeP sizeNotActiveP'" @click='clothesSize="L"'>L</p>
+        </van-col>
+        <van-col :span="6" class="sizeNotActive">
+          <p :class="clothesSize==='F'?'sizeP sizeActiveP':'sizeP sizeNotActiveP'" @click='clothesSize="F"'>F</p>
+        </van-col>
       </van-row>
-    </van-dialog>
-    <van-popup v-model="clothesSizePicker" position="bottom">
-      <van-picker
-          show-toolbar
-          :columns="clothesSizeArray"
-          @confirm="(val)=>{
-            clothesSize=val;
-            clothesSizePicker=false;
-          }"
-          @cancel="clothesSizePicker = false"
-      />
+      <van-goods-action>
+        <van-goods-action-button type="warning" text="加入购物车" @click="clickShopCartButton"/>
+      </van-goods-action>
     </van-popup>
   </div>
 
@@ -193,7 +188,6 @@ export default {
 
       clothesSize:"M",
       clothesSizeShow:false,
-      clothesSizePicker:false,
       clothesSizeArray:['S', 'M', 'L', 'F'],
     }
   },
@@ -281,6 +275,7 @@ export default {
         }
       }).then(response => {
         response.data.code === 200?this.$toast.success('添加成功'):this.$toast.fail(response.data.msg);
+        this.clothesSizeShow=false;
         this.queryShoppingCart();
       })
     },
@@ -348,5 +343,25 @@ p {
   right: 6px;
   color: #f5f7fa;
   font-size: 27px;
+}
+.sizeNotActive{
+  display: flex;
+  justify-content: center
+}
+.sizeP{
+  width: 60%;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+
+}
+.sizeNotActiveP{
+  background-color: var(--my-gray-color);
+}
+.sizeActiveP{
+
+  background-color: var(--my-error-two-color);
 }
 </style>

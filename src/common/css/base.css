@@ -3,6 +3,8 @@
   --my-text-color: #3F4254;
   /*备注*/
   --my-describe-color: #B5B5C3;
+  /*灰色*/
+  --my-gray-color: #F5F7FA;
 
 
   /*基础*/
@@ -26,4 +28,6 @@
   --my-error-color: #F56C6C;
   /*错误*/
   --my-error-one-color: #EE0A24;
+
+  --my-error-two-color: #EF6F48;
 }
