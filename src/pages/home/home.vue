@@ -46,18 +46,20 @@ export default {
     })
   },
   methods: {
-    setLocalStorage: function (tenantCrop, empId, token) {
+     setLocalStorage: function (tenantCrop, empId, token) {
       this.overlay=true;
       localStorage.setItem("tenantCrop", tenantCrop);
       localStorage.setItem("empId", empId);
       localStorage.setItem("token", token);
       this.getData(tenantCrop,empId);
     },
+    setIosVersion:function (version){
+      localStorage.setItem("iosVersion", version);
+    },
     getData(tenantCrop,empId){
       this.queryModules(tenantCrop, empId);
       this.queryButton(empId);
       this.queryShopIdsByEmpId(empId);
-
     },
     queryModules(tenantCrop, empId) {
       this.$axios({
@@ -114,6 +116,7 @@ export default {
   components: {UserHeadComponents},
   mounted() {
     window.setLocalStorage = this.setLocalStorage
+    window.setIosVersion = this.setIosVersion
   },
 }
 </script>
