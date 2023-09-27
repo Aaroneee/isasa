@@ -181,7 +181,7 @@ export default {
     deleteStyle() {
       this.$dialog.confirm({
         title: '删除款式',
-        message: '确定要删除该款式吗？',
+        message: '确定要删除该款式吗？<br><p style="color: red">数据无法恢复!</p><p>将删除:款式信息,婚纱信息,试纱记录,档期记录</p><br>',
       }).then(() => {
         this.$axios({
           method: "POST",
