@@ -69,6 +69,7 @@
       <van-collapse v-model="activeNames" style="padding:4% 4% 4% 4%">
         <van-cell style="font-size: 14px">
           <van-col style="color: #39a9ed" span="12">客户名:{{ order.name }}</van-col>
+          <van-col v-show="scheduleCount>0" style="color: var(--my-error-color)" span="12">已有档期数:{{ scheduleCount }}</van-col>
 <!--          <van-col style="color: #39a9ed" span="12">婚期:{{ order.weddingDay }}</van-col>-->
         </van-cell>
         <van-form @submit="addSchedule">
@@ -206,28 +207,33 @@ export default {
       weddingDaySelectShowPicker: false,
       weddingDay: "",
       weddingDayId: "",
+
+      //当前日期和婚纱的档期数
+      scheduleCount:0,
     }
-  }
-  , components: {
+  },
+  components: {
     baseNavBar
-  }
-  , methods: {
+  },
+  methods: {
     clickItem: function (value) {
       this.clothesNo = value.styleType + '-' + value.styleName + '-' + value.clothesSize + '-' + value.clothesNo
       this.clothesId = value.clothesId
       this.cusId = this.order.cusId
-      this.orderClothesPopup = true
-    }
-    , dateSectionConfirm: function (value) {
+      this.orderClothesPopup = true;
+      this.queryScheduleCount();
+    },
+    dateSectionConfirm: function (value) {
       this.dateAmong = this.$dateUtils.rangeVantDateToYMD(value)
       this.dateSectionShow = false
-    }
-    , searchStyleName: function (value) {
+    },
+    searchStyleName: function (value) {
       this.styleName = value
       this.clothesList = []
+      this.page=1;
       this.queryClothesList()
-    }
-    , addSchedule: function (data) {
+    },
+    addSchedule: function (data) {
       this.$dialog.confirm({
         title: '添加订单档期款式',
         message: '确定要添加该档期吗？',
@@ -400,7 +406,24 @@ export default {
       this.minDate = dateArray[0]
       this.maxDate = dateArray[1]
       this.defaultDate = this.$dateUtils.dateSectionStrToDateArray(this.dateAmong)
-    }
+
+      //查询是否撞档
+      this.queryScheduleCount();
+    },
+    //根据婚纱ID和档期时间查询 档期总数
+    queryScheduleCount(){
+      this.$axios({
+        method: "get",
+        url: "/schedule/checkSchedulesByClothesIdAndDate",
+        params: {
+          dateAmong: this.dateAmong,
+          clothesId: this.clothesId,
+          tenantCrop:this.tenantCrop,
+        }
+      }).then(response => {
+        this.scheduleCount=response.data.data;
+      })
+    },
   }
 }
 
