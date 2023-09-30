@@ -11,6 +11,7 @@ export default {
   commImage: "comm",
   yarnClothesImage: "yarnClothesImage",
   depositImage: "depositImage",
+  brandImage:'brandImage',
 
   getRegion() {
     return 'ap-shanghai'
@@ -22,6 +23,8 @@ export default {
         return 'clothes-image-1304365928';
       case 'styleVideo':
         return 'style-video-1304365928';
+      case 'brandImage':
+        return 'brand-image-1304365928';
     }
   },
 

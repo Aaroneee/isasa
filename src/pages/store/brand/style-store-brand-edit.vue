@@ -13,7 +13,7 @@
         <van-uploader v-if="seriesInfo.seriesImg===''" v-model="file" :max-count="1"/>
         <van-badge v-else>
           <img class="style-img"
-               :src="'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+seriesInfo.seriesImg">
+               :src="'https://brand-image-1304365928.cos.ap-shanghai.myqcloud.com/'+seriesInfo.seriesImg">
           <template #content>
             <van-icon @click="delImg" name="cross" class="badge-icon" />
           </template>
@@ -64,7 +64,7 @@ export default {
       seriesInfo: "",
       file:[],
       fileName:"",
-
+      tenantCrop: localStorage.getItem("tenantCrop"),
       loading: true,
     }
   },
@@ -98,7 +98,7 @@ export default {
           if (self.file.length>0){
             let arr = self.file[0].file.name.split(".");
             let name=self.$md5(arr[0] + new Date())+'.'+ arr[arr.length - 1];
-            self.$upload.uploadSingeFile(self.$upload.clothesImage,self.file[0].file,name).then(value=>{
+            self.$upload.uploadSingeFile(self.$upload.brandImage,self.file[0].file,name).then(value=>{
               if (!value){
                 self.$toast.fail("图片上传失败,请重试");
                 return;
