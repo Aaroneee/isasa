@@ -11,15 +11,16 @@
       />
     </van-sticky>
     <van-cell-group title="客户信息">
-      <van-field input-align="right" label="客户名" :value="item.customerName" readonly />
-      <van-field input-align="right" label="订单编号" :value="item.orderNo" readonly />
-      <van-field input-align="right" label="退押状态" :value="item.type === 0 ? '未申请' : item.type === 1 ? '已申请' : '已退'" readonly />
+      <van-field input-align="right" label="客户名" :value="item.customerName" readonly/>
+      <van-field input-align="right" label="订单编号" :value="item.orderNo" readonly/>
+      <van-field input-align="right" label="退押状态"
+                 :value="item.type === 0 ? '未申请' : item.type === 1 ? '已申请' : '已退'" readonly/>
     </van-cell-group>
     <van-cell-group title="收押信息">
-      <van-field input-align="right" label="收款人" :value="item.payeeName" readonly />
-      <van-field input-align="right" label="押金数" :value="item.depositAmount" readonly />
-      <van-field input-align="right" label="所属店铺" :value="item.shopName" readonly />
-      <van-field input-align="right" label="收押日期" :value="item.proceedsDate" readonly />
+      <van-field input-align="right" label="收款人" :value="item.payeeName" readonly/>
+      <van-field input-align="right" label="押金数" :value="item.depositAmount" readonly/>
+      <van-field input-align="right" label="所属店铺" :value="item.shopName" readonly/>
+      <van-field input-align="right" label="收押日期" :value="item.proceedsDate" readonly/>
       <van-field input-align="right" label="收押图片" readonly @click="showProceedsPicture">
         <template #input>
           <van-image
@@ -39,7 +40,8 @@
       <van-field input-align="right" label="退款金额" :value="item.refundAmount" readonly/>
       <van-field input-align="right" label="退款目标账户名" :value="item.refundTarget" readonly/>
       <van-field input-align="right" label="退款目标账户" :value="item.targetAccount" readonly/>
-      <van-field input-align="right" label="退款备注" :value="item.refundInfo === '' ? '无' : item.refundInfo" readonly/>
+      <van-field input-align="right" label="退款备注" :value="item.refundInfo === '' ? '无' : item.refundInfo"
+                 readonly/>
       <van-field input-align="right" label="申请日期" :value="item.applyDate" readonly/>
     </van-cell-group>
     <van-cell-group title="退押信息" v-if="item.type === 2">
@@ -47,7 +49,8 @@
       <van-field input-align="right" label="退款金额" :value="item.refundAmount" readonly/>
       <van-field input-align="right" label="退款目标账户名" :value="item.refundTarget" readonly/>
       <van-field input-align="right" label="退款目标账户" :value="item.targetAccount" readonly/>
-      <van-field input-align="right" label="退款备注" :value="item.refundInfo === '' ? '无' : item.refundInfo" readonly/>
+      <van-field input-align="right" label="退款备注" :value="item.refundInfo === '' ? '无' : item.refundInfo"
+                 readonly/>
       <van-field input-align="right" label="退押日期" :value="item.createDate" readonly v-if="item.type"/>
       <van-field input-align="right" label="退押图片" readonly @click="showRefundPicture">
         <template #input>
@@ -71,7 +74,7 @@
         <van-button type="primary" @click="clickApplyItem()" v-if="item.type === 0">申请退押</van-button>
       </van-col>
       <van-col :span="12" style="text-align: center">
-          <van-button type="primary" @click="confirmRefund()" v-if="item.type === 1">确认退押</van-button>
+        <van-button type="primary" @click="confirmRefund()" v-if="item.type === 1">确认退押</van-button>
       </van-col>
     </van-row>
 
@@ -79,9 +82,8 @@
 </template>
 
 <script>
-import {ImagePreview} from 'vant';
-import { Dialog } from 'vant';
-import { Toast } from 'vant';
+import {Dialog, ImagePreview} from 'vant';
+
 export default {
   name: "deposit-detail",
   components: {
@@ -144,7 +146,16 @@ export default {
         if (response.data.data.length === 0) {
           return false
         }
-        this.item.proceedsPicture = response.data.data[0]
+
+        if (this.tenantCrop === "2a31c23a-c178-441614928053489") {
+          let items =
+              response.data.data.map(item => {
+                return item.replace("https://deposit-image-1304365928.cos.ap-shanghai.myqcloud.com/", "https://www.ivorybai.com:443/order/")
+              })
+          this.item.proceedsPicture = items[0]
+        } else {
+          this.item.proceedsPicture = response.data.data[0]
+        }
       })
     },
     showDepositBackPictures(refundId) {
@@ -162,7 +173,15 @@ export default {
         if (response.data.data.length === 0) {
           return false
         }
-        this.item.refundPicture = response.data.data[0]
+        if (this.tenantCrop === "2a31c23a-c178-441614928053489") {
+          let items =
+              response.data.data.map(item => {
+                return item.replace("https://deposit-image-1304365928.cos.ap-shanghai.myqcloud.com/", "https://www.ivorybai.com:443/order/")
+              })
+          this.item.proceedsPicture = items[0]
+        } else {
+          this.item.refundPicture = response.data.data[0]
+        }
       })
     },
     // 确定退押
