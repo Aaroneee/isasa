@@ -1,7 +1,7 @@
 <template>
   <div>
     <van-sticky>
-      <BaseNavBar title="款式商城"/>
+      <BaseNavBar title="品牌商城"/>
       <van-dropdown-menu>
         <van-dropdown-item :title="brandText" v-model="brand" @change="brandChange"  :options="styleBrandArray"/>
       </van-dropdown-menu>

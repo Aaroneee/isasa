@@ -42,7 +42,7 @@
         <div id="operationCon">
           <span style="font-size: 17px;text-align: center;color: #42aef6;">{{ item[0].shopName }}婚纱礼服</span>
           <div id="operationParent">
-            <div class="operationBlock" v-for="it of item" :key="it.id" @click="clickItem(it)">
+            <div class="operationBlock" v-for="it of item" v-if="![0,'0'].includes(it.count)" :key="it.id" @click="clickItem(it)">
               <p v-if="it.dummy === '0'" style="color: #1AA090" class="pfont">{{ it.positionName }}</p>
               <p v-if="it.dummy === '1'" class="pfont">{{ it.positionName }}</p>
               <p class="pfont">{{ it.count }}</p>
