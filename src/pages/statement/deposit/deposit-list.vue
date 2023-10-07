@@ -49,16 +49,16 @@
           {{ active === 0 ? '未申请' : active === 1 ? '已申请未退' : '已退' }}押金 总数：{{ count ? count : 0 }}
         </van-col>
         <van-col>
-          {{ active === 0 ? '未申请' : active === 1 ? '已申请未退' : '已退' }}押金 总金额：{{ amount ? amount : 0}}
+          {{ active === 0 ? '未申请' : active === 1 ? '已申请未退' : '已退' }}押金 总金额：{{ amount ? amount : 0 }}
         </van-col>
       </van-cell>
-      <van-divider />
+      <van-divider/>
       <van-list
           v-model="loading"
           :finished="finished"
           finished-text="没有更多了"
       >
-        <van-cell style="font-size: 12px" v-for="item in depositList" :key="item.proceedsId" @click="clickItem(item)">
+        <van-cell style="font-size: 12px" v-for="item in depositList" :key="item.proceedsId">
           <van-row style="margin-bottom: 2%">
             <van-col span="12">客户姓名:{{ item.customerName }}</van-col>
             <van-col span="12" style="font-size: 15px">
@@ -70,15 +70,37 @@
           </van-row>
           <van-row>
             <van-col span="12">收款方式:{{ item.paymentName }}</van-col>
-            <van-col span="12">收款人:{{ item.payeeName }}</van-col>
+            <van-col v-if="item.type===0" span="12">收款人:{{ item.payeeName }}</van-col>
+            <van-col v-if="item.type===1" span="12">申请人:{{ item.petitioner }}</van-col>
+            <van-col v-if="item.type===2" span="12">退款人:{{ item.payeeName }}</van-col>
           </van-row>
+
           <van-row>
-            <van-col span="12">订单编号:{{ item.orderNo }}</van-col>
             <van-col span="12">押金金额:{{ item.depositAmount }}</van-col>
-          </van-row>
-          <van-row>
             <van-col span="12">收款日期:{{ item.proceedsDate }}</van-col>
           </van-row>
+          <van-row v-if="item.type=== 1|| item.type === 2" style="margin-top: 2%">
+            <van-col span="12">退款目标:{{ item.refundTarget }}</van-col>
+            <van-col span="12">退款账户:{{ item.targetAccount }}</van-col>
+          </van-row>
+          <van-row v-if="item.type=== 1|| item.type === 2">
+            <van-col span="12">退款金额:{{ item.refundAmount }}</van-col>
+            <van-col span="12">退款备注:{{ item.refundInfo }}</van-col>
+          </van-row>
+          <van-row v-if=" item.type === 2">
+            <van-col span="12">退款方式:{{ item.refundPayment }}</van-col>
+            <van-col span="12">退款日期:{{ item.createDate }}</van-col>
+          </van-row>
+          <van-row style="margin: 1px auto">
+            <van-col :span="item.type ===0 ? 24 : 12" style="text-align: center">
+              <van-button size="small" round @click="clickItem(item)">查看详情</van-button>
+            </van-col>
+            <van-col :span="12" style="text-align: center">
+              <van-button size="small" round @click="copyRefundInfo(item)" v-if="item.type === 1|| item.type===2">复制信息
+              </van-button>
+            </van-col>
+          </van-row>
+
         </van-cell>
       </van-list>
     </div>
@@ -86,42 +108,41 @@
 </template>
 
 <script>
-
 export default {
   name: "deposit-list",
   data() {
     return {
       titleText: "押金列表",
       active: 0,
-      tenantCrop:localStorage.getItem("tenantCrop"),
-      maxDate:this.$dateUtils.getMaxMinDate()[0],
-      minDate:this.$dateUtils.getMaxMinDate()[1],
+      tenantCrop: localStorage.getItem("tenantCrop"),
+      maxDate: this.$dateUtils.getMaxMinDate()[0],
+      minDate: this.$dateUtils.getMaxMinDate()[1],
       searchValue: '',
       amount: 0,
       count: 0,
-      typeArray:[
+      typeArray: [
         {
-          text:"押金类型",
-          value:""
+          text: "押金类型",
+          value: ""
         },
         {
-          text:"未申请",
-          value:"0"
+          text: "未申请",
+          value: "0"
         },
         {
-          text:"已申请",
-          value:"1"
+          text: "已申请",
+          value: "1"
         },
         {
-          text:"已退",
-          value:"2"
+          text: "已退",
+          value: "2"
         }
       ],
       dressId: "",
       type: "",
       shopId: "",
-      shopArray:[{text:"所有店铺",value:""}],
-      dressArray:[{text:"所有礼服师",value:""}],
+      shopArray: [{text: "所有店铺", value: ""}],
+      dressArray: [{text: "所有礼服师", value: ""}],
 
       showDate: false,
       loading: true,
@@ -189,6 +210,17 @@ export default {
     // 店铺改变
     shopNameChange() {
       this.queryDepositList()
+    },
+    copyRefundInfo: function (item) {
+      let _this = this;
+      console.log("复制退押信息")
+      let refundInfo =  item.refundInfo === '' ? '无': item.refundInfo
+      let text = '客户 ' + item.refundTarget + ' 还件退押金 ' + item.refundAmount + '元 , ' + item.refundPayment + ' ' + item.targetAccount + item.targetAccount + ' (申请人' + item.petitioner + ' ) ' +  '备注: ' + refundInfo
+      _this.$copyText(text).then(function (e) {
+        _this.$toast.success({message: '已复制复制退押信息', duration: 700});
+      }, err => {
+        _this.$toast.fail({message: '复制退押信复制失败,请重试', duration: 700});
+      })
     },
     // 礼服师改变
     dressChange() {
