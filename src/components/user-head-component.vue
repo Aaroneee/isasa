@@ -1,7 +1,7 @@
 
 
 <template>
-  <div style="height: 3vh;">
+  <div style="height: 2vh;">
     <van-row style="margin: 8px 8px;padding:8px 8px;background-color: #89bea8;border-radius: 5px;">
       <van-col :span="8">
       </van-col>
