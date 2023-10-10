@@ -108,6 +108,8 @@
 </template>
 
 <script>
+import {abs} from "mathjs";
+
 export default {
   name: "deposit-list",
   data() {
@@ -196,7 +198,12 @@ export default {
           date: this.date
         }
       }).then(response => {
-        this.depositList = response.data.data.list
+        let data = response.data.data.list
+        if (this.active === 1 || this.active === 2) {
+          this.depositList = data.filter(item => item.depositAmount !== abs(item.refundAmount))
+        } else {
+          this.depositList = data
+        }
         this.amount = response.data.data.amount
         this.count = response.data.data.count
         this.loading = false
@@ -214,8 +221,8 @@ export default {
     copyRefundInfo: function (item) {
       let _this = this;
       console.log("复制退押信息")
-      let refundInfo =  item.refundInfo === '' ? '无': item.refundInfo
-      let text = '客户 ' + item.refundTarget + ' 还件退押金 ' + item.refundAmount + '元 , ' + item.refundPayment + ' ' + item.targetAccount + item.targetAccount + ' (申请人' + item.petitioner + ' ) ' +  '备注: ' + refundInfo
+      let refundInfo = item.refundInfo === '' ? '无' : item.refundInfo
+      let text = '客户 ' + item.refundTarget + ' 还件退押金 ' + item.refundAmount + '元 , ' + item.refundPayment + ' ' + item.targetAccount + item.targetAccount + ' (申请人' + item.petitioner + ' ) ' + '备注: ' + refundInfo
       _this.$copyText(text).then(function (e) {
         _this.$toast.success({message: '已复制复制退押信息', duration: 700});
       }, err => {
