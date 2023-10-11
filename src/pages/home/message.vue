@@ -1,44 +1,34 @@
 
 <template>
-<!--  <van-tabs type="card" background="#F5F7FA" color="white" title-active-color="black" title-inactive-color="black">-->
-<!--    <van-tab title="未读" >-->
-<!--      -->
-<!--    </van-tab>-->
-<!--    <van-tab title="已读">已读</van-tab>-->
-<!--  </van-tabs>-->
-  <van-list
-      style="background-color: white;margin: 8px 8px 13% 8px;border-radius: 10px"
-      v-model="loading"
-      :finished="finished"
-      finished-text="没有更多了"
-      @load="onLoad"
-  >
-    <!--    <van-cell v-for="item in list" :key="item" :title="item" />-->
-    <div v-for="item in list" :key="item.id" >
-      <div class="card" style="padding: 12px 12px">
-        <van-row style="display: flex;align-items: center">
-          <van-col :span="4">
-            <IconPark :type="item.msgIcon" theme="filled" strokeLinecap="square" size="33" :fill="getMsgTypeColor(item.msgType)"/>
-          </van-col>
-          <van-col :span="20">
-            <van-row style="color: var(--my-text-color);">
-              <van-col :span="24" style="font-size: 16px;font-weight: bolder">
-                {{item.msgTitle}}
+  <van-tabs type="card" background="#F5F7FA" color="white" title-active-color="black" title-inactive-color="black">
+    <van-tab title="未读" >
+      <van-list
+          style="background-color: white;margin: 8px 8px 13% 8px;border-radius: 10px"
+          v-model="loading"
+          :finished="finished"
+          finished-text="没有更多了"
+          @load="onLoad"
+      >
+        <!--    <van-cell v-for="item in list" :key="item" :title="item" />-->
+        <div v-for="item in list" :key="item.id" style="">
+          <div style="padding: 12px 12px;">
+            <van-row style="display: flex;align-items: center" offset="20">
+              <van-col :span="3" style="text-align: center">
+                <IconPark :type="'envelopeOne'" theme="filled" strokeLinecap="square" size="25" />
+              </van-col>
+              <van-col :span="21">
+                {{item.msgText}}
               </van-col>
             </van-row>
-            <van-row style="margin-top: 8px;color: var(--my-describe-color);font-size: 14px">
-              {{item.createDate}}
-            </van-row>
-            <van-row style="margin-top: 8px;color: var(--my-describe-color);font-size: 14px">
-              {{item.msgText}}
-            </van-row>
-          </van-col>
-        </van-row>
-      </div>
-      <van-divider />
-    </div>
+          </div>
+          <van-divider />
+        </div>
 
-  </van-list>
+      </van-list>
+    </van-tab>
+    <van-tab title="已读">已读</van-tab>
+  </van-tabs>
+
 </template>
 
 <script>
