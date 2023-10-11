@@ -71,7 +71,7 @@
           <van-row>
             <van-col span="12">收款方式:{{ item.paymentName }}</van-col>
             <van-col v-if="item.type===0" span="12">收款人:{{ item.payeeName }}</van-col>
-            <van-col v-if="item.type===1" span="12">申请人:{{ item.petitioner }}</van-col>
+            <van-col v-if="item.type===1" span="12">收款人:{{ item.payeeName }}</van-col>
             <van-col v-if="item.type===2" span="12">退款人:{{ item.payeeName }}</van-col>
           </van-row>
 
@@ -82,6 +82,10 @@
           <van-row v-if="item.type=== 1|| item.type === 2" style="margin-top: 2%">
             <van-col span="12">退款目标:{{ item.refundTarget }}</van-col>
             <van-col span="12">退款账户:{{ item.targetAccount }}</van-col>
+          </van-row>
+          <van-row v-if="item.type=== 1">
+            <van-col span="12">申请人:{{ item.petitioner }}</van-col>
+            <van-col span="12">申请日期:{{ item.applyDate }}</van-col>
           </van-row>
           <van-row v-if="item.type=== 1|| item.type === 2">
             <van-col span="12">退款金额:{{ item.refundAmount }}</van-col>
@@ -199,11 +203,7 @@ export default {
         }
       }).then(response => {
         let data = response.data.data.list
-        if (this.active === 1 || this.active === 2) {
-          this.depositList = data.filter(item => item.depositAmount !== abs(item.refundAmount))
-        } else {
-          this.depositList = data
-        }
+        this.depositList = data
         this.amount = response.data.data.amount
         this.count = response.data.data.count
         this.loading = false
