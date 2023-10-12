@@ -235,7 +235,7 @@ export default {
     },
     // 传参
     clickItem(item) {
-      this.$router.push(`depositDetail/${item.type}/${item.proceedsId}`)
+      this.$router.push(`depositDetail/${item.type}/${item.proceedsId}/${item.orderId}`)
     }
   }
 }
