@@ -151,7 +151,6 @@ import baseNavBar from "@/components/nav-bar/base-nav-bar"
 export default {
   name: "clothesList",
   created() {
-    this.queryClothesList()
     this.queryStyleType()
     this.queryShopIds()
     this.queryStyleLabelList()
@@ -378,6 +377,8 @@ export default {
         if (this.recordsList.length>0){
           this.$toast('将使用已保存的条件筛选!');
           this.useRecord(this.recordsList[0])
+        }else {
+          this.queryClothesList()
         }
       })
     },
