@@ -16,7 +16,7 @@
       <van-tabbar-item to="/work" icon='wap-home-o'>工作台</van-tabbar-item>
       <van-tabbar-item to="/statistic" icon='bar-chart-o'>报表</van-tabbar-item>
       <van-tabbar-item to="/store" icon='shop-o'>商城</van-tabbar-item>
-      <van-tabbar-item to="/message" icon='chat-o' badge="3" >消息</van-tabbar-item>
+      <van-tabbar-item to="/message" icon='chat-o'>消息</van-tabbar-item>
     </van-tabbar>
   </div>
 </template>

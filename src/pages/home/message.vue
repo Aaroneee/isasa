@@ -1,33 +1,39 @@
 
 <template>
-  <van-tabs type="card" background="#F5F7FA" color="white" title-active-color="black" title-inactive-color="black">
-    <van-tab title="未读" >
-      <van-list
-          style="background-color: white;margin: 8px 8px 13% 8px;border-radius: 10px"
-          v-model="loading"
-          :finished="finished"
-          finished-text="没有更多了"
-          @load="onLoad"
-      >
-        <!--    <van-cell v-for="item in list" :key="item" :title="item" />-->
-        <div v-for="item in list" :key="item.id" style="">
-          <div style="padding: 12px 12px;">
-            <van-row style="display: flex;align-items: center" offset="20">
-              <van-col :span="3" style="text-align: center">
-                <IconPark :type="'envelopeOne'" theme="filled" strokeLinecap="square" size="25" />
-              </van-col>
-              <van-col :span="21">
-                {{item.msgText}}
-              </van-col>
-            </van-row>
-          </div>
-          <van-divider />
+  <div>
+    <van-search v-model="searchValue" placeholder="请输入搜索关键词" @search="onSearch"/>
+    <van-list
+        style="background-color: white;margin: 8px 8px 13% 8px;border-radius: 10px"
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        @load="onLoad"
+    >
+      <!--    <van-cell v-for="item in list" :key="item" :title="item" />-->
+      <div v-for="item in listResponse" :key="item.id" style="">
+        <div style="padding: 12px 12px;">
+          <van-row style="display: flex;align-items: center" offset="20">
+            <van-col :span="3" style="text-align: center">
+              <van-badge dot>
+                <IconPark :type="'envelopeOne'" theme="filled" strokeLinecap="square" size="25" fill="#89bea8"/>
+              </van-badge>
+            </van-col>
+            <van-col :span="21">
+              {{item.msgText}}
+            </van-col>
+          </van-row>
         </div>
+        <van-divider />
+      </div>
 
-      </van-list>
-    </van-tab>
-    <van-tab title="已读">已读</van-tab>
-  </van-tabs>
+    </van-list>
+  </div>
+<!--  <van-tabs type="card" background="#F5F7FA" color="white" title-active-color="black" title-inactive-color="black">-->
+<!--    <van-tab title="未读" >-->
+<!--      -->
+<!--    </van-tab>-->
+<!--    <van-tab title="已读">已读</van-tab>-->
+<!--  </van-tabs>-->
 
 </template>
 
@@ -37,6 +43,7 @@ export default {
   name: "message",
   data() {
     return {
+      searchValue:"",
       list: [
           {
             id:1,
@@ -63,6 +70,7 @@ export default {
             msgText:"客户AAA订单的婚纱[H-0001-F-1]在12月10日有撞档,请尽快处理",
           },
       ],
+      listResponse:[],
       loading: false,
       finished: false,
     }
@@ -70,7 +78,14 @@ export default {
   components: {
     IconPark
   },
+  created() {
+    this.listResponse=this.list;
+  },
   methods: {
+    onSearch(val){
+      this.listResponse=this.list.filter(k=>{ return k.msgText.includes(val)})
+
+    },
     getMsgTypeColor(msgType){
       switch (msgType){
         case 0:
