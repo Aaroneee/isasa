@@ -16,7 +16,7 @@
       <van-field input-align="right" label="退押状态"
                  :value="item.type === 0 ? '未申请' : item.type === 1 ? '已申请' : '已退'" readonly/>
     </van-cell-group>
-    <van-cell-group title="收押信息">
+    <van-cell-group v-if="type ==  0|| type == 2" title="收押信息">
       <van-field input-align="right" label="收款人" :value="item.payeeName" readonly/>
       <van-field input-align="right" label="押金数" :value="item.depositAmount" readonly/>
       <van-field input-align="right" label="所属店铺" :value="item.shopName" readonly/>
@@ -35,6 +35,31 @@
         </template>
       </van-field>
     </van-cell-group>
+
+    <van-cell-group v-if="type ==  1" title="收押信息">
+      <van-cell v-for="it in items" :key="it.id">
+        <van-field input-align="right" label="收款人" :value="it.payeeName" readonly/>
+        <van-field input-align="right" label="押金数" :value="it.depositAmount" readonly/>
+        <van-field input-align="right" label="所属店铺" :value="it.shopName" readonly/>
+        <van-field input-align="right" label="收押日期" :value="it.proceedsDate" readonly/>
+      </van-cell>
+      <van-cell>
+        <van-field input-align="right" label="收押图片" readonly @click="showProceedsPicture">
+          <template #input>
+            <van-image
+                width="200"
+                height="200"
+                fit="contain"
+                :src="item.proceedsPicture"
+                alt="未上传收押图"
+                v-if="item.proceedsPicture"
+            />
+            <span v-else>未设置收押图</span>
+          </template>
+        </van-field>
+      </van-cell>
+    </van-cell-group>
+
     <van-cell-group title="申请退押信息" v-if="item.type === 1">
       <van-field input-align="right" label="退款方式" :value="item.refundMethod" readonly/>
       <van-field input-align="right" label="退款金额" :value="item.refundAmount" readonly/>
@@ -93,17 +118,21 @@ export default {
     return {
       titleText: '押金详情',
       item: {},
+      items: [],
       proceedsId: this.$route.params.id,
       type: this.$route.params.type,
-      proceedsPicture: '',
+      orderId: this.$route.params.orderId,
+      proceedsPicture: [],
       refundPicture: '',
       tenantCrop: localStorage.getItem('tenantCrop'),
       fileList: [],
     }
   },
   created() {
+    console.log(this.type)
     this.queryDepositItemDetail()
     this.showDepositCollectionPictures(this.proceedsId)
+    this.queryDepositItemDetails()
   },
   methods: {
     onClickLeft() {
@@ -126,7 +155,7 @@ export default {
       })
     },
     showProceedsPicture() {
-      ImagePreview([this.item.proceedsPicture]);
+      ImagePreview(this.proceedsPicture);
     },
     showRefundPicture() {
       ImagePreview([this.item.refundPicture]);
@@ -153,8 +182,11 @@ export default {
                 return item.replace("https://deposit-image-1304365928.cos.ap-shanghai.myqcloud.com/", "https://www.ivorybai.com:443/order/")
               })
           this.item.proceedsPicture = items[0]
+          console.log(items)
+          this.proceedsPicture.push(...items)
         } else {
           this.item.proceedsPicture = response.data.data[0]
+          this.proceedsPicture.push(... response.data.data)
         }
       })
     },
@@ -205,7 +237,20 @@ export default {
       }).then(response => {
         this.item = response.data.data
       })
-    }
+    },
+    // 查询单条押金记录
+    queryDepositItemDetails() {
+      this.$axios({
+        method: 'GET',
+        url: '/proceeds/getItemDetails',
+        params: {
+          orderId: this.orderId,
+          tenantCrop: this.tenantCrop
+        }
+      }).then(response => {
+        this.items = response.data.data
+      })
+    },
   }
 }
 </script>
