@@ -11,15 +11,29 @@
     >
       <!--    <van-cell v-for="item in list" :key="item" :title="item" />-->
       <div v-for="item in listResponse" :key="item.id" style="">
-        <div style="padding: 12px 12px;">
-          <van-row style="display: flex;align-items: center" offset="20">
-            <van-col :span="3" style="text-align: center">
+        <div style="padding: 12px 12px;" @click="clickItem(item)">
+          <van-row style="display: flex;align-items: center">
+            <van-col :span="3">
               <van-badge dot>
                 <IconPark :type="'envelopeOne'" theme="filled" strokeLinecap="square" size="25" fill="#89bea8"/>
               </van-badge>
             </van-col>
             <van-col :span="21">
-              {{item.msgText}}
+              <van-row style="margin-bottom: 10px" offset="20">
+                <van-col :span="24" style="font-size: 16px;font-weight: bolder;color: var(--my-text-color)">
+                  {{item.msgTitle}}
+                </van-col>
+              </van-row>
+              <van-row style="margin-bottom: 10px" offset="20">
+                <van-col :span="24" style="font-size: 15px;color: var(--my-text-color)">
+                  {{item.msgText}}
+                </van-col>
+              </van-row>
+              <van-row style="" offset="20">
+                <van-col :span="24" style="font-size: 14px;text-align: right;color: var(--my-describe-color)">
+                  {{item.createDate}}
+                </van-col>
+              </van-row>
             </van-col>
           </van-row>
         </div>
@@ -48,26 +62,18 @@ export default {
           {
             id:1,
             msgType:1,
-            createDate:'2023-10-08 20:20:22',
+            createDate:'2023-10-13 20:20:22',
             msgIcon:'fullDressLonguette',
             msgTitle:"贸易订单收货提示",
-            msgText:"款式已收货,请添加至款式列表",
+            msgText:"您收到了来自【GLACIAR】品牌的【柏林少女】【FR22201】",
           },
           {
             id:2,
             msgType:2,
-            createDate:'2023-10-06 19:19:38',
+            createDate:'2023-10-12 19:19:38',
             msgIcon:'newEfferent',
-            msgTitle:"新订单添加婚纱提示",
-            msgText:"已为AAA客户添加了一条订单,请为该订单添加婚纱.",
-          },
-          {
-            id:3,
-            msgType:0,
-            createDate:'2023-10-05 18:18:57',
-            msgIcon:'reverseOperationIn',
-            msgTitle:"订单婚纱撞档",
-            msgText:"客户AAA订单的婚纱[H-0001-F-1]在12月10日有撞档,请尽快处理",
+            msgTitle:"贸易订单收货提示",
+            msgText:"您收到了来自【Julia Kontogruni】品牌的【皓月流光】【FR22102】",
           },
       ],
       listResponse:[],
@@ -82,9 +88,11 @@ export default {
     this.listResponse=this.list;
   },
   methods: {
+    clickItem(item){
+      this.$router.push({name:"msgDetails",query:item.id})
+    },
     onSearch(val){
       this.listResponse=this.list.filter(k=>{ return k.msgText.includes(val)})
-
     },
     getMsgTypeColor(msgType){
       switch (msgType){
@@ -108,7 +116,7 @@ export default {
         this.loading = false;
 
         // 数据全部加载完成
-        if (this.list.length >= 3) {
+        if (this.list.length >= 2) {
           this.finished = true;
         }
       }, 1000);
