@@ -76,7 +76,8 @@
           </van-row>
 
           <van-row>
-            <van-col span="12">押金金额:{{ item.depositAmount }}</van-col>
+            <van-col v-if="item.receivedAmount=== ''" span="12">押金金额:{{ item.depositAmount }}</van-col>
+            <van-col v-else span="12">到账金额:{{ item.receivedAmount }}</van-col>
             <van-col span="12">收款日期:{{ item.proceedsDate }}</van-col>
           </van-row>
           <van-row v-if="item.type=== 1|| item.type === 2" style="margin-top: 2%">
