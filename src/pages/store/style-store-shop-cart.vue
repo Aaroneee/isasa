@@ -1,6 +1,8 @@
 <template>
   <div>
-    <baseNavBar title="购物车"/>
+    <van-sticky>
+      <baseNavBar title="购物车"/>
+    </van-sticky>
     <van-swipe-cell v-for="(item,index) in shopCartList" :key="index">
       <div class="card">
         <van-row gutter="20">

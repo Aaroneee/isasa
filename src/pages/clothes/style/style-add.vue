@@ -345,7 +345,10 @@ export default {
     this.queryBrands();
     this.queryImageType();
     this.queryClothesSize();
-
+    if (this.$route.query !== null && Object.keys(this.$route.query).length !== 0){
+      //todo
+      console.log("消息进来")
+    }
   },
   components: {
     baseNavBar
