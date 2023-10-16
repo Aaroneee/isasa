@@ -133,6 +133,10 @@ export default {
         inviter: "",
         appointShop: "",
         appointRemark: "",
+        appointDress:this.$route.query.orderDress,
+        appointCosmetics:this.$route.query.orderCosmetics,
+        type:"售后预约",
+        cusId: this.$route.query.cusId,
         tenantCrop: localStorage.getItem("tenantCrop")
       },
       inviterArray: [],
@@ -152,8 +156,6 @@ export default {
   },
   methods: {
     submit() {
-      this.appoint.type = "售后预约"
-      this.appoint.cusId = this.order.cusId
       this.$axios({
         method: "POST",
         url: "/appoint/saveAppoint",

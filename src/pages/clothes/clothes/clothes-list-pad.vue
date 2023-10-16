@@ -53,6 +53,7 @@
       <van-list
           v-model="loading"
           :finished="finished"
+          :immediate-check="false"
           offset="20"
           @load="onLoad"
           finished-text="没有更多了"
@@ -150,7 +151,6 @@ import baseNavBar from "@/components/nav-bar/base-nav-bar"
 export default {
   name: "clothesList",
   created() {
-    // this.queryClothesList()
     this.queryStyleType()
     this.queryShopIds()
     this.queryStyleLabelList()
@@ -254,10 +254,7 @@ export default {
       })
     },
     onLoad() {
-      const that = this
-      setTimeout(function () {
-        that.queryClothesList()
-      }, 1000)
+      this.queryClothesList()
     },
     styleTypeChange: function (type) {
       this.flushClothesListArray()
@@ -378,7 +375,10 @@ export default {
       }).then(response => {
         this.recordsList = response.data.data;
         if (this.recordsList.length>0){
+          this.$toast('将使用已保存的条件筛选!');
           this.useRecord(this.recordsList[0])
+        }else {
+          this.queryClothesList()
         }
       })
     },
@@ -423,7 +423,6 @@ export default {
       })
     },
     useRecord(item){
-      console.log(item)
       if (item.styleType!==""){this.styleType=item.styleType}
       if (item.clothesSize!==""){this.clothesSize=item.clothesSize}
 
@@ -437,7 +436,10 @@ export default {
         this.shop=item.shopId;
         this.queryPositionIdsByShop();
       }
-      if (item.positionId!==""){this.position=item.positionId}
+      if (item.positionId!==""){
+        this.position=item.positionId
+        this.positionTitle=item.positionName;
+      }
       this.flushClothesListArray();
       this.queryClothesList();
     },

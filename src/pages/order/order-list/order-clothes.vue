@@ -226,6 +226,7 @@ export default {
     dateSectionConfirm: function (value) {
       this.dateAmong = this.$dateUtils.rangeVantDateToYMD(value)
       this.dateSectionShow = false
+      this.queryScheduleCount();
     },
     searchStyleName: function (value) {
       this.styleName = value

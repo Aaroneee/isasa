@@ -71,7 +71,7 @@
           <van-row>
             <van-col span="12">收款方式:{{ item.paymentName }}</van-col>
             <van-col v-if="item.type===0" span="12">收款人:{{ item.payeeName }}</van-col>
-            <van-col v-if="item.type===1" span="12">申请人:{{ item.petitioner }}</van-col>
+            <van-col v-if="item.type===1" span="12">收款人:{{ item.payeeName }}</van-col>
             <van-col v-if="item.type===2" span="12">退款人:{{ item.payeeName }}</van-col>
           </van-row>
 
@@ -82,6 +82,10 @@
           <van-row v-if="item.type=== 1|| item.type === 2" style="margin-top: 2%">
             <van-col span="12">退款目标:{{ item.refundTarget }}</van-col>
             <van-col span="12">退款账户:{{ item.targetAccount }}</van-col>
+          </van-row>
+          <van-row v-if="item.type=== 1">
+            <van-col span="12">申请人:{{ item.petitioner }}</van-col>
+            <van-col span="12">申请日期:{{ item.applyDate }}</van-col>
           </van-row>
           <van-row v-if="item.type=== 1|| item.type === 2">
             <van-col span="12">退款金额:{{ item.refundAmount }}</van-col>
@@ -108,6 +112,8 @@
 </template>
 
 <script>
+import {abs} from "mathjs";
+
 export default {
   name: "deposit-list",
   data() {
@@ -196,7 +202,8 @@ export default {
           date: this.date
         }
       }).then(response => {
-        this.depositList = response.data.data.list
+        let data = response.data.data.list
+        this.depositList = data
         this.amount = response.data.data.amount
         this.count = response.data.data.count
         this.loading = false
@@ -214,8 +221,8 @@ export default {
     copyRefundInfo: function (item) {
       let _this = this;
       console.log("复制退押信息")
-      let refundInfo =  item.refundInfo === '' ? '无': item.refundInfo
-      let text = '客户 ' + item.refundTarget + ' 还件退押金 ' + item.refundAmount + '元 , ' + item.refundPayment + ' ' + item.targetAccount + item.targetAccount + ' (申请人' + item.petitioner + ' ) ' +  '备注: ' + refundInfo
+      let refundInfo = item.refundInfo === '' ? '无' : item.refundInfo
+      let text = '客户 ' + item.refundTarget + ' 还件退押金 ' + item.refundAmount + '元 , ' + item.refundPayment + ' ' + item.targetAccount + item.targetAccount + ' (申请人' + item.petitioner + ' ) ' + '备注: ' + refundInfo
       _this.$copyText(text).then(function (e) {
         _this.$toast.success({message: '已复制复制退押信息', duration: 700});
       }, err => {
@@ -228,7 +235,7 @@ export default {
     },
     // 传参
     clickItem(item) {
-      this.$router.push(`depositDetail/${item.type}/${item.proceedsId}`)
+      this.$router.push(`depositDetail/${item.type}/${item.proceedsId}/${item.orderId}`)
     }
   }
 }
