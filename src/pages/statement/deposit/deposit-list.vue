@@ -68,33 +68,75 @@
               <b v-if="item.type===2">已退</b>
             </van-col>
           </van-row>
-          <van-row>
+
+          <van-row v-if="item.type===0">
             <van-col span="12">收款方式:{{ item.paymentName }}</van-col>
-            <van-col v-if="item.type===0" span="12">收款人:{{ item.payeeName }}</van-col>
+            <van-col span="12">收款人:{{ item.payeeName }}</van-col>
+          </van-row>
+          <van-row v-if="item.type===0">
+            <van-col span="12">收押金额:{{ item.depositAmount }}</van-col>
+            <van-col span="12">收款日期:{{ item.proceedsDate }}</van-col>
+          </van-row>
+
+
+          <van-row v-if="item.type===1" style="margin-top: 2%">
+            <van-col span="12">申请日期:{{ item.applyDate }}</van-col>
+            <van-col span="12">退押金额:{{ item.refundAmount }}</van-col>
+          </van-row>
+          <van-row v-if="item.type===1">
+            <van-col span="12">申请人:{{ item.petitioner }}</van-col>
+            <van-col span="12">退款目标:{{ item.refundTarget }}</van-col>
+          </van-row>
+          <van-row v-if="item.type === 1">
+            <van-col span="24">退款账户:{{ item.targetAccount }}</van-col>
+          </van-row>
+          <van-row v-if="item.type === 1">
+            <van-col span="24">退款备注:{{ item.refundInfo }}</van-col>
+          </van-row>
+          <van-row v-if="item.type === 1">
+            <van-col style="color: #de0d0d" v-if="item.depositAmount<abs(item.refundAmount)" span="24">
+              收押金额:{{ item.depositAmount }} {{ ' 超额退款' }}
+            </van-col>
+            <van-col style="color: #07c160" v-if="item.depositAmount===abs(item.refundAmount)" span="24">
+              收押金额:{{ item.depositAmount }}{{ ' 全额退款' }}
+            </van-col>
+            <van-col style="color: #3b86e8" v-if="item.depositAmount>abs(item.refundAmount)" span="24">
+              收押金额:{{ item.depositAmount }}{{ ' 部分退款' }}
+            </van-col>
+          </van-row>
+
+
+          <van-row v-if="item.type===2">
+            <van-col span="12">收款方式:{{ item.paymentName }}</van-col>
             <van-col v-if="item.type===1" span="12">收款人:{{ item.payeeName }}</van-col>
             <van-col v-if="item.type===2" span="12">退款人:{{ item.payeeName }}</van-col>
           </van-row>
-
-          <van-row>
-            <van-col v-if="item.receivedAmount=== ''" span="12">押金金额:{{ item.depositAmount }}</van-col>
-            <van-col v-else span="12">到账金额:{{ item.receivedAmount }}</van-col>
+          <van-row v-if="item.type===2">
+            <van-col span="12">收押金额:{{ item.depositAmount }}</van-col>
             <van-col span="12">收款日期:{{ item.proceedsDate }}</van-col>
           </van-row>
-          <van-row v-if="item.type=== 1|| item.type === 2" style="margin-top: 2%">
+
+          <van-row v-if="item.type === 2" style="margin-top: 2%">
             <van-col span="12">退款目标:{{ item.refundTarget }}</van-col>
             <van-col span="12">退款账户:{{ item.targetAccount }}</van-col>
-          </van-row>
-          <van-row v-if="item.type=== 1">
-            <van-col span="12">申请人:{{ item.petitioner }}</van-col>
-            <van-col span="12">申请日期:{{ item.applyDate }}</van-col>
-          </van-row>
-          <van-row v-if="item.type=== 1|| item.type === 2">
-            <van-col span="12">退款金额:{{ item.refundAmount }}</van-col>
-            <van-col span="12">退款备注:{{ item.refundInfo }}</van-col>
           </van-row>
           <van-row v-if=" item.type === 2">
             <van-col span="12">退款方式:{{ item.refundPayment }}</van-col>
             <van-col span="12">退款日期:{{ item.createDate }}</van-col>
+          </van-row>
+          <van-row v-if="item.type === 2">
+            <van-col span="12">退款备注:{{ item.refundInfo }}</van-col>
+          </van-row>
+          <van-row v-if="item.type === 2">
+            <van-col style="color: #de0d0d" v-if="item.depositAmount<abs(item.refundAmount)" span="24">
+              退押金额:{{ item.refundAmount }} {{ ' 超额退款' }}
+            </van-col>
+            <van-col style="color: #07c160" v-if="item.depositAmount===abs(item.refundAmount)" span="24">
+              退押金额:{{ item.refundAmount }}{{ ' 全额退款' }}
+            </van-col>
+            <van-col style="color: #3b86e8" v-if="item.depositAmount>abs(item.refundAmount)" span="24">
+              退押金额:{{ item.refundAmount }}{{ ' 部分退款' }}
+            </van-col>
           </van-row>
           <van-row style="margin: 1px auto">
             <van-col :span="item.type ===0 ? 24 : 12" style="text-align: center">
@@ -165,6 +207,7 @@ export default {
     this.queryDepositList()
   },
   methods: {
+    abs,
     formatDate(date) {
       return `${date.getFullYear()}-${this.$dateUtils.dateIsSingle(date.getMonth() + 1)}-${this.$dateUtils.dateIsSingle(date.getDate())}`;
     },
