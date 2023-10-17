@@ -223,6 +223,7 @@ export default {
         setTimeout(()=>{
           self.$router.replace({name: "styleStoreOrderList"})
         },1000)
+        return;
       }
       //支付宝支付后更改订单状态
       this.$axios({
