@@ -345,9 +345,10 @@ export default {
     this.queryBrands();
     this.queryImageType();
     this.queryClothesSize();
+
+    //如果有参数则说明是从贸易过来
     if (this.$route.query !== null && Object.keys(this.$route.query).length !== 0){
-      //todo
-      console.log("消息进来")
+      this.queryStoreStyleById();
     }
   },
   components: {
@@ -374,22 +375,7 @@ export default {
       this.styleTypeText = value.text
       this.styleShowPicker = false
       if (this.checkbox) {
-        this.queryStyleName(value.id).then((response) => {
-          let name = response.data.data + "";
-          let styleNameLen = name.length
-          switch (styleNameLen) {
-            case 1:
-              name = "000" + name;
-              break;
-            case 2:
-              name = "00" + name;
-              break;
-            case 3:
-              name = "0" + name;
-              break;
-          }
-          this.styleNameText = name
-        })
+        this.queryStyleName(value.id);
       }
 
     },
@@ -401,6 +387,21 @@ export default {
           styleType: value,
           tenantCrop: this.tenantCrop
         }
+      }).then((response) => {
+        let name = response.data.data + "";
+        let styleNameLen = name.length
+        switch (styleNameLen) {
+          case 1:
+            name = "000" + name;
+            break;
+          case 2:
+            name = "00" + name;
+            break;
+          case 3:
+            name = "0" + name;
+            break;
+        }
+        this.styleNameText = name
       })
     },
     addStyleSubmit(data) {
@@ -438,26 +439,27 @@ export default {
             data.empId = localStorage.getItem("empId")
             data.styleLabels = this.finalStyleLabels
             data.styleAlias = this.styleAlias
-            this.$axios({
-              method: "POST",
-              url: "/style/saveStyle",
-              data: data
-            }).then((response) => {
-              if (response.data.code === 200) {
-                this.overlayShow = false
-                this.$dialog.confirm({
-                  title: '添加成功',
-                  message: '是否跳转款式列表查看?',
-                }).then(() => {
-                  this.$router.replace({name: "styleList"})
-                })
-                    .catch(() => {
-                      this.reload()
-                    })
-              } else {
-                this.$toast.fail(response.data.msg);
-              }
-            })
+            console.log(data)
+            // this.$axios({
+            //   method: "POST",
+            //   url: "/style/saveStyle",
+            //   data: data
+            // }).then((response) => {
+            //   if (response.data.code === 200) {
+            //     this.overlayShow = false
+            //     this.$dialog.confirm({
+            //       title: '添加成功',
+            //       message: '是否跳转款式列表查看?',
+            //     }).then(() => {
+            //       this.$router.replace({name: "styleList"})
+            //     })
+            //         .catch(() => {
+            //           this.reload()
+            //         })
+            //   } else {
+            //     this.$toast.fail(response.data.msg);
+            //   }
+            // })
           }
         })
       })
@@ -611,9 +613,61 @@ export default {
         }
       })
     },
-    positionClick() {
+    //查询贸易ID
+    queryStoreStyleById() {
+      //查询款式类型ID,款式编号,款式品牌ID,款式标签ID
+      this.$axios({
+        method: "GET",
+        url: "/storeStyle/queryById",
+        params: {
+          id: this.$route.query.storeStyleId,
+        }
+      }).then(response => {
+        let storeStyle=response.data.data;
+        this.styleAlias=storeStyle.styleName;
+        this.styleFit=storeStyle.styleFit;
+        this.styleNoFit=storeStyle.styleNoFit;
+        this.styleInfo=storeStyle.styleInfo;
+        this.clothesSize=this.$route.query.clothesSize;
+        console.log(storeStyle)
+        this.setStoreStyleType(storeStyle.storeTypeName)
+        this.setStoreStyleLabel(storeStyle.labelNames)
+      })
+    },
+    setStoreStyleType(storeTypeName){
+      this.$axios({
+        method: "GET",
+        url: "/styleType/queryByTypeName",
+        params: {
+          typeName: storeTypeName,
+          tenantCrop: this.tenantCrop,
 
-    }
+        }
+      }).then(response => {
+        this.styleType=response.data.data.id;
+        this.styleTypeText=response.data.data.typeName;
+        this.queryStyleName(this.styleType);
+      })
+    },
+    setStoreStyleLabel(labelNames){
+      this.$axios({
+        method: "GET",
+        url: "/label/queryByNames",
+        params: {
+          names: labelNames,
+          labelType: 2,
+          tenantCrop: this.tenantCrop,
+
+        }
+      }).then(response => {
+        if (response.data.data.length>0){
+          response.data.data.forEach(k=>{
+            this.pushStyleLabel(k.id);
+          })
+        }
+      })
+    },
+
   },
 
 }

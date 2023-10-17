@@ -36,10 +36,10 @@
             <van-row><p>款式名称 : {{ item.styleName }}</p></van-row>
             <van-row><p>款式编号 : {{ item.styleNumber }}</p></van-row>
             <van-row><p>选购尺寸 : {{ item.clothesSize }}</p></van-row>
-            <van-row><p>选购尺寸 : {{ item.clothesSize }}</p></van-row>
             <van-button
-                        style="border-radius: 10px;background-color: var(--my-success-color);border-color: var(--my-success-color);width: 100%;height: 25px;font-size: 12px"
-                        @click="(()=>{$router.push({name:'styleAdd',query:{storeStyleId:'1'}})})"
+                        style="border-radius: 10px;background-color: var(--my-base-color);border-color: var(--my-base-color);
+                        width: 100%;height: 30px;font-size: 14px;color: var(--my-text-color)"
+                        @click="(()=>{$router.push({name:'styleAdd',query:{storeStyleId:item.storeStyleId,clothesSize:item.clothesSize}})})"
                         text="添加至款式"/>
           </van-col>
         </van-row>
