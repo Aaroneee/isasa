@@ -16,7 +16,7 @@
       <van-field input-align="right" label="退押状态"
                  :value="item.type === 0 ? '未申请' : item.type === 1 ? '已申请' : '已退'" readonly/>
     </van-cell-group>
-    <van-cell-group v-if="type ==  0|| type == 2" title="收押信息">
+    <van-cell-group v-if="type ==  0" title="收押信息">
       <van-field input-align="right" label="收款人" :value="item.payeeName" readonly/>
       <van-field input-align="right" label="押金数" :value="item.depositAmount" readonly/>
       <van-field input-align="right" label="所属店铺" :value="item.shopName" readonly/>
@@ -36,21 +36,23 @@
       </van-field>
     </van-cell-group>
 
-    <van-cell-group v-if="type ==  1" title="收押信息">
-<!--      <van-cell v-for="it in items" :key="it.id">-->
-<!--        <van-field input-align="right" label="收押日期" :value="it.proceedsDate" readonly/>-->
-<!--        <van-field input-align="right" label="收押金额" :value="it.depositAmount" readonly/>-->
-<!--        <van-field input-align="right" label="收款人" :value="it.payeeName" readonly/>-->
-<!--        <van-field input-align="right" label="所属店铺" :value="it.shopName" readonly/>-->
-<!--      </van-cell>-->
+    <van-cell-group v-if="type ==  1 || type== 2" title="收押信息">
+      <!--      <van-cell v-for="it in items" :key="it.id">-->
+      <!--        <van-field input-align="right" label="收押日期" :value="it.proceedsDate" readonly/>-->
+      <!--        <van-field input-align="right" label="收押金额" :value="it.depositAmount" readonly/>-->
+      <!--        <van-field input-align="right" label="收款人" :value="it.payeeName" readonly/>-->
+      <!--        <van-field input-align="right" label="所属店铺" :value="it.shopName" readonly/>-->
+      <!--      </van-cell>-->
 
       <van-collapse v-model="activeNames" v-for="it in items" :key="it.id">
-        <van-collapse-item name="0">
+        <van-collapse-item :key="it.id">
           <template #title>
             <van-field input-align="right" label="收押日期" :value="it.proceedsDate" readonly/>
             <van-field input-align="right" label="收押金额" :value="it.depositAmount" readonly/>
           </template>
+          <van-field input-align="right" label="实际到账" :value="it.receivedAmount" readonly/>
           <van-field input-align="right" label="收款人" :value="it.payeeName" readonly/>
+          <van-field input-align="right" label="收款方式" :value="it.paymentName" readonly/>
           <van-field input-align="right" label="所属店铺" :value="it.shopName" readonly/>
         </van-collapse-item>
       </van-collapse>

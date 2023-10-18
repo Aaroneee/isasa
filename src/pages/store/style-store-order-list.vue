@@ -40,10 +40,19 @@ flex-direction: column;justify-content: center;align-items: center">
               <van-icon @click.stop="queryChangeAmountList(item.id)" v-show="item.changeAmount!==''" name="question-o"/>
             </van-col>
           </van-row>
-          <van-row>
-            <van-col :span="24" v-show="item.orderState===2">
+          <van-row v-show="item.orderState===2">
+            <van-row>
               <span @click.stop="copyTrackingNumber(item.trackingNumber)" style="color: var(--my-describe-color)">快递单号 : {{ item.trackingNumber }}</span>
-            </van-col>
+            </van-row>
+            <van-row>
+              <van-col :span="12">
+                <van-button
+                    style="border-radius: 5px;background-color: var(--my-success-one-color);border-color: var(--my-success-one-color);
+                  width: 100%;height: 25px;font-size: 12px;"
+                    @click.stop="(openReceiveDialog(item.id))" text="确认收货">
+                </van-button>
+              </van-col>
+            </van-row>
           </van-row>
         </template>
         <div class="cardParent">
@@ -402,6 +411,28 @@ export default {
         })
       })
     },
+    openReceiveDialog(orderId){
+      let thisOrder=this.orderList.filter(k=>{return k.id===orderId});
+      let brandName=thisOrder[0].storeOrderStyleVOS[0].storeBrandName;
+      this.$dialog.confirm({
+        title: '确认收货',
+        message: `是否确认收货?<br>当收货后将向品牌参数中添加【${brandName}】品牌`,
+      }).then(() => {
+        this.$axios({
+          method: "POST",
+          url: "/storeOrder/confirmAllReceive",
+          data: {
+            id: orderId,
+          }
+        }).then(response => {
+          response.data.code === 200?this.$toast.success('签收成功'):this.$toast.fail('签收成功,请刷重试!');
+          this.queryOrderList();
+        })
+      }).catch(() => {
+        // on cancel
+      });
+
+    },
     clickImageItem: function (image) {
       ImagePreview([`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${image}`])
     },
@@ -427,6 +458,8 @@ export default {
           return ["已退款", "#EE0A24"];
         case 4:
           return ["已取消", "#F56C6C"];
+        case 5:
+          return ["已签收", "#24936E"];
       }
     },
   },

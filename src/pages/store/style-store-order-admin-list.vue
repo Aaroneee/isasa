@@ -468,6 +468,8 @@ export default {
           return ["已退款", "#EE0A24"];
         case 4:
           return ["已取消", "#F56C6C"];
+        case 5:
+          return ["已签收", "#24936E"];
       }
     },
   },
