@@ -425,7 +425,7 @@ export default {
             id: orderId,
           }
         }).then(response => {
-          response.data.code === 200?this.$toast.success('签收成功'):this.$toast.fail('签收成功,请刷重试!');
+          response.data.code === 200?this.$toast.success('签收成功'):this.$toast.fail('签收失败`,请刷重试!');
           this.queryOrderList();
         })
       }).catch(() => {
