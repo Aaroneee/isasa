@@ -37,10 +37,10 @@
       </van-field>
 
       <van-field
-        name="styleAlias"
-        label="款式名称"
-        placeholder="款式名称"
-        v-model="styleAlias"
+          name="styleAlias"
+          label="款式名称"
+          placeholder="款式名称"
+          v-model="styleAlias"
       />
       <van-field
           readonly
@@ -59,24 +59,24 @@
             @confirm="brandConfirm"
         />
       </van-popup>
-<!--      <van-field-->
-<!--          name="factoryNumber"-->
-<!--          v-model="factoryNumber"-->
-<!--          rows="1"-->
-<!--          label="品牌款式编号"-->
-<!--          placeholder="品牌款式编号"-->
-<!--          right-icon="question-o"-->
-<!--          @click-right-icon="$toast('品牌官方款式编号')"-->
-<!--      />-->
-<!--      <van-field-->
-<!--          name="factoryName"-->
-<!--          v-model="factoryName"-->
-<!--          rows="1"-->
-<!--          label="品牌款式名称"-->
-<!--          placeholder="品牌款式名称"-->
-<!--          right-icon="question-o"-->
-<!--          @click-right-icon="$toast('品牌官方款式名称')"-->
-<!--      />-->
+      <!--      <van-field-->
+      <!--          name="factoryNumber"-->
+      <!--          v-model="factoryNumber"-->
+      <!--          rows="1"-->
+      <!--          label="品牌款式编号"-->
+      <!--          placeholder="品牌款式编号"-->
+      <!--          right-icon="question-o"-->
+      <!--          @click-right-icon="$toast('品牌官方款式编号')"-->
+      <!--      />-->
+      <!--      <van-field-->
+      <!--          name="factoryName"-->
+      <!--          v-model="factoryName"-->
+      <!--          rows="1"-->
+      <!--          label="品牌款式名称"-->
+      <!--          placeholder="品牌款式名称"-->
+      <!--          right-icon="question-o"-->
+      <!--          @click-right-icon="$toast('品牌官方款式名称')"-->
+      <!--      />-->
       <van-field label="第一件婚纱">
         <template #input>
           <van-switch v-model="firstSwitch" size="20"/>
@@ -280,8 +280,8 @@ export default {
       styleName: "",
       styleNameText: "",
       tenantCrop: localStorage.getItem("tenantCrop"),
-      maxDate:this.$dateUtils.getMaxMinDate()[0],
-      minDate:this.$dateUtils.getMaxMinDate()[1],
+      maxDate: this.$dateUtils.getMaxMinDate()[0],
+      minDate: this.$dateUtils.getMaxMinDate()[1],
       //创建日期
       purchaseDate: this.$dateUtils.vantDateToYMD(new Date()),
       //日期选择框展示
@@ -321,19 +321,19 @@ export default {
       styleLabelsTextArray: [],
       styleLabelList: [],
       styleLabels: [],
-      finalStyleLabels:[],
+      finalStyleLabels: [],
 
       brandShowPicker: false,
-      brand:"",
-      brandArray:[],
-      brandId:0,
+      brand: "",
+      brandArray: [],
+      brandId: 0,
 
-      imageTypeShowPicker:false,
-      imageType:"",
-      imageTypeText:"",
-      imageTypeColumnsArray:[],
+      imageTypeShowPicker: false,
+      imageType: "",
+      imageTypeText: "",
+      imageTypeColumnsArray: [],
       checkbox: true,
-      styleAlias:"",
+      styleAlias: "",
 
       myShopIds: localStorage.getItem("shopIds"),
     }
@@ -346,17 +346,13 @@ export default {
     this.queryImageType();
     this.queryClothesSize();
 
-    //如果有参数则说明是从贸易过来
-    if (this.$route.query !== null && Object.keys(this.$route.query).length !== 0){
-      this.queryStoreStyleById();
-    }
   },
   components: {
     baseNavBar
   },
-  watch:{
-    firstSwitch(newVal,oldVal){
-      if (newVal===true){
+  watch: {
+    firstSwitch(newVal, oldVal) {
+      if (newVal === true) {
         this.setDefaultClothesSize();
         this.setDefaultShop();
         this.setDefaultPosition();
@@ -375,7 +371,22 @@ export default {
       this.styleTypeText = value.text
       this.styleShowPicker = false
       if (this.checkbox) {
-        this.queryStyleName(value.id);
+        this.queryStyleName(value.id).then((response) => {
+          let name = response.data.data + "";
+          let styleNameLen = name.length
+          switch (styleNameLen) {
+            case 1:
+              name = "000" + name;
+              break;
+            case 2:
+              name = "00" + name;
+              break;
+            case 3:
+              name = "0" + name;
+              break;
+          }
+          this.styleNameText = name
+        })
       }
 
     },
@@ -387,21 +398,6 @@ export default {
           styleType: value,
           tenantCrop: this.tenantCrop
         }
-      }).then((response) => {
-        let name = response.data.data + "";
-        let styleNameLen = name.length
-        switch (styleNameLen) {
-          case 1:
-            name = "000" + name;
-            break;
-          case 2:
-            name = "00" + name;
-            break;
-          case 3:
-            name = "0" + name;
-            break;
-        }
-        this.styleNameText = name
       })
     },
     addStyleSubmit(data) {
@@ -434,32 +430,31 @@ export default {
             data.tenantCrop = this.tenantCrop
             data.styleImage = this.fileName
             data.uploader = []
-            data.imageType=this.imageType;
+            data.imageType = this.imageType;
             data.brandId = this.brandId
             data.empId = localStorage.getItem("empId")
             data.styleLabels = this.finalStyleLabels
             data.styleAlias = this.styleAlias
-            console.log(data)
-            // this.$axios({
-            //   method: "POST",
-            //   url: "/style/saveStyle",
-            //   data: data
-            // }).then((response) => {
-            //   if (response.data.code === 200) {
-            //     this.overlayShow = false
-            //     this.$dialog.confirm({
-            //       title: '添加成功',
-            //       message: '是否跳转款式列表查看?',
-            //     }).then(() => {
-            //       this.$router.replace({name: "styleList"})
-            //     })
-            //         .catch(() => {
-            //           this.reload()
-            //         })
-            //   } else {
-            //     this.$toast.fail(response.data.msg);
-            //   }
-            // })
+            this.$axios({
+              method: "POST",
+              url: "/style/saveStyle",
+              data: data
+            }).then((response) => {
+              if (response.data.code === 200) {
+                this.overlayShow = false
+                this.$dialog.confirm({
+                  title: '添加成功',
+                  message: '是否跳转款式列表查看?',
+                }).then(() => {
+                  this.$router.replace({name: "styleList"})
+                })
+                    .catch(() => {
+                      this.reload()
+                    })
+              } else {
+                this.$toast.fail(response.data.msg);
+              }
+            })
           }
         })
       })
@@ -478,7 +473,7 @@ export default {
     },
     pushStyleLabel: function (value) {
       this.$set(this.styleLabels, value,
-          this.styleLabels[value] === 1?0:1)
+          this.styleLabels[value] === 1 ? 0 : 1)
     },
     close: function (value) {
       this.$set(this.styleLabels, value, 0)
@@ -504,7 +499,7 @@ export default {
     },
     queryShopIds: function () {
       this.$selectUtils.queryShopIds(this.$selectUtils.Picker).then(response => {
-        this.shopColumnsArray =JSON.parse(response.data.data);
+        this.shopColumnsArray = JSON.parse(response.data.data);
         this.setDefaultShop();
       })
     },
@@ -514,8 +509,8 @@ export default {
         this.setDefaultPosition();
       })
     },
-    queryImageType:function(){
-      this.$selectUtils.queryStyleImageTypeIds(this.$selectUtils.Picker,0).then((response) => {
+    queryImageType: function () {
+      this.$selectUtils.queryStyleImageTypeIds(this.$selectUtils.Picker, 0).then((response) => {
         this.imageTypeColumnsArray = JSON.parse(response.data.data);
       })
     },
@@ -561,51 +556,51 @@ export default {
         }
       })
     },
-    brandConfirm: function (value,index) {
+    brandConfirm: function (value, index) {
       this.brand = value.text;
       this.brandId = value.id;
       this.brandShowPicker = false;
     },
-    imageTypeOnConfirm:function (value,index){
-      this.imageType=value.id;
-      this.imageTypeText=value.text;
-      this.imageTypeShowPicker=false;
+    imageTypeOnConfirm: function (value, index) {
+      this.imageType = value.id;
+      this.imageTypeText = value.text;
+      this.imageTypeShowPicker = false;
     },
     //查询品牌列表
     queryBrands: function () {
-       this.$selectUtils.queryBrandIds(this.$selectUtils.Picker).then((response) => {
-         this.brandArray = JSON.parse(response.data.data);
-       })
+      this.$selectUtils.queryBrandIds(this.$selectUtils.Picker).then((response) => {
+        this.brandArray = JSON.parse(response.data.data);
+      })
     },
     autoStyleAlias: function () {
       if (this.styleType !== "") {
         if (this.checkbox) {
-          this.styleOnConfirm({id:this.styleType,text:this.styleTypeText})
+          this.styleOnConfirm({id: this.styleType, text: this.styleTypeText})
         }
       }
     },
     //设置款式默认尺寸
-    setDefaultClothesSize:function (){
+    setDefaultClothesSize: function () {
       this.clothesSizeColumnsArray.forEach(s => {
-        if (s==='F') {
+        if (s === 'F') {
           this.clothesSize = s
           return
         }
       })
     },
     //设置默认店铺
-    setDefaultShop:function (){
-      let localShopIds=this.myShopIds.split(",")
-      let shopId=localShopIds.includes("59")?59:Number(localShopIds[0]);
-      let choose=this.shopColumnsArray.filter(k=>{
-        return k.id===shopId;
+    setDefaultShop: function () {
+      let localShopIds = this.myShopIds.split(",")
+      let shopId = localShopIds.includes("59") ? 59 : Number(localShopIds[0]);
+      let choose = this.shopColumnsArray.filter(k => {
+        return k.id === shopId;
       })
-      this.clothesShop=choose[0].id;
-      this.clothesShopText=choose[0].text;
+      this.clothesShop = choose[0].id;
+      this.clothesShopText = choose[0].text;
       this.queryPositionIdsByShop(choose[0].id);
     },
     //设置默认位置
-    setDefaultPosition:function (){
+    setDefaultPosition: function () {
       this.positionColumnsArray.forEach(s => {
         if (s.text.indexOf("新款入库区") !== -1) {
           this.clothesPosition = s.id
@@ -613,61 +608,9 @@ export default {
         }
       })
     },
-    //查询贸易ID
-    queryStoreStyleById() {
-      //查询款式类型ID,款式编号,款式品牌ID,款式标签ID
-      this.$axios({
-        method: "GET",
-        url: "/storeStyle/queryById",
-        params: {
-          id: this.$route.query.storeStyleId,
-        }
-      }).then(response => {
-        let storeStyle=response.data.data;
-        this.styleAlias=storeStyle.styleName;
-        this.styleFit=storeStyle.styleFit;
-        this.styleNoFit=storeStyle.styleNoFit;
-        this.styleInfo=storeStyle.styleInfo;
-        this.clothesSize=this.$route.query.clothesSize;
-        console.log(storeStyle)
-        this.setStoreStyleType(storeStyle.storeTypeName)
-        this.setStoreStyleLabel(storeStyle.labelNames)
-      })
-    },
-    setStoreStyleType(storeTypeName){
-      this.$axios({
-        method: "GET",
-        url: "/styleType/queryByTypeName",
-        params: {
-          typeName: storeTypeName,
-          tenantCrop: this.tenantCrop,
+    positionClick() {
 
-        }
-      }).then(response => {
-        this.styleType=response.data.data.id;
-        this.styleTypeText=response.data.data.typeName;
-        this.queryStyleName(this.styleType);
-      })
-    },
-    setStoreStyleLabel(labelNames){
-      this.$axios({
-        method: "GET",
-        url: "/label/queryByNames",
-        params: {
-          names: labelNames,
-          labelType: 2,
-          tenantCrop: this.tenantCrop,
-
-        }
-      }).then(response => {
-        if (response.data.data.length>0){
-          response.data.data.forEach(k=>{
-            this.pushStyleLabel(k.id);
-          })
-        }
-      })
-    },
-
+    }
   },
 
 }
