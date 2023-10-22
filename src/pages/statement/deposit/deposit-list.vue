@@ -119,13 +119,13 @@
 
           <van-row style="margin: 1px auto">
 
-            <van-col style="color: #de0d0d" v-if="item.depositAmount<abs(item.refundAmount) && item.type === 1" span="24">
+            <van-col style="color: #de0d0d" v-if="item.depositAmount<abs(item.refundAmount) && item.type === 1" span="10">
               收押金额:{{ item.depositAmount }} {{ ' 超额退款' }}
             </van-col>
-            <van-col style="color: #07c160" v-if="item.depositAmount===abs(item.refundAmount) && item.type === 1" span="24">
+            <van-col style="color: #07c160" v-if="item.depositAmount===abs(item.refundAmount) && item.type === 1" span="10">
               收押金额:{{ item.depositAmount }}{{ ' 全额退款' }}
             </van-col>
-            <van-col style="color: #3b86e8" v-if="item.depositAmount>abs(item.refundAmount) && item.type === 1" span="24">
+            <van-col style="color: #3b86e8" v-if="item.depositAmount>abs(item.refundAmount) && item.type === 1" span="10">
               收押金额:{{ item.depositAmount }}{{ ' 部分退款' }}
             </van-col>
 
