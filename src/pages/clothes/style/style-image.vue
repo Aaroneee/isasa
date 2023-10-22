@@ -214,7 +214,7 @@ export default {
       this.imageObject = val.image
       this.images = []
       val.image.forEach(s => {
-        this.images.push("https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/" + s.styleImage)
+        this.images.push(`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${s.styleImage}?imageMogr2/rquality/60`)
       })
       this.delImageId = val.image[index].id
       this.primaryImageUrl = val.image[index].styleImage

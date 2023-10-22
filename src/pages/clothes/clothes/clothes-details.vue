@@ -157,7 +157,7 @@ export default {
       }).then(response => {
         const data = response.data.data;
         for (let index in data) {
-          data[index] = "https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/" + data[index]
+          data[index] = `https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${data[index]}?imageMogr2/rquality/60`
         }
         this.images = data
       })

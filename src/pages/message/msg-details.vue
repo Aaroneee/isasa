@@ -28,7 +28,7 @@
                                     }">
             </div>
           </van-col>
-          <van-col :span="13" @click="toStyleDetails(item)">
+          <van-col :span="13" >
             <van-row><p>款式品牌 : {{item.storeBrandName}}</p></van-row>
             <van-row><p>款式类型 : {{item.storeTypeName}}</p></van-row>
             <van-row><p>系列名称 : {{item.storeSeriesName}}</p></van-row>
@@ -39,7 +39,7 @@
             <van-button
                         style="border-radius: 10px;background-color: var(--my-base-color);border-color: var(--my-base-color);
                         width: 100%;height: 30px;font-size: 14px;color: var(--my-text-color)"
-                        @click="(()=>{$router.push({name:'styleAdd',query:{storeStyleId:item.storeStyleId,clothesSize:item.clothesSize}})})"
+                        @click="(()=>{$router.push({name:'storeStyleAdd',query:{storeStyleId:item.storeStyleId,clothesSize:item.clothesSize}})})"
                         text="添加至款式"/>
           </van-col>
         </van-row>
@@ -97,7 +97,6 @@ export default {
         }
       }).then(response => {
         this.orderDetails=response.data.data;
-        console.log(this.orderDetails);
       })
     }
   },

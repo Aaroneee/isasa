@@ -17,6 +17,7 @@ import stylePrice from "@/pages/clothes/style/style-price"
 import clothesBumperAlert from "@/pages/clothes/clothes/clothes-bumper-alert";
 import clothesManager from "@/pages/clothes/clothes/clothes-manager";
 import clothesEdit from "@/pages/clothes/clothes/clothes-edit";
+import storeStyleAdd from "@/pages/clothes/style/store-style-add.vue";
 
 export default [
     {
@@ -114,5 +115,10 @@ export default [
         path: '/clothesEdit',
         name: 'clothesEdit',
         component: clothesEdit,
+    },
+    {
+        path: '/storeStyleAdd',
+        name: 'storeStyleAdd',
+        component: storeStyleAdd,
     },
 ]
