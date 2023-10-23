@@ -57,7 +57,6 @@
         </van-collapse-item>
       </van-collapse>
 
-
       <van-cell>
         <van-field input-align="right" label="收押图片" readonly @click="showProceedsPicture">
           <template #input>
