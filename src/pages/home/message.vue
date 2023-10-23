@@ -11,10 +11,11 @@
     >
       <!--    <van-cell v-for="item in list" :key="item" :title="item" />-->
       <div v-for="item in listResponse" :key="item.id" style="">
-        <div style="padding: 12px 12px;" @click="clickItem(item)">
+        <div style="padding: 12px 12px;" @click="clickItem(item.id)">
           <van-row style="display: flex;align-items: center">
             <van-col :span="3">
-              <van-badge dot>
+              <IconPark v-if="item.msgRead===2" :type="'envelopeOne'" theme="filled" strokeLinecap="square" size="25" fill="#89bea8"/>
+              <van-badge dot v-else>
                 <IconPark :type="'envelopeOne'" theme="filled" strokeLinecap="square" size="25" fill="#89bea8"/>
               </van-badge>
             </van-col>
@@ -58,27 +59,11 @@ export default {
   data() {
     return {
       searchValue:"",
-      list: [
-          {
-            id:1,
-            msgType:1,
-            createDate:'2023-10-13 20:20:22',
-            msgIcon:'fullDressLonguette',
-            msgTitle:"贸易订单收货提示",
-            msgText:"您收到了来自【GLACIAR】品牌的【柏林少女】【FR22201】",
-          },
-          {
-            id:2,
-            msgType:2,
-            createDate:'2023-10-12 19:19:38',
-            msgIcon:'newEfferent',
-            msgTitle:"贸易订单收货提示",
-            msgText:"您收到了来自【Julia Kontogruni】品牌的【皓月流光】【FR22102】",
-          },
-      ],
+      list: [],
       listResponse:[],
       loading: false,
       finished: false,
+      tenantCrop: localStorage.getItem("tenantCrop"),
     }
   },
   components: {
@@ -88,8 +73,8 @@ export default {
     this.listResponse=this.list;
   },
   methods: {
-    clickItem(item){
-      this.$router.push({name:"msgDetails",query:item.id})
+    clickItem(id){
+      this.$router.push({name:"msgDetails",query:id})
     },
     onSearch(val){
       this.listResponse=this.list.filter(k=>{ return k.msgText.includes(val)})
@@ -105,21 +90,16 @@ export default {
       }
     },
     onLoad() {
-      // 异步更新数据
-      // setTimeout 仅做示例，真实场景中一般为 ajax 请求
-      setTimeout(() => {
-        // for (let i = 0; i < 10; i++) {
-        //   this.list.push(this.list.length + 1);
-        // }
-
-        // 加载状态结束
-        this.loading = false;
-
-        // 数据全部加载完成
-        if (this.list.length >= 2) {
-          this.finished = true;
+      this.$axios({
+        method: "GET",
+        url: "/sysMsg/queryList",
+        params: {
+          tenantCrop:this.tenantCrop
         }
-      }, 1000);
+      }).then(response => {
+        this.list=response.data.data;
+        this.listResponse=this.list;
+      })
     },
 
   },

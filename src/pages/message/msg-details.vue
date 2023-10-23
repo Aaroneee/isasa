@@ -44,16 +44,6 @@
           </van-col>
         </van-row>
       </div>
-
-<!--      <van-row>-->
-<!--        <van-col :span="12" v-for="(item,index) in orderDetails.storeOrderStyleVOS">-->
-<!--          <img class="style-img"-->
-<!--               :src="'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.mainImage+'?imageMogr2/rquality/60'"-->
-<!--               @error="($event)=>{-->
-<!--                        $event.target.src='https://isasaerp-img-1304365928.cos.ap-shanghai.myqcloud.com/logoFont.jpg?imageMogr2/rquality/2';-->
-<!--                      }">-->
-<!--        </van-col>-->
-<!--      </van-row>-->
     </div>
 
 
@@ -67,14 +57,7 @@ export default {
   name: "message",
   data() {
     return {
-      msgDetails:{
-        id:1,
-        msgType:1,
-        createDate:'2023-10-13 20:20:22',
-        msgIcon:'fullDressLonguette',
-        msgTitle:"贸易订单收货提示",
-        msgText:"您收到了来自【GLACIAR】品牌的【6】件款式!",
-      },
+      msgDetails:{},
 
       orderDetails:{}
     }
@@ -84,21 +67,33 @@ export default {
 
   },
   created() {
-    console.log(this.$route.query)
+    this.queryMsgById();
     this.queryStoreStyle();
   },
   methods: {
-    queryStoreStyle(){
+    queryMsgById(){
+      this.$axios({
+        method: "GET",
+        url: "/sysMsg/queryById",
+        params: {
+          id:this.$route.query
+        }
+      }).then(response => {
+        this.msgDetails=response.data.data;
+        this.queryStoreStyle(JSON.parse(this.msgDetails.msgJson).orderId)
+      })
+    },
+    queryStoreStyle(orderId){
       this.$axios({
         method: "GET",
         url: "/storeOrder/queryInfoById",
         params: {
-          id:234
+          id:orderId
         }
       }).then(response => {
         this.orderDetails=response.data.data;
       })
-    }
+    },
   },
 }
 </script>
