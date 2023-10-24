@@ -90,6 +90,7 @@ export default {
       }
     },
     onLoad() {
+      this.loading=true;
       this.$axios({
         method: "GET",
         url: "/sysMsg/queryList",
@@ -99,6 +100,8 @@ export default {
       }).then(response => {
         this.list=response.data.data;
         this.listResponse=this.list;
+        this.loading=false;
+        this.finished=true;
       })
     },
 

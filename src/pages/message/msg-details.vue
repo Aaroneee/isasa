@@ -68,7 +68,6 @@ export default {
   },
   created() {
     this.queryMsgById();
-    this.queryStoreStyle();
   },
   methods: {
     queryMsgById(){
