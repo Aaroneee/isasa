@@ -36,11 +36,12 @@
             <van-row><p>款式名称 : {{ item.styleName }}</p></van-row>
             <van-row><p>款式编号 : {{ item.styleNumber }}</p></van-row>
             <van-row><p>选购尺寸 : {{ item.clothesSize }}</p></van-row>
-            <van-button
+            <van-button v-if="item.isShowState===0"
                         style="border-radius: 10px;background-color: var(--my-base-color);border-color: var(--my-base-color);
                         width: 100%;height: 30px;font-size: 14px;color: var(--my-text-color)"
                         @click="(()=>{$router.push({name:'storeStyleAdd',query:{storeStyleId:item.storeStyleId,clothesSize:item.clothesSize}})})"
                         text="添加至款式"/>
+            <van-row v-else><p style="font-size: 16px;color: var(--my-success-color);margin-top: 2%">已添加</p></van-row>
           </van-col>
         </van-row>
       </div>
@@ -59,7 +60,9 @@ export default {
     return {
       msgDetails:{},
 
-      orderDetails:{}
+      orderDetails:{},
+
+      styleState:[],
     }
   },
   components: {
@@ -79,6 +82,8 @@ export default {
         }
       }).then(response => {
         this.msgDetails=response.data.data;
+        this.styleState=JSON.parse(this.msgDetails.msgJson).styleStates;
+        console.log(this.styleState)
         this.queryStoreStyle(JSON.parse(this.msgDetails.msgJson).orderId)
       })
     },
@@ -91,6 +96,15 @@ export default {
         }
       }).then(response => {
         this.orderDetails=response.data.data;
+
+        this.orderDetails.storeOrderStyleVOS.map(itemA => {
+          let itemB = this.styleState.find(itemB => itemB.styleId === itemA.storeStyleId);
+          if (itemB) {
+            itemA.isShowState = itemB.state;
+          }
+          return itemA;
+        });
+        console.log(this.orderDetails.storeOrderStyleVOS)
       })
     },
   },

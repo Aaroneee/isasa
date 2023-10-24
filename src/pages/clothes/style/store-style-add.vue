@@ -343,6 +343,7 @@ export default {
       })
     },
     addStyleSubmit() {
+      this.form.styleLabels=[];
       for (let temp in this.styleLabelList) {
         let index = this.styleLabelList[temp].value
         if (this.styleLabels[index] === 1) {
