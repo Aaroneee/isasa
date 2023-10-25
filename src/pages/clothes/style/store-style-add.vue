@@ -258,7 +258,9 @@ export default {
         styleImage: "",
         styleImageList: [],
         styleLabels: [],
-        empId: localStorage.getItem("empId")
+        empId: localStorage.getItem("empId"),
+        msgId: this.$route.query.msgId,
+        storeStyleId:  this.$route.query.storeStyleId,
       },
 
       //款式文字显示
