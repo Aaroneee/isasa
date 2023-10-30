@@ -706,37 +706,19 @@ export default {
     },
     // 数据处理
     dataProcess(val) {
-      let count = 0, cusXXXData = []
-      if (val.length > 9) {
-        val.forEach(s => {
-          count += s.sourceCount
-        })
-        val.sort((a, b) => {
-          return b.sourceCount - a.sourceCount
-        })
-        let data = val.slice(0, 8);
-        let otherCount = 0
-        val.slice(8, val.length).forEach(s => {
-          otherCount += s.sourceCount
-        })
-        data.push({sourceCount: otherCount, sourceName: "其他", sourceType: "1"})
-        data.forEach(s => {
-          s.pro = s.sourceCount / count * 100
-        })
-        cusXXXData = data
-      } else if (val.length > 0) {
-        val.forEach(s => {
-          count += s.sourceCount
-        })
-        val.forEach(s => {
-          s.pro = s.sourceCount / count * 100
-        })
-        val.sort((a, b) => {
-          return b.sourceCount - a.sourceCount
-        })
-        cusXXXData = val
-      }
-      return {count: count, data: cusXXXData}
+      var count = 0, cusXXXData = []
+      val.forEach(s => {
+        count += s.sourceCount
+      })
+      val.forEach(s => {
+        s.pro = s.sourceCount / count * 100
+      })
+      val.sort((a, b) => {
+        return b.sourceCount - a.sourceCount
+      })
+      cusXXXData = val
+      const filteredData = cusXXXData.filter(item => item.litres !== 0);
+      return {count: count, data: filteredData}
     },
     // serviceChange() {
     //   this.isService = true
