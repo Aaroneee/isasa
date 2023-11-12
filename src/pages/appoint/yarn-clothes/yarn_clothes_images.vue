@@ -100,7 +100,7 @@ export default {
       })
     },
     imageUpload(index) {
-      this.$upload.yarnClothesImageUpload(this.fileList[index].file).then(response => {
+      this.$upload.clothesImageUpload(this.fileList[index].file).then(response => {
         let flag = response.data.code === 200
         if (!flag) {
           this.$set(this.fileList, index, {
@@ -155,27 +155,6 @@ export default {
           this.queryImageList()
         }
       }
-    },
-    uploadImage: function () {
-      return new Promise((resolve, reject) => {
-        if (this.fileList.length !== 0) {
-          this.fileList[0].status = "uploading"
-          this.fileList[0].message = "上传中..."
-          this.$upload.yarnClothesImageUpload(this.fileList[0].file)
-              .then(response => {
-                let data = response.data
-                if (data.code === 200) {
-                  this.fileList[0].status = ""
-                  this.fileName = data.data
-                  resolve(true)
-                } else {
-                  reject(false)
-                }
-              })
-        } else {
-          resolve(true)
-        }
-      })
     },
     clickItem: function (value) {
       ImagePreview([value])
