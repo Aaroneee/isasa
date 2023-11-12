@@ -9,8 +9,8 @@
                              :name="item.id">
             <van-cell-group style="text-align: center">
               <van-image radius="7"
-                         :src="'\thttps://yarn-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.yarnImage"
-                         @click="clickItem('\thttps://yarn-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.yarnImage)"/>
+                         :src="'\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.yarnImage"
+                         @click="clickItem('\thttps://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.yarnImage)"/>
               <van-icon style="margin-left: 90%" color="#ee0a24" size="20" @click="deleteImage(item)" name="delete-o"/>
             </van-cell-group>
           </van-collapse-item>
