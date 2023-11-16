@@ -445,6 +445,7 @@ export default {
       shopLoading: false,
       // 店铺列表
       shopArray: [{text: "所有店铺", id: ""}],
+      localShopArray: localStorage.getItem("shopIds").split(",").map(Number),
       activeNames: ['1','2','3','4','5', '6'],
       activeEarningDetail: [],
 
@@ -607,7 +608,9 @@ export default {
     },
     queryShop: function () {
       this.$selectUtils.queryShopIds(this.$selectUtils.Picker).then(response => {
-        this.shopArray.push(...JSON.parse(response.data.data));
+        this.shopArray.push(...JSON.parse(response.data.data).filter(s => {
+          return this.localShopArray.includes(s.id)
+        }))
       })
     },
     queryDress: function () {
