@@ -28,7 +28,7 @@
             <van-col span="12">订单编号:{{ item.orderNo }}</van-col>
           </van-row>
           <van-row>
-            <van-col span="12">下单时间:{{ item.createDate }}</van-col>
+            <van-col span="12">收款时间:{{ item.createDate }}</van-col>
             <van-col span="12">收款项目:{{ item.proceedsName }}</van-col>
           </van-row>
           <van-row>
