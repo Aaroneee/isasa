@@ -61,8 +61,8 @@ export default {
       maxDate:this.$dateUtils.getMaxMinDate()[0],
       minDate:this.$dateUtils.getMaxMinDate()[1],
 
-      loading:"",
-      finished:"",
+      loading:false,
+      finished:false,
       proceedsList:[],
 
       shopArray:[{text:"店铺名称",value:localStorage.getItem("shopIds")}],
@@ -79,6 +79,7 @@ export default {
     }
   },
   created() {
+    this.loading=true;
     this.queryProceedsList();
     this.queryShopIds();
     this.queryDressIds();
@@ -133,6 +134,8 @@ export default {
         }
       }).then(response=>{
         this.proceedsList=response.data.data.list;
+        this.loading=false;
+        this.finished=true;
       })
     },
 
