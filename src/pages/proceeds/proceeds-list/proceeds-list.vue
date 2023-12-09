@@ -134,6 +134,7 @@ export default {
         }
       }).then(response=>{
         this.proceedsList=response.data.data.list;
+        this.proceedsList=this.proceedsList.filter(item => !(item.cusId === '' || item.proceedsName === '' || item.proceedsName.includes("利息","转账入")));
         this.loading=false;
         this.finished=true;
       })
