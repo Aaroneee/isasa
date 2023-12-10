@@ -81,7 +81,7 @@ export default {
   created() {
     this.loading=true;
     this.queryProceedsList();
-    this.queryShopIds();
+    this.queryShopIdsIsValid();
     this.queryDressIds();
     this.queryPayeeIds();
     this.queryProceedsNameIds();
@@ -147,8 +147,8 @@ export default {
       })
     },
     //查询店铺
-    queryShopIds:function (){
-      this.$selectUtils.queryShopIds(this.$selectUtils.DropDownMenu).then(response=>{
+    queryShopIdsIsValid:function (){
+      this.$selectUtils.queryShopIdsIsValid(this.$selectUtils.DropDownMenu).then(response=>{
         this.shopArray.push(...JSON.parse(response.data.data));
       })
     },

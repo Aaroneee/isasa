@@ -86,6 +86,17 @@ export default {
             }
         })
     },
+    //店铺 激活的
+    queryShopIdsIsValid: function (type) {
+        return self.$axios({
+            method: "GET",
+            url: "/select/shopIdsIsValid",
+            params: {
+                tenantCrop: localStorage.getItem("tenantCrop"),
+                type: type,
+            }
+        })
+    },
     //根据店铺查询城市
     queryCityByShopIds: function (shopId) {
         return self.$axios({
