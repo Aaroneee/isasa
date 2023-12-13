@@ -149,7 +149,7 @@ import switchNavBar from "@/components/nav-bar/switch-nav-bar"
 import baseNavBar from "@/components/nav-bar/base-nav-bar"
 
 export default {
-  name: "clothesList",
+  name: "clothesListPad",
   created() {
     this.queryStyleType()
     this.queryShopIds()
@@ -461,8 +461,11 @@ export default {
     },
   },
   beforeRouteLeave(to, from, next) {
-    // 从列表页去到别的页面，如果不是判断页面，则不缓存列表页
-    this.$route.meta.keepAlive = to.name === 'clothesDetails';
+    if (to.name === 'clothesDetailsPad') {
+      this.$store.commit('setKeepAlive', ['clothesListPad'])
+    } else {
+      this.$store.commit('setKeepAlive', [])
+    }
     next()
   },
 }

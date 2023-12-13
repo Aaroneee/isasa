@@ -51,16 +51,6 @@ export default {
       data: data,
     })
   },
-  yarnClothesImageUpload(file) {
-    const data = new FormData();
-    data.append("file", file)
-    data.append("imageType", this.yarnClothesImage)
-    return self.$axios({
-      method: "post",
-      url: "/upload/uploadImage",
-      data: data
-    })
-  },
   refundImageUpload(file) {
     const data = new FormData();
     data.append("file", file)

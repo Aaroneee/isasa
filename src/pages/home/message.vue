@@ -74,7 +74,7 @@ export default {
   },
   methods: {
     clickItem(id){
-      this.$router.push({name:"msgDetails",query:id})
+      this.$router.push({name:"msgDetails",query: {id:id}})
     },
     onSearch(val){
       this.listResponse=this.list.filter(k=>{ return k.msgText.includes(val)})

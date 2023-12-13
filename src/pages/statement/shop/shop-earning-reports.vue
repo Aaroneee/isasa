@@ -91,6 +91,8 @@ export default {
       shopId: "",
       shopArray:[{text:"店铺",value: ""}],
 
+      localShopArray: localStorage.getItem("shopIds").split(",").map(Number),
+
       dressId: "",
       dressArray:[{text:"礼服师",value: ""}],
 
@@ -170,7 +172,9 @@ export default {
     },
     queryShop: function () {
       this.$selectUtils.queryShopIds(this.$selectUtils.DropDownMenu).then(response => {
-        this.shopArray.push(...JSON.parse(response.data.data));
+        this.shopArray.push(...JSON.parse(response.data.data).filter(s => {
+          return this.localShopArray.includes(s.value)
+        }))
       })
     },
     queryDress: function () {

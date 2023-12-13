@@ -118,6 +118,8 @@ export default {
       appointDressArray: [{text: "礼服师", value: ""}],
       appointShopArray: [{text: "全部店铺", value: ""}],
 
+      localShopArray: localStorage.getItem("shopIds").split(",").map(Number),
+
       appointDate: this.$dateUtils.vantDateToYMD(new Date()),
       appointName: "",
       inviter: "",
@@ -268,7 +270,9 @@ export default {
     //查询店铺
     queryAppointShop: function () {
       this.$selectUtils.queryShopIds(this.$selectUtils.DropDownMenu).then(response => {
-        this.appointShopArray.push(...JSON.parse(response.data.data));
+        this.appointShopArray.push(...JSON.parse(response.data.data).filter(s => {
+          return this.localShopArray.includes(s.value)
+        }))
         this.appointShopChange(this.appointShopArray[1].value);
         this.queryAppWork();
       })
