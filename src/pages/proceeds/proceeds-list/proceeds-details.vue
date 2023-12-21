@@ -9,6 +9,7 @@
         <van-cell title="收款日期:" :value="proceedsVo.createDate"  />
         <van-cell title="收款项目:" :value="proceedsVo.proceedsName"  />
         <van-cell title="收款方式:" :value="proceedsVo.payment"  />
+        <van-cell title="礼服师:"  :value="proceedsVo.dressName"  />
         <van-cell title="收款人:"  :value="proceedsVo.payee"  />
         <van-cell title="订单总价:" :value="proceedsVo.orderPrice"  />
         <van-cell title="收款金额:" :value="proceedsVo.spareMoney"  />

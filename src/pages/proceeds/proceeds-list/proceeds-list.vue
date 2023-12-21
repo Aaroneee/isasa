@@ -61,8 +61,8 @@ export default {
       maxDate:this.$dateUtils.getMaxMinDate()[0],
       minDate:this.$dateUtils.getMaxMinDate()[1],
 
-      loading:"",
-      finished:"",
+      loading:false,
+      finished:false,
       proceedsList:[],
 
       shopArray:[{text:"店铺名称",value:localStorage.getItem("shopIds")}],
@@ -79,8 +79,9 @@ export default {
     }
   },
   created() {
+    this.loading=true;
     this.queryProceedsList();
-    this.queryShopIds();
+    this.queryShopIdsIsValid();
     this.queryDressIds();
     this.queryPayeeIds();
     this.queryProceedsNameIds();
@@ -133,6 +134,9 @@ export default {
         }
       }).then(response=>{
         this.proceedsList=response.data.data.list;
+        this.proceedsList=this.proceedsList.filter(item => !(item.cusId === '' || item.proceedsName === '' || item.proceedsName.includes("利息","转账入")));
+        this.loading=false;
+        this.finished=true;
       })
     },
 
@@ -143,8 +147,8 @@ export default {
       })
     },
     //查询店铺
-    queryShopIds:function (){
-      this.$selectUtils.queryShopIds(this.$selectUtils.DropDownMenu).then(response=>{
+    queryShopIdsIsValid:function (){
+      this.$selectUtils.queryShopIdsIsValid(this.$selectUtils.DropDownMenu).then(response=>{
         this.shopArray.push(...JSON.parse(response.data.data));
       })
     },
