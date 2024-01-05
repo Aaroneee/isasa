@@ -1,7 +1,7 @@
 <template>
   <div id="parent">
     <van-sticky>
-      <baseNavBar title="婚纱详情"/>
+      <SwitchNavBar title="婚纱详情" switchText="详情" @flag="detailsShow=!detailsShow"/>
     </van-sticky>
     <div class="card">
       <p class="PTitle">{{clothes.styleType + '-' + clothes.styleName + '-' + clothes.clothesSize + '-' + clothes.clothesNo}}</p>
@@ -15,7 +15,7 @@
           </van-swipe-item>
         </van-swipe>
       </div>
-      <van-cell>
+      <van-cell v-show="detailsShow">
         <van-row>
           <van-col span="24">品牌：{{ clothes.brand === "" ? "暂无品牌" : clothes.brand }}</van-col>
         </van-row>
@@ -38,7 +38,7 @@
         </van-row>
       </van-cell>
     </div>
-    <div class="card" @touchstart.prevent="touchPrice(stylePrice)" @touchend.prevent="clearTime(stylePrice)">
+    <div v-show="detailsShow" class="card" @touchstart.prevent="touchPrice(stylePrice)" @touchend.prevent="clearTime(stylePrice)">
         <van-row><p class="PTitle">款式价格</p></van-row>
         <van-row v-if="stylePrice.length>0">
           <van-col :span="8" v-for="(item,index) in stylePrice" :key="index">
@@ -51,7 +51,7 @@
         </van-row>
     </div>
     <div style="height: 120px"></div>
-    <div id="operationDiv">
+    <div v-show="detailsShow" id="operationDiv">
       <div id="operationCon">
         <p class="PTitle">操作菜单</p>
         <div id="operationParent">
@@ -103,7 +103,7 @@
 </template>
 
 <script>
-import baseNavBar from '@/components/nav-bar/base-nav-bar'
+import SwitchNavBar from "@/components/nav-bar/switch-nav-bar.vue";
 import {ImagePreview} from "vant";
 
 export default {
@@ -137,11 +137,12 @@ export default {
       count: {
         yarnCount: 0,
         outCount: 0,
-      }
+      },
+      detailsShow:false,
     }
   },
   components: {
-    baseNavBar
+    SwitchNavBar,
   },
   methods: {
     clickItem: function (value) {
