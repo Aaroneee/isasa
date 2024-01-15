@@ -43,8 +43,6 @@
             name="city"
             label="客户城市"
             placeholder="客户所在城市"
-            required
-            :rules="[{ required: true}]"
         />
         <van-field
             readonly
