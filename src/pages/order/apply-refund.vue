@@ -165,9 +165,9 @@
               <!--                                <van-col span="8">收款总和:{{item.proceedsCount}}</van-col>-->
               <!--                            </van-row>-->
 
-              <van-button round plain color="#ca947c" type="primary" size="small"
-                          @click="showUpdatePicturePopup(item)">还纱
-              </van-button>
+<!--              <van-button round plain color="#ca947c" type="primary" size="small"-->
+<!--                          @click="showUpdatePicturePopup(item)">还纱-->
+<!--              </van-button>-->
 
             </van-cell>
           </van-list>
