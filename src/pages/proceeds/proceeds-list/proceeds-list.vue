@@ -10,6 +10,10 @@
       </form>
       <van-calendar safe-area-inset-bottom v-model="dateSectionShow" :min-date="minDate" :max-date="maxDate" type="range" @confirm="dateSectionConfirm"/>
       <van-dropdown-menu>
+        <van-dropdown-item v-model="shop" @change="shopChange"
+                           :options="shopArray"/>
+        <van-dropdown-item v-model="dress" @change="dressChange"
+                           :options="dressArray"/>
         <van-dropdown-item v-model="payee" @change="payeeChange"
                            :options="payeeArray"/>
         <van-dropdown-item v-model="proceedsName" @change="proceedsNameChange"
@@ -28,7 +32,7 @@
             <van-col span="12">订单编号:{{ item.orderNo }}</van-col>
           </van-row>
           <van-row>
-            <van-col span="12">下单时间:{{ item.createDate }}</van-col>
+            <van-col span="12">收款时间:{{ item.createDate }}</van-col>
             <van-col span="12">收款项目:{{ item.proceedsName }}</van-col>
           </van-row>
           <van-row>
@@ -57,22 +61,28 @@ export default {
       maxDate:this.$dateUtils.getMaxMinDate()[0],
       minDate:this.$dateUtils.getMaxMinDate()[1],
 
-      loading:"",
-      finished:"",
+      loading:false,
+      finished:false,
       proceedsList:[],
 
-
+      shopArray:[{text:"店铺名称",value:localStorage.getItem("shopIds")}],
       payeeArray:[{text:"收款人",value:""}],
+      dressArray:[{text:"礼服师",value:""}],
       proceedsNameArray:[{text:"收款项目",value:""}],
 
       searchValue:"",
       createDate:"",
+      shop:localStorage.getItem("shopIds"),
+      dress:"",
       payee:"",
       proceedsName:""
     }
   },
   created() {
+    this.loading=true;
     this.queryProceedsList();
+    this.queryShopIdsIsValid();
+    this.queryDressIds();
     this.queryPayeeIds();
     this.queryProceedsNameIds();
   },
@@ -82,6 +92,16 @@ export default {
       this.createDate=this.$dateUtils.rangeVantDateToYMD(time);
       this.queryProceedsList();
       this.dateSectionShow=false;
+    },
+    //店铺确认
+    shopChange:function (value){
+      this.shop=value;
+      this.queryProceedsList();
+    },
+    //礼服师确认
+    dressChange:function (value){
+      this.dress=value;
+      this.queryProceedsList();
     },
     //收款人确认
     payeeChange:function (value){
@@ -100,7 +120,6 @@ export default {
 
     //搜索收款
     queryProceedsList:function (){
-      console.log(localStorage.getItem("shopIds"))
       this.$axios({
         method:"GET",
         url:"/proceeds/mProceedsList",
@@ -109,14 +128,30 @@ export default {
           searchValue:this.searchValue,
           createDate:this.createDate,
           payee:this.payee,
+          dressId:this.dress,
           proceedsName:this.proceedsName,
-          shopIds: localStorage.getItem("shopIds"),
+          shopIds: this.shop,
         }
       }).then(response=>{
         this.proceedsList=response.data.data.list;
+        this.proceedsList=this.proceedsList.filter(item => !(item.cusId === '' || item.proceedsName === '' || item.proceedsName.includes("利息","转账入")));
+        this.loading=false;
+        this.finished=true;
       })
     },
 
+    //查询礼服师
+    queryDressIds:function (){
+      this.$selectUtils.queryDressIds(this.$selectUtils.DropDownMenu).then(response=>{
+        this.dressArray.push(...JSON.parse(response.data.data));
+      })
+    },
+    //查询店铺
+    queryShopIdsIsValid:function (){
+      this.$selectUtils.queryShopIdsIsValid(this.$selectUtils.DropDownMenu).then(response=>{
+        this.shopArray.push(...JSON.parse(response.data.data));
+      })
+    },
     //查询收款人
     queryPayeeIds:function (){
       this.$selectUtils.queryPayeeIds(this.$selectUtils.DropDownMenu).then(response=>{

@@ -52,6 +52,8 @@ export default {
       localStorage.setItem("tenantCrop", tenantCrop);
       localStorage.setItem("empId", empId);
       localStorage.setItem("token", token);
+      this.$axios.defaults.headers['empId'] = empId;
+      this.$axios.defaults.headers['tenantCrop'] = tenantCrop;
       this.getData(tenantCrop,empId);
     },
     setIosVersion:function (version){

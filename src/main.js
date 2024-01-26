@@ -79,7 +79,24 @@ axios.interceptors.response.use(
         return Promise.reject(error);
     }
 );
-
+axios.interceptors.request.use(
+    config => {
+        let empId = localStorage.getItem("empId");
+        if (empId!==null){
+            // config.headers.empId = JSON.parse(emp).id;
+            config.headers['empId']=empId;
+        }
+        let tenantCrop = localStorage.getItem("tenantCrop");
+        if (tenantCrop!==null){
+            // config.headers.tenantCrop = tenantCrop;
+            config.headers['tenantCrop']=tenantCrop;
+        }
+        return config;
+    },
+    error => {
+        return Promise.reject(error);
+    }
+);
 export default new Vue({
     router,
     store,
