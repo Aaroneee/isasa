@@ -25,6 +25,8 @@ export default {
         return 'style-video-1304365928';
       case 'brandImage':
         return 'brand-image-1304365928';
+      case 'makeupImage':
+        return 'makeup-image-1304365928';
     }
   },
 

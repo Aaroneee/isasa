@@ -2,12 +2,12 @@
   <div>
     <van-sticky>
       <baseNavBar title="化妆师列表"/>
-<!--      <form action="javascript:return true">-->
-<!--        <van-search-->
-<!--            @search="search"-->
-<!--            v-model="makeupArtistName"-->
-<!--            placeholder="请输入化妆师名称"/>-->
-<!--      </form>-->
+      <!--      <form action="javascript:return true">-->
+      <!--        <van-search-->
+      <!--            @search="search"-->
+      <!--            v-model="makeupArtistName"-->
+      <!--            placeholder="请输入化妆师名称"/>-->
+      <!--      </form>-->
     </van-sticky>
     <div>
       <van-list
@@ -21,18 +21,19 @@
                      style="text-align: center">
               <div class="card">
                 <div class="imgFont">
-                  <van-badge :content="item.image===''?'':item.image" color="#7ab4ee">
-                    <img v-if="item.image !== ''" :src="'https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.styleImage+'?imageMogr2/rquality/60'" alt="主图显示失败,请重新设置主图"/>
-                    <img style="height: 300px" v-else :src="'https://isasaerp-img-1304365928.cos.ap-shanghai.myqcloud.com/logoFont.jpg?imageMogr2/rquality/2'"
-                         alt="主图显示失败,请重新设置主图"/>
-                  </van-badge>
-                  <div class="styleInfo">
-                    <van-row>
-                      <van-col span="24">
-                        <p class="pFont" style="text-align: left">{{ item.name + ' 化妆师' }}</p>
-                      </van-col>
-                    </van-row>
-                  </div>
+                  <img v-if="item.image !== ''"
+                       :src="'https://makeup-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.image+'?imageMogr2/rquality/60'"
+                       alt="主图显示失败,请重新设置主图"/>
+                  <img v-else
+                       :src="'https://isasaerp-img-1304365928.cos.ap-shanghai.myqcloud.com/logoFont.jpg?imageMogr2/rquality/2'"
+                       alt="主图显示失败,请重新设置主图"/>
+                </div>
+                <div class="styleInfo">
+                  <van-row>
+                    <van-col span="24">
+                      <p class="pFont" style="text-align: left">{{ item.name + ' 化妆师' }}</p>
+                    </van-col>
+                  </van-row>
                 </div>
               </div>
             </van-col>
@@ -57,6 +58,9 @@ export default {
     }
   }, components: {
     baseNavBar
+  },
+  created() {
+    this.queryMakeupArtistList()
   },
   methods: {
     queryMakeupArtistList() {
@@ -83,9 +87,17 @@ export default {
     onLoad() {
       this.queryMakeupArtistList()
     },
-    toMakeupArtistDetails(item){
-      console.log(item)
+    toMakeupArtistDetails(item) {
+      this.$router.push({name: "makeupArtistDetails", query: {id: item.id}})
     }
+  },
+  beforeRouteLeave (to, from, next) {
+    if (to.name === 'makeupArtistDetails') {
+      this.$store.commit('setKeepAlive', ['styleList'])
+    } else {
+      this.$store.commit('setKeepAlive', [])
+    }
+    next()
   }
 }
 </script>
@@ -102,6 +114,10 @@ export default {
 .bgcolor {
   border: 1px solid #de0d0d;
   color: rgb(182, 177, 189);
+}
+
+.styleInfo{
+  margin-bottom: 5px;
 }
 img{
   height: 245px;
@@ -124,7 +140,16 @@ img{
   min-width: 45vw;
   max-width: 45vw;
 }
+.pFont{
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin: 0 !important;
 
+  font-weight: bold;
+  padding: 0 3px;
+  font-size: 12px;
+}
 .van-list >>> .van-cell{
   padding: 10px 5px;
   background-color:#f7f8fa;
