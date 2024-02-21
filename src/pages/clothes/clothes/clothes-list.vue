@@ -206,7 +206,6 @@ export default {
             this.page = response.data.data.nextPage
           }
           this.clothesList.push(...response.data.data.list)
-          console.log(this.clothesList)
         } else {
           this.finished = true
           this.$toast.fail(response.data.msg);
@@ -267,6 +266,11 @@ export default {
     queryShopIds: function () {
       this.$selectUtils.queryShopIds(this.$selectUtils.DropDownMenu).then(response => {
         this.shopArray.push(...JSON.parse(response.data.data))
+        //如果只有一个店铺则默认选中
+        if (this.shopArray.length===2){
+          this.shop = this.shopArray[1].value
+          this.queryPositionIdsByShop(this.shop);
+        }
       })
     },
     queryPositionIdsByShop(shopId) {
