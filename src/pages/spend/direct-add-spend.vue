@@ -28,12 +28,15 @@
     />
     <!--日期选择弹框-->
     <van-popup v-model="createDatePicker" position="bottom">
-      <van-datetime-picker v-model="currentDate" type="date"
-                           @cancel="createDatePicker = false"
-                           @confirm="onConfirmCreateDate"
-                           :min-date="minCreateDate"
-                           :max-date="maxCreateDate"
-                           :formatter="formatter"/>
+      <van-datetime-picker
+          v-model="createDateCurrentDate"
+          type="date"
+          @cancel="createDatePicker = false"
+          @confirm="onConfirmCreateDate"
+          :min-date="minCreateDate"
+          :max-date="maxCreateDate"
+          :formatter="formatter"
+      />
     </van-popup>
 
     <!--支出项目-->
@@ -138,7 +141,6 @@
       />
     </van-popup>
 
-
     <!--结算时间。选择完整时间，包括年月日和小时、分钟。 滚轮选择的-->
     <van-field
         readonly
@@ -151,22 +153,20 @@
         @click="spendMethodTimePicker = true"
         :rules="[{ required: true, message: '请选择结算时间' }]"
     />
-<!--    &lt;!&ndash;完整时间选择弹框&ndash;&gt;-->
-<!--    <van-popup v-model="spendMethodTimePicker" position="bottom">-->
-<!--      <van-datetime-picker-->
-<!--          v-model="spendMethodTime"-->
-<!--          type="datetime"-->
-<!--          title="选择完整时间"-->
-<!--          :min-date="minSpendMethodTime"-->
-<!--          :max-date="maxSpendMethodTime"-->
-<!--          :formatter="formatter"-->
-<!--      />-->
+    <!--完整时间选择弹框-->
+    <van-popup v-model="spendMethodTimePicker" position="bottom">
+      <van-datetime-picker
+          v-model="spendMethodTimeCurrentDate"
+          type="datetime"
+          title="选择完整时间"
+          @cancel="spendMethodTimePicker = false"
+          @confirm="onConfirmSpendMethodTime"
+          :min-date="minSpendMethodTime"
+          :max-date="maxSpendMethodTime"
+          :formatter="formatter"
+      />
+    </van-popup>
 
-<!--&lt;!&ndash;      <van-datetime-picker v-model="currentDate" type="date"&ndash;&gt;-->
-<!--&lt;!&ndash;                           @cancel="createDatePicker = false"&ndash;&gt;-->
-<!--&lt;!&ndash;                           @confirm="onConfirmCreateDate" :min-date="minCreateDate" :max-date="maxCreateDate"&ndash;&gt;-->
-<!--&lt;!&ndash;                           :formatter="formatter"/>&ndash;&gt;-->
-<!--    </van-popup>-->
 
   </div>
 </template>
@@ -188,7 +188,7 @@ export default {
       createDatePicker: false,
       minCreateDate: new Date(2018, 0, 1),
       maxCreateDate: new Date(),
-      currentDate: new Date(),
+      createDateCurrentDate: new Date(),
 
       //支出项目
       projectId: "",
@@ -211,11 +211,11 @@ export default {
       //公司结算时间
       spendMethodTime: this.$dateUtils.getTimeStr('minute'),
       spendMethodTimePicker: false,
-      minSpendMethodTime: new Date(2018, 0, 1, 0, 0),
+      minSpendMethodTime: new Date(2018, 0, 1),
       maxSpendMethodTime: new Date(),
-      // currentTime: new Date(),
+      spendMethodTimeCurrentDate: new Date(),
 
-      spendId:"", //添加支出后返回的id
+      spendId: "", //添加支出后返回的id
       fileList: [],
       spendImageStr: [],
 
@@ -228,6 +228,7 @@ export default {
   },
   methods: {
 
+    //选项格式化函数。里面好像建了些变量，时间确认的函数有用到这些变量。
     formatter(type, value) {
       if (type === 'year') {
         this.value1 = value   // 可以拿到当前点击的数值
@@ -239,15 +240,18 @@ export default {
         this.value3 = value
         return `${value}日`
       } else if (type === 'hour') {
-        this.value3 = value
+        this.value4 = value
         return `${value}时`
       } else if (type === 'minute') {
-        this.value3 = value
+        this.value5 = value
+        return `${value}分`
+      } else if (type === 'second') {
+        this.value6 = value
         return `${value}秒`
       }
     },
 
-    //确认选中的支出发生日期
+    //支出发生日期确认
     onConfirmCreateDate: function () {
       this.createDate = `${this.value1}-${this.value2}-${this.value3}`  // 字符串拼接 结果如2020-07-01
       this.createDatePicker = false
@@ -272,6 +276,12 @@ export default {
       this.spendMethodId = value.value;
       this.spendMethodText = value.name;
       this.spendMethodPicker = false;
+    },
+
+    //公司结算时间确认
+    onConfirmSpendMethodTime: function () {
+      this.spendMethodTime = `${this.value1}-${this.value2}-${this.value3}-${this.value4}-${this.value5}`
+      this.spendMethodTimePicker = false
     },
 
   },
