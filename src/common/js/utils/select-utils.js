@@ -438,5 +438,16 @@ export default {
                 tenantCrop: localStorage.getItem('tenantCrop')
             }
         })
-    }
+    },
+    // 查询结算账户
+    queryAccount(type) {
+        return self.$axios({
+            method: 'GET',
+            url: '/select/accountIds',
+            params: {
+                type: type,
+                tenantCrop: localStorage.getItem('tenantCrop')
+            }
+        })
+    },
 }

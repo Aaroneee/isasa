@@ -62,7 +62,6 @@
       <van-picker
           show-toolbar
           :columns="projectArray"
-          value-key="name"
           @cancel="projectPicker = false"
           @confirm="projectOnConfirm"
       />
@@ -84,7 +83,6 @@
       <van-picker
           show-toolbar
           :columns="shopArray"
-          value-key="name"
           @cancel="shopPicker = false"
           @confirm="shopOnConfirm"
       />
@@ -223,10 +221,71 @@ export default {
       loading: false,
       finished: false,
     }
-  }, components: {
+  },
+  components: {
     baseNavBar
   },
+  created() {
+    this.queryProject();
+    this.queryShop();
+    this.querySpendMethod();
+
+  },
   methods: {
+
+    //支出发生日期确认
+    onConfirmCreateDate: function () {
+      this.createDate = `${this.value1}-${this.value2}-${this.value3}`  // 字符串拼接 结果如2020-07-01
+      this.createDatePicker = false
+    },
+
+    //查支出项目参数。
+    queryProject: function () {
+      this.$selectUtils.queryProjectsIds(this.$projectsType.expend, this.$selectUtils.Picker).then(response => {
+        this.projectArray = JSON.parse(response.data.data)
+      })
+    },
+
+    //支出项目确认。
+    projectOnConfirm: function (value) {
+      this.projectId = value.id;
+      this.projectText = value.text;
+      this.projectPicker = false;
+    },
+
+    //查店铺参数。
+    queryShop: function () {
+      this.$selectUtils.queryShopIds(this.$selectUtils.Picker).then(response => {
+        this.shopArray = JSON.parse(response.data.data)
+      })
+    },
+
+    //店铺确认。
+    shopOnConfirm: function (value) {
+      this.shopId = value.id;
+      this.shopText = value.text;
+      this.shopPicker = false;
+    },
+
+    //查公司结算方式参数。
+    querySpendMethod: function () {
+      this.$selectUtils.queryAccount(this.$selectUtils.Picker).then(response => {
+        this.spendMethodArray = JSON.parse(response.data.data)
+      })
+    },
+
+    //公司结算方式确认。
+    spendMethodOnConfirm: function (value) {
+      this.spendMethodId = value.value;
+      this.spendMethodText = value.name;
+      this.spendMethodPicker = false;
+    },
+
+    //公司结算时间确认
+    onConfirmSpendMethodTime: function () {
+      this.spendMethodTime = `${this.value1}-${this.value2}-${this.value3}-${this.value4}-${this.value5}`
+      this.spendMethodTimePicker = false
+    },
 
     //选项格式化函数。里面好像建了些变量，时间确认的函数有用到这些变量。
     formatter(type, value) {
@@ -250,40 +309,6 @@ export default {
         return `${value}秒`
       }
     },
-
-    //支出发生日期确认
-    onConfirmCreateDate: function () {
-      this.createDate = `${this.value1}-${this.value2}-${this.value3}`  // 字符串拼接 结果如2020-07-01
-      this.createDatePicker = false
-    },
-
-    //支出项目确认。
-    projectOnConfirm: function (value) {
-      this.projectId = value.value;
-      this.projectText = value.name;
-      this.projectPicker = false;
-    },
-
-    //店铺确认。
-    shopOnConfirm: function (value) {
-      this.shopId = value.value;
-      this.shopText = value.name;
-      this.shopPicker = false;
-    },
-
-    //公司结算方式确认。
-    spendMethodOnConfirm: function (value) {
-      this.spendMethodId = value.value;
-      this.spendMethodText = value.name;
-      this.spendMethodPicker = false;
-    },
-
-    //公司结算时间确认
-    onConfirmSpendMethodTime: function () {
-      this.spendMethodTime = `${this.value1}-${this.value2}-${this.value3}-${this.value4}-${this.value5}`
-      this.spendMethodTimePicker = false
-    },
-
   },
 }
 </script>
