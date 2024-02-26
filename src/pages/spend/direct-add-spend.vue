@@ -238,7 +238,13 @@ export default {
 
       spendId: "", //添加支出后返回的id
       fileList: [],
-      spendImageStr: [],
+      spendImageStr: "",
+      // form: {
+      //   spendPictureList: [],
+      // },
+
+      createPeopleId: "",
+      createPeopleName: "",
 
       tenantCrop: localStorage.getItem("tenantCrop"),
       loading: false,
@@ -257,13 +263,24 @@ export default {
   },
   methods: {
     directAddSpendSubmit: function () {
+      if (this.spendAmount < 0) {
+        this.$dialog.alert({
+          message: "支出金额不能是负数!",
+        }).then(() => {
+          // on close
+        });
+        return false
+      }
+
       this.$dialog.confirm({
         title: '直接加支出',
-        message: '确定要直接加该支出吗？',
+        messageAlign: "left",
+        message: "支出金额： " + this.spendAmount
+            + '<br><br>确认信息无误？',
       }).then(() => {
         this.$axios({
           method: "POST",
-          url: "/spend/directAddSpend",
+          url: "/spend/addSpend",
           data: {
             // ...this.form,
 
@@ -276,31 +293,105 @@ export default {
             'spendPeopleId': this.spendPeopleId,
             'spendMethodId': this.spendMethodId,
             'spendMethodTime': this.spendMethodTime,
+            'settlement': 1, //直接加支出。 已结算 (1）
+            'state': 2, // 直接加支出，设置审核状态为已通过 (2)
           },
-          // data: data
-          // params: {
-          //   'content': this.content,
-          // }
         }).then(response => {
+          console.log("response.data")
+          console.log(response.data)
+          if (response.data.code !== 200) {
+            this.$toast.fail(response.data.msg);
+            return
+          }
+
           if (response.data.code === 200) {
-            this.$toast.success("上传成功!")
+            if ([null, '', undefined].includes(response.data.data)) {
+              this.$dialog.alert({
+                message: "添加支出失败，请联系管理员查看。",
+              }).then(() => {
+                return;
+                // on close
+              });
+            }
 
-            //刷新当前页面。好像有点问题，手动置空好了。
-            // setTimeout(location.reload(), 1000);
-            // setTimeout(this.reload(), 1000);
-            this.querySpendPeople(); //里面有会设置默认报销人。
-            this.content = "";
-            this.createDate = this.$dateUtils.getTimeStr('d');
-            this.projectId = "";
-            this.projectText = "";
-            this.shopId = "";
-            this.shopText = "";
-            this.spendAmount = "";
+            //获取添加支出后返回的id
+            this.spendId = response.data.data;
+            console.log("this.spendId")
+            console.log(this.spendId)
 
-            this.spendId = "";
-            // this.spendImage = [];
-            this.spendImageStr = "";
-            this.fileList = [];
+            // ...this.form,
+            // 'spendPictureList': this.spendPictureList,
+            // imageNameArr: this.spendImage
+
+            // console.log("this.fileList")
+            // console.log(this.fileList)
+
+            //有图片上传图片
+            if (this.fileList.length !== 0) {
+              this.$toast.loading({
+                message: '上传图片中...',
+                forbidClick: true,
+                duration: 3000
+              })
+
+              //先执行 uploadSpendImage 再执行下面的axios。 同步需要2步代码，这是同步代码1
+              this.uploadSpendImage().then(value => {
+                if (!value) {
+                  this.$toast.fail("图片上传发生错误,请检查后进行上传")
+                } else {
+                  this.$axios({
+                    method: 'post',
+                    url:'/spend/saveBatchSpendImage',
+                    data:{
+                      'tenantCrop': this.tenantCrop,
+                      'id': this.spendId,
+                      'spendImageStr': this.spendImageStr,
+                      'createPeopleName': this.createPeopleName,
+                      'createPeopleId': this.createPeopleId,
+                    }
+                  }).then(response => {
+                    console.log("response.data66666666666666666")
+                    console.log(response.data)
+
+                    if (response.data.code != 200){
+                      this.$dialog.alert({
+                        message: "添加支出图片失败",
+                      }).then(() => {
+                        this.spendImageStr = ""; //各图片名字符串的拼接 置空串。
+                        // this.form.spendPictureList = []; //各图片名字符串的拼接 置空串。
+                        return
+                      });
+                    }
+                  });
+
+                }
+              })
+            }
+
+            this.$dialog.alert({
+              message: "添加支出成功",
+            }).then(() => {
+              //刷新当前页面。好像有点问题，手动置空好了。
+              // setTimeout(location.reload(), 1000);
+              // setTimeout(this.reload(), 1000);
+              this.querySpendPeople(); //里面有会设置默认报销人。
+              this.content = "";
+              this.createDate = this.$dateUtils.getTimeStr('d');
+              this.projectId = "";
+              this.projectText = "";
+              this.shopId = "";
+              this.shopText = "";
+              this.spendAmount = "";
+              this.spendMethodId = "";
+              this.spendMethodText = "";
+              this.spendMethodTime = this.$dateUtils.getTimeStr('minute'),
+
+              this.spendId = "";
+              this.spendImageStr = "";
+              // this.spendPictureList = [];
+              this.fileList = [];
+
+            });
 
             // this.overlayShow = false
             // this.$dialog.confirm({
@@ -314,14 +405,42 @@ export default {
             //     })
           }
 
-          if (response.data.code !== 200) {
-            this.$toast.fail(response.data.msg);
-          }
+
 
         })
       })
 
     },
+
+    // 同步的，for循环一张一张图片文件上传到服务器。 执行 uploadSpendImage. 同步代码2
+    uploadSpendImage: async function () {
+      if (this.fileList.length !== 0) {
+        for (let i = 0; i < this.fileList.length; i++) {
+          try {
+            const response = await this.$upload.expendImageUpload(this.fileList[i].file)
+            if (response.data.code === 200) {
+              this.spendImageStr += (response.data.data + ",") //各图片名字符串的拼接
+              // this.form.spendPictureList.push({
+              //   'spendId': this.spendId,
+              //   'spendImage': response.data.data,
+              //   // 'imageType': "",
+              //   'createPeopleName': this.createPeopleName,
+              //   'createPeopleId': this.createPeopleId,
+              //   'createDate': this.$dateUtils.getTimeStr('s'),
+              //   'updateDate': this.$dateUtils.getTimeStr('s'),
+              // })
+            } else {
+              throw new Error('上传失败')
+            }
+          } catch (error) {
+            console.error(error)
+            throw error
+          }
+        }
+      }
+      return true
+    },
+
 
     //支出发生日期确认
     onConfirmCreateDate: function () {
@@ -367,6 +486,9 @@ export default {
           if (s.id == localStorage.getItem("empId")) {
             this.spendPeopleId = s.id
             this.spendPeopleText = s.text
+
+            this.createPeopleId = s.id
+            this.createPeopleName = s.text
           }
         })
       })
