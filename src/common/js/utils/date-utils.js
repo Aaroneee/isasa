@@ -25,11 +25,14 @@ export default {
         var d = new Date();
         var month = d.getMonth() + 1;
         var day = d.getDate();
-        if (month < 10) month = "0" + month;
-        if (day < 10) day = "0" + day;
         var hour = d.getHours();
         var minute = d.getMinutes();
         var second = d.getSeconds();
+
+        if (month < 10) month = "0" + month;
+        if (day < 10) day = "0" + day;
+        if (minute < 10) minute = "0" + minute;
+        if (second < 10) second = "0" + second;
 
         if (type == 'y') return d.getFullYear();
         if (type == 'M') return d.getFullYear() + "-" + month;

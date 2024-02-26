@@ -12,6 +12,7 @@ export default {
   yarnClothesImage: "yarnClothesImage",
   depositImage: "depositImage",
   brandImage:'brandImage',
+  expendImage:'expendImage',
 
   getRegion() {
     return 'ap-shanghai'
@@ -27,6 +28,8 @@ export default {
         return 'brand-image-1304365928';
       case 'makeupImage':
         return 'makeup-image-1304365928';
+      case 'expendImage':
+        return 'expend-image-1304365928';
     }
   },
 
@@ -62,6 +65,17 @@ export default {
       method: "post",
       url: "/upload/uploadImage",
       data: data
+    })
+  },
+  expendImageUpload: function (file) {
+    const data = new FormData();
+    data.append("file", file)
+    data.append("tenant", this.tenantCrop)
+    data.append("imageType", this.expendImage)
+    return self.$axios({
+      method: "post",
+      url: "/upload/uploadImage",
+      data: data,
     })
   },
   //上传单个文件
