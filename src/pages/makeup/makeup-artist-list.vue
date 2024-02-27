@@ -88,7 +88,8 @@ export default {
       this.queryMakeupArtistList()
     },
     toMakeupArtistDetails(item) {
-      this.$router.push({name: "makeupArtistDetails", query: {id: item.id}})
+      console.log(item)
+      this.$router.push({name: "makeupArtistDetails", query: {id: item.id,artistName:item.name}})
     }
   },
   beforeRouteLeave (to, from, next) {

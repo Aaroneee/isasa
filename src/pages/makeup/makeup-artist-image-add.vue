@@ -71,36 +71,44 @@ export default {
   },
   methods: {
     onSubmit: function () {
-      let self = this
-      self.$dialog.confirm({
+      this.$dialog.confirm({
         title: '添加案例',
         message: '是否添加该案例?',
-        beforeClose: function (action, done) {
-          if (self.file.length > 0) {
-            let arr = self.file[0].file.name.split(".");
-            let name = self.$md5(arr[0] + new Date()) + '.' + arr[arr.length - 1];
-            self.$upload.uploadSingeFile('makeupImage', self.file[0].file, name).then(value => {
-              if (!value) {
-                self.$toast.fail("图片上传失败,请重试");
-                return;
-              }
-              self.makeupArtistImage.imageUrl = name;
-              self.addMakeupArtistImage(done);
-            })
-          } else {
-            self.addMakeupArtistImage(done);
-          }
-        },
+      }).then(() => {
+        if (this.file.length > 0) {
+          let arr = this.file[0].file.name.split(".");
+          let name = this.$md5(arr[0] + new Date()) + '.' + arr[arr.length - 1];
+          this.$upload.uploadSingeFile('makeupImage', this.file[0].file, name).then(value => {
+            if (!value) {
+              this.$toast.fail("图片上传失败,请重试");
+            } else {
+              this.makeupArtistImage.imageUrl = name;
+              this.addMakeupArtistImage().then((response) => {
+                if (response === 'success') {
+                  setTimeout(this.back, 1000);
+                }
+              })
+            }
+          })
+        }
       })
     },
-    addMakeupArtistImage(done) {
-      this.$axios({
+    back() {
+      this.$router.back()
+    },
+    async addMakeupArtistImage() {
+      return this.$axios({
         method: "POST",
         url: "/makeup/addMakeupArtistImage",
         data: this.makeupArtistImage
       }).then(response => {
-        response.data.code === 200 ? this.$toast.success('添加成功') : this.$toast.fail(response.data.msg);
-        done();
+        if (response.data.code === 200) {
+          this.$toast.success('添加成功')
+          return 'success'
+        } else {
+          this.$toast.fail(response.data.msg)
+          return 'fail'
+        }
       })
     },
   },
