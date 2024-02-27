@@ -253,10 +253,6 @@ export default {
     }
     next()
   },
-  activated() {
-    this.pageInit()
-    this.queryOrderList()
-  }
 }
 </script>
 
