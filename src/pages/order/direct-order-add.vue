@@ -139,6 +139,24 @@
             readonly
             required
             :rules="[{required: true}]"
+            label="订单化妆师"
+            v-model="cosmeticsText"
+            placeholder="订单化妆师"
+            @click="cosmeticsShowPicker = true"
+        />
+        <van-popup v-model="cosmeticsShowPicker" position="bottom">
+          <van-picker
+              show-toolbar
+              getColumnValues
+              :columns="cosmeticsArray"
+              @confirm="cosmeticsConfirm"
+              @cancel="cosmeticsShowPicker = false"
+          />
+        </van-popup>
+        <van-field
+            readonly
+            required
+            :rules="[{required: true}]"
             label="订单店铺"
             v-model="shopText"
             placeholder="订单店铺"
@@ -305,6 +323,11 @@
           v-model="orderNameText"
         />
         <van-field
+            readonly
+            label="订单化妆师"
+            v-model="cosmeticsText"
+        />
+        <van-field
           readonly
           v-if="orderSum"
           label="订单总价"
@@ -406,6 +429,7 @@ export default {
       order: {
         createDate: this.$dateUtils.vantDateToYMD(new Date()),
         shopId: localStorage.getItem("shopIds").split(",").map(Number)[0],
+        orderCosmetics: "",
         orderNo: "",
         orderName: "",
         weddingDay: "",
@@ -414,7 +438,10 @@ export default {
         orderPrice: "",
       },
       shopText: "",
+      cosmeticsText: "",
       orderCreateDateShowPicker: false,
+      cosmeticsShowPicker: false,
+      cosmeticsArray:[],
       shopShowPicker: false,
       shopArray: [],
       weddingDayPicker: false,
@@ -472,6 +499,9 @@ export default {
       this.$selectUtils.queryShopIds(this.$selectUtils.Picker).then(response => {
         this.shopArray = JSON.parse(response.data.data);
         this.shopText = this.shopArray.filter(s => s.id === this.order.shopId)[0].text
+      })
+      this.$selectUtils.queryCosmeticsIds(this.$selectUtils.Picker).then(response => {
+        this.cosmeticsArray = JSON.parse(response.data.data);
       })
       this.$selectUtils.queryProjectsIds(this.$projectsType.order, this.$selectUtils.Picker).then(response => {
         this.orderNameArray = JSON.parse(response.data.data);
@@ -533,6 +563,11 @@ export default {
       this.shopText = val.text
       this.customer.shopId = val.id
       this.shopShowPicker = false
+    },
+    cosmeticsConfirm(val) {
+      this.cosmeticsText = val.text
+      this.order.orderCosmetics = val.id
+      this.cosmeticsShowPicker = false
     },
     weddingDayConfirm(value) {
       this.order.weddingDay = this.$dateUtils.vantDateToYMD(value);
