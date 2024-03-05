@@ -636,4 +636,7 @@ export default {
 /deep/ .display .van-cell::after {
   border-bottom: none;
 }
+/deep/ .van-picker__columns{
+  margin: 0 20%;
+}
 </style>
