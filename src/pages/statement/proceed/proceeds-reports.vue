@@ -260,6 +260,11 @@ export default {
     queryShopArray() {
       this.$selectUtils.queryShopIds(this.$selectUtils.Picker).then(response => {
         this.shopArray.push(...JSON.parse(response.data.data))
+        console.log(this.shopArray)
+        if (this.shopArray.length === 2){
+          this.shopName = this.shopArray[1].text
+          this.shopId = this.shopArray[1].id
+        }
       })
     },
     // 初始化收款图
