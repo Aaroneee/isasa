@@ -54,9 +54,15 @@
             <van-icon name="add-o" size="30"/>
             <p>形象修改</p>
           </div>
-          <div class="operationBlock" @click="addMakeupArtistScheduleView" v-if="this.$per('style_details:add_clothes')">
+          <div class="operationBlock" @click="addMakeupArtistScheduleView"
+               v-if="this.$per('style_details:add_clothes')">
             <van-icon name="add-o" size="30"/>
             <p>添加档期</p>
+          </div>
+          <div class="operationBlock" @click="listMakeupArtistScheduleView"
+               v-if="this.$per('style_details:add_clothes')">
+            <van-icon name="add-o" size="30"/>
+            <p>档期列表</p>
           </div>
         </div>
       </div>
@@ -114,8 +120,11 @@ export default {
       this.$router.push({name: "makeupArtistImageInsert", query: {id: this.id}})
     },
     addMakeupArtistScheduleView() {
-      this.$router.push({name: "makeupScheduleAdd", query: {id: this.id,artistName:this.artistName}})
-    }
+      this.$router.push({name: "makeupScheduleAdd", query: {id: this.id, artistName: this.artistName}})
+    },
+    listMakeupArtistScheduleView() {
+      this.$router.push({name: "makeupScheduleList", query: {id: this.id, artistName: this.artistName}})
+    },
   }
 }
 </script>

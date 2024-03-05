@@ -38,6 +38,7 @@
             v-model="makeupSchedule.makeupDate"
             name="档期日期"
             label="档期日期"
+            readonly
             placeholder="档期日期"
             @click="makeupDateShow = true"
             :rules="[{ required: true, message: '请选择化妆档期日期' }]"
@@ -46,6 +47,7 @@
             v-model="makeupSchedule.makeupTime"
             name="档期时间"
             label="档期时间"
+            readonly
             placeholder="档期时间"
             @click="makeupTimeShow = true"
             :rules="[{ required: true, message: '请选择化妆档期时间' }]"
@@ -54,6 +56,7 @@
             v-model="makeupSchedule.makeupType"
             name="档期种类"
             label="档期种类"
+            readonly
             placeholder="档期种类"
             @click="makeupTypeShow = true"
             :rules="[{ required: true, message: '请选择化妆档期种类' }]"
