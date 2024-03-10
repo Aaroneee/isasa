@@ -66,6 +66,7 @@
         <van-field
             readonly
             clickable
+            required
             name="createDate"
             :value="customer.createDate"
             label="对接日期"
@@ -546,6 +547,7 @@ export default {
     cusCreateDateOnConfirm: function (time) {
       this.customer.createDate = this.$dateUtils.vantDateToYMD(time);
       this.cusCreateDateShowPicker = false;
+      this.order.createDate=this.$dateUtils.vantDateToYMD(time);
     },
     next() {
       this.active++
