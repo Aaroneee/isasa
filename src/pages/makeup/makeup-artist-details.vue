@@ -1,13 +1,7 @@
 <template>
   <div>
     <van-sticky>
-      <baseNavBar :title=title></baseNavBar>
-      <!--      <form action="javascript:return true">-->
-      <!--        <van-search-->
-      <!--            @search="search"-->
-      <!--            v-model="makeupArtistName"-->
-      <!--            placeholder="请输入化妆师名称"/>-->
-      <!--      </form>-->
+      <switchNavBar :title=title :switch-text="historyShow?'隐藏历史档期':'显示历史档期'" @flag="changeShowHistory"/>
     </van-sticky>
     <div>
       <van-tabs color="#fdd640" swipeable animated>
@@ -47,10 +41,16 @@
             </van-list>
           </div>
         </van-tab>
+
         <van-tab title="档期">
-          <van-empty v-if="scheduleList.length === 0" description="暂无化妆师档期"/>
-          <div v-else>
-            <van-cell style="font-size: 12px" v-for="item in scheduleList" :key="item.id">
+          <van-divider :style="{ color: '#000000', borderColor: '#000000', padding: '0 16px' }">
+            今天及将来档期
+          </van-divider>
+          <van-cell-group>
+            <van-cell style="font-size: 12px" v-for="item in todayAndLaterScheduleList" :key="item.id">
+              <van-row>
+                <van-col span="24">客户名 :{{ item.makeupCustomer }}</van-col>
+              </van-row>
               <van-row>
                 <van-col span="12">档期时间 :{{ item.makeupDate + ' ' + item.makeupTime }}</van-col>
                 <van-col span="12">档期种类 :{{ ' ' + item.makeupType }}</van-col>
@@ -58,7 +58,28 @@
               <van-row>
               </van-row>
             </van-cell>
-          </div>
+          </van-cell-group>
+          <van-empty v-if="todayAndLaterScheduleList.length === 0" image-size="50" image="search"
+                     description="该婚纱下暂无未来档期"/>
+          <van-divider :style="{ color: '#000000', borderColor: '#000000', padding: '0 16px' }"
+                       v-show="historyShow">
+            历史档期
+          </van-divider>
+          <van-cell-group v-show="historyShow">
+            <van-cell style="font-size: 12px" v-for="item in beforeTodayScheduleList" :key="item.id">
+              <van-row>
+                <van-col span="24">客户名 :{{ item.makeupCustomer }}</van-col>
+              </van-row>
+              <van-row>
+                <van-col span="12">档期时间 :{{ item.makeupDate + ' ' + item.makeupTime }}</van-col>
+                <van-col span="12">档期种类 :{{ ' ' + item.makeupType }}</van-col>
+              </van-row>
+              <van-row>
+              </van-row>
+            </van-cell>
+          </van-cell-group>
+          <van-empty v-if="beforeTodayScheduleList.length === 0" v-show="historyShow" image-size="50" image="search"
+                     description="该婚纱下暂无历史档期"/>
         </van-tab>
 
       </van-tabs>
@@ -93,7 +114,7 @@
 </template>
 
 <script>
-import baseNavBar from '@/components/nav-bar/base-nav-bar'
+import switchNavBar from "@/components/nav-bar/switch-nav-bar"
 
 export default {
   name: "makeupArtistDetails",
@@ -105,13 +126,18 @@ export default {
       loading: false,
       finished: false,
       makeupArtistImageList: [],
-      scheduleList: [],
+      historyShow:false,
+      todayAndLaterScheduleList: [],
+      beforeTodayScheduleList : [],
       title: this.$route.query.artistName + " 化妆师详情"
     }
   }, components: {
-    baseNavBar
+    switchNavBar: switchNavBar,
   },
   methods: {
+    changeShowHistory: function (){
+      this.historyShow = !this.historyShow
+    },
     queryMakeupScheduleList() {
       this.$axios({
         method: "get",
@@ -121,7 +147,21 @@ export default {
         }
       }).then(response => {
         if (response.data.code === 200) {
-          this.scheduleList.push(...response.data.data)
+          const data = response.data.data;
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          const todayAndLater = [];
+          const beforeToday = [];
+          data.forEach(item => {
+            const makeupDate = new Date(item.makeupDate);
+            if (makeupDate >= today) {
+              todayAndLater.push(item);
+            } else {
+              beforeToday.push(item);
+            }
+          });
+          this.todayAndLaterScheduleList = todayAndLater
+          this.beforeTodayScheduleList = beforeToday
         } else {
           this.$toast.fail(response.data.msg);
         }
