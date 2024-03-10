@@ -1,7 +1,7 @@
 <template>
   <div>
     <van-sticky>
-      <baseNavBar title="化妆师案例"/>
+      <baseNavBar :title=title></baseNavBar>
       <!--      <form action="javascript:return true">-->
       <!--        <van-search-->
       <!--            @search="search"-->
@@ -10,36 +10,58 @@
       <!--      </form>-->
     </van-sticky>
     <div>
-      <van-list
-          v-model="loading"
-          :finished="finished"
-          @load="onLoad"
-          finished-text="没有更多了">
-        <van-cell style="font-size: 12px">
-          <van-row gutter="5">
-            <van-col span="24" v-for="item in makeupArtistImageList" :key="item.id" @click="toMakeupArtistDetails(item)"
-                     style="text-align: center">
-              <div v-if="item.imageType==='案例图'" class="card">
-                <van-row><p class="cardTitle">{{ item.intrName }}</p></van-row>
-                <van-row :gutter="20">
-                  <van-col :span="10">
-                    <div style="display: flex;justify-content: space-around;height: 100%">
-                      <img
-                          alt="图片已损坏，请重新选择主图"
-                          style="max-height: 90%"
-                          :src="'https://makeup-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.imageUrl"/>
+      <van-tabs color="#fdd640" swipeable animated>
+        <van-tab title="案例">
+          <van-empty v-if="makeupArtistImageList === 0" description="暂无化妆师案例"/>
+          <div v-else>
+            <van-list
+                :v-model="loading"
+                :finished="finished"
+                @load="onLoad"
+                finished-text="没有更多了">
+              <van-cell style="font-size: 12px">
+                <van-row gutter="5">
+                  <van-col span="24" v-for="item in makeupArtistImageList" :key="item.id"
+                           @click="toMakeupArtistDetails(item)"
+                           style="text-align: center">
+                    <div v-if="item.imageType==='案例图'" class="card">
+                      <van-row><p class="cardTitle">{{ item.intrName }}</p></van-row>
+                      <van-row :gutter="20">
+                        <van-col :span="10">
+                          <div style="display: flex;justify-content: space-around;height: 100%">
+                            <img
+                                alt="图片已损坏，请重新选择主图"
+                                style="max-height: 90%"
+                                :src="'https://makeup-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.imageUrl"/>
+                          </div>
+                        </van-col>
+                        <van-col style="text-align: center" :span="14">
+                          <p>案例价格 : {{ item.priceAmount }}</p>
+                          <p>案例介绍 : {{ item.imageIntr }}</p>
+                        </van-col>
+                      </van-row>
                     </div>
                   </van-col>
-                  <van-col style="text-align: center" :span="14">
-                    <p>案例价格 : {{ item.priceAmount }}</p>
-                    <p>案例介绍 : {{ item.imageIntr }}</p>
-                  </van-col>
                 </van-row>
-              </div>
-            </van-col>
-          </van-row>
-        </van-cell>
-      </van-list>
+              </van-cell>
+            </van-list>
+          </div>
+        </van-tab>
+        <van-tab title="档期">
+          <van-empty v-if="scheduleList.length === 0" description="暂无化妆师档期"/>
+          <div v-else>
+            <van-cell style="font-size: 12px" v-for="item in scheduleList" :key="item.id">
+              <van-row>
+                <van-col span="12">档期时间 :{{ item.makeupDate + ' ' + item.makeupTime }}</van-col>
+                <van-col span="12">档期种类 :{{ ' ' + item.makeupType }}</van-col>
+              </van-row>
+              <van-row>
+              </van-row>
+            </van-cell>
+          </div>
+        </van-tab>
+
+      </van-tabs>
     </div>
     <div style="height: 50px"></div>
     <div id="operationDiv">
@@ -59,11 +81,11 @@
             <van-icon name="add-o" size="30"/>
             <p>添加档期</p>
           </div>
-          <div class="operationBlock" @click="listMakeupArtistScheduleView"
-               v-if="this.$per('style_details:add_clothes')">
-            <van-icon name="add-o" size="30"/>
-            <p>档期列表</p>
-          </div>
+          <!--          <div class="operationBlock" @click="listMakeupArtistScheduleView"-->
+          <!--               v-if="this.$per('style_details:add_clothes')">-->
+          <!--            <van-icon name="add-o" size="30"/>-->
+          <!--            <p>档期列表</p>-->
+          <!--          </div>-->
         </div>
       </div>
     </div>
@@ -83,11 +105,28 @@ export default {
       loading: false,
       finished: false,
       makeupArtistImageList: [],
+      scheduleList: [],
+      title: this.$route.query.artistName + " 化妆师详情"
     }
   }, components: {
     baseNavBar
   },
   methods: {
+    queryMakeupScheduleList() {
+      this.$axios({
+        method: "get",
+        url: '/makeup/makeupScheduleList',
+        params: {
+          makeupArtistId: this.id,
+        }
+      }).then(response => {
+        if (response.data.code === 200) {
+          this.scheduleList.push(...response.data.data)
+        } else {
+          this.$toast.fail(response.data.msg);
+        }
+      })
+    },
     queryMakeupArtistList() {
       this.loading = true
       this.$axios({
@@ -108,7 +147,16 @@ export default {
       })
     },
     onLoad() {
-      this.queryMakeupArtistList()
+      const that = this;
+      setTimeout(function () {
+        that.queryMakeupArtistList()
+        that.queryMakeupScheduleList()
+      }, 500)
+    },
+    create() {
+      const that = this;
+      setTimeout(function () {
+      }, 500)
     },
     toMakeupArtistDetails(item) {
       console.log(item)
