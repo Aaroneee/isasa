@@ -60,7 +60,7 @@
             </van-cell>
           </van-cell-group>
           <van-empty v-if="todayAndLaterScheduleList.length === 0" image-size="50" image="search"
-                     description="该婚纱下暂无未来档期"/>
+                     description="该化妆师下暂无未来档期"/>
           <van-divider :style="{ color: '#000000', borderColor: '#000000', padding: '0 16px' }"
                        v-show="historyShow">
             历史档期
@@ -79,7 +79,7 @@
             </van-cell>
           </van-cell-group>
           <van-empty v-if="beforeTodayScheduleList.length === 0" v-show="historyShow" image-size="50" image="search"
-                     description="该婚纱下暂无历史档期"/>
+                     description="该化妆师下暂无历史档期"/>
         </van-tab>
 
       </van-tabs>
@@ -160,6 +160,8 @@ export default {
               beforeToday.push(item);
             }
           });
+          todayAndLater.sort((a, b) => new Date(a.makeupDate) - new Date(b.makeupDate));
+          beforeToday.sort((a, b) => new Date(b.makeupDate) - new Date(a.makeupDate));
           this.todayAndLaterScheduleList = todayAndLater
           this.beforeTodayScheduleList = beforeToday
         } else {
