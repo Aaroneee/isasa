@@ -2,12 +2,12 @@
   <div>
     <van-sticky>
       <baseNavBar title="支出分析表"/>
-      <!--      <van-dropdown-menu>-->
-      <!--        <van-dropdown-item v-model="shopId" @change="shopChange" :options="shopArray"/>-->
-      <!--        <van-dropdown-item v-model="sourceId" @change="sourceChange" :options="sourceArray"/>-->
-      <!--        <van-dropdown-item v-model="empId" @change="empChange" :options="empArray"/>-->
-      <!--      </van-dropdown-menu>-->
       <van-cell title="结算日期:" :value="date" @click="createDateShow = true"/>
+            <van-dropdown-menu>
+              <van-dropdown-item v-model="shopId" @change="shopChange" :options="shopArray"/>
+<!--              <van-dropdown-item v-model="sourceId" @change="sourceChange" :options="sourceArray"/>-->
+<!--              <van-dropdown-item v-model="empId" @change="empChange" :options="empArray"/>-->
+            </van-dropdown-menu>
       <van-calendar
           v-model="createDateShow"
           type="range"
@@ -23,88 +23,91 @@
           <van-col span="24">
             <div v-show="sourceCusViewData.length !== 0"
                  style="background-color: white;margin-bottom: 20px;width: 100%">
-              <!--饼图-->
-              <!--选项太多 导致饼图不好看，先隐藏饼图。-->
-<!--              <div v-show=false>-->
-                <canvas id="sourceCusView"></canvas>
-                <van-divider dashed :style="{borderColor: '#c6effc'}"></van-divider>
-<!--              </div>-->
 
               <!--表格-->
               <div>
-                <van-field
-                    readonly
-                    label="支出项目"
-                    :value="'合计金额'"
-                    input-align="center"
-                    style="background-color: #f5f7fa"
-                />
-                <van-field
-                    readonly
-                    v-for="(value,index) in sourceCusViewData"
-                    :label="value.projectsName"
-                    input-align="center"
-                    v-model="value.sumAmount"
-                    :key="value.projectsId"
-                />
-                <van-field
-                    readonly
-                    label="合计"
-                    v-model="allAmount"
-                    input-align="center"
-                    style="font-weight: bold"
-                />
+                <van-collapse v-model="activeCus">
+                  <van-field
+                      readonly
+                      label="支出项目"
+                      :value="'合计金额'"
+                      input-align="center"
+                      style="background-color: #f5f7fa"
+                  />
+                  <van-collapse-item
+                      :title="value.foldName"
+                      v-for="(value,index) in sourceCusViewData"
+                      :key="value.id"
+                      :name="index">
+                    <template #title>
+                      <van-field
+                          readonly
+                          :label="value.foldName"
+                          input-align="center"
+                          v-model="value.litres"
+                      />
+                    </template>
+
+                    <!--孩子展开-->
+                    <template v-if="value.children !== undefined && value.children.length === 0">
+                      <div style="text-align: center">无子渠道</div>
+                    </template>
+
+                    <template v-if="value.children !== undefined && value.children.length !== 0">
+                      <van-field
+                          readonly
+                          v-for="item in value.children"
+                          :label="item.foldName"
+                          input-align="center"
+                          v-model="item.litres"
+                          :key="item.id"
+                      />
+                    </template>
+
+                  </van-collapse-item>
+                  <van-field
+                      readonly
+                      label="合计"
+                      v-model="allAmount"
+                      input-align="center"
+                      style="font-weight: bold"
+                  />
+                </van-collapse>
               </div>
 
+              <!--              <div>-->
+              <!--                <van-field-->
+              <!--                    readonly-->
+              <!--                    label="支出项目"-->
+              <!--                    :value="'合计金额'"-->
+              <!--                    input-align="center"-->
+              <!--                    style="background-color: #f5f7fa"-->
+              <!--                />-->
+              <!--                <van-field-->
+              <!--                    readonly-->
+              <!--                    v-for="(value,index) in sourceCusViewData"-->
+              <!--                    :label="value.projectsName"-->
+              <!--                    input-align="center"-->
+              <!--                    v-model="value.sumAmount"-->
+              <!--                    :key="value.projectsId"-->
+              <!--                />-->
+              <!--                <van-field-->
+              <!--                    readonly-->
+              <!--                    label="合计"-->
+              <!--                    v-model="allAmount"-->
+              <!--                    input-align="center"-->
+              <!--                    style="font-weight: bold"-->
+              <!--                />-->
+              <!--              </div>-->
 
-<!--              <div>-->
-<!--                <van-collapse v-model="activeCus">-->
-<!--                  <van-field-->
-<!--                      readonly-->
-<!--                      label="支出项目"-->
-<!--                      :value="'合计金额'"-->
-<!--                      input-align="center"-->
-<!--                      style="background-color: #f5f7fa"-->
-<!--                  />-->
-<!--                  <van-collapse-item-->
-<!--                      :title="value.sourceName"-->
-<!--                      v-for="(value,index) in sourceCusViewData"-->
-<!--                      :key="value.projectsId"-->
-<!--                      :name="index">-->
-<!--                    <template #title>-->
-<!--                      <van-field-->
-<!--                          readonly-->
-<!--                          :label="value.projectsName"-->
-<!--                          input-align="center"-->
-<!--                          v-model="value.sumAmount"-->
-<!--                      />-->
-<!--                    </template>-->
 
-<!--&lt;!&ndash;                    &lt;!&ndash;孩子展开&ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;                    <template v-if="value.children !== undefined && value.children.length === 0">&ndash;&gt;-->
-<!--&lt;!&ndash;                      <div style="text-align: center">无子渠道</div>&ndash;&gt;-->
-<!--&lt;!&ndash;                    </template>&ndash;&gt;-->
+              <!--饼图-->
+              <!--选项太多 导致饼图不好看，先隐藏饼图。-->
+              <!--              <div v-show=false>-->
+              <canvas id="sourceCusView"></canvas>
+              <van-divider dashed :style="{borderColor: '#c6effc'}"></van-divider>
+              <!--              </div>-->
 
-<!--&lt;!&ndash;                    <template v-if="value.children !== undefined && value.children.length !== 0">&ndash;&gt;-->
-<!--&lt;!&ndash;                      <van-field&ndash;&gt;-->
-<!--&lt;!&ndash;                          readonly&ndash;&gt;-->
-<!--&lt;!&ndash;                          v-for="item in value.children"&ndash;&gt;-->
-<!--&lt;!&ndash;                          :label="item.sourceName"&ndash;&gt;-->
-<!--&lt;!&ndash;                          input-align="center"&ndash;&gt;-->
-<!--&lt;!&ndash;                          v-model="item.sourceCount"&ndash;&gt;-->
-<!--&lt;!&ndash;                          :key="item.id"&ndash;&gt;-->
-<!--&lt;!&ndash;                      />&ndash;&gt;-->
-<!--&lt;!&ndash;                    </template>&ndash;&gt;-->
-<!--                  </van-collapse-item>-->
-<!--                  <van-field-->
-<!--                      readonly-->
-<!--                      label="合计"-->
-<!--                      v-model="allAmount"-->
-<!--                      input-align="center"-->
-<!--                      style="font-weight: bold"-->
-<!--                  />-->
-<!--                </van-collapse>-->
-<!--              </div>-->
 
               <!--原来的客资报表表格-->
               <!--              <div>-->
@@ -192,7 +195,7 @@ export default {
       activeApp: [],
       activeMoney: [],
       shopArray: [{text: "选择店铺", value: ""}],
-      shopId: "",
+      shopId: 59, //先写死 华鑫店(590
 
     }
   },
@@ -279,13 +282,14 @@ export default {
       await this.$axios({
         method: 'get',
         // url: '/serviceReports/customerSourceReportsCus', //原来客资报表数据的请求。
-        url: '/spendAnalysis/queryProSpendAnalysisInfo',
+        // url: '/spendAnalysis/queryProSpendAnalysisInfo',
+        url: '/spendAnalysis/querySpendAnalysisHandle',
         params: {
           date: this.date,
           tenantCrop: this.tenantCrop,
           empId: this.empId,
           sourceId: this.sourceId,
-          shopId: this.shopId
+          shopId: this.shopId,
         },
       }).then(response => {
         console.log("response noProjectLevelSpendAnalysis123")
@@ -293,7 +297,7 @@ export default {
         console.log(response.data.data)
 
         // let res = response.data.data;
-        this.allAmount = response.data.data.pop().sumAmount; //把最好一个数据取出来，然后把数值放到 allAmount
+        this.allAmount = response.data.data.pop().litres; //把最好一个数据取出来，然后把数值放到 allAmount
 
         this.sourceCusData = response.data.data;
         this.isService = true
@@ -482,12 +486,12 @@ export default {
       this.querySourceReportsCus()
     },
     shopChange() {
-      if (this.empId !== "") {
-        this.empId = ""
-      }
-      this.empArray = this.empArray.slice(0, 1)
-      this.queryEmpIds()
-      this.querySourceReportsCus()
+      // if (this.empId !== "") {
+      //   this.empId = ""
+      // }
+      // this.empArray = this.empArray.slice(0, 1)
+      // this.queryEmpIds()
+      this.queryProSpendAnalysisInfo()
     }
   },
 }
