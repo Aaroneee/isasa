@@ -15,7 +15,7 @@
           </van-swipe-item>
         </van-swipe>
       </div>
-      <van-cell v-show="detailsShow">
+      <van-cell >
         <van-row>
           <van-col span="24">品牌：{{ clothes.brand === "" ? "暂无品牌" : clothes.brand }}</van-col>
         </van-row>
@@ -30,15 +30,15 @@
             </van-tag>
           </van-col>
         </van-row>
-        <van-row>
+        <van-row  v-show="detailsShow">
           <van-col span="24">试纱次数：{{ count.yarnCount }}</van-col>
-        </van-row>
-        <van-row>
+        </van-row >
+        <van-row v-show="detailsShow">
           <van-col span="24">出件次数：{{ count.outCount }}</van-col>
         </van-row>
       </van-cell>
     </div>
-    <div v-show="detailsShow" class="card" @touchstart.prevent="touchPrice(stylePrice)" @touchend.prevent="clearTime(stylePrice)">
+    <div  class="card" @touchstart.prevent="touchPrice(stylePrice)" @touchend.prevent="clearTime(stylePrice)">
         <van-row><p class="PTitle">款式价格</p></van-row>
         <van-row v-if="stylePrice.length>0">
           <van-col :span="8" v-for="(item,index) in stylePrice" :key="index">
@@ -51,7 +51,7 @@
         </van-row>
     </div>
     <div style="height: 120px"></div>
-    <div v-show="detailsShow" id="operationDiv">
+    <div id="operationDiv">
       <div id="operationCon">
         <p class="PTitle">操作菜单</p>
         <div id="operationParent">

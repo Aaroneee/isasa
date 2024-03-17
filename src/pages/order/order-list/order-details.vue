@@ -262,7 +262,7 @@ export default {
       //订单婚纱图片点击
       orderClothesImage:{
         orderClothesImageShow:false,
-        orderClothesImageActions:[{ name: '查看大图',index:0 }, { name: '查看档期',index:1 }],
+        orderClothesImageActions:[{ name: '查看大图',index:0 }, { name: '查看档期',index:1 }, { name: '添加造型',index:2 }],
         clothesScheduleVO:{},
       }
     }
@@ -560,19 +560,37 @@ export default {
     },
     //已定婚纱图片点击
     orderClothesImageClick(item){
+      console.log(item)
       this.orderClothesImage.clothesScheduleVO.clothesId=item.clothesId;
       this.orderClothesImage.clothesScheduleVO.styleImage=item.styleImage;
+      this.orderVo.pushClothesId = item.clothesId
+      this.orderVo.pushClothesName = item.styleType+'-'+item.styleName+'-'+item.clothesSize+'-'+item.clothesNo
       this.orderClothesImage.orderClothesImageShow=true;
     },
     //已定婚纱图片点击后选择框
     orderClothesImageSelect(data){
       this.orderClothesImage.orderClothesImageShow=false;
+      console.log(data)
       if (data.index===0){
         ImagePreview([`https://clothes-image-1304365928.cos.ap-shanghai.myqcloud.com/${this.orderClothesImage.clothesScheduleVO.styleImage}`])
         return;
       }
-      this.$router.push({name:"clothesSchedule",query:this.orderClothesImage.clothesScheduleVO})
+      if (data.index === 1 ){
+        this.$router.push({name:"clothesSchedule",query:this.orderClothesImage.clothesScheduleVO})
 
+      }
+      if (data.index === 2 ){
+        if (this.orderVo.cosmetics === ""){
+          this.$dialog.confirm({
+            message: "当前订单尚未选择化妆师,去选择化妆师",
+          }).then(() => {
+            this.$router.push({name: "orderEdit", query: this.orderVo})
+          }, () => {
+          })
+        }else {
+          this.$router.push({name: "makeupOrderClothes", query: this.orderVo})
+        }
+      }
     },
   },
   watch: {
