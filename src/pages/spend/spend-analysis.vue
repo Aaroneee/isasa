@@ -3,11 +3,11 @@
     <van-sticky>
       <baseNavBar title="支出分析表"/>
       <van-cell title="结算日期:" :value="spendMethodDate" @click="spendMethodDateShow = true"/>
-            <van-dropdown-menu>
-              <van-dropdown-item v-model="shopId" @change="shopChange" :options="shopArray"/>
-<!--              <van-dropdown-item v-model="sourceId" @change="sourceChange" :options="sourceArray"/>-->
-<!--              <van-dropdown-item v-model="empId" @change="empChange" :options="empArray"/>-->
-            </van-dropdown-menu>
+<!--            <van-dropdown-menu>-->
+<!--&lt;!&ndash;              <van-dropdown-item v-model="shopId" @change="shopChange" :options="shopArray"/>&ndash;&gt;-->
+<!--&lt;!&ndash;              <van-dropdown-item v-model="sourceId" @change="sourceChange" :options="sourceArray"/>&ndash;&gt;-->
+<!--&lt;!&ndash;              <van-dropdown-item v-model="empId" @change="empChange" :options="empArray"/>&ndash;&gt;-->
+<!--            </van-dropdown-menu>-->
       <van-calendar
           v-model="spendMethodDateShow"
           type="range"
@@ -17,8 +17,11 @@
       />
     </van-sticky>
 
-    <van-tabs v-model="active" animated swipeable :lazy-render="false" color="#409eff">
-      <van-tab title="支出分析表">
+    <van-tabs @click="shopTabOnClick">
+      <van-tab v-for="oneShop in shopArray"
+               :name="oneShop.value"
+               :title="oneShop.text"
+               :key="oneShop.value">
         <van-row>
           <van-col span="24">
             <div v-show="sourceCusViewData.length !== 0"
@@ -75,31 +78,6 @@
                 </van-collapse>
               </div>
 
-              <!--              <div>-->
-              <!--                <van-field-->
-              <!--                    readonly-->
-              <!--                    label="支出项目"-->
-              <!--                    :value="'合计金额'"-->
-              <!--                    input-align="center"-->
-              <!--                    style="background-color: #f5f7fa"-->
-              <!--                />-->
-              <!--                <van-field-->
-              <!--                    readonly-->
-              <!--                    v-for="(value,index) in sourceCusViewData"-->
-              <!--                    :label="value.projectsName"-->
-              <!--                    input-align="center"-->
-              <!--                    v-model="value.sumAmount"-->
-              <!--                    :key="value.projectsId"-->
-              <!--                />-->
-              <!--                <van-field-->
-              <!--                    readonly-->
-              <!--                    label="合计"-->
-              <!--                    v-model="allAmount"-->
-              <!--                    input-align="center"-->
-              <!--                    style="font-weight: bold"-->
-              <!--                />-->
-              <!--              </div>-->
-
 
               <!--饼图-->
               <!--选项太多 导致饼图不好看，先隐藏饼图。-->
@@ -109,40 +87,6 @@
               <!--              </div>-->
 
 
-              <!--原来的客资报表表格-->
-              <!--              <div>-->
-              <!--                <van-collapse v-model="activeCus">-->
-              <!--                  <van-field-->
-              <!--                      readonly-->
-              <!--                      label="支出项目"-->
-              <!--                      :value="'合计金额'"-->
-              <!--                      input-align="center"-->
-              <!--                      style="background-color: #f5f7fa"-->
-              <!--                  />-->
-              <!--                  <van-collapse-item-->
-              <!--                      :title="value.sourceName"-->
-              <!--                      v-for="(value,index) in sourceCusViewData"-->
-              <!--                      :key="value.id"-->
-              <!--                      :name="index">-->
-              <!--                    <template #title>-->
-              <!--                      <van-field-->
-              <!--                          readonly-->
-              <!--                          :label="value.sourceName"-->
-              <!--                          input-align="center"-->
-              <!--                          v-model="value.sourceCount"-->
-              <!--                      />-->
-              <!--                    </template>-->
-              <!--                  </van-collapse-item>-->
-              <!--                  <van-field-->
-              <!--                      readonly-->
-              <!--                      label="合计"-->
-              <!--                      v-model="cusCount"-->
-              <!--                      input-align="center"-->
-              <!--                      style="font-weight: bold"-->
-              <!--                  />-->
-              <!--                </van-collapse>-->
-              <!--              </div>-->
-
             </div>
             <div v-show="sourceCusViewData.length === 0" style="background-color: white;width: 100%;height: 100vh">
               <van-empty description="暂无支出"/>
@@ -151,6 +95,7 @@
         </van-row>
       </van-tab>
     </van-tabs>
+
   </div>
 </template>
 
@@ -193,16 +138,19 @@ export default {
       activeOrder: [],
       activeApp: [],
       activeMoney: [],
-      shopArray: [{text: "选择店铺", value: ""}],
-      shopId: 59, //先写死 华鑫店(590
+      shopArray: [{text: "全国", value: ""}],
+      // shopArray: [],
+      // shopId: 59, //先写死 华鑫店(590
+      shopId: '',
 
     }
   },
   created() {
-    this.pageInit()
-    this.querySourceIds()
-    this.queryEmpIds()
-    this.queryShopIds()
+    // this.pageInit()
+    // this.querySourceIds()
+    // this.queryEmpIds()
+    this.queryProSpendAnalysisInfo()
+    this.queryShopIdsIsValid() //如果要默认加载单店铺 而不是全国的，那就在这个函数里改。
     this.date = this.formatDate(this.$dateUtils.getCurrentMonthFirstDay()) + " - " + this.formatDate(this.$dateUtils.getCurrentMonthLastDay())
   },
   mounted() {
@@ -221,10 +169,10 @@ export default {
     }
   },
   methods: {
-    pageInit() {
-      this.queryProSpendAnalysisInfo()
-      // this.querySourceReportsCus()
-    },
+    // pageInit() {
+    //   this.queryProSpendAnalysisInfo()
+    //   // this.querySourceReportsCus()
+    // },
     formatDate(date) {
       return `${date.getFullYear()}-${this.$dateUtils.dateIsSingle(date.getMonth() + 1)}-${this.$dateUtils.dateIsSingle(date.getDate())}`;
     },
@@ -232,7 +180,7 @@ export default {
       const [start, end] = date;
       this.spendMethodDateShow = false;
       this.spendMethodDate = this.formatDate(start) + ' - ' + this.formatDate(end);
-      this.pageInit()
+      this.queryProSpendAnalysisInfo()
     },
     queryServiceIds: function () {
       this.$selectUtils.queryServiceIds(this.$selectUtils.DropDownMenu).then(response => {
@@ -255,8 +203,8 @@ export default {
         this.dressArray.push(...JSON.parse(response.data.data))
       })
     },
-    queryShopIds() {
-      this.$selectUtils.queryShopIds(this.$selectUtils.DropDownMenu).then(response => {
+    queryShopIdsIsValid() {
+      this.$selectUtils.queryShopIdsIsValid(this.$selectUtils.DropDownMenu).then(response => {
         if (response.data.code === 200) {
           this.shopArray.push(...JSON.parse(response.data.data));
         }
@@ -274,6 +222,24 @@ export default {
       }).then(response => {
         this.sourceArray.push(...JSON.parse(response.data.data));
       })
+    },
+
+    shopTabOnClick(name, title) {
+      // console.log("点了 shopTabOnClick")
+      // console.log(name)
+      // console.log(title)
+
+      this.shopId = name
+      this.queryProSpendAnalysisInfo()
+
+      var v = this;
+      this.$nextTick(() => {
+        v.initSpendAnalysisView()
+        // v.initSourceCusView()
+      });
+
+      // this.mounted()
+      // this.initSpendAnalysisView()
     },
 
     async queryProSpendAnalysisInfo() {
@@ -313,7 +279,7 @@ export default {
       let count = this.allAmount
       // let cusXXXData = []
       val.forEach(s => {
-        s.pro = s.sumAmount / count * 100
+        s.pro = s.litres / count * 100
         // console.log(s.sumAmount)
         // console.log(count)
         // console.log(s.pro)
@@ -358,7 +324,7 @@ export default {
         inflectionOffset: 15,
         label1: function label1(data) {
           return {
-            text: data.projectsName,
+            text: data.foldName,
             fill: '#808080',
             fontSize: 14,
           };
@@ -374,7 +340,7 @@ export default {
       })
       this.sourceCusView.interval()
           .position('1*pro')
-          .color('projectsName', ['#1890FF', '#13C2C2', '#2FC25B', '#FACC14', '#F04864', '#ffe2ca', '#299999', '#ff9d4e', '#9967bd'])
+          .color('foldName', ['#1890FF', '#13C2C2', '#2FC25B', '#FACC14', '#F04864', '#ffe2ca', '#299999', '#ff9d4e', '#9967bd'])
           .adjust('stack');
       this.sourceCusView.render();
     },
