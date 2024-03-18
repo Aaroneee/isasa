@@ -4,6 +4,7 @@ import makeupArtistImageAdd from "@/pages/makeup/makeup-artist-image-add.vue"//�
 import makeupArtistImageInsert from "@/pages/makeup/makeup-artist-image-insert.vue"//形象修改
 import makeupScheduleAdd from "@/pages/makeup/makeup-schedule-add.vue"//形象修改
 import makeupScheduleList from "@/pages/makeup/makeup-schedule-list.vue"//形象修改
+import makeupOrderClothes from "@/pages/makeup/makeup-order-clothes.vue"
 
 export default [
     {
@@ -32,5 +33,10 @@ export default [
         path: '/makeupScheduleList',
         name: 'makeupScheduleList',
         component: makeupScheduleList,
+    },
+    {
+        path: '/makeupOrderClothes',
+        name: 'makeupOrderClothes',
+        component: makeupOrderClothes,
     },
 ]
