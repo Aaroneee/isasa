@@ -2,18 +2,18 @@
   <div>
     <van-sticky>
       <baseNavBar title="支出分析表"/>
-      <van-cell title="结算日期:" :value="date" @click="createDateShow = true"/>
+      <van-cell title="结算日期:" :value="spendMethodDate" @click="spendMethodDateShow = true"/>
             <van-dropdown-menu>
               <van-dropdown-item v-model="shopId" @change="shopChange" :options="shopArray"/>
 <!--              <van-dropdown-item v-model="sourceId" @change="sourceChange" :options="sourceArray"/>-->
 <!--              <van-dropdown-item v-model="empId" @change="empChange" :options="empArray"/>-->
             </van-dropdown-menu>
       <van-calendar
-          v-model="createDateShow"
+          v-model="spendMethodDateShow"
           type="range"
-          @confirm="dateOnConfirm"
+          @confirm="spendMethodDateOnConfirm"
           allow-same-day
-          :min-date="minDate"
+          :min-date="new Date(2018, 0, 1)"
       />
     </van-sticky>
 
@@ -174,10 +174,9 @@ export default {
       allAmount: 0,
       cusCount: 0,
 
-      createDateShow: false,
-      maxDate: this.$dateUtils.getMaxMinDate()[0],
-      minDate: this.$dateUtils.getMaxMinDate()[1],
-      date: this.$dateUtils.getMonthStartEndDayStr(),
+      spendMethodDateShow: false,
+      // minSpendMethodDate: new Date(2018, 0, 1),
+      spendMethodDate: this.$dateUtils.getMonthStartEndDayStr(),
       chooseDate: new Date(),
       tenantCrop: localStorage.getItem("tenantCrop"),
       serviceArray: [{text: "选择客服", value: ""}],
@@ -229,10 +228,10 @@ export default {
     formatDate(date) {
       return `${date.getFullYear()}-${this.$dateUtils.dateIsSingle(date.getMonth() + 1)}-${this.$dateUtils.dateIsSingle(date.getDate())}`;
     },
-    dateOnConfirm(date) {
+    spendMethodDateOnConfirm(date) {
       const [start, end] = date;
-      this.createDateShow = false;
-      this.date = this.formatDate(start) + ' - ' + this.formatDate(end);
+      this.spendMethodDateShow = false;
+      this.spendMethodDate = this.formatDate(start) + ' - ' + this.formatDate(end);
       this.pageInit()
     },
     queryServiceIds: function () {
@@ -285,7 +284,7 @@ export default {
         // url: '/spendAnalysis/queryProSpendAnalysisInfo',
         url: '/spendAnalysis/querySpendAnalysisHandle',
         params: {
-          date: this.date,
+          date: this.spendMethodDate,
           tenantCrop: this.tenantCrop,
           empId: this.empId,
           sourceId: this.sourceId,
@@ -458,11 +457,11 @@ export default {
       this.sourceCusView.render();
     },
 
-    createDateOnConfirm(val) {
-      this.date = this.$dateUtils.getMonthStartEndDayByDate(val)
-      this.createDateShow = false
-      this.querySourceReportsCus()
-    },
+    // createDateOnConfirm(val) {
+    //   this.date = this.$dateUtils.getMonthStartEndDayByDate(val)
+    //   this.spendMethodDateShow = false
+    //   this.querySourceReportsCus()
+    // },
     // 数据处理
     dataProcess(val) {
       var count = 0, cusXXXData = []
