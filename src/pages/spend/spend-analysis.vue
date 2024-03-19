@@ -2,143 +2,90 @@
   <div>
     <van-sticky>
       <baseNavBar title="支出分析表"/>
-      <!--      <van-dropdown-menu>-->
-      <!--        <van-dropdown-item v-model="shopId" @change="shopChange" :options="shopArray"/>-->
-      <!--        <van-dropdown-item v-model="sourceId" @change="sourceChange" :options="sourceArray"/>-->
-      <!--        <van-dropdown-item v-model="empId" @change="empChange" :options="empArray"/>-->
-      <!--      </van-dropdown-menu>-->
-      <van-cell title="结算日期:" :value="date" @click="createDateShow = true"/>
+      <van-cell title="结算日期:" :value="spendMethodDate" @click="spendMethodDateShow = true"/>
+<!--            <van-dropdown-menu>-->
+<!--&lt;!&ndash;              <van-dropdown-item v-model="shopId" @change="shopChange" :options="shopArray"/>&ndash;&gt;-->
+<!--&lt;!&ndash;              <van-dropdown-item v-model="sourceId" @change="sourceChange" :options="sourceArray"/>&ndash;&gt;-->
+<!--&lt;!&ndash;              <van-dropdown-item v-model="empId" @change="empChange" :options="empArray"/>&ndash;&gt;-->
+<!--            </van-dropdown-menu>-->
       <van-calendar
-          v-model="createDateShow"
+          v-model="spendMethodDateShow"
           type="range"
-          @confirm="dateOnConfirm"
+          @confirm="spendMethodDateOnConfirm"
           allow-same-day
-          :min-date="minDate"
+          :min-date="new Date(2018, 0, 1)"
       />
     </van-sticky>
 
-    <van-tabs v-model="active" animated swipeable :lazy-render="false" color="#409eff">
-      <van-tab title="支出分析表">
+    <van-tabs @click="shopTabOnClick">
+      <van-tab v-for="oneShop in shopArray"
+               :name="oneShop.value"
+               :title="oneShop.text"
+               :key="oneShop.value">
         <van-row>
           <van-col span="24">
             <div v-show="sourceCusViewData.length !== 0"
                  style="background-color: white;margin-bottom: 20px;width: 100%">
-              <!--饼图-->
-              <!--选项太多 导致饼图不好看，先隐藏饼图。-->
-<!--              <div v-show=false>-->
-                <canvas id="sourceCusView"></canvas>
-                <van-divider dashed :style="{borderColor: '#c6effc'}"></van-divider>
-<!--              </div>-->
 
               <!--表格-->
               <div>
-                <van-field
-                    readonly
-                    label="支出项目"
-                    :value="'合计金额'"
-                    input-align="center"
-                    style="background-color: #f5f7fa"
-                />
-                <van-field
-                    readonly
-                    v-for="(value,index) in sourceCusViewData"
-                    :label="value.projectsName"
-                    input-align="center"
-                    v-model="value.sumAmount"
-                    :key="value.projectsId"
-                />
-                <van-field
-                    readonly
-                    label="合计"
-                    v-model="allAmount"
-                    input-align="center"
-                    style="font-weight: bold"
-                />
+                <van-collapse v-model="activeCus">
+                  <van-field
+                      readonly
+                      label="支出项目"
+                      :value="'合计金额'"
+                      input-align="center"
+                      style="background-color: #f5f7fa"
+                  />
+                  <van-collapse-item
+                      :title="value.foldName"
+                      v-for="(value,index) in sourceCusViewData"
+                      :key="value.id"
+                      :name="index">
+                    <template #title>
+                      <van-field
+                          readonly
+                          :label="value.foldName"
+                          input-align="center"
+                          v-model="value.litres"
+                      />
+                    </template>
+
+                    <!--孩子展开-->
+                    <template v-if="value.children !== undefined && value.children.length === 0">
+                      <div style="text-align: center">无子渠道</div>
+                    </template>
+
+                    <template v-if="value.children !== undefined && value.children.length !== 0">
+                      <van-field
+                          readonly
+                          v-for="item in value.children"
+                          :label="item.foldName"
+                          input-align="center"
+                          v-model="item.litres"
+                          :key="item.id"
+                      />
+                    </template>
+
+                  </van-collapse-item>
+                  <van-field
+                      readonly
+                      label="合计"
+                      v-model="allAmount"
+                      input-align="center"
+                      style="font-weight: bold"
+                  />
+                </van-collapse>
               </div>
 
 
-<!--              <div>-->
-<!--                <van-collapse v-model="activeCus">-->
-<!--                  <van-field-->
-<!--                      readonly-->
-<!--                      label="支出项目"-->
-<!--                      :value="'合计金额'"-->
-<!--                      input-align="center"-->
-<!--                      style="background-color: #f5f7fa"-->
-<!--                  />-->
-<!--                  <van-collapse-item-->
-<!--                      :title="value.sourceName"-->
-<!--                      v-for="(value,index) in sourceCusViewData"-->
-<!--                      :key="value.projectsId"-->
-<!--                      :name="index">-->
-<!--                    <template #title>-->
-<!--                      <van-field-->
-<!--                          readonly-->
-<!--                          :label="value.projectsName"-->
-<!--                          input-align="center"-->
-<!--                          v-model="value.sumAmount"-->
-<!--                      />-->
-<!--                    </template>-->
-
-<!--&lt;!&ndash;                    &lt;!&ndash;孩子展开&ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;                    <template v-if="value.children !== undefined && value.children.length === 0">&ndash;&gt;-->
-<!--&lt;!&ndash;                      <div style="text-align: center">无子渠道</div>&ndash;&gt;-->
-<!--&lt;!&ndash;                    </template>&ndash;&gt;-->
-
-<!--&lt;!&ndash;                    <template v-if="value.children !== undefined && value.children.length !== 0">&ndash;&gt;-->
-<!--&lt;!&ndash;                      <van-field&ndash;&gt;-->
-<!--&lt;!&ndash;                          readonly&ndash;&gt;-->
-<!--&lt;!&ndash;                          v-for="item in value.children"&ndash;&gt;-->
-<!--&lt;!&ndash;                          :label="item.sourceName"&ndash;&gt;-->
-<!--&lt;!&ndash;                          input-align="center"&ndash;&gt;-->
-<!--&lt;!&ndash;                          v-model="item.sourceCount"&ndash;&gt;-->
-<!--&lt;!&ndash;                          :key="item.id"&ndash;&gt;-->
-<!--&lt;!&ndash;                      />&ndash;&gt;-->
-<!--&lt;!&ndash;                    </template>&ndash;&gt;-->
-<!--                  </van-collapse-item>-->
-<!--                  <van-field-->
-<!--                      readonly-->
-<!--                      label="合计"-->
-<!--                      v-model="allAmount"-->
-<!--                      input-align="center"-->
-<!--                      style="font-weight: bold"-->
-<!--                  />-->
-<!--                </van-collapse>-->
-<!--              </div>-->
-
-              <!--原来的客资报表表格-->
-              <!--              <div>-->
-              <!--                <van-collapse v-model="activeCus">-->
-              <!--                  <van-field-->
-              <!--                      readonly-->
-              <!--                      label="支出项目"-->
-              <!--                      :value="'合计金额'"-->
-              <!--                      input-align="center"-->
-              <!--                      style="background-color: #f5f7fa"-->
-              <!--                  />-->
-              <!--                  <van-collapse-item-->
-              <!--                      :title="value.sourceName"-->
-              <!--                      v-for="(value,index) in sourceCusViewData"-->
-              <!--                      :key="value.id"-->
-              <!--                      :name="index">-->
-              <!--                    <template #title>-->
-              <!--                      <van-field-->
-              <!--                          readonly-->
-              <!--                          :label="value.sourceName"-->
-              <!--                          input-align="center"-->
-              <!--                          v-model="value.sourceCount"-->
-              <!--                      />-->
-              <!--                    </template>-->
-              <!--                  </van-collapse-item>-->
-              <!--                  <van-field-->
-              <!--                      readonly-->
-              <!--                      label="合计"-->
-              <!--                      v-model="cusCount"-->
-              <!--                      input-align="center"-->
-              <!--                      style="font-weight: bold"-->
-              <!--                  />-->
-              <!--                </van-collapse>-->
+              <!--饼图-->
+              <!--选项太多 导致饼图不好看，先隐藏饼图。-->
+              <!--              <div v-show=false>-->
+              <canvas id="sourceCusView"></canvas>
+              <van-divider dashed :style="{borderColor: '#c6effc'}"></van-divider>
               <!--              </div>-->
+
 
             </div>
             <div v-show="sourceCusViewData.length === 0" style="background-color: white;width: 100%;height: 100vh">
@@ -148,6 +95,7 @@
         </van-row>
       </van-tab>
     </van-tabs>
+
   </div>
 </template>
 
@@ -171,10 +119,9 @@ export default {
       allAmount: 0,
       cusCount: 0,
 
-      createDateShow: false,
-      maxDate: this.$dateUtils.getMaxMinDate()[0],
-      minDate: this.$dateUtils.getMaxMinDate()[1],
-      date: this.$dateUtils.getMonthStartEndDayStr(),
+      spendMethodDateShow: false,
+      // minSpendMethodDate: new Date(2018, 0, 1),
+      spendMethodDate: this.$dateUtils.getMonthStartEndDayStr(),
       chooseDate: new Date(),
       tenantCrop: localStorage.getItem("tenantCrop"),
       serviceArray: [{text: "选择客服", value: ""}],
@@ -191,16 +138,19 @@ export default {
       activeOrder: [],
       activeApp: [],
       activeMoney: [],
-      shopArray: [{text: "选择店铺", value: ""}],
-      shopId: "",
+      shopArray: [{text: "全国", value: ""}],
+      // shopArray: [],
+      // shopId: 59, //先写死 华鑫店(590
+      shopId: '',
 
     }
   },
   created() {
-    this.pageInit()
-    this.querySourceIds()
-    this.queryEmpIds()
-    this.queryShopIds()
+    // this.pageInit()
+    // this.querySourceIds()
+    // this.queryEmpIds()
+    this.queryProSpendAnalysisInfo()
+    this.queryShopIdsIsValid() //如果要默认加载单店铺 而不是全国的，那就在这个函数里改。
     this.date = this.formatDate(this.$dateUtils.getCurrentMonthFirstDay()) + " - " + this.formatDate(this.$dateUtils.getCurrentMonthLastDay())
   },
   mounted() {
@@ -219,18 +169,18 @@ export default {
     }
   },
   methods: {
-    pageInit() {
-      this.queryProSpendAnalysisInfo()
-      // this.querySourceReportsCus()
-    },
+    // pageInit() {
+    //   this.queryProSpendAnalysisInfo()
+    //   // this.querySourceReportsCus()
+    // },
     formatDate(date) {
       return `${date.getFullYear()}-${this.$dateUtils.dateIsSingle(date.getMonth() + 1)}-${this.$dateUtils.dateIsSingle(date.getDate())}`;
     },
-    dateOnConfirm(date) {
+    spendMethodDateOnConfirm(date) {
       const [start, end] = date;
-      this.createDateShow = false;
-      this.date = this.formatDate(start) + ' - ' + this.formatDate(end);
-      this.pageInit()
+      this.spendMethodDateShow = false;
+      this.spendMethodDate = this.formatDate(start) + ' - ' + this.formatDate(end);
+      this.queryProSpendAnalysisInfo()
     },
     queryServiceIds: function () {
       this.$selectUtils.queryServiceIds(this.$selectUtils.DropDownMenu).then(response => {
@@ -253,8 +203,8 @@ export default {
         this.dressArray.push(...JSON.parse(response.data.data))
       })
     },
-    queryShopIds() {
-      this.$selectUtils.queryShopIds(this.$selectUtils.DropDownMenu).then(response => {
+    queryShopIdsIsValid() {
+      this.$selectUtils.queryShopIdsIsValid(this.$selectUtils.DropDownMenu).then(response => {
         if (response.data.code === 200) {
           this.shopArray.push(...JSON.parse(response.data.data));
         }
@@ -274,18 +224,37 @@ export default {
       })
     },
 
+    shopTabOnClick(name, title) {
+      // console.log("点了 shopTabOnClick")
+      // console.log(name)
+      // console.log(title)
+
+      this.shopId = name
+      this.queryProSpendAnalysisInfo()
+
+      var v = this;
+      this.$nextTick(() => {
+        v.initSpendAnalysisView()
+        // v.initSourceCusView()
+      });
+
+      // this.mounted()
+      // this.initSpendAnalysisView()
+    },
+
     async queryProSpendAnalysisInfo() {
       this.sourceCusViewData = []
       await this.$axios({
         method: 'get',
         // url: '/serviceReports/customerSourceReportsCus', //原来客资报表数据的请求。
-        url: '/spendAnalysis/queryProSpendAnalysisInfo',
+        // url: '/spendAnalysis/queryProSpendAnalysisInfo',
+        url: '/spendAnalysis/querySpendAnalysisHandle',
         params: {
-          date: this.date,
+          date: this.spendMethodDate,
           tenantCrop: this.tenantCrop,
           empId: this.empId,
           sourceId: this.sourceId,
-          shopId: this.shopId
+          shopId: this.shopId,
         },
       }).then(response => {
         console.log("response noProjectLevelSpendAnalysis123")
@@ -293,7 +262,7 @@ export default {
         console.log(response.data.data)
 
         // let res = response.data.data;
-        this.allAmount = response.data.data.pop().sumAmount; //把最好一个数据取出来，然后把数值放到 allAmount
+        this.allAmount = response.data.data.pop().litres; //把最好一个数据取出来，然后把数值放到 allAmount
 
         this.sourceCusData = response.data.data;
         this.isService = true
@@ -310,7 +279,7 @@ export default {
       let count = this.allAmount
       // let cusXXXData = []
       val.forEach(s => {
-        s.pro = s.sumAmount / count * 100
+        s.pro = s.litres / count * 100
         // console.log(s.sumAmount)
         // console.log(count)
         // console.log(s.pro)
@@ -355,7 +324,7 @@ export default {
         inflectionOffset: 15,
         label1: function label1(data) {
           return {
-            text: data.projectsName,
+            text: data.foldName,
             fill: '#808080',
             fontSize: 14,
           };
@@ -371,7 +340,7 @@ export default {
       })
       this.sourceCusView.interval()
           .position('1*pro')
-          .color('projectsName', ['#1890FF', '#13C2C2', '#2FC25B', '#FACC14', '#F04864', '#ffe2ca', '#299999', '#ff9d4e', '#9967bd'])
+          .color('foldName', ['#1890FF', '#13C2C2', '#2FC25B', '#FACC14', '#F04864', '#ffe2ca', '#299999', '#ff9d4e', '#9967bd'])
           .adjust('stack');
       this.sourceCusView.render();
     },
@@ -454,11 +423,11 @@ export default {
       this.sourceCusView.render();
     },
 
-    createDateOnConfirm(val) {
-      this.date = this.$dateUtils.getMonthStartEndDayByDate(val)
-      this.createDateShow = false
-      this.querySourceReportsCus()
-    },
+    // createDateOnConfirm(val) {
+    //   this.date = this.$dateUtils.getMonthStartEndDayByDate(val)
+    //   this.spendMethodDateShow = false
+    //   this.querySourceReportsCus()
+    // },
     // 数据处理
     dataProcess(val) {
       var count = 0, cusXXXData = []
@@ -482,12 +451,12 @@ export default {
       this.querySourceReportsCus()
     },
     shopChange() {
-      if (this.empId !== "") {
-        this.empId = ""
-      }
-      this.empArray = this.empArray.slice(0, 1)
-      this.queryEmpIds()
-      this.querySourceReportsCus()
+      // if (this.empId !== "") {
+      //   this.empId = ""
+      // }
+      // this.empArray = this.empArray.slice(0, 1)
+      // this.queryEmpIds()
+      this.queryProSpendAnalysisInfo()
     }
   },
 }

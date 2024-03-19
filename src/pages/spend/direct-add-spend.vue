@@ -369,10 +369,10 @@ export default {
           'shopId': this.shopId,
           'spendAmount': this.spendAmount,
           'spendPeopleId': this.spendPeopleId,
-          'spendMethod': this.spendMethodId,
+          'spendMethodId': this.spendMethodId,
           'spendMethodTime': this.spendMethodTime + ":00", //后端接要精确到秒的。
-          'settlement': 1, //直接加支出。 已结算 (1）
-          'state': 2, // 直接加支出，设置审核状态为已通过 (2)
+          //'settlement': 1, //直接加支出。 已结算 (1）
+          'stateId': 4, // 直接加支出，设置审核状态为 已结算(4)
         },
       })
     },

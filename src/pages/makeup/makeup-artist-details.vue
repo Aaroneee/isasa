@@ -5,40 +5,23 @@
     </van-sticky>
     <div>
       <van-tabs color="#fdd640" swipeable animated>
-        <van-tab title="案例">
-          <van-empty v-if="makeupArtistImageList === 0" description="暂无化妆师案例"/>
+        <van-tab title="造型">
+          <van-empty v-if="makeupArtistImageList === 0" description="暂无造型"/>
           <div v-else>
-            <van-list
-                :v-model="loading"
-                :finished="finished"
-                @load="onLoad"
-                finished-text="没有更多了">
-              <van-cell style="font-size: 12px">
-                <van-row gutter="5">
-                  <van-col span="24" v-for="item in makeupArtistImageList" :key="item.id"
-                           @click="toMakeupArtistDetails(item)"
-                           style="text-align: center">
-                    <div v-if="item.imageType==='案例图'" class="card">
-                      <van-row><p class="cardTitle">{{ item.intrName }}</p></van-row>
-                      <van-row :gutter="20">
-                        <van-col :span="10">
-                          <div style="display: flex;justify-content: space-around;height: 100%">
-                            <img
-                                alt="图片已损坏，请重新选择主图"
-                                style="max-height: 90%"
-                                :src="'https://makeup-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.imageUrl"/>
-                          </div>
-                        </van-col>
-                        <van-col style="text-align: center" :span="14">
-                          <p>案例价格 : {{ item.priceAmount }}</p>
-                          <p>案例介绍 : {{ item.imageIntr }}</p>
-                        </van-col>
-                      </van-row>
-                    </div>
-                  </van-col>
-                </van-row>
-              </van-cell>
-            </van-list>
+            <van-cell style="font-size: 12px">
+              <van-row gutter="5">
+                <van-grid :column-num="2" :border="false">
+                  <van-grid-item v-for="item in makeupArtistImageList" :key="item.id">
+                    <van-image
+                        :src="item.imageUrl==='' ? 'null' : 'https://makeup-image-1304365928.cos.ap-shanghai.myqcloud.com/'+item.imageUrl"
+                        alt="主图显示失败,请重新设置主图" radius="10px" height="58vw" width="40vw"/>
+                    <van-col style="text-align: center" :span="14">
+                      <span>{{ item.intrName + ' ' + item.priceAmount }}</span>
+                    </van-col>
+                  </van-grid-item>
+                </van-grid>
+              </van-row>
+            </van-cell>
           </div>
         </van-tab>
 
@@ -49,11 +32,15 @@
           <van-cell-group>
             <van-cell style="font-size: 12px" v-for="item in todayAndLaterScheduleList" :key="item.id">
               <van-row>
-                <van-col span="24">客户名 :{{ item.makeupCustomer }}</van-col>
+                <van-col span="12">客户名 :{{ item.makeupCustomer }}</van-col>
+                <van-col span="12">档期 :{{ item.makeupDate }}</van-col>
               </van-row>
+              <!--              <van-row>-->
+              <!--                <van-col span="12">档期种类 :{{ ' ' + item.makeupType }}</van-col>-->
+              <!--              </van-row>-->
               <van-row>
-                <van-col span="12">档期时间 :{{ item.makeupDate + ' ' + item.makeupTime }}</van-col>
-                <van-col span="12">档期种类 :{{ ' ' + item.makeupType }}</van-col>
+                <van-col span="12">婚纱编号 :{{ item.clothesName }}</van-col>
+                <van-col span="12">造型名称 :{{ item.makeupName }}</van-col>
               </van-row>
               <van-row>
               </van-row>
@@ -68,11 +55,16 @@
           <van-cell-group v-show="historyShow">
             <van-cell style="font-size: 12px" v-for="item in beforeTodayScheduleList" :key="item.id">
               <van-row>
-                <van-col span="24">客户名 :{{ item.makeupCustomer }}</van-col>
+                <van-col span="12">客户名 :{{ item.makeupCustomer }}</van-col>
+                <van-col span="12">档期 :{{ item.makeupDate }}</van-col>
               </van-row>
+              <!--              <van-row>-->
+              <!--                <van-col span="12">档期时间 :{{ item.makeupDate + ' ' + item.makeupTime }}</van-col>-->
+              <!--                <van-col span="12">档期种类 :{{ ' ' + item.makeupType }}</van-col>-->
+              <!--              </van-row>-->
               <van-row>
-                <van-col span="12">档期时间 :{{ item.makeupDate + ' ' + item.makeupTime }}</van-col>
-                <van-col span="12">档期种类 :{{ ' ' + item.makeupType }}</van-col>
+                <van-col span="12">婚纱编号 :{{ item.clothesName }}</van-col>
+                <van-col span="12">造型名称 :{{ item.makeupName }}</van-col>
               </van-row>
               <van-row>
               </van-row>
@@ -91,7 +83,7 @@
         <div id="operationParent">
           <div class="operationBlock" @click="addMakeupArtistImage" v-if="this.$per('style_details:add_clothes')">
             <van-icon name="add-o" size="30"/>
-            <p>添加案例</p>
+            <p>添加造型</p>
           </div>
           <div class="operationBlock" @click="insertMakeupArtistImage" v-if="this.$per('style_details:add_clothes')">
             <van-icon name="add-o" size="30"/>
@@ -126,16 +118,27 @@ export default {
       loading: false,
       finished: false,
       makeupArtistImageList: [],
-      historyShow:false,
+      historyShow: false,
       todayAndLaterScheduleList: [],
-      beforeTodayScheduleList : [],
+      beforeTodayScheduleList: [],
       title: this.$route.query.artistName + " 化妆师详情"
     }
   }, components: {
     switchNavBar: switchNavBar,
   },
+  create() {
+    const that = this;
+    setTimeout(function () {
+      that.queryMakeupArtistList()
+      that.queryMakeupScheduleList()
+    }, 500)
+  },
+  mounted() {
+    this.queryMakeupArtistList()
+    this.queryMakeupScheduleList()
+  },
   methods: {
-    changeShowHistory: function (){
+    changeShowHistory: function () {
       this.historyShow = !this.historyShow
     },
     queryMakeupScheduleList() {
@@ -181,24 +184,14 @@ export default {
         if (response.data.code === 200) {
           this.finished = true
           this.loading = false
-          this.makeupArtistImageList.push(...response.data.data)
+          const data = response.data.data
+          const filter = data.filter(s => s.imageType === '案例图');
+          this.makeupArtistImageList.push(...filter)
         } else {
           this.finished = true
           this.$toast.fail(response.data.msg);
         }
       })
-    },
-    onLoad() {
-      const that = this;
-      setTimeout(function () {
-        that.queryMakeupArtistList()
-        that.queryMakeupScheduleList()
-      }, 500)
-    },
-    create() {
-      const that = this;
-      setTimeout(function () {
-      }, 500)
     },
     toMakeupArtistDetails(item) {
       console.log(item)

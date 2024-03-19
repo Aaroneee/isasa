@@ -15,7 +15,7 @@
         <p style="text-align: center;margin: 1% 0;font-size: 20px;font-weight: bolder">{{ imgTypeName }}</p>
       </van-row>
     </div>
-    <div v-show="detailsShow" class="card">
+    <div  class="card">
       <van-row><p class="PTitle">婚纱详情</p></van-row>
       <van-cell>
         <van-row>
@@ -34,7 +34,7 @@
         </van-row>
       </van-cell>
     </div>
-    <div v-show="detailsShow" class="card" @touchstart.prevent="touchPrice(stylePrice)" @touchend.prevent="clearTime(stylePrice)">
+    <div  class="card" @touchstart.prevent="touchPrice(stylePrice)" @touchend.prevent="clearTime(stylePrice)">
       <van-row><p class="PTitle">款式价格</p></van-row>
       <van-row v-if="stylePrice.length>0">
         <van-col :span="8" v-for="(item,index) in stylePrice" :key="index">
@@ -46,7 +46,7 @@
         <p style="text-align: center; margin: 3% 0">无</p>
       </van-row>
     </div>
-    <div v-show="detailsShow" class="card">
+    <div  class="card">
       <van-row><p class="PTitle">历史位置</p></van-row>
       <van-steps direction="vertical" :active="0" active-color="#000000" inactive-color="#000000" style="margin-left: 15%;">
         <van-step v-for="item in clothesOperations.slice(0, 3)" :key="item.id">
@@ -82,8 +82,8 @@
         </van-step>
       </van-steps>
     </div>
-    <div v-show="detailsShow" style="height: 140px"></div>
-    <div v-show="detailsShow" id="operationDiv">
+    <div  style="height: 140px"></div>
+    <div  id="operationDiv">
       <div id="operationCon">
         <p class="PTitle">操作菜单</p>
         <div id="operationParent">
