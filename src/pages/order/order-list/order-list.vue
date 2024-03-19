@@ -39,6 +39,10 @@
                 <van-col span="12">客户名:{{ item.name }}</van-col>
                 <van-col span="12" style="text-align: right">{{item.state}}</van-col>
               </van-row>
+              <van-row style="">
+                <van-col span="12">渠道:{{ item.source }}</van-col>
+                <van-col span="12" style="text-align: right">店铺:{{item.shopName}}</van-col>
+              </van-row>
               <van-row>
                 <van-col span="12">订单编号:{{ item.orderNo }}</van-col>
                 <van-col span="12" style="text-align: right">订单项目:{{ item.orderName }}</van-col>
