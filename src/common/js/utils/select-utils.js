@@ -8,6 +8,16 @@ export default {
 
     Picker: 1,
     DropDownMenu: 2,
+
+    projectType:{
+        expend:"支出项目",
+        proceeds:"收款项目",
+        order:"订单项目",
+        refund:"退款项目",
+        appoint:"预约项目",
+        category:"支出项目",
+    },
+
     //渠道
     querySourceIds: function (type) {
         return self.$axios({
@@ -447,6 +457,19 @@ export default {
             params: {
                 type: type,
                 tenantCrop: localStorage.getItem('tenantCrop')
+            }
+        })
+    },
+    //预约项目
+    queryAppProjectsIds(type, projectType, preAfterSale) {
+        return self.$axios({
+            method: "GET",
+            url: "/select/appProjects",
+            params: {
+                tenantCrop: localStorage.getItem("tenantCrop"),
+                type: type,
+                projectsType: projectType,
+                preAfterSale: preAfterSale,
             }
         })
     },
