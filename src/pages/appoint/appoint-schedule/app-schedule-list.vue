@@ -269,7 +269,7 @@ export default {
     },
     //查询店铺
     queryAppointShop: function () {
-      this.$selectUtils.queryShopIds(this.$selectUtils.DropDownMenu).then(response => {
+      this.$selectUtils.queryShopIdsIsValid(this.$selectUtils.DropDownMenu).then(response => {
         this.appointShopArray.push(...JSON.parse(response.data.data).filter(s => {
           return this.localShopArray.includes(s.value)
         }))

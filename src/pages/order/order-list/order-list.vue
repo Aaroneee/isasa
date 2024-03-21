@@ -232,7 +232,7 @@ export default {
       this.queryOrderList()
     },
     queryShopArray() {
-      this.$selectUtils.queryShopIds(this.$selectUtils.DropDownMenu).then(response => {
+      this.$selectUtils.queryShopIdsIsValid(this.$selectUtils.DropDownMenu).then(response => {
         this.shopArray.push(...JSON.parse(response.data.data).filter(s => {
           return this.localShopArray.includes(s.value)
         }))

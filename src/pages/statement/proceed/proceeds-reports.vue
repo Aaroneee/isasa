@@ -258,7 +258,7 @@ export default {
       })
     },
     queryShopArray() {
-      this.$selectUtils.queryShopIds(this.$selectUtils.Picker).then(response => {
+      this.$selectUtils.queryShopIdsIsValid(this.$selectUtils.Picker).then(response => {
         this.shopArray.push(...JSON.parse(response.data.data))
         console.log(this.shopArray)
         if (this.shopArray.length === 2){

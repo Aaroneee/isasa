@@ -223,7 +223,7 @@ export default {
     },
     // 查询店铺
     queryShops() {
-      this.$selectUtils.queryShopIds(this.$selectUtils.DropDownMenu).then(response => {
+      this.$selectUtils.queryShopIdsIsValid(this.$selectUtils.DropDownMenu).then(response => {
         this.shopArray.push(...JSON.parse(response.data.data))
       })
     },

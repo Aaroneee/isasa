@@ -432,7 +432,7 @@ export default {
 
     //查店铺参数。
     queryShop: function () {
-      this.$selectUtils.queryShopIds(this.$selectUtils.Picker).then(response => {
+      this.$selectUtils.queryShopIdsIsValid(this.$selectUtils.Picker).then(response => {
         this.shopArray = JSON.parse(response.data.data)
       })
     },

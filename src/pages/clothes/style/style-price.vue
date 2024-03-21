@@ -234,7 +234,7 @@ export default {
     },
     //查询店铺
     queryShopIds: function () {
-      this.$selectUtils.queryShopIds(this.$selectUtils.Picker).then((response) => {
+      this.$selectUtils.queryShopIdsIsValid(this.$selectUtils.Picker).then((response) => {
         this.shopIdArr = JSON.parse(response.data.data);
       })
     },

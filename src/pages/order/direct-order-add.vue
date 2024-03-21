@@ -497,7 +497,7 @@ export default {
           })
         }
       })
-      this.$selectUtils.queryShopIds(this.$selectUtils.Picker).then(response => {
+      this.$selectUtils.queryShopIdsIsValid(this.$selectUtils.Picker).then(response => {
         this.shopArray = JSON.parse(response.data.data);
         this.shopText = this.shopArray.filter(s => s.id === this.order.shopId)[0].text
       })

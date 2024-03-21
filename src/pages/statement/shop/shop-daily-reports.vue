@@ -607,7 +607,7 @@ export default {
       this.queryEarningSource();
     },
     queryShop: function () {
-      this.$selectUtils.queryShopIds(this.$selectUtils.Picker).then(response => {
+      this.$selectUtils.queryShopIdsIsValid(this.$selectUtils.Picker).then(response => {
         this.shopArray.push(...JSON.parse(response.data.data).filter(s => {
           return this.localShopArray.includes(s.id)
         }))

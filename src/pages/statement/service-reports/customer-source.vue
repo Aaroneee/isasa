@@ -394,7 +394,7 @@ export default {
       })
     },
     queryShopIds() {
-      this.$selectUtils.queryShopIds(this.$selectUtils.DropDownMenu).then(response => {
+      this.$selectUtils.queryShopIdsIsValid(this.$selectUtils.DropDownMenu).then(response => {
         if (response.data.code === 200) {
           this.shopArray.push(...JSON.parse(response.data.data));
         }

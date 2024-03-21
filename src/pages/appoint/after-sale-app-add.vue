@@ -199,7 +199,7 @@ export default {
     },
     //查询店铺
     queryShopIds() {
-      this.$selectUtils.queryShopIds(this.$selectUtils.Picker).then(response => {
+      this.$selectUtils.queryShopIdsIsValid(this.$selectUtils.Picker).then(response => {
         this.appointShopArray = JSON.parse(response.data.data);
         this.appoint.appointShop = this.appointShopArray[0].id
         this.appointShopText = this.appointShopArray[0].text

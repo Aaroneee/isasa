@@ -182,7 +182,7 @@ export default {
       this.queryPositionIdsByShop(value.id)
     },
     queryShopIds: function () {
-      this.$selectUtils.queryShopIds(this.$selectUtils.Picker).then(response => {
+      this.$selectUtils.queryShopIdsIsValid(this.$selectUtils.Picker).then(response => {
         let shopArray=JSON.parse(response.data.data);
         this.shopColumnsArray =shopArray;
 

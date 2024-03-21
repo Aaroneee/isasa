@@ -264,7 +264,7 @@ export default {
       })
     },
     queryShopIds: function () {
-      this.$selectUtils.queryShopIds(this.$selectUtils.DropDownMenu).then(response => {
+      this.$selectUtils.queryShopIdsIsValid(this.$selectUtils.DropDownMenu).then(response => {
         this.shopArray.push(...JSON.parse(response.data.data))
         //如果只有一个店铺则默认选中
         if (this.shopArray.length===2){

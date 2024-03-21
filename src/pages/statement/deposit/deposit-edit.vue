@@ -308,7 +308,7 @@ export default {
       this.showDressPicker = false;
     },
     queryShopIds() {
-      this.$selectUtils.queryShopIds(this.$selectUtils.Picker).then(response => {
+      this.$selectUtils.queryShopIdsIsValid(this.$selectUtils.Picker).then(response => {
         this.shopColumns = JSON.parse(response.data.data)
       })
     },
