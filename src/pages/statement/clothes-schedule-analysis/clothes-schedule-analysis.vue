@@ -1,7 +1,7 @@
 <template>
   <div>
     <van-sticky>
-      <baseNavBar title="款式档期分析表"/>
+      <switchNavBar title="款式档期分析表" :switchText="dateStringText" @flag="createDateShow=true"/>
       <form action="javascript:return true">
         <van-search
             @search="search"
@@ -29,7 +29,8 @@
         <van-dropdown-item v-model="shop" @change="shopChange" :options="shopArray"/>
         <van-dropdown-item :title="positionTitle" v-model="position" @change="positionChange" :options="positionArray"/>
       </van-dropdown-menu>
-
+      <van-calendar safe-area-inset-bottom v-model="createDateShow" :min-date="minDate" :max-date="maxDate"
+                    type="range" @confirm="createDateOnConfirm" allow-same-day/>
     </van-sticky>
     <div>
       <van-list
@@ -79,6 +80,7 @@
 
 <script>
 import baseNavBar from '@/components/nav-bar/base-nav-bar'
+import switchNavBar from "@/components/nav-bar/switch-nav-bar.vue";
 
 export default {
   name: "clothesScheduleAnalysis",
@@ -104,6 +106,11 @@ export default {
       shop:"",
       position:"",
       positionTitle: "位置",
+      createDateShow: false,
+      maxDate:this.$dateUtils.getMaxMinDate()[0],
+      minDate:this.$dateUtils.getMaxMinDate()[1],
+      dateString:"",
+      dateStringText:"档期日期",
     }
   }
   , created() {
@@ -114,6 +121,7 @@ export default {
     this.queryShopIds()
   }
   , components: {
+    switchNavBar,
     baseNavBar
   }
   , methods: {
@@ -127,7 +135,7 @@ export default {
           limit: 30,
           clothesName: "%"+this.styleName+"%",
           styleType:this.styleType,
-          // date: this.form.dateString,
+          date: this.dateString,
           positionId: this.position,
           shopId: this.shop,
           tenantCrop: this.tenantCrop
@@ -215,6 +223,15 @@ export default {
       this.$selectUtils.queryPositionIdsByShop(shop, this.$selectUtils.DropDownMenu).then(response => {
         this.positionArray = JSON.parse(response.data.data)
       })
+    },
+    //日历确认
+    createDateOnConfirm: function (time) {
+
+      this.dateString = this.$dateUtils.rangeVantDateToYMD(time);
+      this.dateStringText = this.$dateUtils.rangeVantDateToMD(time);
+      this.dataClear()
+      this.queryStyleList()
+      this.createDateShow = false;
     },
     onLoad() {
       this.queryStyleList()
