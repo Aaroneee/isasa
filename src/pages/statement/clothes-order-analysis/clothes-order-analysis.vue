@@ -280,8 +280,8 @@ img{
   border-radius: 7px;
 }
 .card{
-  min-height: 270px;
-  max-height: 270px;
+  min-height: 290px;
+  max-height: 290px;
   min-width: 160px;
   padding: 5px 5px 3px 5px ;
   background-color: white;
