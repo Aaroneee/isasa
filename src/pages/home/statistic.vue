@@ -28,6 +28,13 @@
                        :text="value.viewName"/>
       </van-grid>
     </van-cell-group>
+    <van-cell-group v-if="modules.款式报表 !=null" title="款式报表" class="gird_module">
+      <van-grid :border="false" clickable :column-num="4">
+        <van-grid-item v-for="value in modules.款式报表" @click="onClickItem(value.viewLink)" :key="value.id"
+                       :icon="value.viewIcon"
+                       :text="value.viewName"/>
+      </van-grid>
+    </van-cell-group>
   </div>
 </template>
 
@@ -43,6 +50,8 @@ export default {
   },
   methods: {
     onClickItem: function (event,id) {
+      console.log(event)
+      console.log(id)
       this.$store.commit('setKeepAlive', [event])
       this.$router.push({name: event,query:{id: id}})
     },

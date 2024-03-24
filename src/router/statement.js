@@ -3,6 +3,8 @@ import shopDailyReports from "@/pages/statement/shop/shop-daily-reports"//店铺
 import customerSource from "@/pages/statement/service-reports/customer-source"
 import depositReports from "@/pages/statement/deposit/deposit-reports";
 import proceedsReports from "@/pages/statement/proceed/proceeds-reports";
+import clothesOrderAnalysis from "@/pages/statement/clothes-order-analysis/clothes-order-analysis";
+import clothesScheduleAnalysis from "@/pages/statement/clothes-schedule-analysis/clothes-schedule-analysis";
 //渠道分析表
 export default[
     {
@@ -29,5 +31,15 @@ export default[
         path: '/proceedsReports',
         name: 'proceedsReports',
         component: proceedsReports
+    },
+    {
+        path: '/clothesOrderAnalysis',
+        name: 'clothesOrderAnalysis',
+        component: clothesOrderAnalysis
+    },
+    {
+        path: '/clothesScheduleAnalysis',
+        name: 'clothesScheduleAnalysis',
+        component: clothesScheduleAnalysis
     }
 ]

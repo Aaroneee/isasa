@@ -21,6 +21,19 @@ export default {
         let endDay = this.dateIsSingle(endDate.getDate());
         return startYear + "-" + startMonth + "-" + startDay + " - " + endYear + "-" + endMonth + "-" + endDay;
     },
+    //Vant 跨月时间转化为 月日 - 月日
+    rangeVantDateToMD(date) {
+        console.log(date)
+        let startDate = date[0];
+        let endDate = date[1];
+
+        let startMonth = this.dateIsSingle(startDate.getMonth() + 1);
+        let startDay = this.dateIsSingle(startDate.getDate());
+
+        let endMonth = this.dateIsSingle(endDate.getMonth() + 1);
+        let endDay = this.dateIsSingle(endDate.getDate());
+        return  startMonth + "-" + startDay + " - " + endMonth + "-" + endDay;
+    },
     getTimeStr(type) {
         var d = new Date();
         var month = d.getMonth() + 1;
