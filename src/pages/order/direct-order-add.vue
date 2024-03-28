@@ -102,6 +102,11 @@
               @cancel="serviceShowPicker = false"
           />
         </van-popup>
+        <van-field name="switch" label="添加预约">
+          <template #input>
+            <van-switch v-model="addAppointFlag" size="20" />
+          </template>
+        </van-field>
         <van-field
             class="msg"
             name="remark"
@@ -140,24 +145,6 @@
             readonly
             required
             :rules="[{required: true}]"
-            label="订单化妆师"
-            v-model="cosmeticsText"
-            placeholder="订单化妆师"
-            @click="cosmeticsShowPicker = true"
-        />
-        <van-popup v-model="cosmeticsShowPicker" position="bottom">
-          <van-picker
-              show-toolbar
-              getColumnValues
-              :columns="cosmeticsArray"
-              @confirm="cosmeticsConfirm"
-              @cancel="cosmeticsShowPicker = false"
-          />
-        </van-popup>
-        <van-field
-            readonly
-            required
-            :rules="[{required: true}]"
             label="订单店铺"
             v-model="shopText"
             placeholder="订单店铺"
@@ -188,6 +175,24 @@
               :columns="orderNameArray"
               @confirm="orderNameConfirm"
               @cancel="orderNamePicker = false"
+          />
+        </van-popup>
+        <van-field
+            readonly
+            :required="orderCosmeticsCheck"
+            :rules="[{required: orderCosmeticsCheck}]"
+            label="订单化妆师"
+            v-model="cosmeticsText"
+            placeholder="订单化妆师"
+            @click="cosmeticsShowPicker = true"
+        />
+        <van-popup v-model="cosmeticsShowPicker" position="bottom">
+          <van-picker
+              show-toolbar
+              getColumnValues
+              :columns="cosmeticsArray"
+              @confirm="cosmeticsConfirm"
+              @cancel="cosmeticsShowPicker = false"
           />
         </van-popup>
         <van-field
@@ -427,6 +432,19 @@ export default {
       serviceColumns: [],
       serviceShowPicker: false,
       cusCreateDateShowPicker: false,
+      appoint:{
+        createDate: this.$dateUtils.vantDateToYMD(new Date()),
+        appointDate: this.$dateUtils.vantDateToYMD(new Date()),
+        appointTime: "12:00",
+        inviter: "",
+        appointName: "",
+        appointShop: "",
+        appointDress: "",
+        appointCosmetics: "",
+        type: "售前预约",
+        tenantCrop: localStorage.getItem("tenantCrop"),
+      },
+      appointNameArray:[],
       order: {
         createDate: this.$dateUtils.vantDateToYMD(new Date()),
         shopId: localStorage.getItem("shopIds").split(",").map(Number)[0],
@@ -449,6 +467,8 @@ export default {
       orderNameText: "",
       orderNameArray: [],
       orderNamePicker: false,
+      //订单化妆师是否必填
+      orderCosmeticsCheck:false,
       process: {
         proceedsName: "",
         payment: "",
@@ -469,6 +489,7 @@ export default {
       payeePicker: false,
       payeeArray: [],
       loading: false,
+      addAppointFlag:true,
     }
   },
   methods: {
@@ -500,6 +521,7 @@ export default {
       this.$selectUtils.queryShopIdsIsValid(this.$selectUtils.Picker).then(response => {
         this.shopArray = JSON.parse(response.data.data);
         this.shopText = this.shopArray.filter(s => s.id === this.order.shopId)[0].text
+        this.appoint.appointShop = this.order.shopId;
       })
       this.$selectUtils.queryCosmeticsIds(this.$selectUtils.Picker).then(response => {
         this.cosmeticsArray = JSON.parse(response.data.data);
@@ -527,6 +549,12 @@ export default {
           this.payee = localStorage.getItem('empId')
         }
       })
+      this.$selectUtils.queryAppProjectsIds(this.$selectUtils.Picker,this.$projectsType.appoint
+          ,1).then(response => {
+        this.appointNameArray = JSON.parse(response.data.data);
+        let defChoose=this.appointNameArray.filter(item=>item.text==='试纱');
+        this.appoint.appointName=defChoose[0].value;
+      })
     },
     sourceOnConfirm(value) {
       if (value[1] === "") {
@@ -542,20 +570,22 @@ export default {
     serviceOnConfirm: function (value) {
       this.serviceText = value.text;
       this.customer.service = value.id;
+      this.appoint.inviter= value.id;
       this.serviceShowPicker = false;
     },
     cusCreateDateOnConfirm: function (time) {
-      this.customer.createDate = this.$dateUtils.vantDateToYMD(time);
+      let formatDate = this.$dateUtils.vantDateToYMD(time);
+      this.customer.createDate = formatDate;
       this.cusCreateDateShowPicker = false;
-      this.order.createDate=this.$dateUtils.vantDateToYMD(time);
+      this.order.createDate = formatDate;
+      this.appoint.createDate = formatDate;
+      this.appoint.appointDate = formatDate;
     },
     next() {
       this.active++
-      console.log(this.active)
     },
     previous() {
       this.active--
-      console.log(this.active)
     },
     orderCreateDateConfirm(value) {
       this.order.createDate = this.$dateUtils.vantDateToYMD(value);
@@ -564,11 +594,13 @@ export default {
     shopConfirm(val) {
       this.shopText = val.text
       this.customer.shopId = val.id
+      this.appoint.appointShop= val.id;
       this.shopShowPicker = false
     },
     cosmeticsConfirm(val) {
       this.cosmeticsText = val.text
       this.order.orderCosmetics = val.id
+      this.appoint.appointCosmetics = val.id
       this.cosmeticsShowPicker = false
     },
     weddingDayConfirm(value) {
@@ -579,6 +611,15 @@ export default {
       this.order.orderName = value.id
       this.orderNameText = value.text
       this.orderNamePicker = false
+
+      if (value.text.includes("妆")){
+        let defChoose=this.appointNameArray.filter(item=>item.text==='试妆');
+        this.appoint.appointName=defChoose[0].value;
+      }
+
+      //如果订单项目是婚礼跟妆则化妆师必填
+      this.orderCosmeticsCheck=value.text==='婚礼跟妆';
+
     },
     proceedsNameConfirm(val) {
       this.process.proceedsName = val.id;
@@ -611,6 +652,8 @@ export default {
       this.loading = false
       this.$axios.post('/order/directAddOrder',
   {customer: this.customer,
+        appoint: this.appoint,
+        addAppointFlag:this.addAppointFlag,
         order: this.order,
         process: this.process}).then(response => {
         this.loading = false
