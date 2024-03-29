@@ -1,9 +1,9 @@
 <template>
   <div>
     <van-sticky>
-      <switchNavBar :title="titleText" switchText="对接日期" @flag="createDateShow=true"/>
+      <switchNavBar title="客资列表" :switchText="titleText" @flag="createDateShow=true"/>
       <van-calendar v-model="createDateShow" :min-date="minDate" :max-date="maxDate"
-                    @confirm="createDateOnConfirm"/>
+                    type="range" allow-same-day @confirm="createDateOnConfirm"/>
       <form action="javascript:return true">
       <van-search
           @search="queryCusList"
@@ -77,9 +77,10 @@ export default {
       customerList: [],
       loading: false,
       finished: false,
-      titleText: "客资列表",
+      titleText: "对接日期",
       createDateShow: false,
       createDate: "",
+      dateSection: "",
 
       maxDate:this.$dateUtils.getMaxMinDate()[0],
       minDate:this.$dateUtils.getMaxMinDate()[1],
@@ -174,6 +175,7 @@ export default {
         params: {
           value: val,
           createDate: this.createDate,
+          dateSection: this.dateSection,
           source: this.source,
           grade: this.grade,
           state: this.state,
@@ -233,9 +235,10 @@ export default {
           self.$toast.fail(response.data.msg);
         }
       })
-    }, createDateOnConfirm: function (time) {
-      this.createDate = this.$dateUtils.vantDateToYMD(time);
-      this.titleText = this.$dateUtils.vantDateToYMD(time);
+    },
+    createDateOnConfirm: function (time) {
+      this.dateSection = this.$dateUtils.vantDateToYMD(time[0])+" - "+this.$dateUtils.vantDateToYMD(time[1]);
+      this.titleText = this.$dateUtils.rangeVantDateToMD(time);
       this.queryCusList();
       this.createDateShow = false;
     },
