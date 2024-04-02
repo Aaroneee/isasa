@@ -141,6 +141,8 @@ export default {
   },
   methods: {
     queryShopEarningReports: function () {
+
+      let shopIds=this.shopId===''?this.localShopArray.join(','):'';
       this.$axios({
         method: "GET",
         url: "/shopReports/queryShopEarningReports",
@@ -149,6 +151,7 @@ export default {
           endDate: this.endDate,
           tenantCrop: this.tenantCrop,
           shopId: this.shopId,
+          shopIds: shopIds,
           dressId: this.dressId,
         }
       }).then(response => {
