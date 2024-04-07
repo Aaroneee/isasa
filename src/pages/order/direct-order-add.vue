@@ -489,7 +489,7 @@ export default {
       payeePicker: false,
       payeeArray: [],
       loading: false,
-      addAppointFlag:true,
+      addAppointFlag:false,
     }
   },
   methods: {
