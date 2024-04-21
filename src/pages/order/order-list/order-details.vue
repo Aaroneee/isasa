@@ -453,29 +453,35 @@ export default {
       })
     },
     weddingDayUpdateOnConfirm(val) {
-      this.$axios({
-        method: "post",
-        url: "/weddingDate/updateWeddingDayById",
-        data: {
-          id: this.editWeddingDay.id,
-          weddingDay: this.$dateUtils.vantDateToYMD(val),
-          createDate: new Date(),
-        }
-      }).then(response => {
-        let flag = response.data.code === 200
-        if (flag) {
-          this.$toast.success("修改成功！")
-          this.queryWeddingDayByOrderId()
-          this.queryCusSchedules()
-          this.queryOrderVo()
-          setTimeout(()=> {
-            this.editWeddingDayShow = false
-          }, 500)
-        }
-        if (!flag) {
-          this.$toast.fail(response.data.msg)
-        }
+      this.$dialog.confirm({
+        title: '修改婚期',
+        message: '如果婚期下有档期则同步修改档期,是否确定修改?',
       })
+          .then(() => {
+            this.$axios({
+              method: "post",
+              url: "/weddingDate/updateWeddingDayById",
+              data: {
+                id: this.editWeddingDay.id,
+                weddingDay: this.$dateUtils.vantDateToYMD(val),
+                createDate: new Date(),
+              }
+            }).then(response => {
+              let flag = response.data.code === 200
+              if (flag) {
+                this.$toast.success("修改成功！")
+                this.queryWeddingDayByOrderId()
+                this.queryCusSchedules()
+                this.queryOrderVo()
+                setTimeout(()=> {
+                  this.editWeddingDayShow = false
+                }, 500)
+              }
+              if (!flag) {
+                this.$toast.fail(response.data.msg)
+              }
+            })
+          })
     },
     addClothesSchedule(item) {
       this.dialogShow = true
