@@ -403,9 +403,6 @@ export default {
     },
     defaultWeddingDay() {
       this.dateAmong = get_before_date(this.weddingDay, this.rule, 0)
-      const dateArray = this.$dateUtils.getAroundDate(this.weddingDay,this.rule)
-      this.minDate = dateArray[0]
-      this.maxDate = dateArray[1]
       this.defaultDate = this.$dateUtils.dateSectionStrToDateArray(this.dateAmong)
 
       //查询是否撞档
