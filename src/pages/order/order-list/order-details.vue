@@ -435,22 +435,28 @@ export default {
       this.editWeddingDayShow = true
     },
     weddingDayRemove(val) {
-      this.$axios({
-        method: "delete",
-        url: "/weddingDate/removeWeddingDayById",
-        params: {
-          id: val
-        }
-      }).then(response => {
-        let flag = response.data.code === 200
-        if (flag) {
-          this.$toast.success("删除成功")
-          this.queryWeddingDayByOrderId()
-        }
-        if (!flag) {
-          this.$toast.fail(response.data.msg)
-        }
+      this.$dialog.confirm({
+        title: '删除婚期',
+        message: '确定删除该婚期?',
       })
+          .then(() => {
+            this.$axios({
+              method: "delete",
+              url: "/weddingDate/removeWeddingDayById",
+              params: {
+                id: val
+              }
+            }).then(response => {
+              let flag = response.data.code === 200
+              if (flag) {
+                this.$toast.success("删除成功")
+                this.queryWeddingDayByOrderId()
+              }
+              if (!flag) {
+                this.$toast.fail(response.data.msg)
+              }
+            })
+          })
     },
     weddingDayUpdateOnConfirm(val) {
       this.$dialog.confirm({
