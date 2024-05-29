@@ -250,8 +250,11 @@ export default {
         ).then(response => {
           this.appointDressArray = JSON.parse(response.data.data);
           if (this.appoint.appointDress !== "") {
-            this.appointDressText = this.appointDressArray.find(k => k.id === this.appoint.appointDress).text;
-            this.appointDress = this.appointDressArray.find(k => k.id === this.appoint.appointDress).id;
+            let defDress =this.appointDressArray.find(k => k.id === this.appoint.appointDress)
+            if (defDress){
+              this.appointDressText = defDress.text;
+              this.appointDress = defDress.id;
+            }
 
           }
           resolve();
@@ -266,8 +269,11 @@ export default {
         ).then(response => {
           this.appointCosmeticsArray = JSON.parse(response.data.data);
           if (this.appoint.appointCosmetics !== "") {
-            this.appointCosmeticsText = this.appointCosmeticsArray.find(k => k.id === this.appoint.appointCosmetics).text;
-            this.appointCosmetics = this.appointCosmeticsArray.find(k => k.id === this.appoint.appointCosmetics).id;
+            let defCosmetics = this.appointCosmeticsArray.find(k => k.id === this.appoint.appointCosmetics);
+            if (defCosmetics){
+              this.appointCosmeticsText = defCosmetics.text;
+              this.appointCosmetics = defCosmetics.id;
+            }
           }
           resolve();
         })
