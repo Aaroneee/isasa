@@ -18,6 +18,7 @@ import clothesBumperAlert from "@/pages/clothes/clothes/clothes-bumper-alert";
 import clothesManager from "@/pages/clothes/clothes/clothes-manager";
 import clothesEdit from "@/pages/clothes/clothes/clothes-edit";
 import storeStyleAdd from "@/pages/clothes/style/store-style-add.vue";
+import inventOperation from "@/pages/clothes/operation/invent-operation.vue"
 
 export default [
     {
@@ -120,5 +121,10 @@ export default [
         path: '/storeStyleAdd',
         name: 'storeStyleAdd',
         component: storeStyleAdd,
+    },
+    {
+        path: '/inventOperation',
+        name: 'inventOperation',
+        component: inventOperation,
     },
 ]

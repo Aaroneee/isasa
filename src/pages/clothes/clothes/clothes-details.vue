@@ -59,6 +59,10 @@
             <van-icon name="edit" size="30"/>
             <p>编辑</p>
           </div>
+          <div class="operationBlock" @click="inventOperation">
+            <van-icon name="records-o" size="30"/>
+            <p>盘库</p>
+          </div>
           <div class="operationBlock" @click="clothesOperation">
             <van-icon name="back-top" size="30"/>
             <p>出样陈列</p>
@@ -245,6 +249,10 @@ export default {
     //出样陈列
     clothesOperation: function () {
       this.$router.push({name: "clothesOperation", query: this.clothes})
+    },
+    //盘库
+    inventOperation:function (){
+      this.$router.push({name: "inventOperation", query: this.clothes})
     },
     clothesSchedules: function () {
       this.$router.push({name: "clothesSchedule", query: this.clothes})

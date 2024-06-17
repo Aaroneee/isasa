@@ -1,6 +1,6 @@
 <template>
   <div>
-    <baseNavBar title="出样陈列"/>
+    <baseNavBar title="盘库"/>
     <van-form @submit="addClothesOperation">
       <!-- 婚纱尺寸 start-->
       <van-field
@@ -36,15 +36,6 @@
           @click="operationShowPicker = true"
           :rules="[{ required: true }]"
       />
-      <van-popup v-model="operationShowPicker" position="bottom">
-        <van-picker
-            getColumnValues
-            show-toolbar
-            :columns="operationArray"
-            @confirm="operationOnConfirm"
-            @cancel="inviterShowPicker = false"
-        />
-      </van-popup>
 
       <!-- 所在位置 start-->
       <van-field
@@ -66,17 +57,6 @@
             @cancel="positionShowPicker = false"
         />
       </van-popup>
-      <!-- 所在位置 end-->
-      <van-field
-          class="msg"
-          name="remark"
-          v-model="remark"
-          type="textarea"
-          label="备注"
-          placeholder="本次操作备注"
-          maxlength="40"
-          show-word-limit
-      />
 
 
       <van-button
@@ -126,8 +106,8 @@ export default {
   }
   , components: {
     baseNavBar
-  }
-  , methods: {
+  },
+  methods: {
     addClothesOperation: function (data) {
       data.operationId = this.operationId
       data.positionId = this.positionId
@@ -138,16 +118,16 @@ export default {
       data.localPositionId = this.clothes.positionId
       data.empId = localStorage.getItem("empId")
       this.$dialog.confirm({
-        title: '出样陈列',
-        message: '是否将' + data.clothesName + "移动到" + this.clothesPositionText,
+        title: '盘库',
+        message: '是否将' + data.clothesName + "盘库到" + this.clothesPositionText,
       }).then(() => {
         this.$axios({
           method: "PUT",
-          url: "/clothesOperation/addClothesOperation",
-          params: data
+          url: "/clothesOperation/addInventOperation",
+          data: data
         }).then(response => {
           if (response.data.code === 200) {
-            this.$toast.success("出样陈列成功")
+            this.$toast.success("盘库成功")
             const that = this
             setTimeout(function () {
               that.$router.go(-2)
@@ -162,9 +142,9 @@ export default {
       this.$selectUtils.queryOperationIds(this.$selectUtils.Picker).then(response => {
         const data = JSON.parse(response.data.data)
         if (data.length > 0) {
-          this.operationArray = data.filter(item => item.text !== "盘库")
-          this.operationText = data[0].text;
-          this.operationId = data[0].id;
+          this.operationArray = data.filter(item => item.text === "盘库")
+          this.operationText = this.operationArray[0].text;
+          this.operationId = this.operationArray[0].id;
         }
       })
     }
