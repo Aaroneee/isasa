@@ -51,6 +51,13 @@
                        :text="value.viewName"/>
       </van-grid>
     </van-cell-group>
+    <van-cell-group v-if="modules.账户管理 !=null" title="账户管理" class="gird_module">
+      <van-grid :border="false" clickable :column-num="4">
+        <van-grid-item v-for="value in modules.账户管理" @click="onClickItem(value.viewLink)" :key="value.id"
+                       :icon="value.viewIcon"
+                       :text="value.viewName"/>
+      </van-grid>
+    </van-cell-group>
     <br><br><br>
   </div>
 </template>

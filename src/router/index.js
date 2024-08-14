@@ -15,6 +15,7 @@ import user from "@/router/user";//押金
 import message from "@/router/message";//押金
 import makeup from "@/router/makeup";//化妆
 import spend from "@/router/spend";//支出
+import account from "@/router/account";//账户
 
 // import login from '../pages/login/login'//首页
 
@@ -38,6 +39,7 @@ const router = new Router({
         ...message,
         ...makeup,
         ...spend,
+        ...account,
     ],
     scrollBehavior(to, from, savedPosition) {
         if (savedPosition) {
