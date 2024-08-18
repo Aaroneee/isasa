@@ -25,7 +25,7 @@
 
           </van-row>
           <van-row>
-            <van-col span="12">上次对账时间:{{ item.lastTime }}</van-col>
+            <van-col span="24">上次对账时间:{{ item.lastTime }}</van-col>
           </van-row>
           <van-row>
             <van-col span="12">上次对账金额:{{ item.lastTimeAmount }}</van-col>
