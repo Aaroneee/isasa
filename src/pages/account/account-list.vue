@@ -1,15 +1,20 @@
 <template>
   <div>
     <van-sticky>
-      <base-nav-bar title="收款列表"/>
+      <base-nav-bar title="账户列表"/>
+      <van-dropdown-menu>
+        <van-dropdown-item v-model="shop" @change="shopChange"
+                           :options="shopArray"/>
+      </van-dropdown-menu>
     </van-sticky>
-    <div>
+    <div style="background-color: #f7f8fa;">
       <van-list
           v-model="loading"
           :finished="finished"
           finished-text="没有更多了"
+          style="display: flex;flex-direction: column;align-items: center;padding: 2%;"
       >
-        <van-cell style="font-size: 12px" v-for="item in tableData" :key="item.id">
+        <van-cell style="font-size: 12px;margin: 2%;border-radius: 10px" v-for="item in tableData" :key="item.id">
           <van-row>
             <van-col span="12">户名：{{ item.accountName }}</van-col>
             <van-col span="12">所属店铺：{{ item.shopName }}</van-col>
@@ -55,10 +60,14 @@ export default {
       tableData: [],
       tenantCrop: localStorage.getItem("tenantCrop"),
 
+      shopArray: [{text: "店铺", value: ""}],
+      shop: "",
+
     }
   },
   created() {
     this.queryAccountList();
+    this.queryShopList();
   },
   methods: {
     // 查询
@@ -74,10 +83,26 @@ export default {
         this.loading = false;
         this.finished = true;
         if (response.data.code === 200) {
-          this.tableData = response.data.data
+          if (this.shop){
+            this.tableData = response.data.data.filter(item=>{
+              return item.shopId===this.shop
+            })
+          }else {
+            this.tableData = response.data.data
+          }
         } else {
           this.$toast.fail(response.data.msg)
         }
+      })
+    },
+    shopChange: function (value) {
+      this.shop = value;
+      this.queryAccountList();
+    },
+    //查询店铺
+    queryShopList: function () {
+      this.$selectUtils.queryShopIdsIsValid(this.$selectUtils.DropDownMenu).then(response => {
+        this.shopArray.push(...JSON.parse(response.data.data));
       })
     },
   },
