@@ -72,7 +72,7 @@
           <van-col v-show="scheduleCount>0" style="color: var(--my-error-color)" span="12">已有档期数:{{ scheduleCount }}</van-col>
 <!--          <van-col style="color: #39a9ed" span="12">婚期:{{ order.weddingDay }}</van-col>-->
         </van-cell>
-        <van-form @submit="addSchedule">
+        <van-form @submit="addScheduleRule">
           <van-field
               name="clothesNo"
               v-model="clothesNo"
@@ -234,7 +234,23 @@ export default {
       this.page=1;
       this.queryClothesList()
     },
-    addSchedule: function (data) {
+    addScheduleRule: function (data) {
+      let strings = data.dateAmong.split(" - ");
+      if (!this.$dateUtils.judgeDateStrIsRange(this.weddingDay,strings[0],this.rule)
+          ||
+          !this.$dateUtils.judgeDateStrIsRange(this.weddingDay,strings[1],this.rule)){
+        this.$dialog.confirm({
+          title: '档期与婚期相差较大请确认',
+          message: `婚期：${this.weddingDay}<br/>档期开始：${strings[0]}<br/>档期结束：${strings[1]}`,
+        }).then(() => {
+          this.addSchedule(data);
+        })
+      }else {
+        this.addSchedule(data);
+      }
+    },
+
+    addSchedule:function (data){
       this.$dialog.confirm({
         title: '添加订单档期款式',
         message: '确定要添加该档期吗？',
@@ -254,7 +270,6 @@ export default {
           }
         })
       })
-
     }
     , queryClothesList: function () {
       this.loading = true
@@ -402,8 +417,10 @@ export default {
       this.dateSectionShow=true
     },
     defaultWeddingDay() {
-      this.dateAmong = get_before_date(this.weddingDay, this.rule, 0)
-      this.defaultDate = this.$dateUtils.dateSectionStrToDateArray(this.dateAmong)
+      let dateRange=this.$dateUtils.getAroundDate(this.weddingDay,this.rule);
+
+      this.dateAmong = this.$dateUtils.vantDateToYMD(dateRange[0])+" - "+this.$dateUtils.vantDateToYMD(dateRange[1])
+      this.defaultDate = this.$dateUtils.getAroundDate(this.weddingDay,this.rule)
 
       //查询是否撞档
       this.queryScheduleCount();
@@ -423,22 +440,6 @@ export default {
       })
     },
   }
-}
-
-function get_before_date(date, day, after) {
-  let date1 = new Date(date);
-  let time1 = date1.getFullYear() + "-" + (dateIsSingle(date1.getMonth() + 1)) + "-" + dateIsSingle(date1.getDate());//time1表示当前时间
-  let date2 = new Date(date);
-  date2.setDate(date1.getDate() - day);
-  let time2 = date2.getFullYear() + "-" + (dateIsSingle(date2.getMonth() + 1)) + "-" + dateIsSingle(date2.getDate());
-  let date3 = new Date(date);
-  date3.setDate(date3.getDate() + (day + after));
-  let time3 = date3.getFullYear() + "-" + (dateIsSingle(date3.getMonth() + 1)) + "-" + dateIsSingle(date3.getDate());
-  return time2 + ' - ' + time3;
-}
-
-function dateIsSingle(date) {
-  return date < 9 ? "0" + date : date;
 }
 
 function arrTrans(num, arr) {

@@ -160,5 +160,16 @@ export default {
         let month = date.getMonth();
         let lastDay = new Date(year, month+1, 0).getDate();
         return lastDay;
-    }
+    },
+
+    //判断日期是否在标准日期范围内
+    //2024-09-23 2024-09-24 4 true
+    //2024-09-23 2024-09-30 4 false
+    //2024-09-23 2024-09-15 4 false
+    judgeDateStrIsRange(baseDate, judgeDate, day) {
+        let timeDifference = Math.abs(new Date(baseDate).getTime() - new Date(judgeDate).getTime());
+        // 将毫秒转换成天数
+        let daysDifference = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
+        return day >= daysDifference;
+    },
 }
