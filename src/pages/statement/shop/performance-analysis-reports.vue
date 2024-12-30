@@ -395,8 +395,9 @@ export default {
 
     },
 
-    shopChange: function () {
+    shopChange: function (value) {
       this.queryCustomerServiceMonthReport();
+      this.shopId = value;
     },
     dressChange: function () {
       this.queryCustomerServiceMonthReport();
@@ -415,6 +416,7 @@ export default {
         this.shopArray.push(...JSON.parse(response.data.data).filter(s => {
           return this.localShopArray.includes(s.value)
         }))
+        this.shopChange(this.shopArray[1].value);
       })
     },
     queryDress: function () {
