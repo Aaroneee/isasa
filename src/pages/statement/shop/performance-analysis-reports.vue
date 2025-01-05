@@ -49,7 +49,7 @@ export default {
   created() {
     this.queryShop();
     this.queryDress();
-    this.queryCustomerServiceMonthReport();
+    // this.queryCustomerServiceMonthReport();
   },
   data() {
     return{
@@ -238,8 +238,8 @@ export default {
     },
 
     shopChange: function (value) {
-      this.queryCustomerServiceMonthReport();
       this.shopId = value;
+      this.queryCustomerServiceMonthReport();
     },
     dressChange: function () {
       this.queryCustomerServiceMonthReport();
