@@ -20,19 +20,20 @@
       </van-dropdown-menu>
     </van-sticky>
     <div style="padding-top: 10px">
-      <van-divider content-position="left">行政执行分析</van-divider>
+      <van-divider content-position="left">调货分析</van-divider>
       <van-cell-group :border="false" inset>
 
-        <van-cell :border="false" title="出样数" :value="saleExtractionAnalysisCount"
-                  @click="dialogShow('出样详情','出样数','saleExtractionAnalysisTable')"></van-cell>
-        <van-cell :border="false" title="盘库数" :value="invCount"
-                  @click="dialogShow('盘库详情','盘库数','invTable')"></van-cell>
-        <van-cell :border="false" title="纠错数" :value="invCount"
-                  @click="dialogShow('纠错详情','纠错数','invCorTable')"></van-cell>
-        <van-cell :border="false" title="消疑数" :value="clearDoubtCount"
-                  @click="dialogShow('消疑详情','消疑数','clearDoubtTable')"></van-cell>
+        <van-cell :border="false" title="申请调货数" :value="transferCount"
+                  @click="dialogShow('调货详情','申请调货数','transferTable')"></van-cell>
+        <van-cell :border="false" title="审核数" :value="reviewCount"
+                  @click="dialogShow('审核详情','审核数','reviewTable')"></van-cell>
+        <van-cell :border="false" title="寄出数" :value="sendCount"
+                  @click="dialogShow('寄出详情','寄出数','sendTable')"></van-cell>
+        <van-cell :border="false" title="本店铺调入数" :value="shopTransferInCount" 
+                  @click="dialogShow('本店铺调入详情','本店铺调入数','shopTransferInTable')"></van-cell>
+        <van-cell :border="false" title="本店铺调出数" :value="shopOutCount"
+                  @click="dialogShow('本店铺调出详情','本店铺调出数','shopOutCountTable')"></van-cell>
       </van-cell-group>
-
       <van-divider content-position="left"></van-divider>
     </div>
   </div>
@@ -42,7 +43,7 @@
 import baseNavBar from "@/components/nav-bar/base-nav-bar"
 
 export default {
-  name: "performanceAnalysisReports",
+  name: "adjustmentAnalysisReports",
   components: {
     baseNavBar
   },
@@ -53,7 +54,7 @@ export default {
   },
   data() {
     return{
-      titleText: "执行分析表",
+      titleText: "调货分析表",
       tenantCrop: localStorage.getItem("tenantCrop"),
 
       currentDate: new Date(),
@@ -92,6 +93,12 @@ export default {
 
       transferTable: [],
       transferCount: '',
+
+      shopTransferInTable: [],
+      shopTransferInCount: '',
+
+      shopOutCountTable: [],
+      shopOutCount: '',
 
       reviewTable: [],
       reviewCount: '',
@@ -169,6 +176,12 @@ export default {
       if (tableName === 'transferTable') {
         this.dialogTable = this.transferTable
       }
+      if (tableName === 'shopTransferInTable') {
+        this.dialogTable = this.shopTransferInTable
+      }
+      if (tableName === 'shopOutCountTable') {
+        this.dialogTable = this.shopOutCountTable
+      }
       if (tableName === 'reviewTable') {
         this.dialogTable = this.reviewTable
       }
@@ -193,8 +206,8 @@ export default {
       this.overlayShow = true
       this.overlayShow = false
       this.$axios({
-        method: "GET",
-        url: "/clothesOperationAnalysis/saleExtractionAnalysis",
+        method: "get",
+        url: '/clothesOperationAnalysis/saleTransferAnalysis',
         params: {
           startDate: this.startDate,
           endDate: this.endDate,
@@ -202,14 +215,14 @@ export default {
           dressId: this.dressId
         }
       }).then(response => {
-        this.saleExtractionAnalysisTable = []
-        this.saleExtractionAnalysisTable.push(...response.data.data)
-        this.saleExtractionAnalysisCount = this.saleExtractionAnalysisTable.reduce((sum, item) => sum + item.count, 0);
+        this.transferTable = []
+        this.transferTable.push(...response.data.data)
+        this.transferCount = this.transferTable.reduce((sum, item) => sum + item.count, 0);
       })
 
       this.$axios({
         method: "get",
-        url: '/clothesOperationAnalysis/saleInvAnalysis',
+        url: '/clothesOperationAnalysis/saleTransferReviewAnalysis',
         params: {
           startDate: this.startDate,
           endDate: this.endDate,
@@ -217,13 +230,14 @@ export default {
           dressId: this.dressId
         }
       }).then(response => {
-        this.invTable = []
-        this.invTable.push(...response.data.data)
-        this.invCount = this.invTable.reduce((sum, item) => sum + item.count, 0);
+        this.reviewTable = []
+        this.reviewTable.push(...response.data.data)
+        this.reviewCount = this.reviewTable.reduce((sum, item) => sum + item.count, 0);
       })
+
       this.$axios({
         method: "get",
-        url: '/clothesOperationAnalysis/saleClearDoubt',
+        url: '/clothesOperationAnalysis/saleTransferSendAnalysis',
         params: {
           startDate: this.startDate,
           endDate: this.endDate,
@@ -231,9 +245,42 @@ export default {
           dressId: this.dressId
         }
       }).then(response => {
-        this.clearDoubtTable = []
-        this.clearDoubtTable.push(...response.data.data)
-        this.clearDoubtCount = this.clearDoubtTable.reduce((sum, item) => sum + item.count, 0);
+        this.sendTable = []
+        this.sendTable.push(...response.data.data)
+        this.sendTable.forEach(item => {
+          item.empName = item.sender
+        })
+        this.sendCount = this.sendTable.reduce((sum, item) => sum + item.count, 0);
+      })
+
+      this.$axios({
+        method: "get",
+        url: '/clothesOperationAnalysis/operationApplicationCount',
+        params: {
+          startDate: this.startDate,
+          endDate: this.endDate,
+          targetShopId: this.shopId,
+          dressId: this.dressId
+        }
+      }).then(response => {
+        this.shopTransferInTable = []
+        this.shopTransferInTable.push(...response.data.data)
+        this.shopTransferInCount = this.shopTransferInTable.reduce((sum, item) => sum + item.count, 0);
+      })
+
+      this.$axios({
+        method: "get",
+        url: '/clothesOperationAnalysis/operationApplicationCount',
+        params: {
+          startDate: this.startDate,
+          endDate: this.endDate,
+          shopId: this.shopId,
+          dressId: this.dressId
+        }
+      }).then(response => {
+        this.shopOutCountTable = []
+        this.shopOutCountTable.push(...response.data.data)
+        this.shopOutCount = this.shopOutCountTable.reduce((sum, item) => sum + item.count, 0);
       })
     },
 

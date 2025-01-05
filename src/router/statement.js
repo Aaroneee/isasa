@@ -6,6 +6,7 @@ import proceedsReports from "@/pages/statement/proceed/proceeds-reports";
 import clothesOrderAnalysis from "@/pages/statement/clothes-order-analysis/clothes-order-analysis";
 import clothesScheduleAnalysis from "@/pages/statement/clothes-schedule-analysis/clothes-schedule-analysis";
 import performanceAnalysisReports from "@/pages/statement/shop/performance-analysis-reports"//执行分析计划表
+import adjustmentAnalysisReports from "@/pages/statement/shop/adjustment-analysis-reports"//调货执行分析
 
 //渠道分析表
 export default[
@@ -48,5 +49,10 @@ export default[
         path: '/performanceAnalysisReports',
         name: 'performanceAnalysisReports',
         component: performanceAnalysisReports,
+    },
+    {
+        path: '/adjustmentAnalysisReports',
+        name: 'adjustmentAnalysisReports',
+        component: adjustmentAnalysisReports,
     },
 ]
