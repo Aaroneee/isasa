@@ -33,6 +33,12 @@
                   @click="dialogShow('本店铺调入详情','本店铺调入数','shopTransferInTable')"></van-cell>
         <van-cell :border="false" title="本店铺调出数" :value="shopOutCount"
                   @click="dialogShow('本店铺调出详情','本店铺调出数','shopOutCountTable')"></van-cell>
+<!--        <van-cell :border="false" title="申请本店调出数" :value="applicationShopOutCount"-->
+<!--                  @click="dialogShow('申请本店调出详情','申请本店调出数','applicationShopOutCountTable')"></van-cell>-->
+<!--        <van-cell :border="false" title="申请他店调入数" :value="applicationShopTransferInCount"-->
+<!--                  @click="dialogShow('申请他店调入详情','申请他店调入数 ','applicationShopTransferInCountTable')"></van-cell>-->
+        <van-cell :border="false" title="收件待定盘出数" :value="pendingReceiptShipmentCount"
+                  @click="dialogShow('收件待定盘出数详情','收件待定盘出数 ','pendingReceiptShipmentCountTable')"></van-cell>
       </van-cell-group>
       <van-divider content-position="left"></van-divider>
     </div>
@@ -96,6 +102,15 @@ export default {
 
       shopTransferInTable: [],
       shopTransferInCount: '',
+
+      applicationShopOutCountTable: [],
+      applicationShopOutCount: '',
+
+      applicationShopTransferInCountTable: [],
+      applicationShopTransferInCount: '',
+
+      pendingReceiptShipmentCountTable: [],
+      pendingReceiptShipmentCount: '',
 
       shopOutCountTable: [],
       shopOutCount: '',
@@ -178,6 +193,15 @@ export default {
       }
       if (tableName === 'shopTransferInTable') {
         this.dialogTable = this.shopTransferInTable
+      }
+      if (tableName === 'applicationShopOutCountTable') {
+        this.dialogTable = this.applicationShopOutCountTable
+      }
+      if (tableName === 'applicationShopTransferInCountTable') {
+        this.dialogTable = this.applicationShopTransferInCountTable
+      }
+      if (tableName === 'pendingReceiptShipmentCountTable') {
+        this.dialogTable = this.pendingReceiptShipmentCountTable
       }
       if (tableName === 'shopOutCountTable') {
         this.dialogTable = this.shopOutCountTable
@@ -281,6 +305,56 @@ export default {
         this.shopOutCountTable = []
         this.shopOutCountTable.push(...response.data.data)
         this.shopOutCount = this.shopOutCountTable.reduce((sum, item) => sum + item.count, 0);
+      })
+
+      //申请本店调出数
+      // this.$axios({
+      //   method: "get",
+      //   url: '/clothesOperationAnalysis/operationApplicationShopCount',
+      //   params: {
+      //     startDate: this.startDate,
+      //     endDate: this.endDate,
+      //     applicationShopId: this.shopId,
+      //     dressId: this.dressId,
+      //     applicationShopFlag : 1
+      //   }
+      // }).then(response => {
+      //   this.applicationShopOutCountTable = []
+      //   this.applicationShopOutCountTable.push(...response.data.data)
+      //   this.applicationShopOutCount = this.applicationShopOutCountTable.reduce((sum, item) => sum + item.count, 0);
+      // })
+      //
+      // 申请他店调入数
+      // this.$axios({
+      //   method: "get",
+      //   url: '/clothesOperationAnalysis/operationApplicationShopCount',
+      //   params: {
+      //     startDate: this.startDate,
+      //     endDate: this.endDate,
+      //     applicationShopId: this.shopId,
+      //     dressId: this.dressId,
+      //     applicationShopFlag : 2
+      //   }
+      // }).then(response => {
+      //   this.applicationShopTransferInCountTable = []
+      //   this.applicationShopTransferInCountTable.push(...response.data.data)
+      //   this.applicationShopTransferInCount = this.applicationShopTransferInCountTable.reduce((sum, item) => sum + item.count, 0);
+      // })
+
+      //收件待定盘出数
+      this.$axios({
+        method: "get",
+        url: '/clothesOperationAnalysis/queryPendingReceiptShipmentCount',
+        params: {
+          startDate: this.startDate,
+          endDate: this.endDate,
+          shopId: this.shopId,
+          dressId: this.dressId
+        }
+      }).then(response => {
+        this.pendingReceiptShipmentCountTable = []
+        this.pendingReceiptShipmentCountTable.push(...response.data.data)
+        this.pendingReceiptShipmentCount = this.pendingReceiptShipmentCountTable.reduce((sum, item) => sum + item.count, 0);
       })
     },
 
