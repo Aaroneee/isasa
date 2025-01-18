@@ -236,6 +236,7 @@ export default {
           startDate: this.startDate,
           endDate: this.endDate,
           shopId: this.shopId,
+          tenantCrop: this.tenantCrop,
           dressId: this.dressId
         }
       }).then(response => {
@@ -251,6 +252,7 @@ export default {
           startDate: this.startDate,
           endDate: this.endDate,
           shopId: this.shopId,
+          tenantCrop: this.tenantCrop,
           dressId: this.dressId
         }
       }).then(response => {
@@ -266,6 +268,7 @@ export default {
           startDate: this.startDate,
           endDate: this.endDate,
           shopId: this.shopId,
+          tenantCrop: this.tenantCrop,
           dressId: this.dressId
         }
       }).then(response => {
@@ -284,6 +287,7 @@ export default {
           startDate: this.startDate,
           endDate: this.endDate,
           targetShopId: this.shopId,
+          tenantCrop: this.tenantCrop,
           dressId: this.dressId
         }
       }).then(response => {
@@ -299,6 +303,7 @@ export default {
           startDate: this.startDate,
           endDate: this.endDate,
           shopId: this.shopId,
+          tenantCrop: this.tenantCrop,
           dressId: this.dressId
         }
       }).then(response => {
@@ -349,6 +354,7 @@ export default {
           startDate: this.startDate,
           endDate: this.endDate,
           shopId: this.shopId,
+          tenantCrop: this.tenantCrop,
           dressId: this.dressId
         }
       }).then(response => {
