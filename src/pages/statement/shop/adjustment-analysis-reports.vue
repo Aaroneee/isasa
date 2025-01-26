@@ -32,7 +32,7 @@
         <van-cell :border="false" title="本店铺调入数" :value="shopTransferInCount" 
                   @click="dialogShow('本店铺调入详情','本店铺调入数','shopTransferInTable')"></van-cell>
         <van-cell :border="false" title="本店铺调出数" :value="shopOutCount"
-                  @click="dialogShow('本店铺调出详1情','本店铺调出数','shopOutCountTable')"></van-cell>
+                  @click="dialogShow('本店铺调出详情','本店铺调出数','shopOutCountTable')"></van-cell>
         <van-cell :border="false" title="申请本店调出数" :value="applicationShopOutCount"
                   @click="dialogShow('申请本店调出详情','申请本店调出数','applicationShopOutCountTable')"></van-cell>
         <van-cell :border="false" title="申请他店调入数" :value="applicationShopTransferInCount"
