@@ -58,6 +58,13 @@
                        :text="value.viewName"/>
       </van-grid>
     </van-cell-group>
+    <van-cell-group v-if="modules.出入库 !=null" title="出入库" class="gird_module">
+      <van-grid :border="false" clickable :column-num="4">
+        <van-grid-item v-for="value in modules.出入库" @click="onClickItem(value.viewLink)" :key="value.id"
+                       :icon="value.viewIcon"
+                       :text="value.viewName"/>
+      </van-grid>
+    </van-cell-group>
     <br><br><br>
   </div>
 </template>
