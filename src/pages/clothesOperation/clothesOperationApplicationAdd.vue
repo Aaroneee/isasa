@@ -272,6 +272,19 @@ export default {
         }
       }
     },
+    // //删除已选婚纱
+    delBatchClothesList(item){
+      let indexO=this.batchClothesIdList.indexOf(item.id);
+      this.batchClothesList.splice(indexO,1);
+      this.batchClothesIdList.splice(indexO,1);
+
+      this.clothesList.forEach(k=>{
+        if(k.id===item.id){
+          k.clothesCheck=false;
+        }
+      })
+      this.$toast.success("已移出");
+    },
     onSubmit() {
       if (this.dateAmong === "") {
         this.$toast.fail("调货周期不能为空");
@@ -306,6 +319,7 @@ export default {
           applicationEmpId: localStorage.getItem("empId"),
           applicationDate: nowDate,
           purpose: this.purpose,
+          expressNumber: this.expressNumber,
           dateStart: this.dateAmong.split(' - ')[0],
           dateEnd: this.dateAmong.split(' - ')[0],
           remark: this.remark,
@@ -324,6 +338,8 @@ export default {
         } else {
           this.$toast.fail(response.data.msg)
         }
+        this.showForm = false
+        this.queryClothesList()
       })
     },
 
