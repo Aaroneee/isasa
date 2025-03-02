@@ -121,6 +121,22 @@
           ></van-picker>
         </van-popup>
         <van-field
+            name="applicationShopText"
+            :value="applicationShopText"
+            label="申请店铺"
+            placeholder="点击选择申请店铺"
+            @click="applicationShopPicker  = true"
+            :rules="[{ required: true, message: '请选申请件店铺' }]"
+        ></van-field>
+        <van-popup v-model="applicationShopPicker" position="bottom">
+          <van-picker
+              show-toolbar
+              :columns="applyShopArray"
+              @confirm="applicationOnConfirm"
+              @cancel="applicationShopPicker  = false"
+          ></van-picker>
+        </van-popup>
+        <van-field
             readonly
             clickable
             v-model="purpose"
@@ -194,8 +210,11 @@ export default {
 
       clothesShop: "",
       clothesShopText: "",
+      applicationShopText:"",
       shopColumnsArray: [],
+      applyShopArray: [],
       shopShowPicker: false,
+      applicationShopPicker : false,
 
       showForm: false,
 
@@ -203,7 +222,7 @@ export default {
 
       transferPurposeTitle: '选择调货目的',
       transferPurposeFormPicker: false,
-
+      applicationShopId:"",
       transferPurposeList: [
         // {text: '售前预约锁定款式', value: '售前预约锁定款式'},
         // {text: '售后预约锁定款式', value: '售后预约锁定款式'},
@@ -228,6 +247,11 @@ export default {
   created() {
     this.queryEmpName();
     this.queryShopIds();
+    this.$selectUtils.applyShopIdsIsValid(this.$selectUtils.Picker).then(response => {
+      this.applyShopArray = JSON.parse(response.data.data)
+      this.applicationShopId=this.applyShopArray[0].id
+      this.applicationShopText = this.applyShopArray[0].text
+    })
   },
   methods: {
     queryClothesList: function () {
@@ -298,6 +322,10 @@ export default {
         this.$toast.fail("调货目的不能为空")
         return
       }
+      if (this.applicationShopId == "") {
+        this.$toast.fail("申请店铺不能为空")
+        return
+      }
       if (this.remark == "") {
         this.$toast.fail("调货描述不能为空")
         return
@@ -324,12 +352,13 @@ export default {
           dateEnd: this.dateAmong.split(' - ')[0],
           remark: this.remark,
           tenantCrop: this.tenantCrop,
+          applicationShopId: this.applicationShopId,
         })
       })
 
       this.$axios({
         method: 'post',
-        url: "/clothesOperationApplication/batchAddClothesOperationApplication",
+        url: "/clothesOperationApplication/batchAddClothesOperationApplicationOrPassExamination",
         data: applicationData
       }).then(response => {
         if (response.data.code === 200) {
@@ -372,6 +401,11 @@ export default {
       this.clothesShopText = value.text
       this.clothesShop = value.id
       this.shopShowPicker = false
+    },
+    applicationOnConfirm: function (value) {
+      this.applicationShopText = value.text
+      this.applicationShopId = value.id
+      this.applicationShopPicker = false
     },
     transferPurposeChange(value) {
       this.purpose = this.transferPurposeTitle = value instanceof Object ? value.value : value;

@@ -2,10 +2,12 @@
   <div>
 
     <van-sticky>
-      <baseNavBar title="调货审核"/>
+      <baseNavBar title="调货申请列表"/>
 
       <div>
         <van-dropdown-menu>
+          <van-dropdown-item v-model="transfersState" :options="transfersStateList"
+                             @change="transfersStateChange"></van-dropdown-item>
           <van-dropdown-item v-model="shopId" :options="shopIdList"
                              @change="shopIdChange"></van-dropdown-item>
           <van-dropdown-item v-model="operation" :options="operationList"
@@ -58,12 +60,6 @@
               <van-button type="primary" size="small" @click="showClothesImage(item)">图片
               </van-button>
             </van-col>
-            <van-col span="8" style="text-align: center">
-              <van-button type="info" size="small" @click="accept(item)">通过</van-button>
-            </van-col>
-            <van-col span="8" style="text-align: center">
-              <van-button type="danger" size="small" @click="refuse(item)">拒绝</van-button>
-            </van-col>
           </van-row>
         </div>
       </van-cell>
@@ -81,28 +77,6 @@
       </van-popup>
     </div>
 
-    <div>
-      <van-popup v-model="showForm" position="bottom" :style="{ height: '30%' , width: '100%'}">
-        <van-form @submit="onSubmit">
-          <van-field
-              :disabled=true
-              v-model="mergeClothesName"
-              name="mergeClothesName"
-              label="婚纱编号"
-              placeholder="婚纱编号"></van-field>
-          <van-field
-              v-model="rejectRemark"
-              name="content"
-              label="拒绝原因"
-              placeholder="拒绝原因"
-              :rules="[{ required: true }]"
-          ></van-field>
-          <div style="margin: 16px;">
-            <van-button round block type="info" native-type="submit">提交</van-button>
-          </div>
-        </van-form>
-      </van-popup>
-    </div>
   </div>
 </template>
 
@@ -111,13 +85,19 @@ import BaseNavBar from "@/components/nav-bar/base-nav-bar";
 import {STATE} from "@/constant/ClothesOperationConst.js"
 
 export default {
-  name: "clothesOperationExamine",
+  name: "clothesOperationList",
   data() {
     return {
       ClothesOperationState:new STATE(),
 
       titleStr: '请选择调货档期',
-
+      transfersState: '已提交未审核',
+      transfersStateList: [{text: '默认', value: '已提交未审核'},
+        {text: '已审核未寄出', value: '已审核未寄出'},
+        {text: '已取消', value: '已取消'},
+        {text: '已寄出', value: '已寄出'},
+        {text: '已拒绝', value: '已拒绝'},
+      ],
       shopIdList:[
         {text: '发出店铺', value: ''}
       ],
@@ -127,7 +107,7 @@ export default {
       operation:"",
       shopId:"",
       targetShopIdList:[
-        {text: '目标店铺', value: ''}
+        {text: '收件店铺', value: ''}
       ],
       targetShopId:"",
       mergeClothesName:"",
@@ -166,7 +146,7 @@ export default {
           this.operationList.push(...data);
           this.operationText = data[0].text;
           this.operationId = data[0].id;
-          this.operation = data[0].value;
+          // this.operation = data[0].value;
         }
       })
     },
@@ -178,6 +158,12 @@ export default {
 
     operationChange(value) {
       this.operation = value
+      this.page = 1
+      this.operationApplicationTable = []
+      this.queryClothesOperationApplicationList()
+    },
+    transfersStateChange(value) {
+      this.transfersState = value
       this.page = 1
       this.operationApplicationTable = []
       this.queryClothesOperationApplicationList()
@@ -207,7 +193,7 @@ export default {
         params: {
           page: this.page,
           limit: this.limit,
-          state:this.ClothesOperationState.StateConst.COMMITTED_UN_REVIEWED,
+          state:this.transfersState,
           tenantCrop:this.tenantCrop,
           shopId: this.shopId,
           targetShopId: this.targetShopId,
@@ -222,66 +208,6 @@ export default {
 
     searchForClothes(){
       this.queryClothesOperationApplicationList()
-    },
-    //通过
-    accept(item) {
-      this.$dialog.confirm({
-        message: '是否审核通过 ' + item.clothesName + ' 自 ' + item.shopName + ' 到 ' + item.targetShopName + ' 的调货',
-      }).then(() => {
-        this.$axios({
-          method: 'PUT',
-          url: "/clothesOperationApplication/passExamination",
-          params: {
-            id: item.id,
-            state:"已提交未审核",
-            tenantCrop:this.tenantCrop,
-            reviewerId: localStorage.getItem("empId")
-          }
-        }).then(response => {
-          if (response.data.code === 200) {
-            this.$toast.success("审核完成待执行寄出！")
-            this.queryClothesOperationApplicationList()
-          } else {
-            this.$toast.fail(response.data.msg)
-          }
-        })
-      }).catch(() => {
-        this.$toast.fail("取消操作");
-      });
-    },
-
-    refuse(item) {
-      this.mergeClothesName = item.clothesName
-      this.showForm = true
-      this.operationApplicationId = item.id
-    },
-
-    onSubmit() {
-      this.$dialog.confirm({
-        message: '确定要拒绝吗？',
-      }).then(() => {
-        this.$axios({
-          method: 'delete',
-          data: {
-            id: this.operationApplicationId,
-            state:"已提交未审核",
-            rejectRemark:this.rejectRemark,
-            tenantCrop:this.tenantCrop,
-            reviewerId: localStorage.getItem("empId")
-          },
-         url: "/clothesOperationApplication/refuse",
-        }).then(response => {
-          if (response.data.code === 200) {
-            this.$toast.success("拒绝成功！")
-            this.showForm = false
-            this.queryClothesOperationApplicationList()
-          } else {
-            this.$toast.fail(response.data.msg)
-          }
-        })
-      }).catch(() => {
-        this.$toast.fail("取消操作");
-      });
     },
 
     showClothesImage(item) {

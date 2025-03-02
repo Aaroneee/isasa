@@ -473,4 +473,17 @@ export default {
             }
         })
     },
+
+        //销售所在有效店铺
+    applyShopIdsIsValid: function (type) {
+        return self.$axios({
+            method: "GET",
+            url: "/select/querySaleLocationShopIdsIsValid",
+            params: {
+                tenantCrop: localStorage.getItem("tenantCrop"),
+                empId: localStorage.getItem("empId"),
+                type: type,
+            }
+        })
+    },
 }

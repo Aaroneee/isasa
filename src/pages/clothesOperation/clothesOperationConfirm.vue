@@ -90,11 +90,11 @@
               label="快递单号"
               placeholder="快递单号"
           ></van-field>
-          <van-field name="uploader" label="自行运输须上传图片">
-            <template #input>
-              <van-uploader v-model="fileList" :after-read="afterRead" multiple :max-count="1"/>
-            </template>
-          </van-field>
+<!--          <van-field name="uploader" label="自行运输须上传图片">-->
+<!--            <template #input>-->
+<!--              <van-uploader v-model="fileList" :after-read="afterRead" multiple :max-count="1"/>-->
+<!--            </template>-->
+<!--          </van-field>-->
           <van-row>
             <van-col span="24">
               <div style="margin: 16px;">
@@ -204,42 +204,11 @@ export default {
       }
     },
 
-
-    // onSubmit() {
-    //   this.$dialog.confirm({
-    //     message: '确定要拒绝吗？',
-    //   }).then(() => {
-    //     this.$axios({
-    //       method: 'delete',
-    //       data: {
-    //         id: this.operationApplicationId,
-    //         state:"已提交未审核",
-    //         rejectRemark:this.rejectRemark,
-    //         tenantCrop:this.tenantCrop,
-    //         reviewerId: localStorage.getItem("empId")
-    //       },
-    //       url: "/clothesOperationApplication/refuse",
-    //     }).then(response => {
-    //       if (response.data.code === 200) {
-    //         this.$toast.success("拒绝成功！")
-    //         this.showForm = false
-    //         this.queryClothesOperationApplicationList()
-    //       } else {
-    //         this.$toast.fail(response.data.msg)
-    //       }
-    //     })
-    //   }).catch(() => {
-    //     this.$toast.fail("取消操作");
-    //   });
-    // },
     onSubmit(values) {
-      if (this.fileList.length === 0 && values.expressNumber === '') {
-        this.$toast.fail("请填写快递单号或上传自行运输图片")
+      if (values.expressNumber === '') {
+        this.$toast.fail("请填写快递单号")
         return false
       }
-      if (this.fileList.length !== 0) {
-        this.selfTransport()
-      } else {
         this.$axios({
           method: "delete",
           url: '/clothesOperationApplication/send',
@@ -258,7 +227,6 @@ export default {
           this.showForm = false
           this.queryClothesOperationApplicationList()
         })
-      }
     },
 
     selfTransport() {
@@ -273,13 +241,12 @@ export default {
         }
         this.$axios({
           method: "put",
-          url: 'https://www.ivorybai.com:8080/ios/clothesOperationBatchSent',
+          url: 'clothesOperationApplication/send',
           data: {
-            ids: this.operationApplicationId,
-            state: "已寄出",
+            id: this.operationApplicationId,
+            tenantCrop:this.tenantCrop,
+            reviewerId: localStorage.getItem("empId"),
             expressNumber: "自行运输",
-            sender: document.getElementById("userName").value,
-            sendImage: sendImage,
           }
         }).then(response => {
           if (response.data.code === 200) {
