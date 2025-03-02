@@ -121,6 +121,8 @@
           ></van-picker>
         </van-popup>
         <van-field
+            readonly
+            clickable
             name="applicationShopText"
             :value="applicationShopText"
             label="申请店铺"
