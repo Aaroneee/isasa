@@ -6,12 +6,16 @@
 
       <div>
         <van-dropdown-menu>
+          <van-dropdown-item v-model="transfersState" :options="transfersStateList"
+                             @change="transfersStateChange"></van-dropdown-item>
+          <van-dropdown-item v-model="shopId" :options="shopIdList"
+                             @change="shopIdChange"></van-dropdown-item>
           <van-dropdown-item v-model="operation" :options="operationList"
                              @change="operationChange"></van-dropdown-item>
           <van-dropdown-item v-model="targetShopId" :options="targetShopIdList"
                              @change="targetShopIdChange"></van-dropdown-item>
-          <van-dropdown-item v-model="operationState" :options="operationStates"
-                             @change="operationStateChange"></van-dropdown-item>
+<!--          <van-dropdown-item v-model="operationState" :options="operationStates"-->
+<!--                             @change="operationStateChange"></van-dropdown-item>-->
         </van-dropdown-menu>
       </div>
     </van-sticky>
@@ -55,7 +59,7 @@
                 </van-button>
               </van-col>
               <van-col span="12" style="text-align: center">
-                <van-button round  v-if="item.state !== '已寄出'" type="info"  size="small" @click="listClick(item)">寄出</van-button>
+                <van-button round  v-if="item.state == '已审核未寄出'" type="info"  size="small" @click="listClick(item)">寄出</van-button>
               </van-col>
             </van-row>
           </div>
@@ -131,9 +135,17 @@ export default {
       targetShopIdList:[
         {text: '收件店铺', value: ''}
       ],
-      operationStates: [{text: '未完成', value: '19'},
-        {text: '已完成', value: '20'}],
-      operationState: '19',
+      // operationStates: [{text: '未完成', value: '19'},
+      //   {text: '已完成', value: '20'}],
+      // operationState: '19',
+      transfersState: '已审核未寄出',
+      transfersStateList: [{text: '默认', value: '已审核未寄出'},
+        {text: '已审核未寄出', value: '已审核未寄出'},
+        {text: '已提交未审核', value: '已提交未审核'},
+        {text: '已取消', value: '已取消'},
+        {text: '已寄出', value: '已寄出'},
+        {text: '已拒绝', value: '已拒绝'},
+      ],
       targetShopId:"",
       fileList: [],
       expressNumber: '',
@@ -175,20 +187,27 @@ export default {
         }
       })
     },
-    afterRead(file) {
-      console.log(file);
-      console.log(this.fileList)
+    shopIdChange(value) {
+      this.shopId = value
+      this.page = 1
+      this.operationApplicationTable = []
+      this.queryClothesOperationApplicationList()
     },
-
+    transfersStateChange(value) {
+      this.transfersState = value
+      this.page = 1
+      this.operationApplicationTable = []
+      this.queryClothesOperationApplicationList()
+    },
     operationChange(value) {
       this.operation = value
       this.queryClothesOperationApplicationList()
     },
 
-    operationStateChange(value) {
-      this.operationState = value
-      this.queryClothesOperationApplicationList()
-    },
+    // operationStateChange(value) {
+    //   this.operationState = value
+    //   this.queryClothesOperationApplicationList()
+    // },
     targetShopIdChange(value) {
       this.targetShopId = value
       this.page = 1
@@ -199,7 +218,7 @@ export default {
     listClick(item) {
       this.clothesName = item.clothesName
       this.operationApplicationId = item.id
-      if (this.operationState === '19') {
+      if (this.transfersState === '已审核未寄出') {
         this.showForm = true
       }
     },
@@ -286,13 +305,13 @@ export default {
 
     queryClothesOperationApplicationList() {
       this.loading = true
-      let state = '';
-
-      if (this.operationState === '19') {
-        state = '已审核未寄出';
-      } else if (this.operationState === '20') {
-        state = '已寄出';
-      }
+      // let state = '';
+      //
+      // if (this.operationState === '19') {
+      //   state = '已审核未寄出';
+      // } else if (this.operationState === '20') {
+      //   state = '已寄出';
+      // }
       let purposeText = this.getOperationTextByValue(this.operation);
       if (purposeText === "请选择调货目的"){
         purposeText = null;
@@ -303,9 +322,10 @@ export default {
         params: {
           page: this.page,
           limit: this.limit,
-          state: state,
+          state: this.transfersState,
           tenantCrop:this.tenantCrop,
           targetShopId: this.targetShopId,
+          shopId: this.shopId,
           purpose: purposeText
         }
       }).then(response => {
