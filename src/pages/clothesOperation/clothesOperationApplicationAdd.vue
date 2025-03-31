@@ -360,7 +360,7 @@ export default {
 
       this.$axios({
         method: 'post',
-        url: "/clothesOperationApplication/batchAddClothesOperationApplicationOrPassExamination",
+        url: "/clothesOperationApplication/batchAddClothesOperationApplication",
         data: applicationData
       }).then(response => {
         if (response.data.code === 200) {
