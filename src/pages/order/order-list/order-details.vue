@@ -51,14 +51,20 @@
                   </div>
                   <span
                       v-text="item[0].styleType+'-'+item[0].styleName+'-'+item[0].clothesSize+'-'+item[0].clothesNo"></span>
-                  <van-row>
-                   <span
-                       :class="{'color-red':item[0].scheduleState==='撞挡','color-blue':item[0].scheduleState==='可用'}">{{
-                       '档期状态:' + item[0].scheduleState
-                     }}</span>
-                    <van-icon style="margin-left: 30px" size="15" @click="deleteSchedule(item[0])" name="delete-o"/>
+                  <van-row style="width: 40vw;">
+                    <van-col :span="16">
+                      <span
+                          :class="{'color-red':item[0].scheduleState==='撞挡','color-blue':item[0].scheduleState==='可用'}">{{
+                          '档期状态:' + item[0].scheduleState
+                        }}</span>
+                    </van-col>
+                    <van-col :span="4">
+                      <van-icon size="15" @click="deleteSchedule(item[0])" name="delete-o"/>
+                    </van-col>
+                    <van-col :span="4">
+                      <van-icon size="15" @click="refreshClothesSchedule(item[0])" name="replay"/>
+                    </van-col>
                   </van-row>
-
                   <span>{{ item[0].scheduleDate }}</span>
 
                 </van-grid-item>
@@ -77,12 +83,19 @@
                   </div>
                   <span
                       v-text="item[1].styleType+'-'+item[1].styleName+'-'+item[1].clothesSize+'-'+item[1].clothesNo"></span>
-                  <van-row>
-                   <span
-                       :class="{'color-red':item[1].scheduleState==='撞挡','color-blue':item[1].scheduleState==='可用'}">{{
-                       '档期状态:' + item[1].scheduleState
-                     }}</span>
-                    <van-icon style="margin-left: 30px" size="15" @click="deleteSchedule(item[1])" name="delete-o"/>
+                  <van-row style="width: 40vw;">
+                    <van-col :span="16">
+                      <span
+                          :class="{'color-red':item[1].scheduleState==='撞挡','color-blue':item[1].scheduleState==='可用'}">{{
+                          '档期状态:' + item[1].scheduleState
+                        }}</span>
+                    </van-col>
+                    <van-col :span="4">
+                      <van-icon style="" size="15" @click="deleteSchedule(item[1])" name="delete-o"/>
+                    </van-col>
+                    <van-col :span="4">
+                      <van-icon style="" size="15" @click="refreshClothesSchedule(item[1])"   name="replay"/>
+                    </van-col>
                   </van-row>
                   <span>{{ item[1].scheduleDate }}</span>
                 </van-grid-item>
@@ -339,6 +352,27 @@ export default {
             this.$toast.success("移除档期成功")
             this.reload()
           } else {
+            this.$toast.fail(response.data.msg)
+          }
+        })
+      })
+    },
+    //刷新档期
+    refreshClothesSchedule(value){
+      this.$dialog.confirm({
+        title: '刷新档期',
+        message: '是否刷新该礼服档期?(会重新计算是否撞档)',
+      }).then(() => {
+        this.$axios({
+          method: 'POST',
+          url: '/schedule/refreshClothesSchedule',
+          data: {
+            clothesId: value.clothesId,
+          },
+        }).then(response => {
+          if (response.data.code == 200){
+            this.reload()
+          }else {
             this.$toast.fail(response.data.msg)
           }
         })
